@@ -40,7 +40,7 @@ public class Towser{
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int unite = 43;
+    public static int unite = 50;
     public static int fps = 120, windWidth = unite*22, windHeight = unite*18;
     public static float ref = unite/50f;
     public static boolean mouseDown = false, stateChanged = false;
@@ -60,8 +60,8 @@ public class Towser{
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
         try{
             Display.setLocation(0, 0);
-            //Display.setFullscreen(true);
-            Display.setDisplayMode(new DisplayMode(windWidth, windHeight));
+            Display.setFullscreen(true);
+            //Display.setDisplayMode(new DisplayMode(windWidth, windHeight));
             Display.setResizable(false);
             Display.setTitle("Towser");
             Display.create();
@@ -93,10 +93,12 @@ public class Towser{
     }
     
     private static void init(){
-        /*unite = Math.floorDiv(Display.getHeight(), 18);
+        unite = Math.floorDiv(Display.getHeight(), 18);
+        if(unite%2 != 0)
+            unite -= 1;
         windWidth = unite*22;
         windHeight = unite*18;
-        ref = unite/50f;*/
+        ref = unite/50f;
         
         glEnable(GL11.GL_BLEND);
         glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
