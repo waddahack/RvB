@@ -1,12 +1,12 @@
 package ui;
 
-import managers.PopupManager;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import towser.Towser.Cursor;
 import static towser.Towser.mouseDown;
+import static towser.Towser.ref;
 
 
 public class Button {

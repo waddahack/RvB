@@ -15,6 +15,8 @@ import managers.SoundManager;
 import towser.Tile;
 import towser.Towser;
 import static towser.Towser.game;
+import static towser.Towser.ref;
+import static towser.Towser.unite;
 import ui.Overlay;
 
 public abstract class Enemy implements Shootable, Comparable<Enemy>{
@@ -46,12 +48,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         base = game.getBase();
         map = game.getMap();
         if(spawn != null){
-            x = spawn.getX()+game.unite/2;
-            y = spawn.getY()+game.unite/2;
+            x = spawn.getX()+unite/2;
+            y = spawn.getY()+unite/2;
         }
         if(base != null){
-            xBase = base.getX()+game.unite/2;
-            yBase = base.getY()+game.unite/2;
+            xBase = base.getX()+unite/2;
+            yBase = base.getY()+unite/2;
         }
         startTimeMove = System.currentTimeMillis();
         startTimeSteps = System.currentTimeMillis();
@@ -156,7 +158,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             chooseDirection();
             checkDirStartTime = System.currentTimeMillis();
         }
-        movingBy = (moveSpeed*game.gameSpeed) * Towser.deltaTime / 50;
+        movingBy = (moveSpeed*game.gameSpeed) * Towser.deltaTime / (50/ref);
         switch(dir){
             case "down" : 
                 y += movingBy;
@@ -183,7 +185,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     private boolean isOnCenterOfTile(){
-        return(Math.floor(x)%game.unite <= game.unite/2+movingBy && Math.floor(x)%game.unite >= game.unite/2-movingBy && Math.floor(y)%game.unite <= game.unite/2+movingBy && Math.floor(y)%game.unite >= game.unite/2-movingBy);
+        return(Math.floor(x)%unite <= unite/2+movingBy && Math.floor(x)%unite >= unite/2-movingBy && Math.floor(y)%unite <= unite/2+movingBy && Math.floor(y)%unite >= unite/2-movingBy);
     }
     
     private boolean isOnSameTile(){
@@ -191,7 +193,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             return false;
         if(isDead())
             return true;
-        int x = (int) Math.floor(this.x/game.unite)*game.unite, y = (int) Math.floor(this.y/game.unite)*game.unite;
+        int x = (int) Math.floor(this.x/unite)*unite, y = (int) Math.floor(this.y/unite)*unite;
         Tile t = game.getPath().get(indiceTuile);
         return (x == t.getX() && y == t.getY());
     }
@@ -202,12 +204,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     private void setPositionInCenterOfTile(){
         Tile t = game.getPath().get(indiceTuile);
-        x = t.getX()+game.unite/2;
-        y = t.getY()+game.unite/2;
+        x = t.getX()+unite/2;
+        y = t.getY()+unite/2;
     }
     
     private boolean canMoveThrough(int dx, int dy){
-        int x = (int) Math.floor(this.x/game.unite), y = (int) Math.floor(this.y/game.unite);
+        int x = (int) Math.floor(this.x/unite), y = (int) Math.floor(this.y/unite);
         if(x+dx < 0 || x+dx >= map.get(0).size() || y+dy >= map.size() || y+dy < 0)
             return false;
         String tileType = map.get(y+dy).get(x+dx).getType();
@@ -236,16 +238,16 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public void renderInfo(Overlay o){
         
         // Sprites
-        Towser.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
-        Towser.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        Towser.drawFilledRectangle(o.getX()+20*ref, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        Towser.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20*ref, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
-        int width = 200, height = 15;
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, Towser.colors.get("white"), 1, null);
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, Towser.colors.get("life"), 1, null);
-        Towser.drawRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, Towser.colors.get("green_dark"), 1, 2);        
+        int width = (int) (200*ref), height = (int) (15*ref);
+        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3*ref, width, height, Towser.colors.get("white"), 1, null);
+        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3*ref, (int)(((double)life/(double)maxLife)*width), height, Towser.colors.get("life"), 1, null);
+        Towser.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3*ref), width, height, Towser.colors.get("green_dark"), 1, 2);        
         // Name & life max
-        o.drawText(o.getW()/2, 8, name, Towser.fonts.get("normalL"));
-        o.drawText(o.getW()/2+Towser.fonts.get("normalL").getWidth(name)/2+Towser.fonts.get("life").getWidth(""+maxLife)/2+5, 8, ""+maxLife, Towser.fonts.get("life"));
+        o.drawText(o.getW()/2, (int) (8*ref), name, Towser.fonts.get("normalL"));
+        o.drawText(o.getW()/2+Towser.fonts.get("normalL").getWidth(name)/2+Towser.fonts.get("life").getWidth(""+maxLife)/2+(int)(5*ref), (int) (8*ref), ""+maxLife, Towser.fonts.get("life"));
     }
     
     public void attack(){
@@ -260,7 +262,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     public boolean isInBase(){
-        return (x >= xBase-game.unite/2 && x <= xBase+game.unite/2 && y >= yBase-game.unite/2 && y <= yBase+game.unite/2);
+        return (x >= xBase-unite/2 && x <= xBase+unite/2 && y >= yBase-unite/2 && y <= yBase+unite/2);
     }
     
     public void attacked(int power){

@@ -6,6 +6,7 @@ import towser.Game;
 import towser.Towser;
 import static towser.Towser.creation;
 import static towser.Towser.game;
+import static towser.Towser.ref;
 import static towser.Towser.stateChanged;
 import ui.Button;
 import ui.Overlay;
@@ -14,7 +15,7 @@ import ui.Overlay;
 public class PopupManager {
     public static PopupManager Instance;
     
-    private static int width = 650, height = 370;
+    private static int width = (int) (650*ref), height = (int) (370*ref);
     private static int oldGameSpeed;
     private Overlay currentOverlay;
     private Overlay gameOver, enemiesUpgraded, popup;
@@ -24,9 +25,9 @@ public class PopupManager {
 
     public PopupManager(){
         currentOverlay = null;
-        buttonsText = new ArrayList<String>();
-        lines = new ArrayList<String>();
-        fonts = new ArrayList<UnicodeFont>();
+        buttonsText = new ArrayList<>();
+        lines = new ArrayList<>();
+        fonts = new ArrayList<>();
         initOverlays();
     }
 
@@ -44,7 +45,7 @@ public class PopupManager {
         popup.setBG(Towser.textures.get("board"));
         popup.setA(0.8f);
         popup.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(popup.getW()/2, 3*popup.getH()/4, 250, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(popup.getW()/2, 3*popup.getH()/4, (int) (150*ref), (int)(ref*30), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         popup.addButton(b);
         //
         // GAME OVER
@@ -53,7 +54,7 @@ public class PopupManager {
         gameOver.setBG(Towser.textures.get("board"));
         gameOver.setA(0.8f);
         gameOver.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, 250, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, (int) (250*ref), (int)(ref*50), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         gameOver.addButton(b);
         // ENEMIES UPGRADED
         enemiesUpgraded = new Overlay(Towser.windWidth/2-width/2, Towser.windHeight/2-height/2, width, height);
@@ -61,7 +62,7 @@ public class PopupManager {
         enemiesUpgraded.setBG(Towser.textures.get("board"));
         enemiesUpgraded.setA(0.8f);
         enemiesUpgraded.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, 150, 30, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (150*ref), (int)(ref*30), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         enemiesUpgraded.addButton(b);
     }
     

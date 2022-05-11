@@ -1,9 +1,9 @@
 package ennemies;
 
-import towser.Game;
 import managers.SoundManager;
 import towser.Towser;
 import static towser.Towser.game;
+import static towser.Towser.ref;
 
 public class TrickyEnemy extends Enemy{
     
@@ -17,10 +17,10 @@ public class TrickyEnemy extends Enemy{
         power = 6;
         shootRate = 1;
         moveSpeed = 2.9;
-        range = 30;
+        range = (int) (30*ref);
         life = 80;
         weight = 3;
-        width = 40;
+        width = (int) (40*ref);
         eBalance = balance;
         rgb = new float[]{0.2f, 0.2f, 0.8f};
         sprite = Towser.textures.get("trickyEnemy");

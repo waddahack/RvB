@@ -3,6 +3,7 @@ package towers;
 import java.util.ArrayList;
 import managers.SoundManager;
 import towser.*;
+import static towser.Towser.ref;
 
 public class BasicTower extends Tower{
     
@@ -21,13 +22,13 @@ public class BasicTower extends Tower{
         totalPrice = price;
         power = 20;
         shootRate = 0.6f;
-        range = 3*Game.unite;
+        range = (int) (150*ref);
         life = 100;
-        width = 40;
+        width = (int) (40*ref);
         size = width;
         name = "Razannon";
         textureName = "basicTower";
-        bulletSpeed = 2*120/Towser.fps;
+        bulletSpeed = 14;
         follow = false;
         isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
@@ -40,7 +41,7 @@ public class BasicTower extends Tower{
         prices.add(100f); // range
         prices.add(120f); // power
         prices.add(150f); // shoot rate
-        prices.add(200f); // bullet speed
+        prices.add(160f); // bullet speed
         priceMultipliers.add(1.5f);
         priceMultipliers.add(1.4f);
         priceMultipliers.add(1.5f);
@@ -48,7 +49,7 @@ public class BasicTower extends Tower{
         multipliers.add(1.2f);
         multipliers.add(1.3f);
         multipliers.add(1.25f);
-        multipliers.add(3f*120/Towser.fps);
+        multipliers.add(21f);
         maxUpgradeClicks.add(3f);
         maxUpgradeClicks.add(3f);
         maxUpgradeClicks.add(3f);
@@ -57,7 +58,7 @@ public class BasicTower extends Tower{
         upgradesParam.put("priceMultipliers", priceMultipliers);
         upgradesParam.put("multipliers", multipliers);
         upgradesParam.put("maxUpgradeClicks", maxUpgradeClicks);
-        growth = 2;
+        growth = 2*ref;
     }
     
     @Override

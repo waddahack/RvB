@@ -40,7 +40,9 @@ public class Towser{
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int fps = 120, windWidth = 1000, windHeight = 800; // Width and Height divisible by unite in Game.java
+    public static int unite = 43;
+    public static int fps = 120, windWidth = unite*22, windHeight = unite*18;
+    public static float ref = unite/50f;
     public static boolean mouseDown = false, stateChanged = false;
     private static double lastUpdate;
     public static double deltaTime;
@@ -57,6 +59,8 @@ public class Towser{
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
         try{
+            Display.setLocation(0, 0);
+            //Display.setFullscreen(true);
             Display.setDisplayMode(new DisplayMode(windWidth, windHeight));
             Display.setResizable(false);
             Display.setTitle("Towser");
@@ -89,8 +93,14 @@ public class Towser{
     }
     
     private static void init(){
+        /*unite = Math.floorDiv(Display.getHeight(), 18);
+        windWidth = unite*22;
+        windHeight = unite*18;
+        ref = unite/50f;*/
+        
         glEnable(GL11.GL_BLEND);
         glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glViewport(Display.getWidth()/2-windWidth/2, Display.getHeight()/2-windHeight/2, windWidth, windHeight);
         glMatrixMode(GL_PROJECTION);
         glOrtho(0, windWidth, windHeight, 0, 1, -1);
         glMatrixMode(GL_MODELVIEW);
@@ -156,22 +166,24 @@ public class Towser{
                     File file = new File("levels/level_0.txt");
                     if(file.createNewFile()){
                         FileWriter myWriter = new FileWriter(file, false);
-                        String emptyMap = ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . .";
+                        String emptyMap = ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
+                                          ". . . . . . . . . . . . . . . . . . . . . .";
                         myWriter.write(emptyMap);
                         myWriter.close();
                     }
@@ -204,14 +216,14 @@ public class Towser{
         
         glBegin(GL_LINES);
             for(int i = 0 ; i < thickness ; i++){
-                glVertex2i(x-i, y-i-1);
-                glVertex2i(x+i+1 + width, y-i-1);
-                glVertex2i(x+i+1 + width, y-i-1);
+                glVertex2i(x-i, y-i/*-1*/);
+                glVertex2i(x+i+1 + width, y-i/*-1*/);
+                glVertex2i(x+i+1 + width, y-i/*-1*/);
                 glVertex2i(x+i+1 + width, y+i + height);
                 glVertex2i(x+i+1 + width, y+i + height);
                 glVertex2i(x-i-1, y+i + height);
                 glVertex2i(x-i-1, y+i + height);
-                glVertex2i(x-i, y-i-1);
+                glVertex2i(x-i, y-i/*-1*/);
             }
         glEnd();
     }
@@ -356,72 +368,72 @@ public class Towser{
     
     @SuppressWarnings("unchecked")
     private static void setUpFont() {
-        fonts = new HashMap<String, UnicodeFont>();
+        fonts = new HashMap<>();
         float[] color;
         String police = "Bahnschrift";
         
         color = Towser.colors.get("white");
-        Font awtFont = new Font(police, Font.PLAIN, 12);
+        Font awtFont = new Font(police, Font.PLAIN, (int) (12*ref));
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, 16);
+        awtFont = new Font(police, Font.PLAIN, (int) (16*ref));
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, 20);
+        awtFont = new Font(police, Font.PLAIN, (int) Math.max(8, 20*ref));
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, 30);
+        awtFont = new Font(police, Font.PLAIN, (int) (30*ref));
         UnicodeFont normalXL = new UnicodeFont(awtFont);
         normalXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXL.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 16);
+        awtFont = new Font(police, Font.BOLD, (int) (16*ref));
         UnicodeFont normalB = new UnicodeFont(awtFont);
         normalB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalB.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 20);
+        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
         UnicodeFont normalLB = new UnicodeFont(awtFont);
         normalLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalLB.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 30);
+        awtFont = new Font(police, Font.BOLD, (int) (30*ref));
         UnicodeFont normalXLB = new UnicodeFont(awtFont);
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXLB.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 20);
+        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
         UnicodeFont astres = new UnicodeFont(awtFont);
         astres.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
         astres.addAsciiGlyphs();
         
         color = Towser.colors.get("life");
-        awtFont = new Font(police, Font.BOLD, 20);
+        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
         UnicodeFont life = new UnicodeFont(awtFont);
         life.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         life.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 14);
+        awtFont = new Font(police, Font.BOLD, (int) (14*ref));
         UnicodeFont canBuy = new UnicodeFont(awtFont);
         canBuy.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
         canBuy.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, 14);
+        awtFont = new Font(police, Font.BOLD, (int) (14*ref));
         UnicodeFont cantBuy = new UnicodeFont(awtFont);
         cantBuy.getEffects().add(new ColorEffect(new Color(210, 30, 30)));
         cantBuy.addAsciiGlyphs();

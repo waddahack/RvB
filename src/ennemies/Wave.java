@@ -1,8 +1,8 @@
 package ennemies;
 
 import java.util.ArrayList;
-import towser.Game;
 import static towser.Towser.game;
+import static towser.Towser.ref;
 
 
 public class Wave{
@@ -12,7 +12,7 @@ public class Wave{
     private double startTime;
     
     public Wave(){
-        enemies = new ArrayList<Enemy>();
+        enemies = new ArrayList<>();
         index = 0;
         startTime = System.currentTimeMillis();
     }

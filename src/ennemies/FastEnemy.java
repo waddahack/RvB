@@ -2,6 +2,7 @@ package ennemies;
 
 import managers.SoundManager;
 import towser.Towser;
+import static towser.Towser.ref;
 
 public class FastEnemy extends Enemy{
     
@@ -15,10 +16,10 @@ public class FastEnemy extends Enemy{
         power = 4;
         shootRate = 1;
         moveSpeed = 4.2;
-        range = 30;
+        range = (int) (30*ref);
         life = 42;
         weight = 1.5;
-        width = 50;
+        width = (int) (50*ref);
         eBalance = balance;
         rgb = new float[]{1f, 1f, 0f};
         sprite = Towser.textures.get("fastEnemy");

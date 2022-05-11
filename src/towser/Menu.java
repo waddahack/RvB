@@ -2,6 +2,7 @@ package towser;
 
 import ui.Button;
 import java.util.ArrayList;
+import static towser.Towser.ref;
 import static towser.Towser.windHeight;
 import static towser.Towser.windWidth;
 import ui.Overlay;
@@ -13,10 +14,12 @@ public class Menu {
     private Overlay[] overlays = new Overlay[4];
     
     public Menu(){
-        start = new Button(windWidth/2, windHeight/6, 200, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        create = new Button(windWidth/2, windHeight/6, 200, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        option = new Button(windWidth/2, windHeight/6, 200, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        exit = new Button(windWidth/2, windHeight/6, 200, 50, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        int width = (int) (200*ref);
+        int height = (int) (50*ref);
+        start = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        create = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        option = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        exit = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         for(int i = 0 ; i < 4 ; i++){
             overlays[i] = new Overlay(0, i*windHeight/4, windWidth, windHeight/4);
             switch(i){

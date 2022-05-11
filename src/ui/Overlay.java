@@ -5,6 +5,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
+import static towser.Towser.ref;
 
 public class Overlay {
     
@@ -14,9 +15,9 @@ public class Overlay {
     private Texture bg = null;
     private float a = 1;
     private boolean display;
-    private ArrayList<Button> buttons = new ArrayList<Button>();
-    private ArrayList<Integer> texturesX = new ArrayList<Integer>(), texturesY = new ArrayList<Integer>(), texturesW = new ArrayList<Integer>(), texturesH = new ArrayList<Integer>();
-    private ArrayList<Texture> textures = new ArrayList<Texture>();
+    private ArrayList<Button> buttons = new ArrayList<>();
+    private ArrayList<Integer> texturesX = new ArrayList<>(), texturesY = new ArrayList<>(), texturesW = new ArrayList<>(), texturesH = new ArrayList<>();
+    private ArrayList<Texture> textures;
     /***
      * Creates an overlay
      * @param x Position x of the top left corner
@@ -25,6 +26,7 @@ public class Overlay {
      * @param height Height of the overlay
      */
     public Overlay(int x, int y, int width, int height){
+        this.textures = new ArrayList<>();
         this.x = x;
         this.y = y;
         this.width = width;

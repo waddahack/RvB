@@ -7,6 +7,7 @@ import towser.Game;
 import towser.Towser;
 import towser.Shootable;
 import static towser.Towser.game;
+import static towser.Towser.ref;
 
 public class Bullet{
     
@@ -47,7 +48,7 @@ public class Bullet{
     }
     
     public void move(){
-        int speed = this.speed*game.gameSpeed;
+        double speed = this.speed*game.gameSpeed * Towser.deltaTime / (50/ref);
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
         boolean touched = hasTouched(angle), inRange = isInRange();
@@ -148,7 +149,7 @@ public class Bullet{
     }
     
     private boolean aimTouched(Shootable aim, double cosinus, double sinus){
-        int xHitBoxPoint = (int) ((aim.getWidth()-20)*cosinus), yHitBoxPoint = (int) ((aim.getWidth()-20)*sinus);
+        int xHitBoxPoint = (int) ((aim.getWidth()-20*ref)*cosinus), yHitBoxPoint = (int) ((aim.getWidth()-20*ref)*sinus);
         if(x-radius <= aim.getX()+xHitBoxPoint && x-radius >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
             return true;
         if(x+radius <= aim.getX()+xHitBoxPoint && x+radius >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)

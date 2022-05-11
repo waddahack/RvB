@@ -10,7 +10,9 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser.State;
 import static towser.Towser.mouseDown;
+import static towser.Towser.ref;
 import static towser.Towser.stateChanged;
+import static towser.Towser.unite;
 import static towser.Towser.windHeight;
 import ui.Button;
 import ui.Overlay;
@@ -22,8 +24,8 @@ public class Creation extends AppCore{
     
     public Creation(){
         super(0);
-        roads = new ArrayList<Tile>();
-        if(path.size() > 0){
+        roads = new ArrayList<>();
+        if(!path.isEmpty()){
             for(Tile t : path)
                 roads.add(t);
         }
@@ -39,14 +41,14 @@ public class Creation extends AppCore{
     
     @Override
     protected void initOverlays(){
-        overlays = new ArrayList<Overlay>();
+        overlays = new ArrayList<>();
         Overlay o;
         Button b;
         
         o = new Overlay(0, (int) (windHeight-1.8*unite), Towser.windWidth, (int) (1.8*unite));
-        b = new Button(50, 10, 70, 24, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (50*ref), (int) (10*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button(50, 50, 70, 24, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (50*ref), (int) (50*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
     }
@@ -95,7 +97,7 @@ public class Creation extends AppCore{
             int indexX = getMouseIndexX();
             int indexY = getMouseIndexY();
             
-            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && map.get(indexY).get(indexX).type != "road" && !stateChanged){ // Puts road
+            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged){ // Puts road
                 Tile road = new Tile(Towser.textures.get("roadStraight"), "road");
                 road.setRotateIndex(0);
                 road.setX(indexX*unite);
@@ -104,7 +106,7 @@ public class Creation extends AppCore{
                 searchAndConnect(road);
                 roads.add(road);
             }
-            else if(Mouse.isButtonDown(1) && map.get(indexY).get(indexX).type != "grass" && !stateChanged){ // Puts grass
+            else if(Mouse.isButtonDown(1) && !map.get(indexY).get(indexX).type.equals("grass") && !stateChanged){ // Puts grass
                 Texture t;
                 int n = rand.nextInt(100)+1;
                 if(n > 93)

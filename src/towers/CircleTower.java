@@ -2,8 +2,8 @@ package towers;
 
 import java.util.ArrayList;
 import managers.SoundManager;
-import towser.Game;
 import towser.Towser;
+import static towser.Towser.ref;
 
 public class CircleTower extends Tower{
 
@@ -20,22 +20,22 @@ public class CircleTower extends Tower{
         totalPrice = price;
         power = 12;
         shootRate = 0.7f;
-        range = (int) (1.2*Game.unite);
+        range = (int) (60*ref);
         life = 100;
-        width = 40;
+        width = (int) (40*ref);
         size = width;
         name = "Razingun";
         textureName = "circleTower";
-        bulletSpeed = 6;
+        bulletSpeed = 25;
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("multicannon");
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = Towser.textures.get("bulletGrey");
-        ArrayList<Float> prices = new ArrayList<Float>();
-        ArrayList<Float> priceMultipliers = new ArrayList<Float>();
-        ArrayList<Float> multipliers = new ArrayList<Float>();
-        ArrayList<Float> maxUpgradeClicks = new ArrayList<Float>();
+        ArrayList<Float> prices = new ArrayList<>();
+        ArrayList<Float> priceMultipliers = new ArrayList<>();
+        ArrayList<Float> multipliers = new ArrayList<>();
+        ArrayList<Float> maxUpgradeClicks = new ArrayList<>();
         prices.add(100f); // range
         prices.add(200f); // power
         prices.add(250f); // shoot rate
@@ -56,7 +56,7 @@ public class CircleTower extends Tower{
         upgradesParam.put("priceMultipliers", priceMultipliers);
         upgradesParam.put("multipliers", multipliers);
         upgradesParam.put("maxUpgradeClicks", maxUpgradeClicks);
-        growth = 4;
+        growth = 4*ref;
     }
     
     @Override

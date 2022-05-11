@@ -9,11 +9,12 @@ import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
-import static towser.Game.unite;
 import towser.Towser;
 import towser.Shootable;
 import managers.SoundManager;
 import static towser.Towser.game;
+import static towser.Towser.ref;
+import static towser.Towser.unite;
 import ui.*;
 
 public abstract class Tower extends Tile implements Shootable{
@@ -25,8 +26,8 @@ public abstract class Tower extends Tile implements Shootable{
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate;
     protected Enemy enemyAimed;
-    protected ArrayList<Bullet> bullets = new ArrayList<Bullet>(), bulletsToRemove = new ArrayList<Bullet>();
-    protected ArrayList<Shootable> enemiesTouched = new ArrayList<Shootable>();
+    protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
+    protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
     protected ArrayList<Overlay> overlays;
     protected Texture textureStatic, bulletSprite;
     protected Clip clip;
@@ -35,8 +36,8 @@ public abstract class Tower extends Tile implements Shootable{
     
     public Tower(String type){
         super(type);
-        upgradesParam = new HashMap<String, ArrayList<Float>>();
-        overlays = new ArrayList<Overlay>();
+        upgradesParam = new HashMap<>();
+        overlays = new ArrayList<>();
     }
     
     public void update(){
@@ -157,8 +158,8 @@ public abstract class Tower extends Tile implements Shootable{
     
     private void renderPrevisu(){
         if(canBePlaced()){
-            double xPos = Math.floorDiv(Mouse.getX(), game.unite)*game.unite, yPos = Math.floorDiv(Towser.windHeight-Mouse.getY(), game.unite)*game.unite;
-            Towser.drawFilledRectangle(xPos+game.unite/2-size/2, yPos+game.unite/2-size/2, size, size, null, 0.5f, textureStatic);
+            double xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(Towser.windHeight-Mouse.getY(), unite)*unite;
+            Towser.drawFilledRectangle(xPos+unite/2-size/2, yPos+unite/2-size/2, size, size, null, 0.5f, textureStatic);
         }
         x = Mouse.getX();
         y = Towser.windHeight-Mouse.getY();
@@ -181,19 +182,19 @@ public abstract class Tower extends Tile implements Shootable{
     public void initOverlay(){
         Overlay o1, o2;
         
-        o1 = new Overlay(0, Towser.windHeight-90-20, 200, 20);
+        o1 = new Overlay(0, (int) (Towser.windHeight-(90+20)*ref), (int)(ref*200), (int)(ref*20));
         o1.setBG(Towser.textures.get("board"));
         o1.setA(0.8f);
         overlays.add(o1);
         
-        o2 = new Overlay(0, Towser.windHeight-90, Towser.windWidth, 90);
+        o2 = new Overlay(0, (int) (Towser.windHeight-90*ref), Towser.windWidth, (int) (90*ref));
         o2.setBG(Towser.textures.get("board"));
         o2.setA(0.8f);
         
-        int margin = 10;
-        int sep = 75;
+        int margin = (int) (10*ref);
+        int sep = (int) (75*ref);
         int imageSize = Math.min(o2.getW(), o2.getH());
-        int butWidth = 150, butHeight = 38;
+        int butWidth = (int) (150*ref), butHeight = (int) (38*ref);
         
         o2.addImage(margin, margin, imageSize-2*margin, imageSize-2*margin, Towser.textures.get(textureName));
         for(int i = 0 ; i < upgradesParam.size() ; i++){
@@ -236,7 +237,7 @@ public abstract class Tower extends Tile implements Shootable{
             b = overlay.getButtons().get(i);
             upPrice = upgradesParam.get("prices").get(i);
             
-            overlay.drawText(b.getX(), 15 + Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));
+            overlay.drawText(b.getX(), (int) (15*ref + Towser.fonts.get("normal").getHeight(t)/2), t, Towser.fonts.get("normal"));
             
             if(upPrice != 0 && !b.isHidden()){
                 String price = (int)Math.floor(upPrice)+"";

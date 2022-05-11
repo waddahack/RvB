@@ -7,7 +7,8 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotated;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
-import static towser.Game.unite;
+import static towser.Towser.ref;
+import static towser.Towser.unite;
 
 public class Tile {
     
@@ -24,14 +25,14 @@ public class Tile {
     public Tile previousRoad = null, nextRoad = null;
     
     public Tile(String t){
-        textures = new ArrayList<Texture>();
+        textures = new ArrayList<>();
         type = t;
         this.x = Mouse.getX();
         this.y = Towser.windHeight-Mouse.getY();
     }
     
     public Tile(Texture text, String t){
-        textures = new ArrayList<Texture>();
+        textures = new ArrayList<>();
         textures.add(text);
         type = t;
         this.x = Mouse.getX();
@@ -39,7 +40,7 @@ public class Tile {
     }
     
     public Tile(float[] rgb, String t){
-        textures = new ArrayList<Texture>();
+        textures = new ArrayList<>();
         this.r = r;
         this.g = g;
         this.b = b;
@@ -50,7 +51,7 @@ public class Tile {
     }
     
     public Tile(double x, double y){
-        textures = new ArrayList<Texture>();
+        textures = new ArrayList<>();
         type = "nothing";
         this.x = x;
         this.y = y;
@@ -113,7 +114,7 @@ public class Tile {
     
     public void renderDirection(){
         if(arrowAngle != -1)
-            Towser.drawFilledRectangle(x+unite/2, y+unite/2, 26, 26, Towser.textures.get("arrow"), arrowAngle);
+            Towser.drawFilledRectangle(x+unite/2, y+unite/2, (int) (26*ref), (int) (26*ref), Towser.textures.get("arrow"), arrowAngle);
     }
     
     public int getIndexX(){
@@ -134,12 +135,12 @@ public class Tile {
     
     public void setX(double x){
         this.x = x;
-        renderX = Math.floorDiv((int)x, Game.unite)*Game.unite+Game.unite/2;
+        renderX = Math.floorDiv((int)x, unite)*unite+unite/2;
     }
     
     public void setY(double y){
         this.y = y;
-        renderY = Math.floorDiv((int)y, Game.unite)*Game.unite+Game.unite/2;
+        renderY = Math.floorDiv((int)y, unite)*unite+unite/2;
     }
     
     public ArrayList<Texture> getTextures(){
