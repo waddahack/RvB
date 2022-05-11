@@ -41,7 +41,8 @@ public class Towser{
     public static State state = State.MENU;
     public static Cursor cursor = null;
     public static int unite = 50;
-    public static int fps = 120, windWidth = unite*22, windHeight = unite*18;
+    public static int nbTileX = 22, nbTileY = 18; // Doit être en accord avec le format des levels
+    public static int fps = 120, windWidth = unite*nbTileX, windHeight = unite*nbTileY;
     public static float ref = unite/50f;
     public static boolean mouseDown = false, stateChanged = false;
     private static double lastUpdate;
@@ -93,11 +94,11 @@ public class Towser{
     }
     
     private static void init(){
-        unite = Math.floorDiv(Display.getHeight(), 18);
+        unite = Math.min(Math.floorDiv(Display.getWidth(), nbTileX), Math.floorDiv(Display.getHeight(), nbTileY));
         if(unite%2 != 0)
             unite -= 1;
-        windWidth = unite*22;
-        windHeight = unite*18;
+        windWidth = unite*nbTileX;
+        windHeight = unite*nbTileY;
         ref = unite/50f;
         
         glEnable(GL11.GL_BLEND);
