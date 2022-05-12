@@ -13,14 +13,14 @@ public class TrickyEnemy extends Enemy{
         super(++idCount);
         name = "Group of Bazooldier";
         spawnSpeed = 1.8;
-        reward = 5;
+        reward = 12;
         power = 6;
         shootRate = 1;
         moveSpeed = 2.9;
         range = (int) (30*ref);
         life = 80;
         weight = 3;
-        width = (int) (40*ref);
+        width = 4*Towser.unite/5;
         eBalance = balance;
         rgb = new float[]{0.2f, 0.2f, 0.8f};
         sprite = Towser.textures.get("trickyEnemy");

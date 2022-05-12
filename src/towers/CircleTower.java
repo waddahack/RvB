@@ -22,7 +22,7 @@ public class CircleTower extends Tower{
         shootRate = 0.7f;
         range = (int) (60*ref);
         life = 100;
-        width = (int) (40*ref);
+        width = 4*Towser.unite/5;
         size = width;
         name = "Razingun";
         textureName = "circleTower";

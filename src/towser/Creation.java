@@ -48,7 +48,7 @@ public class Creation extends AppCore{
         o = new Overlay(0, (int) (windHeight-1.8*unite), Towser.windWidth, (int) (1.8*unite));
         b = new Button((int) (50*ref), (int) (10*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button((int) (50*ref), (int) (50*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (50*ref), (int) (40*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
     }

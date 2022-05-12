@@ -24,7 +24,7 @@ public class BasicTower extends Tower{
         shootRate = 0.6f;
         range = (int) (150*ref);
         life = 100;
-        width = (int) (40*ref);
+        width = 4*Towser.unite/5;
         size = width;
         name = "Razannon";
         textureName = "basicTower";

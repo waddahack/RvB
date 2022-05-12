@@ -20,7 +20,7 @@ public class BasicEnemy extends Enemy{
         range = (int) (30*ref);
         life = 30;
         weight = 1;
-        width = (int) (40*ref);
+        width = 4*Towser.unite/5;
         rgb = new float[]{1f, 0.7f, 0f};
         sprite = Towser.textures.get("basicEnemy");
         brightSprite = Towser.textures.get("basicEnemyBright");

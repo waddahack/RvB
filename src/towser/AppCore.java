@@ -28,15 +28,15 @@ public abstract class AppCore {
     
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
-        BASIC(0, BasicEnemy.balance, 1, 6), FAST(1, FastEnemy.balance, 4, 0), TRICKY(2, TrickyEnemy.balance, 6, 0), STRONG(3, StrongEnemy.balance, 9, 0);
+        BASIC(0, BasicEnemy.balance, 1, 8), FAST(1, FastEnemy.balance, 4, 10), TRICKY(2, TrickyEnemy.balance, 6, 10), STRONG(3, StrongEnemy.balance, 9, 15);
         
-        public final int balance, id, enterAt, exitAt;
+        public final int balance, id, enterAt, nbMax;
         
-        UEnemy(int id, int balance, int enterAt, int exitAt){
+        UEnemy(int id, int balance, int enterAt, int nbMax){
             this.id = id;
             this.balance = balance;
             this.enterAt = enterAt;
-            this.exitAt = exitAt;
+            this.nbMax = nbMax;
         }
         
         public int addToWave(int number, int balance){
@@ -76,7 +76,6 @@ public abstract class AppCore {
     protected ArrayList<ArrayList<Tile>> map;
     protected Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
-    protected int mapW = windWidth/unite, mapH = windHeight/unite;
     protected ArrayList<Tower> towers, towersDestroyed;
     public ArrayList<Enemy> enemies, ennemiesDead;
     protected ArrayList<Tile> path = new ArrayList<>();
@@ -92,8 +91,8 @@ public abstract class AppCore {
         init(lvl);
         
         life = 100;
-        money = 3000;
-        waveNumber = 4;
+        money = 30000;
+        waveNumber = 17;
         waveReward = 250;
         
         initOverlays();
@@ -182,7 +181,7 @@ public abstract class AppCore {
                     tile.setY(i*unite);
                     row.add(tile);
 
-                    if(row.size() == mapW){
+                    if(row.size() == Towser.nbTileX){
                         map.add(row);
                         row = new ArrayList<>();
                         j = 0;
@@ -379,7 +378,7 @@ public abstract class AppCore {
         ArrayList<Tile> tilesToRender = new ArrayList<>();
         ArrayList<Tile> tilesToRenderNext = new ArrayList<>();
         int layer = 0;
-        for(int i = 0 ; i < mapH ; i++){
+        for(int i = 0 ; i < Towser.nbTileY ; i++){
             for(Tile t : map.get(i)){
                 t.renderLayer(layer);
                 if(t.textures.size() > layer+1)
@@ -406,19 +405,19 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int size = (int) (60*ref);
+        int size = (int) (50*ref);
         int sep = (int) (100*ref);
         
-        o = new Overlay(0, (int) (windHeight-1.8*unite), windWidth, (int) (1.8*unite));
+        o = new Overlay(0, (int) (windHeight-75*ref), windWidth, (int) (75*ref));
         o.setBG(Towser.textures.get("board"));
         o.setA(0.8f);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int) (unite+5*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - size/2 - sep/2, (int) (45*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int) (unite+5*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 + size/2 + sep/2, (int) (45*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
         
-        o = new Overlay(0, 0, windWidth, unite);
+        o = new Overlay(0, 0, windWidth, (int) (50*ref));
         o.setBG(Towser.textures.get("board"));
         o.setA(0.8f);
         b = new Button((int) (o.getW()-100*ref), (int) (25*ref), (int) (130*ref), (int) (30*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
@@ -428,7 +427,7 @@ public abstract class AppCore {
         o.addButton(b);
         overlays.add(o);
         
-        int width = (int) (400*ref), height = (int) (unite-10*ref);
+        int width = (int) (400*ref), height = (int) (40*ref);
         o = new Overlay(windWidth/2-width/2, 5, width, height);
         o.setBG(Towser.textures.get("enemyBoard"));
         o.setA(0.6f);
@@ -538,7 +537,7 @@ public abstract class AppCore {
         UEnemy[] uEnemies = UEnemy.values();
         int waveBalance = (waveNumber*waveNumber + waveNumber)/2;
         if(waveNumber >= uEnemies[uEnemies.length-1].enterAt + 1)
-            waveBalance *= 12;// old : 10+(uEnemies[uEnemies.length-1].enterAt+ 1) - Math.min(waveNumber, 18);
+            waveBalance *= 13;// old : 10+(uEnemies[uEnemies.length-1].enterAt+ 1) - Math.min(waveNumber, 18);
         else
             waveBalance *= 10;
         
@@ -547,8 +546,10 @@ public abstract class AppCore {
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
-                min = 1;
-                max = waveNumber+min-uEnemies[i].enterAt;
+                min = 1+waveNumber-uEnemies[i].enterAt;
+                max = min+(waveNumber-uEnemies[i].enterAt)*2;
+                if(min > uEnemies[i].nbMax) min = uEnemies[i].nbMax;
+                if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+Math.random()*(max-min)), waveBalance);
             }
         }
@@ -585,11 +586,17 @@ public abstract class AppCore {
     }
     
     public int getMouseIndexX(){
-        return (int)(Mouse.getX()/unite);
+        int indexX = Mouse.getX()/unite;
+        if(indexX < 0) indexX = 0;
+        else if(indexX > Towser.nbTileX-1) indexX = Towser.nbTileX-1;
+        return indexX;
     }
     
     public int getMouseIndexY(){
-        return (int)((windHeight-5-Mouse.getY())/unite);
+        int indexY = (windHeight-Mouse.getY())/unite;
+        if(indexY < 0) indexY = 0;
+        else if(indexY > Towser.nbTileY-1) indexY = Towser.nbTileY-1;
+        return indexY;
     }
     
     public void getAttackedBy(int p){

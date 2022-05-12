@@ -12,14 +12,14 @@ public class FastEnemy extends Enemy{
         super(++idCount);
         name = "Quazoo";
         spawnSpeed = 1.2;
-        reward = 5;
+        reward = 6;
         power = 4;
         shootRate = 1;
         moveSpeed = 4.2;
         range = (int) (30*ref);
         life = 42;
         weight = 1.5;
-        width = (int) (50*ref);
+        width = Towser.unite;
         eBalance = balance;
         rgb = new float[]{1f, 1f, 0f};
         sprite = Towser.textures.get("fastEnemy");

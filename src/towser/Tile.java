@@ -114,7 +114,7 @@ public class Tile {
     
     public void renderDirection(){
         if(arrowAngle != -1)
-            Towser.drawFilledRectangle(x+unite/2, y+unite/2, (int) (26*ref), (int) (26*ref), Towser.textures.get("arrow"), arrowAngle);
+            Towser.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, Towser.textures.get("arrow"), arrowAngle);
     }
     
     public int getIndexX(){

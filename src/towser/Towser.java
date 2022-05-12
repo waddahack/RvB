@@ -20,7 +20,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.SlickException;
@@ -40,9 +39,9 @@ public class Towser{
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int unite = 50;
-    public static int nbTileX = 22, nbTileY = 18; // Doit être en accord avec le format des levels
-    public static int fps = 120, windWidth = unite*nbTileX, windHeight = unite*nbTileY;
+    public static int nbTileX = 26, nbTileY = 20; // Gère la taille de la tilemap. Doit être en accord avec le format des levels
+    public static int unite;
+    public static int fps = 120, windWidth, windHeight;
     public static float ref = unite/50f;
     public static boolean mouseDown = false, stateChanged = false;
     private static double lastUpdate;
@@ -71,6 +70,13 @@ public class Towser{
             Display.destroy();
             System.exit(1);
         }
+        unite = Math.min(Math.floorDiv(Display.getWidth(), nbTileX), Math.floorDiv(Display.getHeight(), nbTileY));
+        if(unite%2 != 0)
+            unite -= 1;
+        windWidth = unite*nbTileX;
+        windHeight = unite*nbTileY;
+        ref = ((float)Math.max(windWidth, windHeight)/(float)Math.min(windWidth, windHeight));
+        
         initTextures();
         initColors();
         setUpFont();
@@ -93,14 +99,7 @@ public class Towser{
         exit();
     }
     
-    private static void init(){
-        unite = Math.min(Math.floorDiv(Display.getWidth(), nbTileX), Math.floorDiv(Display.getHeight(), nbTileY));
-        if(unite%2 != 0)
-            unite -= 1;
-        windWidth = unite*nbTileX;
-        windHeight = unite*nbTileY;
-        ref = unite/50f;
-        
+    private static void init(){        
         glEnable(GL11.GL_BLEND);
         glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         glViewport(Display.getWidth()/2-windWidth/2, Display.getHeight()/2-windHeight/2, windWidth, windHeight);
@@ -169,24 +168,12 @@ public class Towser{
                     File file = new File("levels/level_0.txt");
                     if(file.createNewFile()){
                         FileWriter myWriter = new FileWriter(file, false);
-                        String emptyMap = ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .\n" +
-                                          ". . . . . . . . . . . . . . . . . . . . . .";
+                        String emptyMap = "";
+                        for(int i = 0 ; i < nbTileY ; i++){
+                            for(int j = 0 ; j < nbTileX ; j++)
+                                emptyMap += ". ";
+                            emptyMap += "\n";
+                        }
                         myWriter.write(emptyMap);
                         myWriter.close();
                     }
@@ -388,7 +375,7 @@ public class Towser{
         normal.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, (int) Math.max(8, 20*ref));
+        awtFont = new Font(police, Font.PLAIN, (int) (20*ref));
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
