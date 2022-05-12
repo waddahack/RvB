@@ -1,5 +1,12 @@
 - VOIR LE FICHIER TODO SUR LE MAIN PC
-
 - Mettre le fichier todo main pc sur git (ici)
 
+- Génération de map random avec difficultés (check les //TODO)
+- Option pour changer la taille de la tilemap avec comme indication : campagne jouable en 22/18
+
+CONTENU :
+
 - Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types
+- Mode survie ou la gagne (mode gagne à faire)
+
+- Mode campagne : Adventure ? Campaign ?

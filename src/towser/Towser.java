@@ -11,8 +11,10 @@ import java.io.IOException;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import managers.PopupManager;
@@ -33,13 +35,21 @@ public class Towser{
     public static enum State{
         MENU, GAME, CREATION, EXIT
     }
-    public enum Cursor{
+    public static enum Cursor{
         DEFAULT, POINTER, GRAB
+    }
+    public static enum Difficulty{
+        EASY(0), MEDIUM(2), HARD(3);
+        public int value;
+        public static int multiplicaterMax = 4;
+        private Difficulty(int value){
+            this.value = value;
+        }
     }
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int nbTileX = 26, nbTileY = 20; // Gère la taille de la tilemap. Doit être en accord avec le format des levels (26/20)
+    public static int nbTileX = 22, nbTileY = 18; // Tilemap size. Doit être en accord avec le format des levels campagne à venir (22/18)
     public static int unite;
     public static int fps = 120, windWidth, windHeight;
     public static float ref, uniteRef;
@@ -161,28 +171,22 @@ public class Towser{
                 else
                     SoundManager.Instance.unpauseAll();
             }  
+            if(menu.getRandom().isClicked(0)){
+                switchStateTo(State.GAME);
+                if(game != null && !game.ended && game.waveNumber > 1){
+                    SoundManager.Instance.unpauseAll();
+                    return;
+                }
+                if(generateRandomMap(Difficulty.EASY));
+                    game = new Game("random");
+            }
             if(menu.getCreate().isClicked(0)){
                 switchStateTo(State.CREATION);
                 if(creation != null && !creation.ended)
                     return;
-                try{
-                    File file = new File("levels/level_created.txt");
-                    if(file.createNewFile()){
-                        FileWriter myWriter = new FileWriter(file, false);
-                        String emptyMap = "";
-                        for(int i = 0 ; i < nbTileY ; i++){
-                            for(int j = 0 ; j < nbTileX ; j++)
-                                emptyMap += ". ";
-                            emptyMap += "\n";
-                        }
-                        myWriter.write(emptyMap);
-                        myWriter.close();
-                    }
+                
+                if(generateEmptyMap())
                     creation = new Creation();
-                }
-                catch(Exception e){
-                    System.out.println(e);
-                }
             }  
             if(menu.getExit().isClicked(0))
                 switchStateTo(State.EXIT);
@@ -191,11 +195,114 @@ public class Towser{
             setCursor(Cursor.DEFAULT);
     }
     
+    private static boolean generateEmptyMap(){
+        try{
+            File file = new File("levels/level_created.txt");
+            if(file.createNewFile()){
+                FileWriter myWriter = new FileWriter(file, false);
+                String emptyMap = "";
+                for(int i = 0 ; i < nbTileY ; i++){
+                    for(int j = 0 ; j < nbTileX ; j++)
+                        emptyMap += ". ";
+                    emptyMap += "\n";
+                }
+                myWriter.write(emptyMap);
+                myWriter.close();
+            }
+            return true;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
+    
+    private static boolean generateRandomMap(Difficulty diff){
+        try{
+            File file = new File("levels/level_random.txt");
+            if(file.createNewFile()){
+                FileWriter myWriter = new FileWriter(file, false);
+                Random rand = new Random();
+                int x, y;
+                ArrayList<int[]> path = new ArrayList<>();
+                // nombre de road de la map restante
+                int nbRoadLeft = Math.max(nbTileX, nbTileY)*2*(Difficulty.multiplicaterMax-diff.value);
+                // spawn random sur un bord
+                y = rand.nextInt(nbTileY);
+                x = rand.nextInt(2);
+                if(x == 1) x = nbTileX-1;
+                path.add(new int[]{x, y});
+                nbRoadLeft--;
+                // tant que la road actuelle est à une distance < au nb de road max accordé
+                ArrayList<int[]> coordsAvailable = new ArrayList<>();
+                int[] left, right, up, down;
+                while(distanceFromEdge(x, y) < nbRoadLeft){ //TODO distanceFromEdge marche pas si y'a une route sur le chemin. A revoir
+                    coordsAvailable.clear();
+                    left = new int[]{x-1, y};
+                    right = new int[]{x+1, y};
+                    up = new int[]{x, y-1};
+                    down = new int[]{x, y+1};
+                    // ajout des voisins si c'est pas un bord
+                    if(x-1 >= 0)
+                        coordsAvailable.add(left);
+                    else if(x+1 <= nbTileX-1)
+                        coordsAvailable.add(right);
+                    if(y-1 >= 0)
+                        coordsAvailable.add(up);
+                    else if(y+1 <= nbTileY-1)
+                        coordsAvailable.add(down);
+                    // remove les voisins qui nous fait entrer dans une boucle 
+                    //TODO => pour ce faire : 
+                    //    - si j'ai un voisin en face de moi (par rapport à ma direction)
+                    //        - si sa direction est perpendiculaire, aller dans la direction opposé
+                    //        - sinon, regarder celle de son prédécesseur et aller dans la direction opposé
+                    // remove les voisins qui sont déjà dans path
+                    for(int[] coord : path){
+                        if(coord[0] == x-1 && coordsAvailable.contains(left))
+                            coordsAvailable.remove(left);
+                        else if(coord[0] == x+1 && coordsAvailable.contains(right))
+                            coordsAvailable.remove(right);
+                        else if(coord[1] == y-1 && coordsAvailable.contains(up))
+                            coordsAvailable.remove(up);
+                        else if(coord[1] == y+1 && coordsAvailable.contains(down))
+                            coordsAvailable.remove(down);
+                        if(coordsAvailable.isEmpty())
+                            break;
+                    }
+                    
+                    int r = rand.nextInt(coordsAvailable.size());
+                    x = coordsAvailable.get(r)[0];
+                    y = coordsAvailable.get(r)[1];
+                    path.add(new int[]{x, y});
+                    nbRoadLeft--;
+                }
+                String randomMap = "";
+                myWriter.write(randomMap);
+                myWriter.close();
+            }
+            return true;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
+    
+    private static int distanceFromEdge(int x, int y){
+        int distanceX, distanceY;
+        distanceX = x;
+        if(distanceX > (nbTileX-1)/2)
+            distanceX = nbTileX-1-x;
+        distanceY = y;
+        if(distanceY > (nbTileY-1)/2)
+            distanceY = nbTileY-1-y;
+        return Math.min(distanceX, distanceY);
+    }
+    
     private static void switchStateTo(State s){
         state = s;
         stateChanged = true;
         setCursor(Cursor.DEFAULT);
-        
     }
     
     public static void drawString(int x, int y, String text, UnicodeFont font){
@@ -310,7 +417,7 @@ public class Towser{
     
     private static void initTextures() {
         try {     
-            textures = new HashMap<String, Texture>();
+            textures = new HashMap<>();
             // Other
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/arrow.png"))));
             // Cursors
@@ -318,6 +425,7 @@ public class Towser{
             textures.put("cursorPointer", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/cursor_pointer.png"))));
             textures.put("cursorGrab", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/cursor_grab.png"))));
             // Backgrounds
+            textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/disabled.png"))));
             textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/board.png"))));
             textures.put("enemyBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/enemy_board.png"))));
             textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/red.png"))));

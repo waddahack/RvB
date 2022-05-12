@@ -13,12 +13,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Programmation/Towser/src/towser/AppCore.java</file>
-            <file>file:/C:/Programmation/Towser/src/ennemies/Enemy.java</file>
-            <file>file:/C:/Programmation/Towser/src/ennemies/Wave.java</file>
             <file>file:/C:/Programmation/Towser/src/towser/Tile.java</file>
             <file>file:/C:/Programmation/Towser/src/towser/Towser.java</file>
-            <file>file:/C:/Programmation/Towser/src/ennemies/TrickyEnemy.java</file>
-            <file>file:/C:/Programmation/Towser/src/managers/SoundManager.java</file>
+            <file>file:/C:/Programmation/Towser/src/towser/Game.java</file>
+            <file>file:/C:/Programmation/Towser/src/towser/Menu.java</file>
+            <file>file:/C:/Programmation/Towser/src/ui/Button.java</file>
             <file>file:/C:/Programmation/Towser/src/towser/Creation.java</file>
         </group>
     </open-files>

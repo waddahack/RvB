@@ -274,9 +274,9 @@ public abstract class AppCore {
     public void update(){
         if(this == Towser.game && !inWave){
             if(SoundManager.Instance.isReady())
-                overlays.get(1).getButtons().get(0).setHidden(false);
+                overlays.get(1).getButtons().get(0).setDisabled(false);
             else
-                overlays.get(1).getButtons().get(0).setHidden(true);
+                overlays.get(1).getButtons().get(0).setDisabled(true);
         }
         
         if(!PopupManager.Instance.onPopup())
