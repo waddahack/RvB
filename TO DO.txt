@@ -1,11 +1,5 @@
-PIXELART : (4)
+- VOIR LE FICHIER TODO SUR LE MAIN PC
 
-- Tile bush
-- Tile grass+caillasse
-- Logos Astre, Vie, Range, Power, Shoot rate, BulletSpeed
+- Mettre le fichier todo main pc sur git (ici)
 
-FEATURES : (2)
-
-- Coder la possibilité de focus l'ennemie le premier, le dernier, le plus fort
-- Coder la possibilité de vendre la tourelle à 75% de son prix total
-
+- Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types

@@ -87,19 +87,19 @@ public abstract class AppCore {
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     
-    public AppCore(int lvl){
-        init(lvl);
+    public AppCore(String lvlName){
+        init(lvlName);
         
         life = 100;
         money = 30000;
-        waveNumber = 17;
+        waveNumber = 5;
         waveReward = 250;
         
         initOverlays();
     }
     
-    protected void init(int lvl){
-        readFile("levels/level_"+lvl+".txt");
+    protected void init(String lvlName){
+        readFile("levels/level_"+lvlName+".txt");
         fixRoadNeighbors();
         fixRoadSprites();
         
@@ -272,6 +272,13 @@ public abstract class AppCore {
     }
     
     public void update(){
+        if(this == Towser.game && !inWave){
+            if(SoundManager.Instance.isReady())
+                overlays.get(1).getButtons().get(0).setHidden(false);
+            else
+                overlays.get(1).getButtons().get(0).setHidden(true);
+        }
+        
         if(!PopupManager.Instance.onPopup())
             checkInput();
         

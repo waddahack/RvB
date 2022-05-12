@@ -22,7 +22,7 @@ public class BasicTower extends Tower{
         totalPrice = price;
         power = 20;
         shootRate = 0.6f;
-        range = (int) (150*ref);
+        range = 3*Towser.unite;
         life = 100;
         width = 4*Towser.unite/5;
         size = width;

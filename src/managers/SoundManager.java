@@ -29,6 +29,7 @@ public class SoundManager
     
     private ArrayList<Clip> clipsToClose;
     private Map<String, Clip> ambianceClips;
+    private boolean ready = true;
     
     public SoundManager(){ 
         clipsToClose = new ArrayList<Clip>();
@@ -42,17 +43,23 @@ public class SoundManager
     }
     
     public void closeAllClips(){
+        ready = false;
         new Thread(){
             @Override
             public void run(){
                 clipsToClose.forEach(clip -> clip.close());
                 clipsToClose.clear();
+                ready = true;
             }
         }.start();
     }
     
     public void clipToClose(Clip clip){
         clipsToClose.add(clip);
+    }
+    
+    public boolean isReady(){
+        return ready;
     }
     
     public void addAmbianceSound(String name, Volume v){

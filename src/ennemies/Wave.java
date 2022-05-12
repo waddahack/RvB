@@ -2,7 +2,7 @@ package ennemies;
 
 import java.util.ArrayList;
 import static towser.Towser.game;
-import static towser.Towser.ref;
+import static towser.Towser.uniteRef;
 
 
 public class Wave{
@@ -29,7 +29,7 @@ public class Wave{
         if(index == enemies.size())
             return;
         Enemy nextEnemy = enemies.get(index);
-        if(System.currentTimeMillis() - startTime >= 1000*nextEnemy.getSpawnSpeed()/game.gameSpeed && index < enemies.size() || index == 0){
+        if(System.currentTimeMillis() - startTime >= 1000*nextEnemy.getSpawnSpeed()*uniteRef/game.gameSpeed && index < enemies.size() || index == 0){
             nextEnemy.setStarted(true);
             startTime = System.currentTimeMillis();
             index++;

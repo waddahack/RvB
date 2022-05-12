@@ -4,6 +4,7 @@ import managers.SoundManager;
 import towser.Towser;
 import static towser.Towser.game;
 import static towser.Towser.ref;
+import static towser.Towser.uniteRef;
 
 public class TrickyEnemy extends Enemy{
     
@@ -41,7 +42,7 @@ public class TrickyEnemy extends Enemy{
                 e.setY(y);
                 e.setIndiceTuile(indiceTuile);
                 e.setDir(dir);
-                e.stopFor(i*350/game.gameSpeed);
+                e.stopFor((int) (i*350*uniteRef/game.gameSpeed));
                 game.addEnemie(e);
             }
         }

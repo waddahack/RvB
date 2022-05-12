@@ -2,7 +2,7 @@ package towser;
 
 public class Game extends AppCore{
     
-    public Game(int lvl){
-        super(lvl);
+    public Game(String lvlName){
+        super(lvlName);
     }
 }

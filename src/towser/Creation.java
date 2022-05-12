@@ -23,7 +23,7 @@ public class Creation extends AppCore{
     private ArrayList<Tile> roads;
     
     public Creation(){
-        super(0);
+        super("created");
         roads = new ArrayList<>();
         if(!path.isEmpty()){
             for(Tile t : path)
@@ -45,7 +45,7 @@ public class Creation extends AppCore{
         Overlay o;
         Button b;
         
-        o = new Overlay(0, (int) (windHeight-1.8*unite), Towser.windWidth, (int) (1.8*unite));
+        o = new Overlay(0, (int) (windHeight-80*ref), Towser.windWidth, (int) (80*ref));
         b = new Button((int) (50*ref), (int) (10*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
         b = new Button((int) (50*ref), (int) (40*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
@@ -77,7 +77,7 @@ public class Creation extends AppCore{
             String error = calculatePath();
             if(error.isEmpty()){
                 saveLevel();
-                Towser.game = new Game(0);
+                Towser.game = new Game("created");
                 Towser.state = State.GAME;
             }
             else{
@@ -152,7 +152,7 @@ public class Creation extends AppCore{
         base = null;
         for(Tile road : roads){
             if(road.arrowAngle == -1)
-                return "                         Path not valid.\nIt has to go through, from a side to another.";
+                return "                   Path not valid.\nIt has to begin, and end, from a side.";
             if(road.previousRoad != null && road.previousRoad.type == "nothing"){
                 if(spawn == null)
                     spawn = road;
@@ -199,7 +199,7 @@ public class Creation extends AppCore{
                 pathCoords += road.getIndexY()+" ";
             }
             // Write in file
-            File file = new File("levels/level_0.txt");
+            File file = new File("levels/level_created.txt");
             PrintWriter writer = new PrintWriter(file);
             writer.print(level+"\nPATH: "+pathCoords);
             writer.close();

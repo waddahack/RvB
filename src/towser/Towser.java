@@ -39,10 +39,10 @@ public class Towser{
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int nbTileX = 26, nbTileY = 20; // Gère la taille de la tilemap. Doit être en accord avec le format des levels
+    public static int nbTileX = 26, nbTileY = 20; // Gère la taille de la tilemap. Doit être en accord avec le format des levels (26/20)
     public static int unite;
     public static int fps = 120, windWidth, windHeight;
-    public static float ref = unite/50f;
+    public static float ref, uniteRef;
     public static boolean mouseDown = false, stateChanged = false;
     private static double lastUpdate;
     public static double deltaTime;
@@ -76,6 +76,7 @@ public class Towser{
         windWidth = unite*nbTileX;
         windHeight = unite*nbTileY;
         ref = ((float)Math.max(windWidth, windHeight)/(float)Math.min(windWidth, windHeight));
+        uniteRef = unite/50f;
         
         initTextures();
         initColors();
@@ -156,7 +157,7 @@ public class Towser{
             if(menu.getStart().isClicked(0)){
                 switchStateTo(State.GAME);
                 if(game == null || game.ended || game.waveNumber == 1)
-                    game = new Game(1);
+                    game = new Game("1");
                 else
                     SoundManager.Instance.unpauseAll();
             }  
@@ -165,7 +166,7 @@ public class Towser{
                 if(creation != null && !creation.ended)
                     return;
                 try{
-                    File file = new File("levels/level_0.txt");
+                    File file = new File("levels/level_created.txt");
                     if(file.createNewFile()){
                         FileWriter myWriter = new FileWriter(file, false);
                         String emptyMap = "";

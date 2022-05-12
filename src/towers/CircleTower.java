@@ -20,7 +20,7 @@ public class CircleTower extends Tower{
         totalPrice = price;
         power = 12;
         shootRate = 0.7f;
-        range = (int) (60*ref);
+        range = (int) (1.2*Towser.unite);
         life = 100;
         width = 4*Towser.unite/5;
         size = width;
