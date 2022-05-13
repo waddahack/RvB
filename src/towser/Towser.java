@@ -57,7 +57,7 @@ public class Towser{
     private static double lastUpdate;
     public static double deltaTime;
     public static Menu menu;
-    public static Game game = null;
+    public static Game game = null, adventureGame = null, randomGame = null, createdGame = null;
     public static Creation creation = null;
     public static Map<String, Texture> textures;
     public static Map<String, UnicodeFont> fonts;
@@ -165,28 +165,28 @@ public class Towser{
         // MENU BUTTONS
         if(state == State.MENU){
             if(menu.getStart().isClicked(0)){
-                switchStateTo(State.GAME);
-                if(game == null || game.ended || game.waveNumber == 1)
-                    game = new Game("1");
+                if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
+                    adventureGame = new Game("1");
                 else
                     SoundManager.Instance.unpauseAll();
+                
+                game = adventureGame;
+                switchStateTo(State.GAME);
             }  
             if(menu.getRandom().isClicked(0)){
-                switchStateTo(State.GAME);
-                if(game != null && !game.ended && game.waveNumber > 1){
+                if(randomGame == null || randomGame.ended || randomGame.waveNumber == 1)
+                    randomGame = new Game(generateRandomPath(Difficulty.EASY));
+                else
                     SoundManager.Instance.unpauseAll();
-                    return;
-                }
-                if(generateRandomMap(Difficulty.EASY));
-                    game = new Game("random");
+                
+                game = randomGame;
+                switchStateTo(State.GAME);
             }
             if(menu.getCreate().isClicked(0)){
-                switchStateTo(State.CREATION);
-                if(creation != null && !creation.ended)
-                    return;
-                
                 if(generateEmptyMap())
                     creation = new Creation();
+                
+                switchStateTo(State.CREATION);
             }  
             if(menu.getExit().isClicked(0))
                 switchStateTo(State.EXIT);
@@ -217,89 +217,120 @@ public class Towser{
         }
     }
     
-    private static boolean generateRandomMap(Difficulty diff){
-        try{
-            File file = new File("levels/level_random.txt");
-            if(file.createNewFile()){
-                FileWriter myWriter = new FileWriter(file, false);
-                Random rand = new Random();
-                int x, y;
-                ArrayList<int[]> path = new ArrayList<>();
-                // nombre de road de la map restante
-                int nbRoadLeft = Math.max(nbTileX, nbTileY)*2*(Difficulty.multiplicaterMax-diff.value);
-                // spawn random sur un bord
-                y = rand.nextInt(nbTileY);
-                if(y == 0 || y == nbTileY-1)
-                    x = rand.nextInt(nbTileX);
-                else
-                    x = rand.nextInt(2)*(nbTileX-1);
-                path.add(new int[]{x, y});
-                nbRoadLeft--;
-                // tant que la road actuelle est à une distance < au nb de road max accordé
-                ArrayList<int[]> coordsAvailable = new ArrayList<>();
-                int[] left, right, up, down;
-                while(nbRoadLeft > 0){ //TODO à revoir
-                    // tant que nbRoadLeft > 0 on trace une route au pif
-                    // après, on foce vers une sortie et pour ça :
-                    //     - on regarde de tous les côtés et on compte le nombre de côté qui n'ont pas de chemin sur le passage
-                    // (faire une fonction qui retourne une liste avec les directions left/right/up/down qui contient les coords d'un chemin qui coupe le chemin)
-                    //         - si n > 0, prendre la direction la plus courte
-                    //         - sinon, faut faire demi tour :
-                    //             - regarder la direction du chemin bloquant droite et gauche, et tourner en direction du chemin qui à la même direction
-                    coordsAvailable.clear();
-                    left = new int[]{x-1, y};
-                    right = new int[]{x+1, y};
-                    up = new int[]{x, y-1};
-                    down = new int[]{x, y+1};
-                    // ajout des voisins si c'est pas un bord
-                    if(left[0] >= 0 && left[1] == y)
-                        coordsAvailable.add(left);
-                    if(right[0] <= nbTileX-1 && right[1] == y)
-                        coordsAvailable.add(right);
-                    if(up[0] == x && up[1] >= 0)
-                        coordsAvailable.add(up);
-                    if(down[0] == x && down[1] <= nbTileY-1)
-                        coordsAvailable.add(down);
-                    // remove les voisins qui sont déjà dans path
-                    for(int[] coord : path){
-                        if(coord[0] == left[0] && coord[1] == left[1])
-                            coordsAvailable.remove(left);
-                        else if(coord[0] == right[0] && coord[1] == right[1])
-                            coordsAvailable.remove(right);
-                        else if(coord[0] == up[0] && coord[1] == up[1])
-                            coordsAvailable.remove(up);
-                        else if(coord[0] == down[0] && coord[1] == down[1])
-                            coordsAvailable.remove(down);
-                    }
-                    // remove les voisins qui nous fait entrer dans une boucle
-                    if(coordsAvailable.size() > 1){
-                        //    - si j'ai un voisin en face de moi (par rapport à ma direction)
-                        //        - si sa direction est perpendiculaire, aller dans la direction opposé
-                        //        - sinon, regarder celle de son prédécesseur et aller dans la direction opposé
-                        if(!coordsAvailable.contains(up) && !coordsAvailable.contains(down)){
-                            
-                        }
-                        else if(!coordsAvailable.contains(left) && !coordsAvailable.contains(right)){
-                            
-                        }
-                    }
-                    // prendre les coords aléatoirement parmi celles dispo
-                    int r = rand.nextInt(coordsAvailable.size());
-                    x = coordsAvailable.get(r)[0];
-                    y = coordsAvailable.get(r)[1];
-                    path.add(new int[]{x, y});
-                    nbRoadLeft--;
+    private static ArrayList<Tile> generateRandomPath(Difficulty diff){
+        Random rand = new Random();
+        ArrayList<ArrayList<Tile>> map = new ArrayList<>();
+        ArrayList<Tile> row, path = new ArrayList<>(), neighbors = new ArrayList<>();
+        int x, y;
+        Tile road, previous;
+        String dir;
+        // nombre de road de la map restante
+        int nbRoadLeft = Math.max(nbTileX, nbTileY)*2*(Difficulty.multiplicaterMax-diff.value);
+        // remplissage de la map par du vide
+        for(int i = 0 ; i < nbTileY ; i++){
+            row = new ArrayList<>();
+            for(int j = 0 ; j < nbTileX ; j++)
+                row.add(null);
+            map.add(row);
+        }
+        // spawn random sur un bord
+        x = rand.nextInt(2);
+        if(x == 0){
+            x = rand.nextInt(nbTileX);
+            y = rand.nextInt(2)*(nbTileY-1);
+        }
+        else{
+            x = rand.nextInt(2)*(nbTileX-1);
+            y = rand.nextInt(nbTileY);
+        }
+        road = new Tile(x, y);
+        map.get(y).set(x, road);
+        path.add(road);
+        nbRoadLeft--;
+        // Construction de la route
+        int i = 0, r;
+        int[][] check;
+        Tile up, down, left, right;
+        while(nbRoadLeft > 0){
+            //TODO après, on fonce vers une sortie et pour ça :
+            //     - on regarde de tous les côtés et on compte le nombre de côté qui n'ont pas de chemin sur le passage
+            // (faire une fonction qui retourne une liste avec les directions left/right/up/down qui contient les coords d'un chemin qui coupe le chemin)
+            //         - si n > 0, prendre la direction la plus courte
+            //         - sinon, faut faire demi tour :
+            //             - regarder la direction du chemin bloquant droite et gauche, et tourner en direction du chemin qui à la même direction
+            neighbors.clear();
+            up = new Tile(x-1, y);
+            down = new Tile(x+1, y);
+            left = new Tile(x, y-1);
+            right = new Tile(x, y+1);
+            // ajout des positions voisines si c'est ni un bord ni une road
+            if(x-1 >= 0 && map.get(y).get(x-1) == null)
+                neighbors.add(up);
+            if(x+1 <= nbTileX-1 && map.get(y).get(x+1) == null)
+                neighbors.add(down);
+            if(y-1 >= 0 && map.get(y-1).get(x) == null)
+                neighbors.add(left);
+            if(y+1 <= nbTileY-1 && map.get(y+1).get(x) == null)
+                neighbors.add(right);
+            // remove les voisins qui nous fait entrer dans une boucle
+            // (on remove ceux qui vont dans le même sens quela tuile sur laquelle on s'est cogné, en checkant les 3 tuiles en face)
+            if(neighbors.size() > 1 && i > 0){
+                previous = path.get(i-1);
+                previous.setDirectionWithPos();
+                switch (previous.getDirection()) {
+                    case "up":
+                        check = new int[][]{{x-1, y-1}, {x, y-1}, {x+1, y-1}};
+                        break;
+                    case "down":
+                        check = new int[][]{{x-1, y+1}, {x, y+1}, {x+1, y+1}};
+                        break;
+                    case "left":
+                        check = new int[][]{{x-1, y-1}, {x-1, y}, {x-1, y+1}};
+                        break;
+                    default:
+                        check = new int[][]{{x+1, y-1}, {x+1, y}, {x+1, y+1}};
+                        break;
                 }
-                String randomMap = "";
-                myWriter.write(randomMap);
-                myWriter.close();
+                for(int[] toCheck : check){
+                    //TODO probleme : si c'est un bord, il peut nous faire entre dans une boucle, ou pas... atm les bords sont ignorés
+                    if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 0 || toCheck[1] > nbTileY-1)
+                        continue;
+                    if(map.get(toCheck[1]).get(toCheck[0]) != null){
+                        dir = map.get(toCheck[1]).get(toCheck[0]).getDirection();
+                        if(dir.equals(previous.getDirection()))
+                            dir = map.get(toCheck[1]).get(toCheck[0]).previousRoad.getDirection();
+                        switch (dir) {
+                            case "up":
+                                neighbors.remove(up);
+                                break;
+                            case "down":
+                                neighbors.remove(down);
+                                break;
+                            case "left":
+                                neighbors.remove(left);
+                                break;
+                            default:
+                                neighbors.remove(right);
+                                break;
+                        }
+                        break;
+                    }
+                }
             }
-            return true;
+            r = rand.nextInt(neighbors.size());
+            x = (int) neighbors.get(r).getX();
+            y = (int) neighbors.get(r).getY();
+            
+            road = new Tile(x, y);
+            road.setPreviousRoad(path.get(i));
+            path.get(i).setNextRoad(road);
+            
+            map.get(y).set(x, road);
+            path.add(road);
+            nbRoadLeft--;
+            i++;
         }
-        catch(Exception e){
-            System.out.println(e);
-            return false;
-        }
+        return path;
     }
     
     private static int distanceFromEdge(int x, int y){
@@ -313,7 +344,7 @@ public class Towser{
         return Math.min(distanceX, distanceY);
     }
     
-    private static void switchStateTo(State s){
+    public static void switchStateTo(State s){
         state = s;
         stateChanged = true;
         setCursor(Cursor.DEFAULT);

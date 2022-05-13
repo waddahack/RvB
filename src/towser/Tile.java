@@ -71,6 +71,29 @@ public class Tile {
         return direction;
     }
     
+    public void setDirectionWithPos(){
+        if(nextRoad == null){
+            arrowAngle = -1;
+            direction = null;
+        }   
+        else if(nextRoad.getY() > y){
+            arrowAngle = 180;
+            direction = "down";
+        }
+        else if(nextRoad.getY() < y){
+            arrowAngle = 0;
+            direction = "up";
+        }  
+        else if(nextRoad.getX() > x){
+            arrowAngle = 90;
+            direction = "right";
+        }  
+        else if(nextRoad.getX() < x){
+            arrowAngle = 270;  
+            direction = "left";
+        }
+    }
+    
     public void setDirection(){
         if(nextRoad == null){
             arrowAngle = -1;
@@ -92,8 +115,6 @@ public class Tile {
             arrowAngle = 270;  
             direction = "left";
         }
-            
-        
     }
     
     public void renderLayer(int layer){

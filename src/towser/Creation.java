@@ -23,7 +23,9 @@ public class Creation extends AppCore{
     private ArrayList<Tile> roads;
     
     public Creation(){
-        super("created");
+        super();
+        initMap("created");
+        
         roads = new ArrayList<>();
         if(!path.isEmpty()){
             for(Tile t : path)
@@ -77,8 +79,9 @@ public class Creation extends AppCore{
             String error = calculatePath();
             if(error.isEmpty()){
                 saveLevel();
-                Towser.game = new Game("created");
-                Towser.state = State.GAME;
+                Towser.createdGame = new Game("created");
+                Towser.game = Towser.createdGame;
+                Towser.switchStateTo(State.GAME);
             }
             else{
                 PopupManager.Instance.popup(error);

@@ -78,7 +78,7 @@ public abstract class AppCore {
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
     protected ArrayList<Tower> towers, towersDestroyed;
     public ArrayList<Enemy> enemies, ennemiesDead;
-    protected ArrayList<Tile> path = new ArrayList<>();
+    protected ArrayList<Tile> path;
     protected boolean gameOver;
     protected boolean inWave, dontPlace;
     public Enemy enemySelected = null;
@@ -87,22 +87,18 @@ public abstract class AppCore {
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     
-    public AppCore(String lvlName){
-        init(lvlName);
+    public AppCore(){
+        init();
         
         life = 100;
-        money = 30000;
-        waveNumber = 5;
+        money = 300;
+        waveNumber = 1;
         waveReward = 250;
         
         initOverlays();
     }
     
-    protected void init(String lvlName){
-        readFile("levels/level_"+lvlName+".txt");
-        fixRoadNeighbors();
-        fixRoadSprites();
-        
+    protected void init(){
         towers = new ArrayList<>();
         towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -117,8 +113,57 @@ public abstract class AppCore {
         Enemy.bonusMS = 0;
     }
     
+    protected void initMap(String lvlName){
+        readFile("levels/level_"+lvlName+".txt");
+        fixRoadNeighbors();
+        fixRoadSprites();
+    }
+    
+    protected void initMap(ArrayList<Tile> path){
+        map = new ArrayList<>();
+        this.path = new ArrayList<>();
+        ArrayList<Tile> row;
+        Random rand = new Random();
+        Texture t;
+        Tile tile;
+        int n;
+        for(int i = 0 ; i < Towser.nbTileY ; i++){
+            row = new ArrayList<>();
+            for(int j = 0 ; j < Towser.nbTileX ; j++){
+                n = rand.nextInt(100)+1;
+                if(n > 93)
+                    t = Towser.textures.get("bigPlant1");
+                else if(n > 86)
+                    t = Towser.textures.get("bigPlant2");
+                else
+                    t = Towser.textures.get("grass");
+                n = 0;
+                if(t != Towser.textures.get("grass"))
+                    n = Math.round(rand.nextInt(361)/90)*90;  
+                tile = new Tile(t, "grass");
+                tile.setAngle(n);
+                tile.setRotateIndex(0);
+                tile.setX(j*unite);
+                tile.setY(i*unite);
+                row.add(tile);
+            }
+            map.add(row);
+        }
+        for(Tile road : path){
+            tile = new Tile(Towser.textures.get("roadStraight"), "road");
+            tile.setRotateIndex(0);
+            tile.setX(road.getX()*unite);
+            tile.setY(road.getY()*unite);
+            this.path.add(tile);
+            map.get((int) road.getY()).set((int) road.getX(), tile);
+        }
+        fixRoadNeighbors();
+        fixRoadSprites();
+    }
+    
     protected void readFile(String filePath){
         map = new ArrayList<>();
+        path = new ArrayList<>();
         try{
             File file = new File(filePath);
             Scanner myReader = new Scanner(file);
@@ -161,12 +206,10 @@ public abstract class AppCore {
                         case "S":
                             tile = new Tile(Towser.textures.get("roadStraight"), "road");
                             tile.setRotateIndex(0);
-                            spawn = tile;
                             break;
                         case "B":
                             tile = new Tile(Towser.textures.get("roadStraight"), "road");
                             tile.setRotateIndex(0);
-                            base = tile;
                             break;
                         case "PATH:":
                             readPath = true;
@@ -217,14 +260,14 @@ public abstract class AppCore {
             }
             else if(i == path.size()-1){
                 road.previousRoad = path.get(i-1);
-                if(base.getIndexY() == 0) // sur le bord haut
-                    road.nextRoad = new Tile(base.getX(), base.getY()-unite);
-                else if(base.getIndexY() == map.size()-1)// sur le bord bas
-                    road.nextRoad = new Tile(base.getX(), base.getY()+unite);
-                else if(base.getIndexX() == 0) // sur le bord gauche
-                    road.nextRoad = new Tile(base.getX()-unite, base.getY());
+                if(road.getIndexY() == 0) // sur le bord haut
+                    road.nextRoad = new Tile(road.getX(), road.getY()-unite);
+                else if(road.getIndexY() == map.size()-1)// sur le bord bas
+                    road.nextRoad = new Tile(road.getX(), road.getY()+unite);
+                else if(road.getIndexX() == 0) // sur le bord gauche
+                    road.nextRoad = new Tile(road.getX()-unite, road.getY());
                 else // sur le bord droit
-                    road.nextRoad = new Tile(base.getX()+unite, base.getY());
+                    road.nextRoad = new Tile(road.getX()+unite, road.getY());
                 base = road;
             }
             else{
