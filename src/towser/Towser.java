@@ -231,10 +231,8 @@ public class Towser{
                 y = rand.nextInt(nbTileY);
                 if(y == 0 || y == nbTileY-1)
                     x = rand.nextInt(nbTileX);
-                else{
-                    x = rand.nextInt(2);
-                    if(x == 1) x = nbTileX-1;
-                }   
+                else
+                    x = rand.nextInt(2)*(nbTileX-1);
                 path.add(new int[]{x, y});
                 nbRoadLeft--;
                 // tant que la road actuelle est à une distance < au nb de road max accordé
@@ -273,14 +271,19 @@ public class Towser{
                         else if(coord[0] == down[0] && coord[1] == down[1])
                             coordsAvailable.remove(down);
                     }
-                    // remove les voisins qui nous fait entrer dans une boucle 
-                    if((coordsAvailable.contains(left) && coordsAvailable.contains(right)) ||(coordsAvailable.contains(up) && coordsAvailable.contains(down))){
-                        
+                    // remove les voisins qui nous fait entrer dans une boucle
+                    if(coordsAvailable.size() > 1){
+                        //    - si j'ai un voisin en face de moi (par rapport à ma direction)
+                        //        - si sa direction est perpendiculaire, aller dans la direction opposé
+                        //        - sinon, regarder celle de son prédécesseur et aller dans la direction opposé
+                        if(!coordsAvailable.contains(up) && !coordsAvailable.contains(down)){
+                            
+                        }
+                        else if(!coordsAvailable.contains(left) && !coordsAvailable.contains(right)){
+                            
+                        }
                     }
-                    //TODO => pour ce faire : 
-                    //    - si j'ai un voisin en face de moi (par rapport à ma direction)
-                    //        - si sa direction est perpendiculaire, aller dans la direction opposé
-                    //        - sinon, regarder celle de son prédécesseur et aller dans la direction opposé
+                    // prendre les coords aléatoirement parmi celles dispo
                     int r = rand.nextInt(coordsAvailable.size());
                     x = coordsAvailable.get(r)[0];
                     y = coordsAvailable.get(r)[1];
