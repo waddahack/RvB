@@ -2,11 +2,12 @@ package managers;
 
 import java.util.ArrayList;
 import org.newdawn.slick.UnicodeFont;
-import towser.Game;
 import towser.Towser;
 import static towser.Towser.creation;
 import static towser.Towser.game;
+import static towser.Towser.menu;
 import static towser.Towser.ref;
+import static towser.Towser.state;
 import static towser.Towser.stateChanged;
 import ui.Button;
 import ui.Overlay;
@@ -81,8 +82,10 @@ public class PopupManager {
     private void checkPopupInput(){
         if(currentOverlay == null)
             return;
+        boolean clicked = false;
         if(currentOverlay == gameOver){
             if(gameOver.getButtons().get(0).isClicked(0)){
+                clicked = true;
                 stateChanged = true;
                 for(int i = 0 ; i < game.enemies.size() ; i++){
                     game.enemies.get(i).putInBase();
@@ -97,6 +100,7 @@ public class PopupManager {
         }
         else if(currentOverlay == enemiesUpgraded){
             if(enemiesUpgraded.getButtons().get(0).isClicked(0)){
+                clicked = true;
                 stateChanged = true;
                 currentOverlay = null;
                 enemiesUpgraded.display(false);
@@ -106,17 +110,23 @@ public class PopupManager {
         }
         else if(currentOverlay == popup){
             if(popup.getButtons().get(0).isClicked(0)){
+                clicked = true;
                 stateChanged = true;
                 currentOverlay = null;
                 popup.display(false);
+                if(menu != null)
+                    menu.enableAllButtons();
                 if(game != null){
-                    game.gameSpeed = oldGameSpeed;
+                    if(game.gameSpeed == 0)
+                        game.gameSpeed = oldGameSpeed;
                     game.enableAllButtons();
                 }
                 if(creation != null)
                     creation.enableAllButtons();
             }
         }
+        if(clicked)
+            Towser.setCursor(Towser.Cursor.DEFAULT);
     }
     
     public void popup(String texte){
@@ -163,6 +173,8 @@ public class PopupManager {
         buttonsText.clear();
         currentOverlay = overlay;
         currentOverlay.display(true);
+        if(menu != null)
+            menu.disableAllButtons();
         if(game != null)
             game.disableAllButtons();
         if(creation != null)

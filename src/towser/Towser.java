@@ -39,10 +39,9 @@ public class Towser{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(0), MEDIUM(2), HARD(3);
-        public int value;
-        public static int multiplicaterMax = 4;
-        private Difficulty(int value){
+        EASY(1.5f), MEDIUM(2f), HARD(2.5f);
+        public float value;
+        private Difficulty(float value){
             this.value = value;
         }
     }
@@ -125,7 +124,6 @@ public class Towser{
         PopupManager.initialize();
         menu = new Menu();
         lastUpdate = System.currentTimeMillis();
-        
     }
 
     private static void render() {
@@ -159,8 +157,8 @@ public class Towser{
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
             if(state == State.GAME)
                 SoundManager.Instance.pauseAll();
+            menu.enableAllButtons();
             switchStateTo(State.MENU);
-            setCursor(Cursor.DEFAULT);
         }
         // MENU BUTTONS
         if(state == State.MENU){
@@ -175,7 +173,7 @@ public class Towser{
             }  
             if(menu.getRandom().isClicked(0)){
                 if(randomGame == null || randomGame.ended || randomGame.waveNumber == 1)
-                    randomGame = new Game(generateRandomPath(Difficulty.EASY));
+                    randomGame = new Game(generateRandomPath(Difficulty.EASY)); 
                 else
                     SoundManager.Instance.unpauseAll();
                 
@@ -225,7 +223,8 @@ public class Towser{
         Tile road, previous;
         String dir;
         // nombre de road de la map restante
-        int nbRoadLeft = Math.max(nbTileX, nbTileY)*2*(Difficulty.multiplicaterMax-diff.value);
+        int nbRoadLeft = (int) ((nbTileX*nbTileY) / (3*diff.value));
+        System.out.println(nbRoadLeft);
         // remplissage de la map par du vide
         for(int i = 0 ; i < nbTileY ; i++){
             row = new ArrayList<>();
@@ -244,13 +243,21 @@ public class Towser{
             y = rand.nextInt(nbTileY);
         }
         road = new Tile(x, y);
+        if(x == 0)
+            road.previousRoad = new Tile(x-1, y);
+        else if(x == nbTileX-1)
+            road.previousRoad = new Tile(x+1, y);
+        else if(y == 0)
+            road.previousRoad = new Tile(x, y-1);
+        else
+            road.previousRoad = new Tile(x, y+1);
         map.get(y).set(x, road);
         path.add(road);
         nbRoadLeft--;
         // Construction de la route
         int i = 0, r;
         int[][] check;
-        Tile up, down, left, right;
+        Tile up, down, left, right, accross, temp;
         while(nbRoadLeft > 0){
             //TODO après, on fonce vers une sortie et pour ça :
             //     - on regarde de tous les côtés et on compte le nombre de côté qui n'ont pas de chemin sur le passage
@@ -259,18 +266,19 @@ public class Towser{
             //         - sinon, faut faire demi tour :
             //             - regarder la direction du chemin bloquant droite et gauche, et tourner en direction du chemin qui à la même direction
             neighbors.clear();
-            up = new Tile(x-1, y);
-            down = new Tile(x+1, y);
-            left = new Tile(x, y-1);
-            right = new Tile(x, y+1);
+            up = new Tile(x, y-1);
+            down = new Tile(x, y+1);
+            left = new Tile(x-1, y);
+            right = new Tile(x+1, y);
+            accross = null;
             // ajout des positions voisines si c'est ni un bord ni une road
-            if(x-1 >= 0 && map.get(y).get(x-1) == null)
-                neighbors.add(up);
-            if(x+1 <= nbTileX-1 && map.get(y).get(x+1) == null)
-                neighbors.add(down);
             if(y-1 >= 0 && map.get(y-1).get(x) == null)
-                neighbors.add(left);
+                neighbors.add(up);
             if(y+1 <= nbTileY-1 && map.get(y+1).get(x) == null)
+                neighbors.add(down);
+            if(x-1 >= 0 && map.get(y).get(x-1) == null)
+                neighbors.add(left);
+            if(x+1 <= nbTileX-1 && map.get(y).get(x+1) == null)
                 neighbors.add(right);
             // remove les voisins qui nous fait entrer dans une boucle
             // (on remove ceux qui vont dans le même sens quela tuile sur laquelle on s'est cogné, en checkant les 3 tuiles en face)
@@ -279,15 +287,19 @@ public class Towser{
                 previous.setDirectionWithPos();
                 switch (previous.getDirection()) {
                     case "up":
+                        accross = up;
                         check = new int[][]{{x-1, y-1}, {x, y-1}, {x+1, y-1}};
                         break;
                     case "down":
+                        accross = down;
                         check = new int[][]{{x-1, y+1}, {x, y+1}, {x+1, y+1}};
                         break;
                     case "left":
+                        accross = left;
                         check = new int[][]{{x-1, y-1}, {x-1, y}, {x-1, y+1}};
                         break;
                     default:
+                        accross = right;
                         check = new int[][]{{x+1, y-1}, {x+1, y}, {x+1, y+1}};
                         break;
                 }
@@ -295,10 +307,12 @@ public class Towser{
                     //TODO probleme : si c'est un bord, il peut nous faire entre dans une boucle, ou pas... atm les bords sont ignorés
                     if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 0 || toCheck[1] > nbTileY-1)
                         continue;
-                    if(map.get(toCheck[1]).get(toCheck[0]) != null){
-                        dir = map.get(toCheck[1]).get(toCheck[0]).getDirection();
+                    temp = map.get(toCheck[1]).get(toCheck[0]);
+                    if(temp != null){
+                        temp.setDirectionWithPos();
+                        dir = temp.getDirection();
                         if(dir.equals(previous.getDirection()))
-                            dir = map.get(toCheck[1]).get(toCheck[0]).previousRoad.getDirection();
+                            dir = temp.previousRoad.getDirection();
                         switch (dir) {
                             case "up":
                                 neighbors.remove(up);
@@ -313,13 +327,30 @@ public class Towser{
                                 neighbors.remove(right);
                                 break;
                         }
+                        if(toCheck[0] != x && toCheck[1] != y && neighbors.contains(accross))// Si la tuile d'en face est libre, faut la remove
+                            neighbors.remove(accross);
                         break;
                     }
                 }
             }
-            r = rand.nextInt(neighbors.size());
-            x = (int) neighbors.get(r).getX();
-            y = (int) neighbors.get(r).getY();
+            if(neighbors.isEmpty()){
+                System.out.println("failure");
+                PopupManager.Instance.popup("Failure. "+path.size()+" roads.");
+                break;
+            }
+            
+            r = rand.nextInt(3);
+            if(r != 0 && neighbors.contains(accross)){
+                x = (int) accross.getX();
+                y = (int) accross.getY();
+            }
+            else{
+                if(neighbors.contains(accross))
+                    neighbors.remove(accross);
+                r = rand.nextInt(neighbors.size());
+                x = (int) neighbors.get(r).getX();
+                y = (int) neighbors.get(r).getY();
+            }
             
             road = new Tile(x, y);
             road.setPreviousRoad(path.get(i));
@@ -331,17 +362,6 @@ public class Towser{
             i++;
         }
         return path;
-    }
-    
-    private static int distanceFromEdge(int x, int y){
-        int distanceX, distanceY;
-        distanceX = x;
-        if(distanceX > (nbTileX-1)/2)
-            distanceX = nbTileX-1-x;
-        distanceY = y;
-        if(distanceY > (nbTileY-1)/2)
-            distanceY = nbTileY-1-y;
-        return Math.min(distanceX, distanceY);
     }
     
     public static void switchStateTo(State s){

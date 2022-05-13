@@ -95,18 +95,15 @@ public class Button {
     private void render(){
         if(hidden)
             return;
-        Texture bg = this.bg;
-        if(disabled)
-            bg = Towser.textures.get("disabled");
             
         //hover
         if(isMouseIn() && borderRgb != null && !disabled)
             Towser.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
+        if(rgb != null)
+            Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, rgb, 1f, null);
         if(bg != null)
             Towser.drawFilledRectangle((double)(x-width/2+5), (double)(y-height/2+5), width-10, height-10, null, 1f, bg);
-        else if(rgb != null)
-            Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, rgb, 1f, null);
         // text
         if(text != null && font != null)
             Towser.drawString(x, y, text, font);

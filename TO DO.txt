@@ -1,7 +1,8 @@
 - VOIR LE FICHIER TODO SUR LE MAIN PC
 - Mettre le fichier todo main pc sur git (ici)
 
-- Génération de map random avec difficultés (check les //TODO)
+- Génération de map random avec difficultés : à résoudre le problème de rencontre avec rebord,
+puis faire le chemin qui va au bord une fois le nb de tile max posé
 - Option pour changer la taille de la tilemap avec comme indication : campagne jouable en 22/18
 
 CONTENU :

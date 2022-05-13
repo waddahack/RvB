@@ -2,6 +2,7 @@ package towser;
 
 import ui.Button;
 import java.util.ArrayList;
+import managers.PopupManager;
 import static towser.Towser.ref;
 import static towser.Towser.windHeight;
 import static towser.Towser.windWidth;
@@ -16,8 +17,9 @@ public class Menu {
     public Menu(){
         int width = (int) (200*ref);
         int height = (int) (50*ref);
-        start = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        start = new Button(windWidth/2, windHeight/6, width, height, null, Towser.colors.get("green_dark"));
         start.setDisabled(true);
+        start.setBG(Towser.textures.get("disabled"));
         random = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         create = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         option = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
@@ -44,6 +46,32 @@ public class Menu {
         }
     }
     
+    public void render(){
+        Towser.drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, Towser.textures.get("grass"));
+        for(Overlay o : overlays){
+            o.render();
+        }
+        start.drawText(0, 0, "    Adventure\n(inc... not soon)", Towser.fonts.get("normalL"));
+        random.drawText(0, 0, "Random map", Towser.fonts.get("normalL"));
+        create.drawText(0, 0, "Create map", Towser.fonts.get("normalL"));
+        option.drawText(0, 0, "Options", Towser.fonts.get("normalL"));
+        exit.drawText(0, 0, "Exit", Towser.fonts.get("normalL"));
+        
+        PopupManager.Instance.update();
+    }
+    
+    public void disableAllButtons(){
+        for(Overlay o : overlays)
+            for(Button b : o.getButtons())
+                b.setDisabled(true);
+    }
+    
+    public void enableAllButtons(){
+        for(Overlay o : overlays)
+            for(Button b : o.getButtons())
+                b.setDisabled(false);
+    }
+    
     public Button getStart(){
         return start;
     }
@@ -62,17 +90,5 @@ public class Menu {
     
     public Button getExit(){
         return exit;
-    }
-    
-    public void render(){
-        Towser.drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, Towser.textures.get("grass"));
-        for(Overlay o : overlays){
-            o.render();
-        }
-        start.drawText(0, 0, "    Adventure\n(inc... not soon)", Towser.fonts.get("normalL"));
-        random.drawText(0, 0, "Random map", Towser.fonts.get("normalL"));
-        create.drawText(0, 0, "Create map", Towser.fonts.get("normalL"));
-        option.drawText(0, 0, "Options", Towser.fonts.get("normalL"));
-        exit.drawText(0, 0, "Exit", Towser.fonts.get("normalL"));
     }
 }
