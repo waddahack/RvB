@@ -229,47 +229,58 @@ public class Towser{
                 int nbRoadLeft = Math.max(nbTileX, nbTileY)*2*(Difficulty.multiplicaterMax-diff.value);
                 // spawn random sur un bord
                 y = rand.nextInt(nbTileY);
-                x = rand.nextInt(2);
-                if(x == 1) x = nbTileX-1;
+                if(y == 0 || y == nbTileY-1)
+                    x = rand.nextInt(nbTileX);
+                else{
+                    x = rand.nextInt(2);
+                    if(x == 1) x = nbTileX-1;
+                }   
                 path.add(new int[]{x, y});
                 nbRoadLeft--;
                 // tant que la road actuelle est à une distance < au nb de road max accordé
                 ArrayList<int[]> coordsAvailable = new ArrayList<>();
                 int[] left, right, up, down;
-                while(distanceFromEdge(x, y) < nbRoadLeft){ //TODO distanceFromEdge marche pas si y'a une route sur le chemin. A revoir
+                while(nbRoadLeft > 0){ //TODO à revoir
+                    // tant que nbRoadLeft > 0 on trace une route au pif
+                    // après, on foce vers une sortie et pour ça :
+                    //     - on regarde de tous les côtés et on compte le nombre de côté qui n'ont pas de chemin sur le passage
+                    // (faire une fonction qui retourne une liste avec les directions left/right/up/down qui contient les coords d'un chemin qui coupe le chemin)
+                    //         - si n > 0, prendre la direction la plus courte
+                    //         - sinon, faut faire demi tour :
+                    //             - regarder la direction du chemin bloquant droite et gauche, et tourner en direction du chemin qui à la même direction
                     coordsAvailable.clear();
                     left = new int[]{x-1, y};
                     right = new int[]{x+1, y};
                     up = new int[]{x, y-1};
                     down = new int[]{x, y+1};
                     // ajout des voisins si c'est pas un bord
-                    if(x-1 >= 0)
+                    if(left[0] >= 0 && left[1] == y)
                         coordsAvailable.add(left);
-                    else if(x+1 <= nbTileX-1)
+                    if(right[0] <= nbTileX-1 && right[1] == y)
                         coordsAvailable.add(right);
-                    if(y-1 >= 0)
+                    if(up[0] == x && up[1] >= 0)
                         coordsAvailable.add(up);
-                    else if(y+1 <= nbTileY-1)
+                    if(down[0] == x && down[1] <= nbTileY-1)
                         coordsAvailable.add(down);
+                    // remove les voisins qui sont déjà dans path
+                    for(int[] coord : path){
+                        if(coord[0] == left[0] && coord[1] == left[1])
+                            coordsAvailable.remove(left);
+                        else if(coord[0] == right[0] && coord[1] == right[1])
+                            coordsAvailable.remove(right);
+                        else if(coord[0] == up[0] && coord[1] == up[1])
+                            coordsAvailable.remove(up);
+                        else if(coord[0] == down[0] && coord[1] == down[1])
+                            coordsAvailable.remove(down);
+                    }
                     // remove les voisins qui nous fait entrer dans une boucle 
+                    if((coordsAvailable.contains(left) && coordsAvailable.contains(right)) ||(coordsAvailable.contains(up) && coordsAvailable.contains(down))){
+                        
+                    }
                     //TODO => pour ce faire : 
                     //    - si j'ai un voisin en face de moi (par rapport à ma direction)
                     //        - si sa direction est perpendiculaire, aller dans la direction opposé
                     //        - sinon, regarder celle de son prédécesseur et aller dans la direction opposé
-                    // remove les voisins qui sont déjà dans path
-                    for(int[] coord : path){
-                        if(coord[0] == x-1 && coordsAvailable.contains(left))
-                            coordsAvailable.remove(left);
-                        else if(coord[0] == x+1 && coordsAvailable.contains(right))
-                            coordsAvailable.remove(right);
-                        else if(coord[1] == y-1 && coordsAvailable.contains(up))
-                            coordsAvailable.remove(up);
-                        else if(coord[1] == y+1 && coordsAvailable.contains(down))
-                            coordsAvailable.remove(down);
-                        if(coordsAvailable.isEmpty())
-                            break;
-                    }
-                    
                     int r = rand.nextInt(coordsAvailable.size());
                     x = coordsAvailable.get(r)[0];
                     y = coordsAvailable.get(r)[1];
