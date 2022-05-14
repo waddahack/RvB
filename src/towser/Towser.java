@@ -221,7 +221,7 @@ public class Towser{
         ArrayList<Tile> row, path = new ArrayList<>(), neighbors = new ArrayList<>();
         int x, y;
         Tile road, previous;
-        String dir;
+        String dir, dirToCount;
         // nombre de road de la map restante
         int nbRoadLeft = (int) ((nbTileX*nbTileY) / (3*diff.value));
         System.out.println(nbRoadLeft);
@@ -304,9 +304,22 @@ public class Towser{
                         break;
                 }
                 for(int[] toCheck : check){
-                    //TODO probleme : si c'est un bord, il peut nous faire entre dans une boucle, ou pas... atm les bords sont ignorés
-                    if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 0 || toCheck[1] > nbTileY-1)
-                        continue;
+                    if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 0 || toCheck[1] > nbTileY-1){ //Si c'est un bord
+                        if(toCheck[0] != x && toCheck[1] != y) // Si ce n'est pas la tuile d'en face
+                            continue;
+                        if(toCheck[0] < 0)
+                            dir = "left";
+                        else if(toCheck[0] > nbTileX-1)
+                            dir = "right";
+                        else if(toCheck[1] < 0)
+                            dir = "up";
+                        else
+                            dir = "down";
+                        dirToCount = directionToCount(path.get(0), new int[]{x, y}, dir);
+                        // si pas première fois qu'on fat ça, la comparaison du comptage à suivre marche pas. Trouver une solution ou refaire le lvl si failure
+                        // compter les tuiles qui sont dans la dirToCount pour chaque tuile de path si tile.getDirection() == dir
+                        // (vérifier qu'il n'y a pas de tuile qu'a pas la même dir mais qui doit compter aussi)
+                    }    
                     temp = map.get(toCheck[1]).get(toCheck[0]);
                     if(temp != null){
                         temp.setDirectionWithPos();
@@ -363,6 +376,21 @@ public class Towser{
         }
         return path;
     }
+    
+    private static String directionToCount(Tile firstTile, int[] lastTilePos, String dir){
+        if(dir.equals("left") || dir.equals("right")){
+            if(firstTile.getY() > lastTilePos[1])
+                return "up";
+            else
+                return "down";
+        }
+        else{
+            if(firstTile.getX() > lastTilePos[0])
+                return "left";
+            else
+                return "right";
+        }
+    } 
     
     public static void switchStateTo(State s){
         state = s;
