@@ -1,8 +1,11 @@
 - VOIR LE FICHIER TODO SUR LE MAIN PC
 - Mettre le fichier todo main pc sur git (ici)
 
-- Génération de map random avec difficultés : à résoudre le problème de rencontre avec rebord,
-puis faire le chemin qui va au bord une fois le nb de tile max posé
+- fix enemies' sprite's problem (see with created map)
+
+- Popup choisir difficulté map random
+(changer la proba d'aller tout droit en fct de difficulté.
+la proba d'atm est bien pour du difficile je pense)
 - Option pour changer la taille de la tilemap avec comme indication : campagne jouable en 22/18
 
 CONTENU :

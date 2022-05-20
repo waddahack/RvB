@@ -24,7 +24,7 @@ public class FastEnemy extends Enemy{
         rgb = new float[]{1f, 1f, 0f};
         sprite = Towser.textures.get("fastEnemy");
         brightSprite = Towser.textures.get("fastEnemyBright");
-        volume = SoundManager.Volume.SEMI_LOW;
+        volume = SoundManager.Volume.LOW;
         clip = SoundManager.Instance.getClip("quad");
         stepEveryMilli = 0;
         

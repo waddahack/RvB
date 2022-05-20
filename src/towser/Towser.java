@@ -181,10 +181,13 @@ public class Towser{
                 switchStateTo(State.GAME);
             }
             if(menu.getCreate().isClicked(0)){
-                if(generateEmptyMap())
+                if(generateEmptyMap()){
                     creation = new Creation();
-                
-                switchStateTo(State.CREATION);
+                    switchStateTo(State.CREATION);
+                }
+                else{
+                    PopupManager.Instance.popup("\n        Hmmm... Very strange...\n    Create a directory \"levels\" in\nthe same location than your game.");
+                }
             }  
             if(menu.getExit().isClicked(0))
                 switchStateTo(State.EXIT);
@@ -224,7 +227,6 @@ public class Towser{
         String dir, dirToCount;
         // nombre de road de la map restante
         int nbRoadLeft = (int) ((nbTileX*nbTileY) / (3*diff.value));
-        System.out.println(nbRoadLeft);
         // remplissage de la map par du vide
         for(int i = 0 ; i < nbTileY ; i++){
             row = new ArrayList<>();
@@ -257,14 +259,9 @@ public class Towser{
         // Construction de la route
         int i = 0, r;
         int[][] check;
-        Tile up, down, left, right, accross, temp;
+        Tile up, down, left, right, accross, temp, lastOnSide = path.get(0);
+        boolean changeLastOnSide = false;
         while(nbRoadLeft > 0){
-            //TODO après, on fonce vers une sortie et pour ça :
-            //     - on regarde de tous les côtés et on compte le nombre de côté qui n'ont pas de chemin sur le passage
-            // (faire une fonction qui retourne une liste avec les directions left/right/up/down qui contient les coords d'un chemin qui coupe le chemin)
-            //         - si n > 0, prendre la direction la plus courte
-            //         - sinon, faut faire demi tour :
-            //             - regarder la direction du chemin bloquant droite et gauche, et tourner en direction du chemin qui à la même direction
             neighbors.clear();
             up = new Tile(x, y-1);
             down = new Tile(x, y+1);
@@ -304,6 +301,7 @@ public class Towser{
                         break;
                 }
                 for(int[] toCheck : check){
+                    // Quand on su heurte à un bord
                     if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 0 || toCheck[1] > nbTileY-1){ //Si c'est un bord
                         if(toCheck[0] != x && toCheck[1] != y) // Si ce n'est pas la tuile d'en face
                             continue;
@@ -315,11 +313,70 @@ public class Towser{
                             dir = "up";
                         else
                             dir = "down";
-                        dirToCount = directionToCount(path.get(0), new int[]{x, y}, dir);
-                        // si pas première fois qu'on fat ça, la comparaison du comptage à suivre marche pas. Trouver une solution ou refaire le lvl si failure
-                        // compter les tuiles qui sont dans la dirToCount pour chaque tuile de path si tile.getDirection() == dir
-                        // (vérifier qu'il n'y a pas de tuile qu'a pas la même dir mais qui doit compter aussi)
+                        dirToCount = directionToCount(lastOnSide, new int[]{x, y}, dir);
+                        changeLastOnSide = true;
+                        boolean stop = false;
+                        int iX, iY;
+                        int nbTileLockedUp = 0;
+                        for(int k = path.indexOf(lastOnSide) ; k < path.size() ; k++){
+                            if(path.get(k).getDirection() != dir)
+                                continue;
+                            iX = (int) path.get(k).getX();
+                            iY = (int) path.get(k).getY();
+                            while(!stop){
+                                switch(dirToCount){
+                                    case "up":
+                                        iY--;
+                                        break;
+                                    case "down":
+                                        iY++;
+                                        break;
+                                    case "left":
+                                        iX--;
+                                        break;
+                                    default:
+                                        iX++;
+                                        break;
+                                }
+                                if(iY < 0 || iY > nbTileY-1 || iX < 0 || iX > nbTileX-1) // Si en dehors de la map
+                                    stop = true;
+                                else if(map.get(iY).get(iX) != null) // Si la tuile est une route
+                                    stop = true;
+                                else
+                                    nbTileLockedUp++;
+                            }
+                            stop = false;
+                        }
+                        boolean insideBigger = nbTileLockedUp > (nbTileX*nbTileY - path.size()+1)/2;
+                        switch(dirToCount){
+                            case "up":
+                                if(insideBigger && neighbors.contains(down))
+                                    neighbors.remove(down);
+                                else if(neighbors.contains(up))
+                                    neighbors.remove(up);
+                                break;
+                            case "down":
+                                if(insideBigger && neighbors.contains(up))
+                                    neighbors.remove(up);
+                                else if(neighbors.contains(down))
+                                    neighbors.remove(down);
+                                break;
+                            case "left":
+                                if(insideBigger && neighbors.contains(right))
+                                    neighbors.remove(right);
+                                else if(neighbors.contains(left))
+                                    neighbors.remove(left);
+                                break;
+                            default:
+                                if(insideBigger && neighbors.contains(left))
+                                    neighbors.remove(left);
+                                else if(neighbors.contains(right))
+                                    neighbors.remove(right);
+                                break;
+                        }
+                        break;
                     }    
+                    // Quand on se heurte à une route
                     temp = map.get(toCheck[1]).get(toCheck[0]);
                     if(temp != null){
                         temp.setDirectionWithPos();
@@ -340,7 +397,7 @@ public class Towser{
                                 neighbors.remove(right);
                                 break;
                         }
-                        if(toCheck[0] != x && toCheck[1] != y && neighbors.contains(accross))// Si la tuile d'en face est libre, faut la remove
+                        if(neighbors.size() > 1 && toCheck[0] != x && toCheck[1] != y && neighbors.contains(accross))// Si la tuile d'en face n'est pas la seule option et est libre, faut la remove
                             neighbors.remove(accross);
                         break;
                     }
@@ -373,6 +430,25 @@ public class Towser{
             path.add(road);
             nbRoadLeft--;
             i++;
+            
+            if(changeLastOnSide){
+                lastOnSide = path.get(i);
+                changeLastOnSide = false;
+            }
+                
+        }
+        // On fait terminer path sur un bord
+        int[] dirToSide;
+        while(path.get(i).getX()-1 >= 0 && path.get(i).getX()+1 <= nbTileX-1 && path.get(i).getY()-1 >= 0 && path.get(i).getY()+1 <= nbTileY-1){ // Tant qu'il n'est pas à côté d'un bord
+            dirToSide = directionToSide(path, map);
+            
+            road = new Tile(dirToSide[0], dirToSide[1]);
+            road.setPreviousRoad(path.get(i));
+            path.get(i).setNextRoad(road);
+            
+            map.get(dirToSide[1]).set(dirToSide[0], road);
+            path.add(road);
+            i++;
         }
         return path;
     }
@@ -380,17 +456,126 @@ public class Towser{
     private static String directionToCount(Tile firstTile, int[] lastTilePos, String dir){
         if(dir.equals("left") || dir.equals("right")){
             if(firstTile.getY() > lastTilePos[1])
-                return "up";
-            else
                 return "down";
+            else
+                return "up";
         }
         else{
             if(firstTile.getX() > lastTilePos[0])
-                return "left";
-            else
                 return "right";
+            else
+                return "left";
         }
     } 
+    
+    private static int[] directionToSide(ArrayList<Tile> path, ArrayList<ArrayList<Tile>> map){
+        int[] dir;
+        Tile lastTile = path.get(path.size()-1), previousTile = path.get(path.size()-2);
+        previousTile.setDirectionWithPos();
+        String tileDir = previousTile.getDirection();
+        String tileAccrossDir = "";
+        int up = 0, down = 0, left = 0, right = 0, x, y;
+        boolean stop = false;
+        x = (int) lastTile.getX();
+        y = (int) lastTile.getY();
+        while(!stop){ // up
+            y--;
+            if(y < 0)
+                stop = true;
+            else if(map.get(y).get(x) != null){
+                stop = true;
+                up = 1000;
+                if(tileDir == "up"){
+                    map.get(y).get(x).setDirectionWithPos();
+                    tileAccrossDir = map.get(y).get(x).getDirection();
+                }
+            }
+            else
+                up++;
+        }
+        y = (int) lastTile.getY();
+        stop = false;
+        while(!stop){ // down
+            y++;
+            if(y > nbTileY-1)
+                stop = true;
+            else if(map.get(y).get(x) != null){
+                stop = true;
+                down = 1000;
+                if(tileDir == "down"){
+                    map.get(y).get(x).setDirectionWithPos();
+                    tileAccrossDir = map.get(y).get(x).getDirection();
+                }
+            }
+            else
+                down++;
+        }
+        y = (int) lastTile.getY();
+        stop = false;
+        while(!stop){ // left
+            x--;
+            if(x < 0)
+                stop = true;
+            else if(map.get(y).get(x) != null){
+                stop = true;
+                left = 1000;
+                if(tileDir == "left"){
+                    map.get(y).get(x).setDirectionWithPos();
+                    tileAccrossDir = map.get(y).get(x).getDirection();
+                }
+            }
+            else
+                left++;
+        }
+        x = (int) lastTile.getX();
+        stop = false;
+        while(!stop){ // right
+            x++;
+            if(x > nbTileX-1)
+                stop = true;
+            else if(map.get(y).get(x) != null){
+                stop = true;
+                right = 1000;
+                if(tileDir == "right"){
+                    map.get(y).get(x).setDirectionWithPos();
+                    tileAccrossDir = map.get(y).get(x).getDirection();
+                }
+            }
+            else
+                right++;
+        }
+        
+        int min = Math.min(Math.min(up, down), Math.min(left, right));
+        x = (int) lastTile.getX();
+        y = (int) lastTile.getY();
+        if(min == 1000){
+            switch(tileAccrossDir){ // go opposé à tileAccrossDir
+                case "up":
+                    y++;
+                    break;
+                case "down":
+                    y--;
+                    break;
+                case "left":
+                    x++;
+                    break;
+                default:
+                    x--;
+                    break;
+            }
+        }
+        else if(min == up)
+            y--;
+        else if(min == down)
+            y++;
+        else if(min == left)
+            x--;
+        else
+            x++;
+        
+        dir = new int[]{x, y};
+        return dir;
+    }
     
     public static void switchStateTo(State s){
         state = s;

@@ -24,7 +24,7 @@ public class BasicEnemy extends Enemy{
         rgb = new float[]{1f, 0.7f, 0f};
         sprite = Towser.textures.get("basicEnemy");
         brightSprite = Towser.textures.get("basicEnemyBright");
-        volume = SoundManager.Volume.SEMI_LOW;
+        volume = SoundManager.Volume.LOW;
         clip = SoundManager.Instance.getClip("walking");
         stepEveryMilli = 700;
         eBalance = balance;

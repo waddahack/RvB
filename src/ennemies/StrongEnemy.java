@@ -25,6 +25,7 @@ public class StrongEnemy extends Enemy{
         sprite = Towser.textures.get("strongEnemy");
         brightSprite = Towser.textures.get("strongEnemyBright");
         clip = SoundManager.Instance.getClip("tank");
+        volume = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
         
         initBack();

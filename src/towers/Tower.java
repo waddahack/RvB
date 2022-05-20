@@ -182,7 +182,7 @@ public abstract class Tower extends Tile implements Shootable{
     public void initOverlay(){
         Overlay o1, o2;
         
-        o1 = new Overlay(0, (int) (Towser.windHeight-(90+20)*ref), (int)(ref*200), (int)(ref*20));
+        o1 = new Overlay(0, (int) (Towser.windHeight-Math.floor((90+20)*ref)), (int)(ref*200), (int)(ref*20));
         o1.setBG(Towser.textures.get("board"));
         o1.setA(0.8f);
         overlays.add(o1);

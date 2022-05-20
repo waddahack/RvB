@@ -26,7 +26,7 @@ public class TrickyEnemy extends Enemy{
         rgb = new float[]{0.2f, 0.2f, 0.8f};
         sprite = Towser.textures.get("trickyEnemy");
         brightSprite = Towser.textures.get("trickyEnemyBright");
-        volume = SoundManager.Volume.SEMI_LOW;
+        volume = SoundManager.Volume.LOW;
         clip = SoundManager.Instance.getClip("group_walking");
         stepEveryMilli = 800;
         

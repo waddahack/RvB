@@ -28,7 +28,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected float[] rgb;
     protected long stopFor = -1;
     protected String name;
-    protected SoundManager.Volume volume = SoundManager.Volume.MEDIUM;
+    protected SoundManager.Volume volume;
     protected double x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5, moveSpeed, startTimeStopFor, startTimeMove, checkDirStartTime, weight;
     protected double angle, newAngle;
     protected Tile spawn, base;
