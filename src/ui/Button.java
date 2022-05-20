@@ -18,6 +18,7 @@ public class Button {
     private Texture bg = null;
     private boolean hidden = false, disabled = false;
     private boolean mouseEntered = false;
+    private boolean itemFramed = false;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -33,6 +34,10 @@ public class Button {
     
     public Button(int x, int y, int width, int height, String text, UnicodeFont font, Texture bg, float[] borderRgb){
         build(x ,y, width, height, text, font, bg, null, borderRgb, 0);
+    }
+    
+    public Button(int x, int y, int width, int height, String text, UnicodeFont font,  float[] rgb, float[] borderRgb){
+        build(x ,y, width, height, text, font, null, rgb, borderRgb, 0);
     }
     
     public Button(int x, int y, int width, int height, String text, UnicodeFont font, float[] rgb, float[] borderRgb, int nbClicksMax){
@@ -102,8 +107,12 @@ public class Button {
         // background
         if(rgb != null)
             Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, rgb, 1f, null);
-        if(bg != null)
-            Towser.drawFilledRectangle((double)(x-width/2+5), (double)(y-height/2+5), width-10, height-10, null, 1f, bg);
+        if(bg != null){
+            if(itemFramed)
+                Towser.drawFilledRectangle((double)(x-width/2+5), (double)(y-height/2+5), width-10, height-10, null, 1f, bg);
+            else
+                Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, null, 1f, bg);
+        }
         // text
         if(text != null && font != null)
             Towser.drawString(x, y, text, font);
@@ -128,6 +137,10 @@ public class Button {
     
     public void setBG(Texture t){
         bg = t;
+    }
+    
+    public void setItemFramed(boolean b){
+        itemFramed = b;
     }
     
     public void setDisabled(boolean d){

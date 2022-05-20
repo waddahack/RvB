@@ -19,14 +19,12 @@ public class PopupManager {
     private static int width = (int) (650*ref), height = (int) (370*ref);
     private static int oldGameSpeed;
     private Overlay currentOverlay;
-    private Overlay gameOver, enemiesUpgraded, popup;
+    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty;
     private ArrayList<String> lines;
     private ArrayList<UnicodeFont> fonts;
-    private ArrayList<String> buttonsText;
 
     public PopupManager(){
         currentOverlay = null;
-        buttonsText = new ArrayList<>();
         lines = new ArrayList<>();
         fonts = new ArrayList<>();
         initOverlays();
@@ -46,16 +44,28 @@ public class PopupManager {
         popup.setBG(Towser.textures.get("board"));
         popup.setA(0.8f);
         popup.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(popup.getW()/2, 3*popup.getH()/4, (int) (150*ref), (int)(ref*30), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(popup.getW()/2, 3*popup.getH()/4, (int) (150*ref), (int)(ref*30), "Ok", Towser.fonts.get("normalLB"), Towser.textures.get("board"), Towser.colors.get("green_dark"));
         popup.addButton(b);
         //
+        // CHOOSE DIFFICULTY
+        chooseDifficulty = new Overlay(Towser.windWidth/2-width/2, Towser.windHeight/2-height/2, width, height);
+        chooseDifficulty.display(false);
+        chooseDifficulty.setBG(Towser.textures.get("board"));
+        chooseDifficulty.setA(0.8f);
+        chooseDifficulty.setBorder(Towser.colors.get("green_dark"), 4);
+        b = new Button(chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, (int) (150*ref), (int)(ref*30), "Easy", Towser.fonts.get("normalLB"), Towser.textures.get("darkBoard"), Towser.colors.get("green_dark"));
+        chooseDifficulty.addButton(b);
+        b = new Button(2*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, (int) (150*ref), (int)(ref*30), "Normal", Towser.fonts.get("normalLB"), Towser.textures.get("darkBoard"), Towser.colors.get("green_dark"));
+        chooseDifficulty.addButton(b);
+        b = new Button(3*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, (int) (150*ref), (int)(ref*30), "Hard", Towser.fonts.get("normalLB"), Towser.textures.get("darkBoard"), Towser.colors.get("green_dark"));
+        chooseDifficulty.addButton(b);
         // GAME OVER
         gameOver = new Overlay(Towser.windWidth/2-width/2, Towser.windHeight/2-height/2, width, height);
         gameOver.display(false);
         gameOver.setBG(Towser.textures.get("board"));
         gameOver.setA(0.8f);
         gameOver.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, (int) (250*ref), (int)(ref*50), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, (int) (250*ref), (int)(ref*50), "Return to menu", Towser.fonts.get("normalLB"), Towser.textures.get("board"), Towser.colors.get("green_dark"));
         gameOver.addButton(b);
         // ENEMIES UPGRADED
         enemiesUpgraded = new Overlay(Towser.windWidth/2-width/2, Towser.windHeight/2-height/2, width, height);
@@ -63,20 +73,18 @@ public class PopupManager {
         enemiesUpgraded.setBG(Towser.textures.get("board"));
         enemiesUpgraded.setA(0.8f);
         enemiesUpgraded.setBorder(Towser.colors.get("green_dark"), 4);
-        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (150*ref), (int)(ref*30), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (150*ref), (int)(ref*30), "Crap !", Towser.fonts.get("normalLB"), Towser.textures.get("board"), Towser.colors.get("green_dark"));
         enemiesUpgraded.addButton(b);
     }
     
     public void update(){
-        checkPopupInput();
         if(currentOverlay == null)
             return;
         Towser.drawFilledRectangle(0, 0, Towser.windWidth, Towser.windHeight, null, 0.4f, Towser.textures.get("board"));
         currentOverlay.render();
         for(int i = 0 ; i < lines.size() ; i++)
             currentOverlay.drawText(currentOverlay.getW()/2, height/4+i*fonts.get(i).getHeight(lines.get(i)), lines.get(i), fonts.get(i));
-        for(int i = 0 ; i < currentOverlay.getButtons().size() ; i++)
-            currentOverlay.getButtons().get(i).drawText(buttonsText.get(i), Towser.fonts.get("normalLB"));
+        checkPopupInput();
     }
     
     private void checkPopupInput(){
@@ -93,9 +101,11 @@ public class PopupManager {
                 } 
                 SoundManager.Instance.closeAllClips();
                 game.ended = true;
-                Towser.state = Towser.State.MENU;
+                Towser.switchStateTo(Towser.State.MENU);
                 currentOverlay = null;
                 gameOver.display(false);
+                if(menu != null)
+                    menu.enableAllButtons();
             }
         }
         else if(currentOverlay == enemiesUpgraded){
@@ -125,6 +135,20 @@ public class PopupManager {
                     creation.enableAllButtons();
             }
         }
+        else if(currentOverlay == chooseDifficulty){
+            if(chooseDifficulty.getButtons().get(0).isClicked(0) || chooseDifficulty.getButtons().get(1).isClicked(0) || chooseDifficulty.getButtons().get(2).isClicked(0)){
+                clicked = true;
+                stateChanged = true;
+                currentOverlay = null;
+                chooseDifficulty.display(false);
+            }
+            if(chooseDifficulty.getButtons().get(0).isClicked(0))
+                Towser.newRandomMap(Towser.Difficulty.EASY);
+            else if(chooseDifficulty.getButtons().get(1).isClicked(0))
+                Towser.newRandomMap(Towser.Difficulty.MEDIUM);
+            else if(chooseDifficulty.getButtons().get(2).isClicked(0))
+                Towser.newRandomMap(Towser.Difficulty.HARD);
+        }
         if(clicked)
             Towser.setCursor(Towser.Cursor.DEFAULT);
     }
@@ -133,8 +157,14 @@ public class PopupManager {
         initPopup(popup);
         lines.add(texte);
         fonts.add(Towser.fonts.get("normalXL"));
-        
-        buttonsText.add("Ok");
+    }
+    
+    public void chooseDifficulty(){
+        initPopup(chooseDifficulty);
+        lines.add(" ");
+        fonts.add(Towser.fonts.get("normalXL"));
+        lines.add("Select a difficulty");
+        fonts.add(Towser.fonts.get("normalXL"));
     }
     
     public void gameOver(){
@@ -147,8 +177,6 @@ public class PopupManager {
         fonts.add(Towser.fonts.get("normalL"));
         lines.add("Wave "+game.waveNumber);
         fonts.add(Towser.fonts.get("normalXLB"));
-        
-        buttonsText.add("Return to menu");
     }
     
     public void enemiesUpgraded(String upgradeInfo){
@@ -163,14 +191,11 @@ public class PopupManager {
         fonts.add(Towser.fonts.get("normalL"));
         lines.add(upgradeInfo);
         fonts.add(Towser.fonts.get("normalXLB"));
-        
-        buttonsText.add("Crap !");
     }
 
     private void initPopup(Overlay overlay){
         lines.clear();
         fonts.clear();
-        buttonsText.clear();
         currentOverlay = overlay;
         currentOverlay.display(true);
         if(menu != null)
@@ -181,7 +206,16 @@ public class PopupManager {
             creation.disableAllButtons();
     }   
     
+    public void closeCurrentPopup(){
+        currentOverlay.display(false);
+        currentOverlay = null;
+    }
+    
     public boolean onPopup(){
         return currentOverlay != null;
+    }
+    
+    public boolean onChoosingDifficulty(){
+        return currentOverlay == chooseDifficulty;
     }
 }

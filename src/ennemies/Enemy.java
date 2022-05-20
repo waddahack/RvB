@@ -15,7 +15,6 @@ import managers.SoundManager;
 import towser.Tile;
 import towser.Towser;
 import static towser.Towser.game;
-import static towser.Towser.ref;
 import static towser.Towser.unite;
 import ui.Overlay;
 
@@ -55,6 +54,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             xBase = base.getX()+unite/2;
             yBase = base.getY()+unite/2;
         }
+        dir = spawn.getDirection();
         startTimeMove = System.currentTimeMillis();
         startTimeSteps = System.currentTimeMillis();
         checkDirStartTime = System.currentTimeMillis();
@@ -101,28 +101,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         if(sprite != null){
             double t = 0.03*moveSpeed*game.gameSpeed;
             if(t < 0.1) t = 0.1;
-            // Décalé parce que les sprites visent le haut plutot qu'à droite
-            switch(dir){
-                case "down":
-                    newAngle = 180;
-                    break;
-                case "left":
-                    newAngle = -90;
-                    break;
-                case "right":
-                    newAngle = 90;
-                    break;
-                default:
-                    newAngle = 0;
-                    break;
-            }
-            if(Math.abs(angle - newAngle) >= 180){
-                if(newAngle > 0)
-                    newAngle = 360-newAngle;
-                else
-                    newAngle = 360+newAngle;
-            }
-            
+
             if(Math.abs(angle - newAngle) <= 5)
                 t = 1;
             
@@ -158,7 +137,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             chooseDirection();
             checkDirStartTime = System.currentTimeMillis();
         }
-        movingBy = (moveSpeed*game.gameSpeed) * Towser.deltaTime / (50/ref);
+        movingBy = ((moveSpeed*game.gameSpeed) * Towser.deltaTime / 50) * Towser.uniteRef;
         switch(dir){
             case "down" : 
                 y += movingBy;
@@ -178,10 +157,40 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     private void chooseDirection(){
         Tile tile = game.getPath().get(indiceTuile);
-        if(tile.nextRoad.type == "nothing")
+        if(tile.nextRoad.type.equals("nothing")){
             die();
-        else
-            dir = tile.getDirection();
+            return;
+        }
+        String oldDir = dir;
+        dir = tile.getDirection();
+        if(!dir.equals(oldDir)){
+            switch(dir){
+                case "down":
+                    if(oldDir.equals("left"))
+                        newAngle = angle-90;
+                    else
+                        newAngle = angle+90;
+                    break;
+                case "left":
+                    if(oldDir.equals("up"))
+                        newAngle = angle-90;
+                    else
+                        newAngle = angle+90;
+                    break;
+                case "right":
+                    if(oldDir.equals("up"))
+                        newAngle = angle+90;
+                    else
+                        newAngle = angle-90;
+                    break;
+                default:
+                    if(oldDir.equals("left"))
+                        newAngle = angle+90;
+                    else
+                        newAngle = angle-90;
+                    break;
+            }
+        }
     }
     
     private boolean isOnCenterOfTile(){
@@ -238,16 +247,16 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public void renderInfo(Overlay o){
         
         // Sprites
-        Towser.drawFilledRectangle(o.getX()+20*ref, o.getY(), o.getH(), o.getH(), null, 1, sprite);
-        Towser.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20*ref, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        Towser.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        Towser.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
-        int width = (int) (200*ref), height = (int) (15*ref);
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3*ref, width, height, Towser.colors.get("white"), 1, null);
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3*ref, (int)(((double)life/(double)maxLife)*width), height, Towser.colors.get("life"), 1, null);
-        Towser.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3*ref), width, height, Towser.colors.get("green_dark"), 1, 2);        
+        int width = (int) (290*Towser.widthRef), height = 16;
+        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, Towser.colors.get("white"), 1, null);
+        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, Towser.colors.get("life"), 1, null);
+        Towser.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, Towser.colors.get("green_dark"), 1, 2);        
         // Name & life max
-        o.drawText(o.getW()/2, (int) (8*ref), name, Towser.fonts.get("normalL"));
-        o.drawText(o.getW()/2+Towser.fonts.get("normalL").getWidth(name)/2+Towser.fonts.get("life").getWidth(""+maxLife)/2+(int)(5*ref), (int) (8*ref), ""+maxLife, Towser.fonts.get("life"));
+        o.drawText(o.getW()/2, 12, name, Towser.fonts.get("normalL"));
+        o.drawText(o.getW()/2+Towser.fonts.get("normalL").getWidth(name)/2+Towser.fonts.get("life").getWidth(""+maxLife)/2+5, 12, ""+maxLife, Towser.fonts.get("life"));
     }
     
     public void attack(){

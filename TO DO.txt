@@ -1,16 +1,28 @@
-- VOIR LE FICHIER TODO SUR LE MAIN PC
-- Mettre le fichier todo main pc sur git (ici)
+- Régler bug hover button popup difficulty + difficulté change les attributs de départ
+- Option pour changer la taille de la tilemap avec comme indication : campagne jouable en 32/18
 
-- fix enemies' sprite's problem (see with created map)
+NEXT BIG UPDATE MUST HAVE :
 
-- Popup choisir difficulté map random
-(changer la proba d'aller tout droit en fct de difficulté.
-la proba d'atm est bien pour du difficile je pense)
-- Option pour changer la taille de la tilemap avec comme indication : campagne jouable en 22/18
+- Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).
+ Remplacer "Play" par "Fight Bazoo"
 
-CONTENU :
+- Créer 1 ou 2 tourelles, et 1 ou 2 ennemies (cf discord)
 
+- Créer Raztech (une tour très puissante et chère, plaçable une seule fois + cf discord)
+Raztech : invoque des tourelles ?
+
+- ne plus faire apparaitre ennemie selon vague (?)
+- Idée si on meurt jamais : à partir de la vague n, rendre plus exponentielle :  [plus ou moins déjà fait]
+
+IDEAS:
+
+- stat par tower par wave
+- implémenter les nouveaux son
 - Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types
 - Mode survie ou la gagne (mode gagne à faire)
-
 - Mode campagne : Adventure ? Campaign ?
+
+SPRITES :
+
+- Logos (argent [coins], vie, upgrades, options)
+- Bullet sprites

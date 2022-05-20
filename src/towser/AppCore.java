@@ -17,8 +17,8 @@ import org.newdawn.slick.opengl.Texture;
 import towser.Towser.Cursor;
 import static towser.Towser.game;
 import static towser.Towser.mouseDown;
-import static towser.Towser.ref;
 import static towser.Towser.unite;
+import static towser.Towser.widthRef;
 import static towser.Towser.windHeight;
 import static towser.Towser.windWidth;
 import ui.*;
@@ -455,31 +455,33 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int size = (int) (50*ref);
-        int sep = (int) (100*ref);
+        int size = 58;
+        int sep = (int) (200*widthRef);
         
-        o = new Overlay(0, (int) (windHeight-75*ref), windWidth, (int) (75*ref));
+        o = new Overlay(0, windHeight-86, windWidth, 86);
         o.setBG(Towser.textures.get("board"));
         o.setA(0.8f);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int) (45*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - size/2 - sep/2, 55, size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int) (45*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 + size/2 + sep/2, 55, size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b.setItemFramed(true);
         o.addButton(b);
         overlays.add(o);
         
-        o = new Overlay(0, 0, windWidth, (int) (50*ref));
+        o = new Overlay(0, 0, windWidth, 60);
         o.setBG(Towser.textures.get("board"));
         o.setA(0.8f);
-        b = new Button((int) (o.getW()-100*ref), (int) (25*ref), (int) (130*ref), (int) (30*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(o.getW()-100, 30, 130, 40, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button((int) (o.getW()-100*ref), (int) (25*ref), (int) (130*ref), (int) (30*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(o.getW()-100, 30, 130, 40, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setHidden(true);
         o.addButton(b);
         overlays.add(o);
         
-        int width = (int) (400*ref), height = (int) (40*ref);
+        int width = (int) (700*widthRef), height = 50;
         o = new Overlay(windWidth/2-width/2, 5, width, height);
-        o.setBG(Towser.textures.get("enemyBoard"));
+        o.setBG(Towser.textures.get("darkBoard"));
         o.setA(0.6f);
         o.setBorder(Towser.colors.get("green_dark"), 2);
         overlays.add(o);
@@ -500,14 +502,14 @@ public abstract class AppCore {
                 font = Towser.fonts.get("cantBuy");
             t = BasicTower.priceP+"*";
             b = o.getButtons().get(0);
-            b.drawText(0, (int) (-b.getH()/2-12*ref), t, font);
+            b.drawText(0, -b.getH()/2-12, t, font);
             
             font = Towser.fonts.get("canBuy");
             if(money < CircleTower.priceP)
                 font = Towser.fonts.get("cantBuy");
             t = CircleTower.priceP+"*";
             b = o.getButtons().get(1);
-            b.drawText(0, (int) (-b.getH()/2-12*ref), t, font);
+            b.drawText(0, -b.getH()/2-12, t, font);
         }
         //
         //// Overlay principal
@@ -515,10 +517,10 @@ public abstract class AppCore {
         o.render();
         
         t = money+"*";
-        o.drawText((int) (80*ref), o.getH()/2, t, Towser.fonts.get("astres"));
+        o.drawText(80, o.getH()/2, t, Towser.fonts.get("astres"));
         
         t = life+"";
-        o.drawText((int) (200*ref), o.getH()/2, t, Towser.fonts.get("life"));
+        o.drawText(200, o.getH()/2, t, Towser.fonts.get("life"));
         
         if(!o.getButtons().get(0).isHidden()){
             t = "Wave " + waveNumber;
@@ -565,6 +567,9 @@ public abstract class AppCore {
                     gameSpeed = 2;
                     break;
                 case 2:
+                    gameSpeed = 4;
+                    break;
+                case 4:
                     gameSpeed = 1;
                     break;
             }

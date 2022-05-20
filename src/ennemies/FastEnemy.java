@@ -2,7 +2,6 @@ package ennemies;
 
 import managers.SoundManager;
 import towser.Towser;
-import static towser.Towser.ref;
 
 public class FastEnemy extends Enemy{
     
@@ -16,7 +15,7 @@ public class FastEnemy extends Enemy{
         power = 4;
         shootRate = 1;
         moveSpeed = 4.2;
-        range = (int) (30*ref);
+        range = 3*Towser.unite;
         life = 42;
         weight = 1.5;
         width = Towser.unite;

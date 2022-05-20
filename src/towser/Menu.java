@@ -15,8 +15,8 @@ public class Menu {
     private Overlay[] overlays = new Overlay[5];
     
     public Menu(){
-        int width = (int) (200*ref);
-        int height = (int) (50*ref);
+        int width = 250;
+        int height = 60;
         start = new Button(windWidth/2, windHeight/6, width, height, null, Towser.colors.get("green_dark"));
         start.setDisabled(true);
         start.setBG(Towser.textures.get("disabled"));
@@ -70,6 +70,7 @@ public class Menu {
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
                 b.setDisabled(false);
+        start.setDisabled(true);
     }
     
     public Button getStart(){

@@ -48,10 +48,10 @@ public class Towser{
     
     public static State state = State.MENU;
     public static Cursor cursor = null;
-    public static int nbTileX = 22, nbTileY = 18; // Tilemap size. Doit être en accord avec le format des levels campagne à venir (22/18)
+    public static int nbTileX = 32, nbTileY = 18; // Tilemap size. Doit être en accord avec le format des levels campagne à venir (32/18)
     public static int unite;
     public static int fps = 120, windWidth, windHeight;
-    public static float ref, uniteRef;
+    public static float ref, uniteRef, widthRef;
     public static boolean mouseDown = false, stateChanged = false;
     private static double lastUpdate;
     public static double deltaTime;
@@ -86,6 +86,8 @@ public class Towser{
         windHeight = unite*nbTileY;
         ref = ((float)Math.max(windWidth, windHeight)/(float)Math.min(windWidth, windHeight));
         uniteRef = unite/50f;
+        int r = 1920/Display.getWidth();
+        widthRef = (float)windWidth/(float)(Display.getWidth()*r);
         
         initTextures();
         initColors();
@@ -155,6 +157,8 @@ public class Towser{
         State s = state;
         // ESCAPE MENU
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+            if(PopupManager.Instance.onPopup() && PopupManager.Instance.onChoosingDifficulty())
+                PopupManager.Instance.closeCurrentPopup();
             if(state == State.GAME)
                 SoundManager.Instance.pauseAll();
             menu.enableAllButtons();
@@ -172,13 +176,15 @@ public class Towser{
                 switchStateTo(State.GAME);
             }  
             if(menu.getRandom().isClicked(0)){
-                if(randomGame == null || randomGame.ended || randomGame.waveNumber == 1)
-                    randomGame = new Game(generateRandomPath(Difficulty.EASY)); 
-                else
+                if(randomGame == null || randomGame.ended || randomGame.waveNumber == 1){
+                    PopupManager.Instance.chooseDifficulty();
+                    // Then it does newRandomMap(difficulty)
+                }
+                else{
                     SoundManager.Instance.unpauseAll();
-                
-                game = randomGame;
-                switchStateTo(State.GAME);
+                    game = randomGame;
+                    switchStateTo(State.GAME);
+                }   
             }
             if(menu.getCreate().isClicked(0)){
                 if(generateEmptyMap()){
@@ -194,6 +200,15 @@ public class Towser{
         }
         if(s != state)
             setCursor(Cursor.DEFAULT);
+    }
+    
+    public static void newRandomMap(Difficulty difficulty){
+        ArrayList<Tile> path = generateRandomPath(difficulty);
+        if(path.size() > 0){
+            randomGame = new Game(path);
+            game = randomGame;
+            switchStateTo(State.GAME);
+        }
     }
     
     private static boolean generateEmptyMap(){
@@ -383,6 +398,8 @@ public class Towser{
                         dir = temp.getDirection();
                         if(dir.equals(previous.getDirection()))
                             dir = temp.previousRoad.getDirection();
+                        if(dir == null)
+                            dir = "previous of spawn doesnt have direction";
                         switch (dir) {
                             case "up":
                                 neighbors.remove(up);
@@ -415,7 +432,7 @@ public class Towser{
                 y = (int) accross.getY();
             }
             else{
-                if(neighbors.contains(accross))
+                if(neighbors.size() > 1 && neighbors.contains(accross))
                     neighbors.remove(accross);
                 r = rand.nextInt(neighbors.size());
                 x = (int) neighbors.get(r).getX();
@@ -441,6 +458,12 @@ public class Towser{
         int[] dirToSide;
         while(path.get(i).getX()-1 >= 0 && path.get(i).getX()+1 <= nbTileX-1 && path.get(i).getY()-1 >= 0 && path.get(i).getY()+1 <= nbTileY-1){ // Tant qu'il n'est pas à côté d'un bord
             dirToSide = directionToSide(path, map);
+            if(dirToSide == null){
+                System.out.println("failure");
+                PopupManager.Instance.popup("Error. Try again.");
+                path.clear();
+                break;
+            }
             
             road = new Tile(dirToSide[0], dirToSide[1]);
             road.setPreviousRoad(path.get(i));
@@ -570,8 +593,10 @@ public class Towser{
             y++;
         else if(min == left)
             x--;
-        else
+        else if(min == right)
             x++;
+        else
+            return null;
         
         dir = new int[]{x, y};
         return dir;
@@ -705,7 +730,7 @@ public class Towser{
             // Backgrounds
             textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/disabled.png"))));
             textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/board.png"))));
-            textures.put("enemyBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/enemy_board.png"))));
+            textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/dark_board.png"))));
             textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/red.png"))));
             textures.put("white", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/white.png"))));
             // Map
@@ -750,67 +775,67 @@ public class Towser{
         String police = "Bahnschrift";
         
         color = Towser.colors.get("white");
-        Font awtFont = new Font(police, Font.PLAIN, (int) (12*ref));
+        Font awtFont = new Font(police, Font.PLAIN, 16);
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, (int) (16*ref));
+        awtFont = new Font(police, Font.PLAIN, 20);
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, (int) (20*ref));
+        awtFont = new Font(police, Font.PLAIN, 25);
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.PLAIN, (int) (30*ref));
+        awtFont = new Font(police, Font.PLAIN, 34);
         UnicodeFont normalXL = new UnicodeFont(awtFont);
         normalXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXL.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (16*ref));
+        awtFont = new Font(police, Font.BOLD, 20);
         UnicodeFont normalB = new UnicodeFont(awtFont);
         normalB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalB.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
+        awtFont = new Font(police, Font.BOLD, 24);
         UnicodeFont normalLB = new UnicodeFont(awtFont);
         normalLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalLB.addAsciiGlyphs();
         
         color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (30*ref));
+        awtFont = new Font(police, Font.BOLD, 34);
         UnicodeFont normalXLB = new UnicodeFont(awtFont);
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXLB.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
+        awtFont = new Font(police, Font.BOLD, 24);
         UnicodeFont astres = new UnicodeFont(awtFont);
         astres.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
         astres.addAsciiGlyphs();
         
         color = Towser.colors.get("life");
-        awtFont = new Font(police, Font.BOLD, (int) (20*ref));
+        awtFont = new Font(police, Font.BOLD, 24);
         UnicodeFont life = new UnicodeFont(awtFont);
         life.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         life.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (14*ref));
+        awtFont = new Font(police, Font.BOLD, 18);
         UnicodeFont canBuy = new UnicodeFont(awtFont);
         canBuy.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
         canBuy.addAsciiGlyphs();
         
         //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int) (14*ref));
+        awtFont = new Font(police, Font.BOLD, 18);
         UnicodeFont cantBuy = new UnicodeFont(awtFont);
         cantBuy.getEffects().add(new ColorEffect(new Color(210, 30, 30)));
         cantBuy.addAsciiGlyphs();
