@@ -1,7 +1,6 @@
 package towser;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,12 +9,12 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser.State;
 import static towser.Towser.mouseDown;
-import static towser.Towser.ref;
 import static towser.Towser.stateChanged;
 import static towser.Towser.unite;
 import static towser.Towser.windHeight;
 import ui.Button;
 import ui.Overlay;
+import static towser.Towser.ref;
 
 public class Creation extends AppCore{
     
@@ -23,7 +22,8 @@ public class Creation extends AppCore{
     private ArrayList<Tile> roads;
     
     public Creation(){
-        super();
+        init(Towser.Difficulty.MEDIUM);
+        initOverlays();   
         initMap("created");
         
         roads = new ArrayList<>();
@@ -48,9 +48,9 @@ public class Creation extends AppCore{
         Button b;
         
         o = new Overlay(0, (int) (windHeight-80*ref), Towser.windWidth, (int) (80*ref));
-        b = new Button((int) (50*ref), (int) (10*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (80*ref), (int) (10*ref), (int) (100*ref), (int) (26*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button((int) (50*ref), (int) (40*ref), (int) (70*ref), (int) (24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (80*ref), (int) (50*ref), (int) (100*ref), (int) (26*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
     }
@@ -162,7 +162,7 @@ public class Creation extends AppCore{
                 else
                     return "There can't be more than one path... yet !";
             } 
-                
+
             if(road.nextRoad != null && road.nextRoad.type == "nothing")
                 base = road;
         }

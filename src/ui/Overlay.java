@@ -5,7 +5,6 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
-import static towser.Towser.ref;
 
 public class Overlay {
     
@@ -13,7 +12,7 @@ public class Overlay {
     private float[] rgb = null, borderRgb = null;
     private int borderWidth;
     private Texture bg = null;
-    private float a = 1;
+    private float a = 1, borderA = 1;
     private boolean display;
     private ArrayList<Button> buttons = new ArrayList<>();
     private ArrayList<Integer> texturesX = new ArrayList<>(), texturesY = new ArrayList<>(), texturesW = new ArrayList<>(), texturesH = new ArrayList<>();
@@ -34,8 +33,9 @@ public class Overlay {
         display = true;
     }
     
-    public void setBG(Texture bg){
+    public void setBG(Texture bg, float a){
         this.bg = bg;
+        this.a = a;
     }
     
     public void setRGB(float[] rgb){
@@ -47,9 +47,10 @@ public class Overlay {
         this.a = a;
     }
     
-    public void setBorder(float[] rgb, int width){
+    public void setBorder(float[] rgb, int width, float a){
         this.borderRgb = rgb;
         this.borderWidth = width;
+        this.borderA = a;
     }
     
     public void setX(int x){
@@ -64,6 +65,10 @@ public class Overlay {
         this.a = a;
     }
     
+    public void setBorderA(float borderA){
+        this.borderA = borderA;
+    }
+    
     public void render(){
         if(!display)
             return;
@@ -72,7 +77,7 @@ public class Overlay {
         else if(rgb != null)
             Towser.drawFilledRectangle(x, y, width, height, rgb, a, null);
         if(borderRgb != null)
-            Towser.drawRectangle(x, y, width, height, borderRgb, 1, borderWidth);
+            Towser.drawRectangle(x, y, width, height, borderRgb, borderA, borderWidth);
         
         for(Button b : buttons)
             b.update();

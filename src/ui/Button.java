@@ -6,6 +6,7 @@ import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import towser.Towser.Cursor;
 import static towser.Towser.mouseDown;
+import static towser.Towser.ref;
 
 
 public class Button {
@@ -34,10 +35,6 @@ public class Button {
     
     public Button(int x, int y, int width, int height, String text, UnicodeFont font, Texture bg, float[] borderRgb){
         build(x ,y, width, height, text, font, bg, null, borderRgb, 0);
-    }
-    
-    public Button(int x, int y, int width, int height, String text, UnicodeFont font,  float[] rgb, float[] borderRgb){
-        build(x ,y, width, height, text, font, null, rgb, borderRgb, 0);
     }
     
     public Button(int x, int y, int width, int height, String text, UnicodeFont font, float[] rgb, float[] borderRgb, int nbClicksMax){
@@ -109,7 +106,7 @@ public class Button {
             Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, rgb, 1f, null);
         if(bg != null){
             if(itemFramed)
-                Towser.drawFilledRectangle((double)(x-width/2+5), (double)(y-height/2+5), width-10, height-10, null, 1f, bg);
+                Towser.drawFilledRectangle((double)(x-width/2+(int)(5*ref)), (double)(y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
             else
                 Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, null, 1f, bg);
         }

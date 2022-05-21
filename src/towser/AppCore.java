@@ -15,10 +15,11 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser.Cursor;
+import towser.Towser.Difficulty;
 import static towser.Towser.game;
 import static towser.Towser.mouseDown;
 import static towser.Towser.unite;
-import static towser.Towser.widthRef;
+import static towser.Towser.ref;
 import static towser.Towser.windHeight;
 import static towser.Towser.windWidth;
 import ui.*;
@@ -88,17 +89,10 @@ public abstract class AppCore {
     protected ArrayList<Overlay> overlays;
     
     public AppCore(){
-        init();
         
-        life = 100;
-        money = 300;
-        waveNumber = 1;
-        waveReward = 250;
-        
-        initOverlays();
     }
     
-    protected void init(){
+    protected void init(Difficulty diff){
         towers = new ArrayList<>();
         towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -111,6 +105,25 @@ public abstract class AppCore {
         CircleTower.priceP = CircleTower.startPrice;
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
+        
+        if(diff == Difficulty.EASY){
+            life = 150;
+            money = 350;
+            waveNumber = 1;
+            waveReward = 275;
+        }
+        else if(diff == Difficulty.HARD){
+            life = 50;
+            money = 250;
+            waveNumber = 1;
+            waveReward = 225;
+        }
+        else{ //if(diff == Difficulty.MEDIUM)
+            life = 100;
+            money = 300;
+            waveNumber = 1;
+            waveReward = 250;
+        }
     }
     
     protected void initMap(String lvlName){
@@ -455,35 +468,33 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int size = 58;
-        int sep = (int) (200*widthRef);
+        int size = (int) (58*ref);
+        int sep = (int) (200*ref);
         
-        o = new Overlay(0, windHeight-86, windWidth, 86);
-        o.setBG(Towser.textures.get("board"));
-        o.setA(0.8f);
-        b = new Button(windWidth/2 - size/2 - sep/2, 55, size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o = new Overlay(0, windHeight-(int)(86*ref), windWidth, (int)(86*ref));
+        o.setBG(Towser.textures.get("board"), 0.6f);
+        o.setA(0.6f);
+        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, 55, size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
         overlays.add(o);
         
-        o = new Overlay(0, 0, windWidth, 60);
-        o.setBG(Towser.textures.get("board"));
-        o.setA(0.8f);
-        b = new Button(o.getW()-100, 30, 130, 40, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o = new Overlay(0, 0, windWidth, (int)(60*ref));
+        o.setBG(Towser.textures.get("board"), 0.6f);
+        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button(o.getW()-100, 30, 130, 40, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setHidden(true);
         o.addButton(b);
         overlays.add(o);
         
-        int width = (int) (700*widthRef), height = 50;
-        o = new Overlay(windWidth/2-width/2, 5, width, height);
-        o.setBG(Towser.textures.get("darkBoard"));
-        o.setA(0.6f);
-        o.setBorder(Towser.colors.get("green_dark"), 2);
+        int width = (int) (700*ref), height = (int) (50*ref);
+        o = new Overlay(windWidth/2-width/2, (int)(5*ref), width, height);
+        o.setBG(Towser.textures.get("darkBoard"), 0.4f);
+        o.setBorder(Towser.colors.get("green_dark"), 2, 0.8f);
         overlays.add(o);
     }
     
@@ -502,14 +513,14 @@ public abstract class AppCore {
                 font = Towser.fonts.get("cantBuy");
             t = BasicTower.priceP+"*";
             b = o.getButtons().get(0);
-            b.drawText(0, -b.getH()/2-12, t, font);
+            b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
             
             font = Towser.fonts.get("canBuy");
             if(money < CircleTower.priceP)
                 font = Towser.fonts.get("cantBuy");
             t = CircleTower.priceP+"*";
             b = o.getButtons().get(1);
-            b.drawText(0, -b.getH()/2-12, t, font);
+            b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
         }
         //
         //// Overlay principal
@@ -517,11 +528,11 @@ public abstract class AppCore {
         o.render();
         
         t = money+"*";
-        o.drawText(80, o.getH()/2, t, Towser.fonts.get("astres"));
+        o.drawText((int)(80*ref), o.getH()/2, t, Towser.fonts.get("astres"));
         
         t = life+"";
-        o.drawText(200, o.getH()/2, t, Towser.fonts.get("life"));
-        
+        o.drawText((int)(200*ref), o.getH()/2, t, Towser.fonts.get("life"));
+
         if(!o.getButtons().get(0).isHidden()){
             t = "Wave " + waveNumber;
             o.getButtons().get(0).drawText(0, 0, t, Towser.fonts.get("normalB"));

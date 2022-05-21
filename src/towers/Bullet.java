@@ -7,7 +7,7 @@ import towser.Game;
 import towser.Towser;
 import towser.Shootable;
 import static towser.Towser.game;
-import static towser.Towser.uniteRef;
+import static towser.Towser.ref;
 
 public class Bullet{
     
@@ -48,7 +48,7 @@ public class Bullet{
     }
     
     public void move(){
-        double speed = (this.speed*game.gameSpeed * Towser.deltaTime / 50) * Towser.uniteRef;
+        double speed = (this.speed*game.gameSpeed * Towser.deltaTime / 50) * Towser.ref;
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
         boolean touched = hasTouched(angle), inRange = isInRange();

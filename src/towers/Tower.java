@@ -13,13 +13,13 @@ import towser.Towser;
 import towser.Shootable;
 import managers.SoundManager;
 import static towser.Towser.game;
+import static towser.Towser.ref;
 import static towser.Towser.unite;
-import static towser.Towser.widthRef;
 import ui.*;
 
 public abstract class Tower extends Tile implements Shootable{
     
-    protected int price, range, power, bulletSpeed, life, width, totalPrice, nbUpgrades = 4;
+    protected int price, range, power, bulletSpeed, life, width, totalPrice, nbUpgrades = 4, totalMoneySpent;
     protected double lastShoot = 0, growth = 0;
     protected float shootRate;
     protected String name, textureName;
@@ -54,7 +54,7 @@ public abstract class Tower extends Tile implements Shootable{
         ArrayList<Button> buts = overlays.get(1).getButtons();
         Button b;
         float up = 0f, upPrice, upPriceIncrease, upMultiplier;
-        for(int i = 0 ; i < buts.size() ; i++){
+        for(int i = 0 ; i < buts.size()-1 ; i++){
             switch(i){
                 case 0:
                     up = range;
@@ -76,6 +76,7 @@ public abstract class Tower extends Tile implements Shootable{
             if(b.isClicked(0) && game.money >= upPrice){
                 size += growth;
                 game.money -= upPrice;
+                totalMoneySpent += upPrice;
                 if(upMultiplier > 2)
                     up += upMultiplier;
                 else
@@ -182,31 +183,29 @@ public abstract class Tower extends Tile implements Shootable{
     public void initOverlay(){
         Overlay o1, o2;
         
-        o1 = new Overlay(0, Towser.windHeight-90-30, 150, 30);
-        o1.setBG(Towser.textures.get("board"));
-        o1.setA(0.8f);
+        o1 = new Overlay(0, Towser.windHeight-(int)((86+30)*ref), (int)(150*ref), (int)(30*ref));
+        o1.setBG(Towser.textures.get("board"), 0.6f);
         overlays.add(o1);
         
-        o2 = new Overlay(0, Towser.windHeight-90, Towser.windWidth, 90);
-        o2.setBG(Towser.textures.get("board"));
-        o2.setA(0.8f);
+        o2 = new Overlay(0, Towser.windHeight-(int)(86*ref), Towser.windWidth, (int)(86*ref));
+        o2.setBG(Towser.textures.get("board"), 0.6f);
         
-        int sep = (int) (200*widthRef);
-        int imageSize = o2.getH()-20;
-        int butWidth = (int) (200*widthRef), butHeight = 38;
-        if(imageSize + upgradesParam.size()*sep + upgradesParam.size()*butWidth + butWidth/2 > Towser.windWidth)
-            sep = 30;
-        int marginToCenter = Towser.windWidth-o1.getW()-((upgradesParam.size()-1)*sep +  (upgradesParam.size()-1)*butWidth + butWidth/2 + butWidth);
+        int sep = (int) (200*ref);
+        int imageSize = o2.getH()-(int)(20*ref);
+        int butWidth = (int) (200*ref), butHeight = (int)(38*ref);
+        int marginToCenter = Towser.windWidth-o1.getW()-((upgradesParam.size()-1)*sep + (upgradesParam.size()-1)*butWidth + butWidth/2 + butWidth);
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2-imageSize/2, 10, imageSize, imageSize, Towser.textures.get(textureName));
+        o2.addImage(o1.getW()/2-imageSize/2, (int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
         for(int i = 0 ; i < upgradesParam.size() ; i++){
             Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"), (int)Math.floor(upgradesParam.get("maxUpgradeClicks").get((i))));
             if(upgradesParam.get("maxUpgradeClicks").get(i) <= 0)
                 b.setHidden(true);
             o2.addButton(b);
         }
+        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o2.addButton(b);
         overlays.add(o2);
     }
     
@@ -223,7 +222,8 @@ public abstract class Tower extends Tile implements Shootable{
         overlay.drawText(overlay.getW()/2, overlay.getH()/2, name, Towser.fonts.get("normalL"));
         
         overlay = overlays.get(1);
-        for(int i = 0 ; i < nbUpgrades ; i++){
+        int i;
+        for(i = 0 ; i < nbUpgrades ; i++){
             switch(i){
                 case 0:
                     t = "Range : "+range;
@@ -241,7 +241,7 @@ public abstract class Tower extends Tile implements Shootable{
             b = overlay.getButtons().get(i);
             upPrice = upgradesParam.get("prices").get(i);
             
-            overlay.drawText(b.getX(), 15 + Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));
+            overlay.drawText(b.getX(), (int)(15*ref)+ Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));
             
             if(upPrice != 0 && !b.isHidden()){
                 String price = (int)Math.floor(upPrice)+"";
@@ -259,6 +259,7 @@ public abstract class Tower extends Tile implements Shootable{
                 b.drawText((font.getWidth(up) - priceFont.getWidth(price) - font.getWidth("  )"))/2 - 2, 0, price, priceFont);
             }
         }
+        overlay.getButtons().get(overlay.getButtons().size()-1).drawText("Sell", Towser.fonts.get("normalS"));
     }
     
     public void updateBullets(){

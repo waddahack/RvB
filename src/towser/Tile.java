@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotated;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
-import static towser.Towser.ref;
 import static towser.Towser.unite;
 
 public class Tile {

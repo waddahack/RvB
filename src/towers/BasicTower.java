@@ -26,6 +26,7 @@ public class BasicTower extends Tower{
         life = 100;
         width = 4*Towser.unite/5;
         size = width;
+        totalMoneySpent = priceP;
         name = "Razannon";
         textureName = "basicTower";
         bulletSpeed = 14;

@@ -1,29 +1,28 @@
 package towser;
 
 import ui.Button;
-import java.util.ArrayList;
 import managers.PopupManager;
-import static towser.Towser.ref;
-import static towser.Towser.windHeight;
-import static towser.Towser.windWidth;
+import managers.SoundManager;
+import static towser.Towser.*;
 import ui.Overlay;
 
 
 public class Menu {
     
-    private Button start, random, create, option, exit;
+    private Button start, random, regenerate, create, option, exit;
     private Overlay[] overlays = new Overlay[5];
     
     public Menu(){
-        int width = 250;
-        int height = 60;
-        start = new Button(windWidth/2, windHeight/6, width, height, null, Towser.colors.get("green_dark"));
+        int width = (int) (250*ref);
+        int height = (int) (60*ref);
+        start = new Button(windWidth/2, windHeight/6, width, height, null, colors.get("green_dark"));
         start.setDisabled(true);
-        start.setBG(Towser.textures.get("disabled"));
-        random = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        create = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        option = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
-        exit = new Button(windWidth/2, windHeight/6, width, height, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        start.setBG(textures.get("disabled"));
+        random = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        regenerate = new Button(random.getX(), random.getY()+random.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
+        create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        option = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        exit = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
         for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, i*windHeight/6, windWidth, windHeight/6);
             switch(i){
@@ -32,6 +31,7 @@ public class Menu {
                     break;
                 case 1:
                     overlays[i].addButton(random);
+                    overlays[i].addButton(regenerate);
                     break;
                 case 2:
                     overlays[i].addButton(create);
@@ -46,18 +46,70 @@ public class Menu {
         }
     }
     
-    public void render(){
-        Towser.drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, Towser.textures.get("grass"));
+    public void update(){
+        render();
+        checkInput();
+        PopupManager.Instance.update();
+    }
+    
+    private void render(){
+        drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, textures.get("grass"));
         for(Overlay o : overlays){
             o.render();
         }
-        start.drawText(0, 0, "    Adventure\n(inc... not soon)", Towser.fonts.get("normalL"));
-        random.drawText(0, 0, "Random map", Towser.fonts.get("normalL"));
-        create.drawText(0, 0, "Create map", Towser.fonts.get("normalL"));
-        option.drawText(0, 0, "Options", Towser.fonts.get("normalL"));
-        exit.drawText(0, 0, "Exit", Towser.fonts.get("normalL"));
+        start.drawText(0, 0, "    Adventure\n(inc... not soon)", fonts.get("normalL"));
+        if(randomGame == null)
+            random.drawText(0, 0, "New random map", fonts.get("normalL"));
+        else{
+            random.drawText(0, 0, "Continue", fonts.get("normalL"));
+            regenerate.drawText(0, 0, "Regenerate", fonts.get("normal"));
+        }  
+        create.drawText(0, 0, "Create", fonts.get("normalL"));
+        option.drawText(0, 0, "Options", fonts.get("normalL"));
+        exit.drawText(0, 0, "Exit", fonts.get("normalL"));
+    }
+    
+    private void checkInput(){
+        if(randomGame == null)
+            overlays[1].getButtons().get(1).setHidden(true);
+        else
+            overlays[1].getButtons().get(1).setHidden(false);
         
-        PopupManager.Instance.update();
+        if(start.isClicked(0)){
+            if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
+                adventureGame = new Game("1");
+            else
+                SoundManager.Instance.unpauseAll();
+
+            game = adventureGame;
+            switchStateTo(State.GAME);
+        }  
+        if(random.isClicked(0)){
+            if(randomGame == null){
+                PopupManager.Instance.chooseDifficulty();
+                // Then it does newRandomMap(difficulty)
+            }
+            else{
+                SoundManager.Instance.unpauseAll();
+                game = randomGame;
+                switchStateTo(State.GAME);
+            }   
+        }
+        if(regenerate.isClicked(0)){
+            PopupManager.Instance.chooseDifficulty();
+            // Then it does newRandomMap(difficulty)
+        }
+        if(create.isClicked(0)){
+            if(generateEmptyMap()){
+                creation = new Creation();
+                switchStateTo(State.CREATION);
+            }
+            else{
+                PopupManager.Instance.popup("\n        Hmmm... Very strange...\n    Create a directory \"levels\" in\nthe same location than your game.");
+            }
+        }  
+        if(exit.isClicked(0))
+            switchStateTo(State.EXIT);
     }
     
     public void disableAllButtons(){
