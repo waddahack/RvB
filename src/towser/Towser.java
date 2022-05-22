@@ -189,7 +189,7 @@ public class Towser{
     
     public static boolean generateEmptyMap(){
         try{
-            File file = new File("levels/level_created.txt");
+            File file = new File("assets/levels/level_created.txt");
             if(file.createNewFile()){
                 FileWriter myWriter = new FileWriter(file, false);
                 String emptyMap = "";
@@ -329,40 +329,40 @@ public class Towser{
         try {     
             textures = new HashMap<>();
             // Other
-            textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/arrow.png"))));
+            textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             // Cursors
-            textures.put("cursorDefault", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/cursor_default.png"))));
-            textures.put("cursorPointer", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/cursor_pointer.png"))));
-            textures.put("cursorGrab", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/cursor_grab.png"))));
+            textures.put("cursorDefault", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_default.png"))));
+            textures.put("cursorPointer", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_pointer.png"))));
+            textures.put("cursorGrab", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_grab.png"))));
             // Backgrounds
-            textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/disabled.png"))));
-            textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/board.png"))));
-            textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/dark_board.png"))));
-            textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/red.png"))));
-            textures.put("white", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/white.png"))));
+            textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/disabled.png"))));
+            textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/board.png"))));
+            textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/dark_board.png"))));
+            textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/red.png"))));
+            textures.put("white", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/white.png"))));
             // Map
-            textures.put("roadStraight", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/road_straight.png"))));
-            textures.put("roadTurn", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/road_turn.png"))));
-            textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/grass.png"))));
-            textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/big_plant1.png"))));
-            textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("images/big_plant2.png"))));
+            textures.put("roadStraight", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_straight.png"))));
+            textures.put("roadTurn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_turn.png"))));
+            textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
+            textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
+            textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
             // Towers
-            textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/basic_tower.png"))));
-            textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/basic_tower_base.png"))));
-            textures.put("basicTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/basic_tower_turret.png"))));
-            textures.put("circleTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/circle_tower.png"))));
+            textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
+            textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
+            textures.put("basicTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_turret.png"))));
+            textures.put("circleTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower.png"))));
             // Bullets
-            textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/bullet_blue.png"))));
-            textures.put("bulletGrey", TextureLoader.getTexture("PNG", new FileInputStream(new File("towers/bullet_grey.png"))));
+            textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
+            textures.put("bulletGrey", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_grey.png"))));
             // Enemies
-            textures.put("basicEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/basic_enemy.png"))));
-            textures.put("basicEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/basic_enemy_bright.png"))));
-            textures.put("fastEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/fast_enemy.png"))));
-            textures.put("fastEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/fast_enemy_bright.png"))));
-            textures.put("strongEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/strong_enemy.png"))));
-            textures.put("strongEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/strong_enemy_bright.png"))));
-            textures.put("trickyEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/tricky_enemy.png"))));
-            textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("enemies/tricky_enemy_bright.png"))));
+            textures.put("basicEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy.png"))));
+            textures.put("basicEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy_bright.png"))));
+            textures.put("fastEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/fast_enemy.png"))));
+            textures.put("fastEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/fast_enemy_bright.png"))));
+            textures.put("strongEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy.png"))));
+            textures.put("strongEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_bright.png"))));
+            textures.put("trickyEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy.png"))));
+            textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

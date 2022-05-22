@@ -202,7 +202,7 @@ public class Creation extends AppCore{
                 pathCoords += road.getIndexY()+" ";
             }
             // Write in file
-            File file = new File("levels/level_created.txt");
+            File file = new File("assets/levels/level_created.txt");
             PrintWriter writer = new PrintWriter(file);
             writer.print(level+"\nPATH: "+pathCoords);
             writer.close();

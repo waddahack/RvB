@@ -127,7 +127,7 @@ public abstract class AppCore {
     }
     
     protected void initMap(String lvlName){
-        readFile("levels/level_"+lvlName+".txt");
+        readFile("assets/levels/level_"+lvlName+".txt");
         fixRoadNeighbors();
         fixRoadSprites();
     }

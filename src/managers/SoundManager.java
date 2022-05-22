@@ -65,7 +65,7 @@ public class SoundManager
     public void addAmbianceSound(String name, Volume v){
         try {
             Clip clip;
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("audio/"+name+".wav").getAbsoluteFile());
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("assets/audio/"+name+".wav").getAbsoluteFile());
             clip = AudioSystem.getClip();
             clip.open(audioStream);
             audioStream.close();
@@ -100,7 +100,7 @@ public class SoundManager
     {
         Clip clip = null;
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("audio/"+soundName+".wav").getAbsoluteFile());
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File("assets/audio/"+soundName+".wav").getAbsoluteFile());
             clip = AudioSystem.getClip();
             clip.open(audioStream);
             audioStream.close();
