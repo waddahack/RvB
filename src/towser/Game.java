@@ -28,11 +28,11 @@ public class Game extends AppCore{
         Random rand = new Random();
         ArrayList<ArrayList<Tile>> map = new ArrayList<>();
         ArrayList<Tile> row, path = new ArrayList<>(), neighbors = new ArrayList<>();
-        int x, y;
+        int x, y, aimX, aimY;
         Tile road, previous;
         String dir, dirToCount;
         // nombre de road de la map restante
-        int nbRoadLeft = (int) ((nbTileX*nbTileY) / (3*diff.value));
+        int nbRoadLeft = diff.getNbRoad();
         // remplissage de la map par du vide
         for(int i = 0 ; i < nbTileY ; i++){
             row = new ArrayList<>();
@@ -51,6 +51,8 @@ public class Game extends AppCore{
             y = rand.nextInt(nbTileY);
         }
         road = new Tile(x, y);
+        aimX = nbTileX-1-x;
+        aimY = nbTileY-1-y;
         if(x == 0)
             road.previousRoad = new Tile(x-1, y);
         else if(x == nbTileX-1)
@@ -74,6 +76,8 @@ public class Game extends AppCore{
             left = new Tile(x-1, y);
             right = new Tile(x+1, y);
             accross = null;
+            previous = path.get(i).previousRoad;
+            previous.setDirectionWithPos();
             // ajout des positions voisines si c'est ni un bord ni une road
             if(y-1 >= 0 && map.get(y-1).get(x) == null)
                 neighbors.add(up);
@@ -85,9 +89,7 @@ public class Game extends AppCore{
                 neighbors.add(right);
             // remove les voisins qui nous fait entrer dans une boucle
             // (on remove ceux qui vont dans le même sens quela tuile sur laquelle on s'est cogné, en checkant les 3 tuiles en face)
-            if(neighbors.size() > 1 && i > 0){
-                previous = path.get(i-1);
-                previous.setDirectionWithPos();
+            if(neighbors.size() > 1 && previous.getDirection() != null){
                 switch (previous.getDirection()) {
                     case "up":
                         accross = up;
@@ -219,16 +221,35 @@ public class Game extends AppCore{
             }
             
             r = rand.nextInt(3);
-            if(r != 0 && neighbors.contains(accross)){
+            if(r != 0 && neighbors.contains(accross)){ // tout droit
                 x = (int) accross.getX();
                 y = (int) accross.getY();
             }
-            else{
+            else{ // tourne
                 if(neighbors.size() > 1 && neighbors.contains(accross))
                     neighbors.remove(accross);
-                r = rand.nextInt(neighbors.size());
-                x = (int) neighbors.get(r).getX();
-                y = (int) neighbors.get(r).getY();
+                if(neighbors.size() == 1){
+                    x = (int) neighbors.get(0).getX();
+                    y = (int) neighbors.get(0).getY();
+                }
+                else{ // ajoute de la proba pour le virage qui va en direction de l'opposé du spawn
+                    if((aimX > neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() > 0) || (aimY > neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() > 0) || (aimY < neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() < 0)){
+                        temp = neighbors.get(0);
+                        neighbors.set(0, neighbors.get(1));
+                        neighbors.set(1, temp);
+                    }
+                    int proba = 3;
+                    r = rand.nextInt(2+diff.value);
+                    if(r > 0){
+                        x = (int) neighbors.get(0).getX();
+                        y = (int) neighbors.get(0).getY();
+                    }
+                    else{
+                        x = (int) neighbors.get(1).getX();
+                        y = (int) neighbors.get(1).getY();
+                    }
+                }    
+                
             }
             
             road = new Tile(x, y);

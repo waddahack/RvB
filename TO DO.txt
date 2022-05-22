@@ -1,7 +1,5 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- Button sell
-
 - Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).
  Remplacer "Play" par "Fight Bazoo"
 

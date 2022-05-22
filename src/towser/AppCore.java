@@ -74,17 +74,17 @@ public abstract class AppCore {
         }
     }
     
-    protected ArrayList<ArrayList<Tile>> map;
+    public ArrayList<ArrayList<Tile>> map;
     protected Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
-    protected ArrayList<Tower> towers, towersDestroyed;
+    public ArrayList<Tower> towers, towersDestroyed;
     public ArrayList<Enemy> enemies, ennemiesDead;
-    protected ArrayList<Tile> path;
+    public ArrayList<Tile> path;
     protected boolean gameOver;
     protected boolean inWave, dontPlace;
     public Enemy enemySelected = null;
     public boolean ended = false;
-    protected Tower towerSelected;
+    public Tower towerSelected;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     
@@ -376,8 +376,14 @@ public abstract class AppCore {
             
         }
         
-        for(Tower t : towers)
-            t.update();
+        for(int i = 0 ; i < towers.size() ; i++){
+            towers.get(i).update();
+            if(towers.get(i).toRemove()){
+                towers.remove(i);
+                i--;
+            }
+        }
+            
         
         renderOverlays();
         
@@ -703,24 +709,8 @@ public abstract class AppCore {
         enemies.add(0, e);
     }
     
-    public ArrayList<Tower> getTowers(){
-        return towers;
-    }
-    
-    public ArrayList<Tower> getTowersDestroyed(){
-        return towersDestroyed;
-    }
-    
     public ArrayList<Enemy> getEnnemiesDead(){
         return ennemiesDead;
-    }
-    
-    public ArrayList<ArrayList<Tile>> getMap(){
-        return map;
-    }
-    
-    public ArrayList<Tile> getPath(){
-        return path;
     }
     
     public Tile getSpawn(){

@@ -153,7 +153,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     public void setDirection(){
-        Tile tile = game.getPath().get(indiceTuile);
+        Tile tile = game.path.get(indiceTuile);
         if(tile.nextRoad.type.equals("nothing")){
             die();
             return;
@@ -214,7 +214,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         if(isDead())
             return true;
         int x = (int) Math.floor(this.x/unite), y = (int) Math.floor(this.y/unite);
-        Tile t = game.getPath().get(indiceTuile);
+        Tile t = game.path.get(indiceTuile);
         return (x == t.getIndexX() && y == t.getIndexY());
     }
     
@@ -223,13 +223,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     private void setPositionInCenterOfTile(){
-        Tile t = game.getPath().get(indiceTuile);
+        Tile t = game.path.get(indiceTuile);
         x = t.getX()+unite/2;
         y = t.getY()+unite/2;
     }
     
     public boolean isInBase(){
-        return (indiceTuile == game.getPath().size()-1);
+        return (indiceTuile == game.path.size()-1);
     }
     
     public ArrayList<Shootable> getEnemiesTouched(){
@@ -282,6 +282,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
 
     public void attacked(int power){
+        if(!started)
+            return;
         life -= power;
         startTimeWaitFor = System.currentTimeMillis();
         if(life <= 0){

@@ -24,7 +24,7 @@ public abstract class Tower extends Tile implements Shootable{
     protected float shootRate;
     protected String name, textureName;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
-    protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate;
+    protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate, toBeRemoved;
     protected Enemy enemyAimed;
     protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
     protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
@@ -51,29 +51,31 @@ public abstract class Tower extends Tile implements Shootable{
     }
     
     private void checkOverlayInput(){
-        ArrayList<Button> buts = overlays.get(1).getButtons();
         Button b;
         float up = 0f, upPrice, upPriceIncrease, upMultiplier;
-        for(int i = 0 ; i < buts.size()-1 ; i++){
-            switch(i){
-                case 0:
-                    up = range;
-                    break;
-                case 1:
-                    up = power;
-                    break;
-                case 2:
-                    up = shootRate;
-                    break;
-                case 3:
-                    up = bulletSpeed;
-                    break;
-            }
-            b = buts.get(i);
-            upPrice = upgradesParam.get("prices").get(i);
-            upPriceIncrease = upgradesParam.get("priceMultipliers").get(i);
-            upMultiplier = upgradesParam.get("multipliers").get(i);
-            if(b.isClicked(0) && game.money >= upPrice){
+        int i;
+        for(i = 0 ; i < overlays.get(1).getButtons().size()-1 ; i++){
+            b = overlays.get(1).getButtons().get(i);
+            if(b.isClicked(0)){
+                upPrice = upgradesParam.get("prices").get(i);
+                if(game.money <= upPrice)
+                    continue;
+                upPriceIncrease = upgradesParam.get("priceMultipliers").get(i);
+                upMultiplier = upgradesParam.get("multipliers").get(i);
+                switch(i){
+                    case 0:
+                        up = range;
+                        break;
+                    case 1:
+                        up = power;
+                        break;
+                    case 2:
+                        up = shootRate;
+                        break;
+                    case 3:
+                        up = bulletSpeed;
+                        break;
+                }
                 size += growth;
                 game.money -= upPrice;
                 totalMoneySpent += upPrice;
@@ -99,6 +101,17 @@ public abstract class Tower extends Tile implements Shootable{
                         break;
                 }
             }
+        }
+        if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
+            game.money += (int)(totalMoneySpent/2);
+            Tile grass = new Tile(Towser.textures.get("grass"), "grass");
+            grass.setRotateIndex(0);
+            grass.setX(x);
+            grass.setY(y);
+            game.map.get(getIndexY()).set(getIndexX(), grass);
+            if(game.towerSelected == this)
+                game.towerSelected = null;
+            toBeRemoved = true;
         }
     }
     
@@ -204,7 +217,7 @@ public abstract class Tower extends Tile implements Shootable{
                 b.setHidden(true);
             o2.addButton(b);
         }
-        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(24*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(34*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         o2.addButton(b);
         overlays.add(o2);
     }
@@ -223,6 +236,7 @@ public abstract class Tower extends Tile implements Shootable{
         
         overlay = overlays.get(1);
         int i;
+        String space, up, price;
         for(i = 0 ; i < nbUpgrades ; i++){
             switch(i){
                 case 0:
@@ -244,22 +258,25 @@ public abstract class Tower extends Tile implements Shootable{
             overlay.drawText(b.getX(), (int)(15*ref)+ Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));
             
             if(upPrice != 0 && !b.isHidden()){
-                String price = (int)Math.floor(upPrice)+"";
+                price = (int)Math.floor(upPrice)+"";
                 
                 UnicodeFont priceFont = Towser.fonts.get("canBuy");
                 UnicodeFont font = Towser.fonts.get("normal");
                 if(game.money < (int)Math.floor(upPrice))
                     priceFont = Towser.fonts.get("cantBuy");
 
-                String space = "";
+                space = "";
                 for(int j = 0 ; j < price.length() ; j++)
                     space += " ";
-                String up = "Up (  "+ space +"  )";
+                up = "Up (  "+ space +"  )";
                 b.drawText(0, 0, up, font);
                 b.drawText((font.getWidth(up) - priceFont.getWidth(price) - font.getWidth("  )"))/2 - 2, 0, price, priceFont);
             }
         }
-        overlay.getButtons().get(overlay.getButtons().size()-1).drawText("Sell", Towser.fonts.get("normalS"));
+        b = overlay.getButtons().get(overlay.getButtons().size()-1);
+        b.drawText(0, -b.getH()/2+Towser.fonts.get("normal").getHeight("Sell")/2, "Sell", Towser.fonts.get("normal"));
+        price = ""+(int)(totalMoneySpent/2);
+        b.drawText(0, +b.getH()/2-Towser.fonts.get("canBuy").getHeight(price)/2, price, Towser.fonts.get("canBuy"));
     }
     
     public void updateBullets(){
@@ -287,7 +304,7 @@ public abstract class Tower extends Tile implements Shootable{
     public boolean canBePlaced(){
         if(!isInWindow())
             return false;
-        String tileType = game.getMap().get(Math.floorDiv((int)y, unite)).get(Math.floorDiv((int) x, unite)).getType(); // middle point
+        String tileType = game.map.get(Math.floorDiv((int)y, unite)).get(Math.floorDiv((int) x, unite)).getType(); // middle point
         if(tileType == "grass")
             return true;
         return false;
@@ -302,7 +319,7 @@ public abstract class Tower extends Tile implements Shootable{
     }
     
     public void destroy(){
-        game.getTowersDestroyed().add(this);
+        game.towersDestroyed.add(this);
     }
    
     private boolean isMouseIn(){
@@ -324,6 +341,10 @@ public abstract class Tower extends Tile implements Shootable{
     
     public boolean isSelected(){
         return selected;
+    }
+    
+    public boolean toRemove(){
+        return toBeRemoved;
     }
     
     @Override

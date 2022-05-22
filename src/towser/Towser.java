@@ -37,10 +37,21 @@ public class Towser{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(2f), MEDIUM(2.5f), HARD(3f);
-        public float value;
-        Difficulty(float value){
+        EASY(1), MEDIUM(2), HARD(3);
+        public int value;
+        
+        Difficulty(int value){
             this.value = value;
+        }
+        
+        public int getNbRoad(){
+            if(this == Difficulty.EASY)
+                return (int) ((nbTileX*nbTileY) / 6);
+            
+            if(this == Difficulty.MEDIUM)
+                return (int) ((nbTileX*nbTileY) / 7.5f);
+            
+            return (int) ((nbTileX*nbTileY) / 9);
         }
     }
     
