@@ -88,7 +88,7 @@ public class Overlay {
             y = texturesY.get(i);
             w = texturesW.get(i);
             h = texturesH.get(i);
-            Towser.drawFilledRectangle(x, y, w, h, null, 1, textures.get(i));
+            Towser.drawFilledRectangle(x-w/2, y-h/2, w, h, null, 1, textures.get(i));
         }
     }
    

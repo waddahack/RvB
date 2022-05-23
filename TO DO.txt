@@ -1,4 +1,14 @@
+lien spirtes :
+range icon => cercle avec diametre
+https://www.google.com/search?q=puissance+icone&tbm=isch&ved=2ahUKEwibi_mEt_X3AhUEpRoKHRjyBI0Q2-cCegQIABAA&oq=puissance+icone&gs_lcp=CgNpbWcQAzIFCAAQgAQ6BAgjECc6BggAEB4QBzoECAAQHjoECAAQQzoICAAQgAQQsQM6CwgAEIAEELEDEIMBOgcIABCxAxBDOgQIABAYUPAFWNGptAFg7aq0AWgAcAB4AIABeYgBrQ6SAQQyNS4xmAEAoAEBqgELZ3dzLXdpei1pbWfAAQE&sclient=img&ei=IWSLYtv2FoTKapjkk-gI&bih=929&biw=1920&rlz=1C1CHWL_frFR902FR902#imgrc=jZjirDCCjrDQBM
+https://www.google.com/search?q=shoot+rate+icon&rlz=1C1CHWL_frFR902FR902&sxsrf=ALiCzsYDqZlb1xTgFDqZ06-x8ZLnvk8UUw:1653302337065&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiF7IaUt_X3AhVE3RoKHX8IDloQ_AUoAXoECAEQAw&biw=1920&bih=929&dpr=1#imgrc=CeBVF8NivP0iaM
+https://www.google.com/search?q=bullet+speed+icon&rlz=1C1CHWL_frFR902FR902&sxsrf=ALiCzsaDuZhAKbXL8eSicsxilwGFu8q-cg:1653302358593&source=lnms&tbm=isch&sa=X&ved=2ahUKEwja7aiet_X3AhWFzoUKHUQkAboQ_AUoAXoECAEQAw&biw=1920&bih=929&dpr=1#imgrc=a-R354SRB8meWM
+
 NEXT BIG UPDATE MUST HAVE :
+
+- Faire title image (stylisé avec des images de tours/ennemies)
+- Logos (argent [coins], vie, upgrades, options)
+- Bullet sprites
 
 - Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).
  Remplacer "Play" par "Fight Bazoo"
@@ -18,8 +28,3 @@ IDEAS:
 - Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types
 - Mode survie ou la gagne (mode gagne à faire)
 - Mode campagne : Adventure ? Campaign ?
-
-SPRITES :
-
-- Logos (argent [coins], vie, upgrades, options)
-- Bullet sprites

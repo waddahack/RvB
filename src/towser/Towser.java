@@ -97,7 +97,7 @@ public class Towser{
         
         initTextures();
         initColors();
-        setUpFont();
+        initFonts();
         
         init();
         
@@ -346,6 +346,11 @@ public class Towser{
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
             textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
+            // Icons
+            textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
+            textures.put("exitIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/exit_icon.png"))));
+            textures.put("coins", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins.png"))));
+            textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             // Towers
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
@@ -376,7 +381,7 @@ public class Towser{
     }
     
     @SuppressWarnings("unchecked")
-    public static void setUpFont() {
+    public static void initFonts() {
         fonts = new HashMap<>();
         float[] color;
         String police = "Bahnschrift";
@@ -425,9 +430,9 @@ public class Towser{
         
         //color = Towser.colors.get("white");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
-        UnicodeFont astres = new UnicodeFont(awtFont);
-        astres.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
-        astres.addAsciiGlyphs();
+        UnicodeFont money = new UnicodeFont(awtFont);
+        money.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
+        money.addAsciiGlyphs();
         
         color = Towser.colors.get("life");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
@@ -469,8 +474,8 @@ public class Towser{
             fonts.put("normalLB", normalLB);
             normalXLB.loadGlyphs();
             fonts.put("normalXLB", normalXLB);
-            astres.loadGlyphs();
-            fonts.put("astres", astres);
+            money.loadGlyphs();
+            fonts.put("money", money);
             life.loadGlyphs();
             fonts.put("life", life);
             canBuy.loadGlyphs();

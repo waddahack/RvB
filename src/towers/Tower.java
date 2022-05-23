@@ -58,7 +58,7 @@ public abstract class Tower extends Tile implements Shootable{
             b = overlays.get(1).getButtons().get(i);
             if(b.isClicked(0)){
                 upPrice = upgradesParam.get("prices").get(i);
-                if(game.money <= upPrice)
+                if(game.money < upPrice)
                     continue;
                 upPriceIncrease = upgradesParam.get("priceMultipliers").get(i);
                 upMultiplier = upgradesParam.get("multipliers").get(i);

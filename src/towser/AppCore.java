@@ -114,13 +114,13 @@ public abstract class AppCore {
         }
         else if(diff == Difficulty.HARD){
             life = 50;
-            money = 250;
+            money = 25;
             waveNumber = 1;
             waveReward = 225;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
-            money = 300;
+            money = 3000;
             waveNumber = 1;
             waveReward = 250;
         }
@@ -517,14 +517,14 @@ public abstract class AppCore {
             UnicodeFont font = Towser.fonts.get("canBuy");
             if(money < BasicTower.priceP)
                 font = Towser.fonts.get("cantBuy");
-            t = BasicTower.priceP+"*";
+            t = BasicTower.priceP+"";
             b = o.getButtons().get(0);
             b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
             
             font = Towser.fonts.get("canBuy");
             if(money < CircleTower.priceP)
                 font = Towser.fonts.get("cantBuy");
-            t = CircleTower.priceP+"*";
+            t = CircleTower.priceP+"";
             b = o.getButtons().get(1);
             b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
         }
@@ -533,11 +533,13 @@ public abstract class AppCore {
         o = overlays.get(1);
         o.render();
         
-        t = money+"*";
-        o.drawText((int)(80*ref), o.getH()/2, t, Towser.fonts.get("astres"));
+        t = money+"";
+        o.drawText((int)(80*ref), o.getH()/2, t, Towser.fonts.get("money"));
+        Towser.drawFilledRectangle((int)((90+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, Towser.textures.get("coins"));
         
         t = life+"";
         o.drawText((int)(200*ref), o.getH()/2, t, Towser.fonts.get("life"));
+        Towser.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, Towser.textures.get("heart"));
 
         if(!o.getButtons().get(0).isHidden()){
             t = "Wave " + waveNumber;
