@@ -61,7 +61,7 @@ public class Menu {
         for(Overlay o : overlays){
             o.render();
         }
-        overlays[0].drawImage(overlays[0].getW()/2-(int)(50*ref), overlays[0].getH()/2, (int)(100*ref), (int)(100*ref), Towser.textures.get("heart"));
+        overlays[0].drawImage(start.getX()-(int)(280*ref), (int)(100*ref), (int)(860*ref), (int)(360*ref), Towser.textures.get("title"));
         start.drawText(0, 0, "    Adventure\n(inc... not soon)", fonts.get("normalL"));
         if(randomGame == null)
             random.drawText(0, 0, "New random map", fonts.get("normalL"));

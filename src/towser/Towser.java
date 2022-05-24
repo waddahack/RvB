@@ -328,8 +328,6 @@ public class Towser{
     public static void initTextures() {
         try {     
             textures = new HashMap<>();
-            // Other
-            textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             // Cursors
             textures.put("cursorDefault", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_default.png"))));
             textures.put("cursorPointer", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_pointer.png"))));
@@ -340,6 +338,7 @@ public class Towser{
             textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/dark_board.png"))));
             textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/red.png"))));
             textures.put("white", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/white.png"))));
+            textures.put("title", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/title.png"))));
             // Map
             textures.put("roadStraight", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_straight.png"))));
             textures.put("roadTurn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_turn.png"))));
@@ -351,6 +350,8 @@ public class Towser{
             textures.put("exitIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/exit_icon.png"))));
             textures.put("coins", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
+            textures.put("rangeIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/range_icon.png"))));
+            textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             // Towers
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
@@ -452,6 +453,12 @@ public class Towser{
         cantBuy.getEffects().add(new ColorEffect(new Color(210, 30, 30)));
         cantBuy.addAsciiGlyphs();
         
+        //color = Towser.colors.get("white");
+        awtFont = new Font(police, Font.BOLD, (int)(20*ref));
+        UnicodeFont bonus = new UnicodeFont(awtFont);
+        bonus.getEffects().add(new ColorEffect(new Color(30, 210, 30)));
+        bonus.addAsciiGlyphs();
+        
         // DISPLAY ALL FONTS AVAILABLE
         /*String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
@@ -482,6 +489,8 @@ public class Towser{
             fonts.put("canBuy", canBuy);
             cantBuy.loadGlyphs();
             fonts.put("cantBuy", cantBuy);
+            bonus.loadGlyphs();
+            fonts.put("bonus", bonus);
         } catch (SlickException ex) {
             Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
         }

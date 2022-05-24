@@ -2,6 +2,7 @@ package towers;
 
 import towser.Tile;
 import ennemies.Enemy;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import towser.Shootable;
 import managers.SoundManager;
+import org.newdawn.slick.font.effects.ColorEffect;
 import static towser.Towser.game;
 import static towser.Towser.ref;
 import static towser.Towser.unite;
@@ -210,7 +212,7 @@ public abstract class Tower extends Tile implements Shootable{
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2-imageSize/2, (int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
+        o2.addImage(o1.getW()/2-imageSize/2, imageSize/2+(int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
         for(int i = 0 ; i < upgradesParam.size() ; i++){
             Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"), (int)Math.floor(upgradesParam.get("maxUpgradeClicks").get((i))));
             if(upgradesParam.get("maxUpgradeClicks").get(i) <= 0)
@@ -237,46 +239,68 @@ public abstract class Tower extends Tile implements Shootable{
         overlay = overlays.get(1);
         int i;
         String space, up, price;
+        float upNumber = -1;
+        UnicodeFont font, priceFont;
         for(i = 0 ; i < nbUpgrades ; i++){
+            b = overlay.getButtons().get(i);
             switch(i){
                 case 0:
-                    t = "Range : "+range;
+                    overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("rangeIcon"));   
+                    overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), range+"", Towser.fonts.get("normal"));   
+                    upNumber = range;
                     break;
                 case 1:
                     t = "Power : "+power;
+                    upNumber = power;
                     break;
                 case 2:
                     t = "Shoot rate : "+shootRate;
+                    upNumber = shootRate;
                     break;
                 case 3:
                     t = "Bullet speed : "+bulletSpeed;
+                    upNumber = bulletSpeed;
                     break;
             }
-            b = overlay.getButtons().get(i);
+            overlay.drawText(b.getX(), (int)(15*ref)+ Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));   
+            
             upPrice = upgradesParam.get("prices").get(i);
-            
-            overlay.drawText(b.getX(), (int)(15*ref)+ Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));
-            
             if(upPrice != 0 && !b.isHidden()){
-                price = (int)Math.floor(upPrice)+"";
-                
-                UnicodeFont priceFont = Towser.fonts.get("canBuy");
-                UnicodeFont font = Towser.fonts.get("normal");
-                if(game.money < (int)Math.floor(upPrice))
-                    priceFont = Towser.fonts.get("cantBuy");
+                if(b.isHovered() && upNumber > 0){
+                    if(upgradesParam.get("multipliers").get(i) > 2)
+                        up = "+ " + (int)((upNumber+upgradesParam.get("multipliers").get(i))-upNumber);
+                    else{
+                        if(i == 2) // shoot rate
+                            up = "+ " + (float)Math.ceil(10*((upNumber*upgradesParam.get("multipliers").get(i))-upNumber))/10;
+                        else
+                            up = "+ " + (int)((upNumber*upgradesParam.get("multipliers").get(i))-upNumber);
+                    } 
+                    b.drawText(up, Towser.fonts.get("bonus"));
+                }
+                else{
+                    price = (int)Math.floor(upPrice)+"";
+                    priceFont = Towser.fonts.get("canBuy");
+                    font = Towser.fonts.get("normal");
+                    if(game.money < (int)Math.floor(upPrice))
+                        priceFont = Towser.fonts.get("cantBuy");
 
-                space = "";
-                for(int j = 0 ; j < price.length() ; j++)
-                    space += " ";
-                up = "Up (  "+ space +"  )";
-                b.drawText(0, 0, up, font);
-                b.drawText((font.getWidth(up) - priceFont.getWidth(price) - font.getWidth("  )"))/2 - 2, 0, price, priceFont);
+                    space = "";
+                    for(int j = 0 ; j < price.length() ; j++)
+                        space += " ";
+                    up = "Up (  "+ space +"  )";
+                    b.drawText(0, 0, up, font);
+                    b.drawText((font.getWidth(up) - priceFont.getWidth(price) - font.getWidth("  )"))/2 - 2, 0, price, priceFont);
+                }
             }
         }
         b = overlay.getButtons().get(overlay.getButtons().size()-1);
-        b.drawText(0, -b.getH()/2+Towser.fonts.get("normal").getHeight("Sell")/2, "Sell", Towser.fonts.get("normal"));
-        price = ""+(int)(totalMoneySpent/2);
-        b.drawText(0, +b.getH()/2-Towser.fonts.get("canBuy").getHeight(price)/2, price, Towser.fonts.get("canBuy"));
+        if(b.isHovered()){
+            price = "+ "+(int)(totalMoneySpent/2);
+            b.drawText(price, Towser.fonts.get("canBuy"));
+        }
+        else
+            b.drawText("Sell", Towser.fonts.get("normal"));
+        
     }
     
     public void updateBullets(){

@@ -161,7 +161,7 @@ public class Overlay {
     }
     
     public void drawImage(int x, int y, int width, int height, Texture t){
-        Towser.drawFilledRectangle(x, y, width, height, rgb, a, t);
+        Towser.drawFilledRectangle(this.x+x, this.y+y, width, height, rgb, 1, t);
     }
     
     public void drawText(int x, int y, String text, UnicodeFont font) {

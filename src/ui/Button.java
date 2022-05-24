@@ -128,6 +128,10 @@ public class Button {
         return (!hidden && MX >= x-width/2 && MX <= x+width/2 && MY >= y-height/2 && MY <= y+height/2);
     }
     
+    public boolean isHovered(){
+        return isMouseIn() && !disabled;
+    }
+    
     public boolean isClicked(int but){
         return (!disabled && isMouseIn() && Mouse.isButtonDown(0) && !mouseDown);
     }
