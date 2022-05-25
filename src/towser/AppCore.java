@@ -108,19 +108,19 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 150;
-            money = 350;
+            money = 3500;
             waveNumber = 1;
             waveReward = 275;
         }
         else if(diff == Difficulty.HARD){
             life = 50;
-            money = 25;
+            money = 250;
             waveNumber = 1;
             waveReward = 225;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
-            money = 3000;
+            money = 300;
             waveNumber = 1;
             waveReward = 250;
         }
@@ -135,6 +135,10 @@ public abstract class AppCore {
     protected void initMap(ArrayList<Tile> path){
         map = new ArrayList<>();
         this.path = new ArrayList<>();
+        if(path.size() == 0){
+            this.path = path;
+            return;
+        }
         ArrayList<Tile> row;
         Random rand = new Random();
         Texture t;

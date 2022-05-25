@@ -28,7 +28,7 @@ public class Game extends AppCore{
         Random rand = new Random();
         ArrayList<ArrayList<Tile>> map = new ArrayList<>();
         ArrayList<Tile> row, path = new ArrayList<>(), neighbors = new ArrayList<>();
-        int x, y, aimX, aimY;
+        int x, y, aimX = (nbTileX-1)/2, aimY = (nbTileY-1)/2;
         Tile road, previous;
         String dir, dirToCount;
         // nombre de road de la map restante
@@ -51,8 +51,6 @@ public class Game extends AppCore{
             y = rand.nextInt(nbTileY);
         }
         road = new Tile(x, y);
-        aimX = nbTileX-1-x;
-        aimY = nbTileY-1-y;
         if(x == 0)
             road.previousRoad = new Tile(x-1, y);
         else if(x == nbTileX-1)
@@ -67,9 +65,10 @@ public class Game extends AppCore{
         // Construction de la route
         int i = 0, r;
         int[][] check;
+        int[] dirToSide;
         Tile up, down, left, right, accross, temp, lastOnSide = path.get(0);
         boolean changeLastOnSide = false;
-        while(nbRoadLeft > 0){
+        while(nbRoadLeft > 0 || path.get(i).getX()-1 >= 0 && path.get(i).getX()+1 <= nbTileX-1 && path.get(i).getY()-1 >= 0 && path.get(i).getY()+1 <= nbTileY-1){ // Tant qu'il n'est pas à côté d'un bord
             neighbors.clear();
             up = new Tile(x, y-1);
             down = new Tile(x, y+1);
@@ -213,6 +212,7 @@ public class Game extends AppCore{
                     }
                 }
             }
+            
             if(neighbors.isEmpty()){
                 System.out.println("failure");
                 PopupManager.Instance.popup("Error. Try again.");
@@ -220,71 +220,64 @@ public class Game extends AppCore{
                 break;
             }
             
-            r = rand.nextInt(3);
-            if(r != 0 && neighbors.contains(accross)){ // tout droit
-                x = (int) accross.getX();
-                y = (int) accross.getY();
-            }
-            else{ // tourne
-                if(neighbors.size() > 1 && neighbors.contains(accross))
-                    neighbors.remove(accross);
-                if(neighbors.size() == 1){
-                    x = (int) neighbors.get(0).getX();
-                    y = (int) neighbors.get(0).getY();
+            if(nbRoadLeft <= 0){ // On fait terminer path sur un bord
+                dirToSide = directionToSide(path, map);
+                if(dirToSide == null){
+                    System.out.println("failure");
+                    PopupManager.Instance.popup("Error. Try again.");
+                    path.clear();
+                    break;
                 }
-                else{ // ajoute de la proba pour le virage qui va en direction de l'opposé du spawn
-                    if((aimX > neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() > 0) || (aimY > neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() > 0) || (aimY < neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() < 0)){
-                        temp = neighbors.get(0);
-                        neighbors.set(0, neighbors.get(1));
-                        neighbors.set(1, temp);
-                    }
-                    int proba = 3;
-                    r = rand.nextInt(2+diff.value);
-                    if(r > 0){
+                x = dirToSide[0];
+                y = dirToSide[1];
+            }
+            
+            if(nbRoadLeft > 0 || map.get(y).get(x) != null){ // On continue le pathing
+                r = rand.nextInt(3);
+                if(r != 0 && neighbors.contains(accross)){ // tout droit
+                    x = (int) accross.getX();
+                    y = (int) accross.getY();
+                }
+                else{ // tourne
+                    if(neighbors.size() > 1 && neighbors.contains(accross))
+                        neighbors.remove(accross);
+                    if(neighbors.size() == 1){
                         x = (int) neighbors.get(0).getX();
                         y = (int) neighbors.get(0).getY();
                     }
-                    else{
-                        x = (int) neighbors.get(1).getX();
-                        y = (int) neighbors.get(1).getY();
-                    }
-                }    
-                
+                    else{ // ajoute de la proba pour le virage qui va en direction du centre de la map
+                        if((aimX > neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() > 0) || (aimX < neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() < 0) || (aimY > neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() > 0) || (aimY < neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() < 0)){
+                            temp = neighbors.get(0);
+                            neighbors.set(0, neighbors.get(1));
+                            neighbors.set(1, temp);
+                        }
+                        r = rand.nextInt(3+diff.value);
+                        if(r > 0){
+                            x = (int) neighbors.get(0).getX();
+                            y = (int) neighbors.get(0).getY();
+                        }
+                        else{
+                            x = (int) neighbors.get(1).getX();
+                            y = (int) neighbors.get(1).getY();
+                        }
+                    }    
+                }
             }
-            
+
+            // Ajout de la route
             road = new Tile(x, y);
             road.setPreviousRoad(path.get(i));
             path.get(i).setNextRoad(road);
-            
+
             map.get(y).set(x, road);
             path.add(road);
             nbRoadLeft--;
             i++;
-            
+
             if(changeLastOnSide){
                 lastOnSide = path.get(i);
                 changeLastOnSide = false;
             }
-                
-        }
-        // On fait terminer path sur un bord
-        int[] dirToSide;
-        while(path.get(i).getX()-1 >= 0 && path.get(i).getX()+1 <= nbTileX-1 && path.get(i).getY()-1 >= 0 && path.get(i).getY()+1 <= nbTileY-1){ // Tant qu'il n'est pas à côté d'un bord
-            dirToSide = directionToSide(path, map);
-            if(dirToSide == null){
-                System.out.println("failure");
-                PopupManager.Instance.popup("Error. Try again.");
-                path.clear();
-                break;
-            }
-            
-            road = new Tile(dirToSide[0], dirToSide[1]);
-            road.setPreviousRoad(path.get(i));
-            path.get(i).setNextRoad(road);
-            
-            map.get(dirToSide[1]).set(dirToSide[0], road);
-            path.add(road);
-            i++;
         }
         
         return path;

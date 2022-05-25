@@ -212,7 +212,7 @@ public abstract class Tower extends Tile implements Shootable{
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2-imageSize/2, imageSize/2+(int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
+        o2.addImage(o1.getW()/2, imageSize/2+(int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
         for(int i = 0 ; i < upgradesParam.size() ; i++){
             Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"), (int)Math.floor(upgradesParam.get("maxUpgradeClicks").get((i))));
             if(upgradesParam.get("maxUpgradeClicks").get(i) <= 0)
@@ -245,16 +245,36 @@ public abstract class Tower extends Tile implements Shootable{
             b = overlay.getButtons().get(i);
             switch(i){
                 case 0:
-                    overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("rangeIcon"));   
-                    overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), range+"", Towser.fonts.get("normal"));   
+                    if(!b.isHidden()){
+                        overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("rangeIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), range+"", Towser.fonts.get("normal"));   
+                    }
+                    else{
+                        overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("rangeIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, range+"", Towser.fonts.get("normal"));   
+                    }
                     upNumber = range;
                     break;
                 case 1:
-                    t = "Power : "+power;
+                    if(!b.isHidden()){
+                        overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("powerIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), power+"", Towser.fonts.get("normal"));   
+                    }
+                    else{
+                        overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("powerIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, power+"", Towser.fonts.get("normal"));   
+                    } 
                     upNumber = power;
                     break;
                 case 2:
-                    t = "Shoot rate : "+shootRate;
+                    if(!b.isHidden()){
+                        overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("attackSpeedIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), shootRate+"/s", Towser.fonts.get("normal"));   
+                    }
+                    else{
+                        overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("attackSpeedIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, shootRate+"/s", Towser.fonts.get("normal"));   
+                    }
                     upNumber = shootRate;
                     break;
                 case 3:
