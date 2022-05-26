@@ -278,7 +278,14 @@ public abstract class Tower extends Tile implements Shootable{
                     upNumber = shootRate;
                     break;
                 case 3:
-                    t = "Bullet speed : "+bulletSpeed;
+                    if(!b.isHidden()){
+                        overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("bulletSpeedIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), bulletSpeed+"", Towser.fonts.get("normal"));   
+                    }
+                    else{
+                        overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("bulletSpeedIcon"));   
+                        overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, bulletSpeed+"", Towser.fonts.get("normal"));   
+                    }
                     upNumber = bulletSpeed;
                     break;
             }

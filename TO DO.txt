@@ -1,11 +1,5 @@
-lien spirtes :
-
-https://www.google.com/search?q=shoot+rate+icon&rlz=1C1CHWL_frFR902FR902&sxsrf=ALiCzsYDqZlb1xTgFDqZ06-x8ZLnvk8UUw:1653302337065&source=lnms&tbm=isch&sa=X&ved=2ahUKEwiF7IaUt_X3AhVE3RoKHX8IDloQ_AUoAXoECAEQAw&biw=1920&bih=929&dpr=1#imgrc=CeBVF8NivP0iaM
-https://www.google.com/search?q=bullet+speed+icon&rlz=1C1CHWL_frFR902FR902&sxsrf=ALiCzsaDuZhAKbXL8eSicsxilwGFu8q-cg:1653302358593&source=lnms&tbm=isch&sa=X&ved=2ahUKEwja7aiet_X3AhWFzoUKHUQkAboQ_AUoAXoECAEQAw&biw=1920&bih=929&dpr=1#imgrc=a-R354SRB8meWM
-
 NEXT BIG UPDATE MUST HAVE :
 
-- Logos (argent [coins], vie, upgrades, options)
 - Bullet sprites
 - Faire title image (stylisé avec des images de tours/ennemies)
 

@@ -49,9 +49,9 @@ public class Towser{
                 return (int) ((nbTileX*nbTileY) / 6);
             
             if(this == Difficulty.MEDIUM)
-                return (int) ((nbTileX*nbTileY) / 7.5f);
+                return (int) ((nbTileX*nbTileY) / 7);
             
-            return (int) ((nbTileX*nbTileY) / 9);
+            return (int) ((nbTileX*nbTileY) / 8);
         }
     }
     
@@ -352,6 +352,7 @@ public class Towser{
             textures.put("rangeIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/range_icon.png"))));
             textures.put("powerIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/power_icon.png"))));
             textures.put("attackSpeedIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/attack_speed_icon.png"))));   
+            textures.put("bulletSpeedIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/bullet_speed_icon.png"))));   
             textures.put("coins", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             // Towers

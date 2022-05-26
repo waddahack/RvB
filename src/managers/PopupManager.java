@@ -95,12 +95,11 @@ public class PopupManager {
             if(gameOver.getButtons().get(0).isClicked(0)){
                 clicked = true;
                 stateChanged = true;
-                for(int i = 0 ; i < game.enemies.size() ; i++){
-                    game.enemies.get(i).putInBase();
-                    game.enemies.get(i).die();
-                } 
-                SoundManager.Instance.closeAllClips();
                 game.ended = true;
+                for(int i = 0 ; i < game.enemies.size() ; i++)
+                    game.enemies.get(i).die();
+                game.clearArrays();
+                SoundManager.Instance.closeAllClips();
                 Towser.switchStateTo(Towser.State.MENU);
                 currentOverlay = null;
                 gameOver.display(false);
@@ -178,6 +177,8 @@ public class PopupManager {
     }
     
     public void gameOver(){
+        if(currentOverlay == gameOver)
+            return;
         initPopup(gameOver);
         lines.add("Bazoo and his army have been stronger...");
         fonts.add(Towser.fonts.get("normalXL"));

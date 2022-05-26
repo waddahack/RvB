@@ -34,7 +34,7 @@ public class TrickyEnemy extends Enemy{
     
     @Override
     public void die(){
-        if(!isInBase()){
+        if(!isInBase() && !game.ended){
             for(int i = 0 ; i < 3 ; i++){
                 Enemy e = new BasicEnemy();
                 e.setX(x);

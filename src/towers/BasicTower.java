@@ -64,7 +64,7 @@ public class BasicTower extends Tower{
     
     @Override
     protected void raisePrice(){
-        priceP *= 1.08;
+        priceP *= 1.1;
         price = priceP;
     }
 }

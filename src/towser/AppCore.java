@@ -108,7 +108,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 150;
-            money = 3500;
+            money = 350;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -332,6 +332,8 @@ public abstract class AppCore {
     }
     
     public void update(){
+        clearArrays();
+        
         if(this == Towser.game && !inWave){
             if(SoundManager.Instance.isReady())
                 overlays.get(1).getButtons().get(0).setDisabled(false);
@@ -360,7 +362,8 @@ public abstract class AppCore {
                 inWave = false;
                 wave = null;
                 money += waveReward;
-                waveNumber++;
+                if(!ended)
+                    waveNumber++;
                 gameSpeed = 1;
                 SoundManager.Instance.closeAllClips();
                 if(waveNumber%5 == 0){
@@ -377,7 +380,6 @@ public abstract class AppCore {
                     }
                 }
             }
-            
         }
         
         for(int i = 0 ; i < towers.size() ; i++){
@@ -398,7 +400,6 @@ public abstract class AppCore {
     }
     
     protected void checkInput(){
-        clearArrays();
         // Towers placement
         for(Tower t : towers){
             if(overlays.get(0).getButtons().get(0).isClicked(0))
@@ -600,7 +601,7 @@ public abstract class AppCore {
         //
     }
     
-    protected void clearArrays(){
+    public void clearArrays(){
         int i;
         for(i = 0 ; i < ennemiesDead.size() ; i++)
             enemies.remove(ennemiesDead.get(i));

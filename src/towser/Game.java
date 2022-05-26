@@ -20,8 +20,7 @@ public class Game extends AppCore{
         initOverlays();
         
         ArrayList<Tile> path = generateRandomPath(diff);
-        if(path.size() > 0)
-            initMap(path);
+        initMap(path);
     }
     
     private static ArrayList<Tile> generateRandomPath(Difficulty diff){
@@ -233,7 +232,7 @@ public class Game extends AppCore{
             }
             
             if(nbRoadLeft > 0 || map.get(y).get(x) != null){ // On continue le pathing
-                r = rand.nextInt(3);
+                r = rand.nextInt(2+diff.value); // proba tout droit
                 if(r != 0 && neighbors.contains(accross)){ // tout droit
                     x = (int) accross.getX();
                     y = (int) accross.getY();
@@ -251,7 +250,7 @@ public class Game extends AppCore{
                             neighbors.set(0, neighbors.get(1));
                             neighbors.set(1, temp);
                         }
-                        r = rand.nextInt(3+diff.value);
+                        r = rand.nextInt(3+diff.value); // proba direction vers le centre
                         if(r > 0){
                             x = (int) neighbors.get(0).getX();
                             y = (int) neighbors.get(0).getY();
