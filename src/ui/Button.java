@@ -103,12 +103,12 @@ public class Button {
             Towser.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
         if(rgb != null)
-            Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, rgb, 1f, null);
+            Towser.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
         if(bg != null){
             if(itemFramed)
-                Towser.drawFilledRectangle((double)(x-width/2+(int)(5*ref)), (double)(y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
+                Towser.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
             else
-                Towser.drawFilledRectangle((double)(x-width/2), (double)(y-height/2), width, height, null, 1f, bg);
+                Towser.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
         }
         // text
         if(text != null && font != null)

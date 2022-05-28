@@ -108,7 +108,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 150;
-            money = 350;
+            money = 3500;
             waveNumber = 1;
             waveReward = 275;
         }

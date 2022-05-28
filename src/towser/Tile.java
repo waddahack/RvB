@@ -11,7 +11,7 @@ import static towser.Towser.unite;
 
 public class Tile {
     
-    protected double x, y;
+    protected float x, y;
     protected int size = unite;
     protected float r, g, b;
     protected float[] rgb;
@@ -49,7 +49,7 @@ public class Tile {
         this.y = Towser.windHeight-Mouse.getY();
     }
     
-    public Tile(double x, double y){
+    public Tile(float x, float y){
         textures = new ArrayList<>();
         type = "nothing";
         this.x = x;
@@ -145,20 +145,20 @@ public class Tile {
         return (int)(y/unite);
     }
     
-    public double getX(){
+    public float getX(){
         return x;
     }
     
-    public double getY(){
+    public float getY(){
         return y;
     }
     
-    public void setX(double x){
+    public void setX(float x){
         this.x = x;
         renderX = Math.floorDiv((int)x, unite)*unite+unite/2;
     }
     
-    public void setY(double y){
+    public void setY(float y){
         this.y = y;
         renderY = Math.floorDiv((int)y, unite)*unite+unite/2;
     }

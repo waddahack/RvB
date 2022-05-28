@@ -11,11 +11,11 @@ public class BasicEnemy extends Enemy{
     public BasicEnemy(){
         super(++idCount);
         name = "Bazooldier";
-        spawnSpeed = 0.8;
+        spawnSpeed = 0.8f;
         reward = 2;
         power = 2;
         shootRate = 1;
-        moveSpeed = 3.3;
+        moveSpeed = 3.3f;
         range = 3*Towser.unite;
         life = 30;
         weight = 1;

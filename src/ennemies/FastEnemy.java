@@ -10,14 +10,14 @@ public class FastEnemy extends Enemy{
     public FastEnemy(){
         super(++idCount);
         name = "Quazoo";
-        spawnSpeed = 1.2;
+        spawnSpeed = 1.2f;
         reward = 6;
         power = 4;
         shootRate = 1;
-        moveSpeed = 4.2;
+        moveSpeed = 4.2f;
         range = 3*Towser.unite;
         life = 42;
-        weight = 1.5;
+        weight = 1.5f;
         width = Towser.unite;
         eBalance = balance;
         rgb = new float[]{1f, 1f, 0f};

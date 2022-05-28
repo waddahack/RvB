@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import towers.Bullet;
 
 public interface Shootable {
-    public double getX();
-    public double getY();
+    public float getX();
+    public float getY();
     public ArrayList<Bullet> getBulletsToRemove();
     public ArrayList<Bullet> getBullets();
     public void attacked(int power);

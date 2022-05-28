@@ -236,7 +236,7 @@ public class Towser{
         glEnd();
     }
     
-    public static void drawFilledRectangle(double x, double y, int width, int height, Texture texture, double angle){
+    public static void drawFilledRectangle(float x, float y, int width, int height, Texture texture, double angle){
         glPushMatrix(); //Save the current matrix.
         
         glTranslated(x, y, 0);
@@ -248,7 +248,7 @@ public class Towser{
         glPopMatrix(); // Reset the current matrix to the one that was saved.
     }
     
-    public static void drawFilledRectangle(double x, double y, int width, int height, float[] rgb, float a, Texture texture){
+    public static void drawFilledRectangle(float x, float y, int width, int height, float[] rgb, float a, Texture texture){
         if (texture != null) {
             texture.bind();
             glEnable(GL_TEXTURE_2D);
@@ -359,6 +359,7 @@ public class Towser{
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
             textures.put("basicTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_turret.png"))));
+            textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));
             textures.put("circleTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));

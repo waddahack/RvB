@@ -19,47 +19,27 @@ public class BasicTower extends Tower{
         textureStatic = Towser.textures.get(("basicTower"));
         canRotate = true;
         price = priceP;
-        totalPrice = price;
-        power = 20;
-        shootRate = 0.6f;
-        range = 3*Towser.unite;
         life = 100;
         width = 4*Towser.unite/5;
         size = width;
         totalMoneySpent = priceP;
         name = "Razannon";
         textureName = "basicTower";
-        bulletSpeed = 14;
         follow = false;
         isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
         SoundManager.Instance.setClipVolume(clip, volume);
-        bulletSprite = Towser.textures.get("bulletBlue");
-        ArrayList<Float> prices = new ArrayList<>();
-        ArrayList<Float> priceMultipliers = new ArrayList<>();
-        ArrayList<Float> multipliers = new ArrayList<>();
-        ArrayList<Float> maxUpgradeClicks = new ArrayList<>();
-        prices.add(100f); // range
-        prices.add(120f); // power
-        prices.add(150f); // shoot rate
-        prices.add(160f); // bullet speed
-        priceMultipliers.add(1.5f);
-        priceMultipliers.add(1.4f);
-        priceMultipliers.add(1.5f);
-        priceMultipliers.add(3f);
-        multipliers.add(1.2f);
-        multipliers.add(1.3f);
-        multipliers.add(1.25f);
-        multipliers.add(21f);
-        maxUpgradeClicks.add(3f);
-        maxUpgradeClicks.add(3f);
-        maxUpgradeClicks.add(3f);
-        maxUpgradeClicks.add(1f);
-        upgradesParam.put("prices", prices);
-        upgradesParam.put("priceMultipliers", priceMultipliers);
-        upgradesParam.put("multipliers", multipliers);
-        upgradesParam.put("maxUpgradeClicks", maxUpgradeClicks);
+        bulletSprite = Towser.textures.get("bullet");
         growth = 2*ref;
+        
+        range = 3*Towser.unite;
+        power = 18;
+        shootRate = 0.5f;
+        bulletSpeed = 18;
+        upgrades.add(new Upgrade("Range", range, 1.2f, "Multiplicate", 100f, 1.5f, 3));
+        upgrades.add(new Upgrade("Power", power, 1.3f, "Multiplicate", 120f, 1.4f, 3));
+        upgrades.add(new Upgrade("Attack speed", shootRate, 1.25f, "Multiplicate", 150f, 1.5f, 3));
+        upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 20f, "Add", 160f, 3f, 1));
     }
     
     @Override

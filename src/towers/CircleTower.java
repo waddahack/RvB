@@ -17,47 +17,27 @@ public class CircleTower extends Tower{
         textures.add(textureStatic);
         canRotate = false;
         price = priceP;
-        totalPrice = price;
-        power = 12;
-        shootRate = 0.7f;
-        range = (int) (1.2*Towser.unite);
         life = 100;
         width = 4*Towser.unite/5;
         size = width;
         totalMoneySpent = priceP;
         name = "Razingun";
         textureName = "circleTower";
-        bulletSpeed = 25;
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("multicannon");
         SoundManager.Instance.setClipVolume(clip, volume);
-        bulletSprite = Towser.textures.get("bulletGrey");
-        ArrayList<Float> prices = new ArrayList<>();
-        ArrayList<Float> priceMultipliers = new ArrayList<>();
-        ArrayList<Float> multipliers = new ArrayList<>();
-        ArrayList<Float> maxUpgradeClicks = new ArrayList<>();
-        prices.add(100f); // range
-        prices.add(200f); // power
-        prices.add(250f); // shoot rate
-        prices.add(0f); // bullet speed
-        priceMultipliers.add(1.5f);
-        priceMultipliers.add(2f);
-        priceMultipliers.add(2f);
-        priceMultipliers.add(0f);
-        multipliers.add(1.2f);
-        multipliers.add(5f);
-        multipliers.add(1.5f);
-        multipliers.add(0f);
-        maxUpgradeClicks.add(2f);
-        maxUpgradeClicks.add(1f);
-        maxUpgradeClicks.add(2f);
-        maxUpgradeClicks.add(0f);
-        upgradesParam.put("prices", prices);
-        upgradesParam.put("priceMultipliers", priceMultipliers);
-        upgradesParam.put("multipliers", multipliers);
-        upgradesParam.put("maxUpgradeClicks", maxUpgradeClicks);
+        bulletSprite = Towser.textures.get("bullet");
         growth = 4*ref;
+        
+        range = (int) (1.2*Towser.unite);
+        power = 12;
+        shootRate = 0.7f;
+        bulletSpeed = 25;
+        upgrades.add(new Upgrade("Range", range, 1.2f, "Multiplicate", 100f, 1.5f, 2));
+        upgrades.add(new Upgrade("Power", power, 5f, "Add", 200f, 2f, 1));
+        upgrades.add(new Upgrade("Attack speed", shootRate, 1.5f, "Multiplicate", 250f, 2f, 2));
+
     }
     
     @Override
@@ -73,13 +53,13 @@ public class CircleTower extends Tower{
         lastShoot = System.currentTimeMillis();
 
         bullets.clear();
-        bullets.add(new Bullet(this, x-100, y, size/14, bulletSprite, true, 75));
-        bullets.add(new Bullet(this, x-100, y-100, size/14, bulletSprite, true, 0));
-        bullets.add(new Bullet(this, x, y-100, size/14, bulletSprite, true, 50));
-        bullets.add(new Bullet(this, x+100, y, size/14, bulletSprite, true, 25));
-        bullets.add(new Bullet(this, x+100, y-100, size/14, bulletSprite, true, 50));
-        bullets.add(new Bullet(this, x+100, y+100, size/14, bulletSprite, true, 75));
-        bullets.add(new Bullet(this, x, y+100, size/14, bulletSprite, true, 25));
-        bullets.add(new Bullet(this, x-100, y+100, size/14, bulletSprite, true, 0));
+        bullets.add(new Bullet(this, x-100, y, size/6, bulletSprite, true, 75));
+        bullets.add(new Bullet(this, x-100, y-100, size/6, bulletSprite, true, 0));
+        bullets.add(new Bullet(this, x, y-100, size/6, bulletSprite, true, 50));
+        bullets.add(new Bullet(this, x+100, y, size/6, bulletSprite, true, 25));
+        bullets.add(new Bullet(this, x+100, y-100, size/6, bulletSprite, true, 50));
+        bullets.add(new Bullet(this, x+100, y+100, size/6, bulletSprite, true, 75));
+        bullets.add(new Bullet(this, x, y+100, size/6, bulletSprite, true, 25));
+        bullets.add(new Bullet(this, x-100, y+100, size/6, bulletSprite, true, 0));
     }
 }

@@ -28,8 +28,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected long stopFor = -1;
     protected String name;
     protected SoundManager.Volume volume;
-    protected double x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5, moveSpeed, startTimeStopFor, startTimeMove, weight;
-    protected double angle, newAngle;
+    protected float x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5f, moveSpeed, weight;
+    protected double angle, newAngle, startTimeStopFor, startTimeMove;
     protected Tile spawn, base;
     protected String dir;
     protected boolean isAimed = false, isMultipleShot, started = false;
@@ -57,7 +57,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     protected void initBack(){
-        moveSpeed = moveSpeed * (1+bonusMS/100);
+        moveSpeed = (float) (moveSpeed * (1+bonusMS/100));
         life = (int)Math.round(life * (1+bonusLife/100));
         maxLife = life;
         SoundManager.Instance.setClipVolume(clip, volume);
@@ -336,11 +336,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return moveSpeed;
     }
     
-    public double getX(){
+    public float getX(){
         return x;
     }
     
-    public double getY(){
+    public float getY(){
         return y;
     }
     
@@ -351,11 +351,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             spawnSpeed = minSpawnSpeed;
     }
     
-    public void setX(double x){
+    public void setX(float x){
         this.x = x;
     }
     
-    public void setY(double y){
+    public void setY(float y){
         this.y = y;
     }
     

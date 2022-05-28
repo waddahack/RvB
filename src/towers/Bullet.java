@@ -11,14 +11,14 @@ import static towser.Towser.ref;
 
 public class Bullet{
     
-    private double radius;
     private int speed;
     private Shootable aim, shooter;
     private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false;
-    private double x, y, xDest, yDest, waitFor, startTime;
+    private float x, y, xDest, yDest, angle, radius;
+    private double waitFor, startTime;
     private Texture sprite;
     
-    public Bullet(Shootable shooter, Shootable aim, double radius, Texture sprite, boolean goThrought){
+    public Bullet(Shootable shooter, Shootable aim, float radius, Texture sprite, boolean goThrought){
         this.x = shooter.getX();
         this.y = shooter.getY();
         this.radius = radius;
@@ -30,9 +30,10 @@ public class Bullet{
         this.sprite = sprite;
         this.shooter = shooter;
         this.goThrough = goThrough;
+        angle = (float) Math.toDegrees(Math.atan2(yDest-y, xDest-x));
     }
     
-    public Bullet(Shootable shooter, double xDest, double yDest, double radius, Texture sprite, boolean goThrought, int waitFor){
+    public Bullet(Shootable shooter, float xDest, float yDest, float radius, Texture sprite, boolean goThrought, int waitFor){
         this.x = shooter.getX();
         this.y = shooter.getY();
         this.radius = radius;
@@ -45,6 +46,7 @@ public class Bullet{
         this.shooter = shooter;
         this.waitFor = waitFor;
         this.goThrough = goThrough;
+        angle = (float) Math.toDegrees(Math.atan2(yDest-y, xDest-x));
     }
     
     public void move(){
@@ -59,7 +61,7 @@ public class Bullet{
             if(follow){
                 xDiff = aim.getX()-x;
                 yDiff = aim.getY()-y;
-                angle = Math.atan2(yDiff, xDiff);
+                this.angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
                 hyp = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
                 prop = speed/hyp;
                 x += xDiff*prop;
@@ -92,11 +94,10 @@ public class Bullet{
             move();
             render();
         }
-        
     }
     
     private void render(){
-        Towser.drawFilledRectangle(x-radius, y-radius, (int)(2*radius), (int)(2*radius), null, 1, sprite);
+        Towser.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
     }
     
     public double getX(){
