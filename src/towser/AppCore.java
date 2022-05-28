@@ -107,13 +107,13 @@ public abstract class AppCore {
         Enemy.bonusMS = 0;
         
         if(diff == Difficulty.EASY){
-            life = 150;
-            money = 3500;
+            life = 125;
+            money = 350;
             waveNumber = 1;
             waveReward = 275;
         }
         else if(diff == Difficulty.HARD){
-            life = 50;
+            life = 75;
             money = 250;
             waveNumber = 1;
             waveReward = 225;
