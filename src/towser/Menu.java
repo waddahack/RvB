@@ -104,7 +104,12 @@ public class Menu {
         }
         if(create.isClicked(0)){
             if(generateEmptyMap()){
-                creation = new Creation();
+                if(createdGame == null)
+                    creation = new Creation();
+                else{
+                    SoundManager.Instance.unpauseAll();
+                    game = createdGame;
+                }
                 switchStateTo(State.CREATION);
             }
             else{

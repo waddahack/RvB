@@ -157,7 +157,7 @@ public abstract class AppCore {
                     t = Towser.textures.get("grass");
                 n = 0;
                 if(t != Towser.textures.get("grass"))
-                    n = Math.round(rand.nextInt(361)/90)*90;  
+                    n = (int)Math.round(rand.nextInt(361)/90)*90;  
                 tile = new Tile(t, "grass");
                 tile.setAngle(n);
                 tile.setRotateIndex(0);

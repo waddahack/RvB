@@ -15,7 +15,7 @@ public class Tile {
     protected int size = unite;
     protected float r, g, b;
     protected float[] rgb;
-    protected double angle = 0, newAngle = 0, arrowAngle = -1;
+    protected int angle = 0, newAngle = 0, arrowAngle = -1;
     protected ArrayList<Texture> textures;
     protected int rotateIndex = -1;
     protected double renderX, renderY;
@@ -186,7 +186,7 @@ public class Tile {
         return angle;
     }
     
-    public void setAngle(double a){
+    public void setAngle(int a){
         angle = a;
     }
     

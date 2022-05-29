@@ -117,22 +117,24 @@ public abstract class Tower extends Tile implements Shootable{
             e.setIsAimed(true);
             if(canRotate){
                 float t = 0.3f;
-                newAngle = Math.toDegrees(Math.atan2(enemyAimed.getY()-y, enemyAimed.getX()-x));
+                newAngle = (int) Math.toDegrees(Math.atan2(enemyAimed.getY()-y, enemyAimed.getX()-x));
                 
                 if(newAngle-angle > 180)
                     newAngle -= 360;
                 else if(angle-newAngle > 180)
                     newAngle += 360;
+                if(Math.abs(angle-newAngle) <= 5)
+                    t = 1;
                 
-                angle = (1-t)*angle + t*newAngle;
+                angle = (int) ((1-t)*angle + t*newAngle);
                 
                 if(angle >= 360)
                     angle -= 360;
                 else if(angle <= -360)
                     angle += 360;
                 
-                angle = Math.round(angle);
-                newAngle = Math.round(newAngle);
+                angle = (int)Math.round(angle);
+                newAngle = (int)Math.round(newAngle);
             }
         }   
     }
@@ -348,7 +350,7 @@ public abstract class Tower extends Tile implements Shootable{
         if(isMultipleShot)
             enemiesTouched.clear();
         lastShoot = System.currentTimeMillis();
-        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(angle*3.14/180)/2), (float)(y+size*Math.sin(angle*3.14/180)/2), enemyAimed, size/4, bulletSprite, false);
+        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4, bulletSprite, false);
         bullets.add(bullet);
         if(clip != null)
             SoundManager.Instance.playOnce(clip);

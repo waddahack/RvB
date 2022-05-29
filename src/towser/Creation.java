@@ -96,6 +96,8 @@ public class Creation extends AppCore{
     @Override
     protected void checkInput(){
         // Click check
+        if(stateChanged)
+            return;
         while(Mouse.next()){
             int indexX = getMouseIndexX();
             int indexY = getMouseIndexY();
@@ -120,7 +122,7 @@ public class Creation extends AppCore{
                     t = Towser.textures.get("grass");
                 n = 0;
                 if(t != Towser.textures.get("grass"))
-                    n = Math.round(rand.nextInt(361)/90)*90;  
+                    n = (int)Math.round(rand.nextInt(361)/90)*90;  
                 Tile grass = new Tile(t, "grass");
                 grass.setAngle(n);
                 grass.setRotateIndex(0);

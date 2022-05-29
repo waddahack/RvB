@@ -75,6 +75,7 @@ public class Bullet{
         }
         if(!inRange)
             shooter.getBulletsToRemove().add(this);
+            
         if(!aimAlreadyTouched && touched){
             shooter.getEnemiesTouched().add(aim);
             aim.attacked(shooter.getPower());
