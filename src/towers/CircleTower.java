@@ -1,6 +1,5 @@
 package towers;
 
-import java.util.ArrayList;
 import managers.SoundManager;
 import towser.Towser;
 import static towser.Towser.ref;
@@ -22,7 +21,6 @@ public class CircleTower extends Tower{
         size = width;
         totalMoneySpent = priceP;
         name = "Razingun";
-        textureName = "circleTower";
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("multicannon");
@@ -53,13 +51,13 @@ public class CircleTower extends Tower{
         lastShoot = System.currentTimeMillis();
 
         bullets.clear();
-        bullets.add(new Bullet(this, x-100, y, size/6, bulletSprite, true, 75));
-        bullets.add(new Bullet(this, x-100, y-100, size/6, bulletSprite, true, 0));
-        bullets.add(new Bullet(this, x, y-100, size/6, bulletSprite, true, 50));
-        bullets.add(new Bullet(this, x+100, y, size/6, bulletSprite, true, 25));
-        bullets.add(new Bullet(this, x+100, y-100, size/6, bulletSprite, true, 50));
-        bullets.add(new Bullet(this, x+100, y+100, size/6, bulletSprite, true, 75));
-        bullets.add(new Bullet(this, x, y+100, size/6, bulletSprite, true, 25));
-        bullets.add(new Bullet(this, x-100, y+100, size/6, bulletSprite, true, 0));
+        bullets.add(new Bullet(this, x-size/2, y, x-100, y, size/6, bulletSprite, true, 75));
+        bullets.add(new Bullet(this, x-size/2, y-size/2, x-100, y-100, size/6, bulletSprite, true, 0));
+        bullets.add(new Bullet(this, x, y-size/2, x, y-100, size/6, bulletSprite, true, 50));
+        bullets.add(new Bullet(this, x+size/2, y, x+100, y, size/6, bulletSprite, true, 25));
+        bullets.add(new Bullet(this, x+size/2, y-size/2, x+100, y-100, size/6, bulletSprite, true, 50));
+        bullets.add(new Bullet(this, x+size/2, y+size/2, x+100, y+100, size/6, bulletSprite, true, 75));
+        bullets.add(new Bullet(this, x, y+size/2, x, y+100, size/6, bulletSprite, true, 25));
+        bullets.add(new Bullet(this, x-size/2, y+size/2, x-100, y+100, size/6, bulletSprite, true, 0));
     }
 }

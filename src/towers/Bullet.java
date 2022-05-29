@@ -3,50 +3,51 @@ package towers;
 import ennemies.Enemy;
 import java.util.ArrayList;
 import org.newdawn.slick.opengl.Texture;
-import towser.Game;
 import towser.Towser;
 import towser.Shootable;
 import static towser.Towser.game;
-import static towser.Towser.ref;
 
 public class Bullet{
     
     private int speed;
     private Shootable aim, shooter;
-    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false;
+    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched;
     private float x, y, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
     
-    public Bullet(Shootable shooter, Shootable aim, float radius, Texture sprite, boolean goThrought){
-        this.x = shooter.getX();
-        this.y = shooter.getY();
+    public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower
+        build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, 0);
+    }
+    
+    public Bullet(Shootable shooter, float xStart, float yStart, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, int waitFor){ // circle tower
+        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, waitFor);
+    }
+    
+    public Bullet(Shootable shooter, float xStart, float yStart, float xDest, float yDest, float radius, Texture sprite, boolean goThrough){ // flame tower
+        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, 0);
+    }
+    
+    public void build(Shootable shooter, float xStart, float yStart, Shootable aim, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, int waitFor){
+        this.shooter = shooter;
+        this.x = xStart;
+        this.y = yStart;
         this.radius = radius;
         speed = shooter.getBulletSpeed();
         follow = shooter.getFollow();
         this.aim = aim;
-        xDest = aim.getX();
-        yDest = aim.getY();
+        if(aim == null){
+            this.xDest = xDest;
+            this.yDest = yDest;
+        }
+        else{
+            this.xDest = aim.getX();
+            this.yDest = aim.getY();
+        } 
         this.sprite = sprite;
-        this.shooter = shooter;
         this.goThrough = goThrough;
-        angle = (float) Math.toDegrees(Math.atan2(yDest-y, xDest-x));
-    }
-    
-    public Bullet(Shootable shooter, float xDest, float yDest, float radius, Texture sprite, boolean goThrought, int waitFor){
-        this.x = shooter.getX();
-        this.y = shooter.getY();
-        this.radius = radius;
-        speed = shooter.getBulletSpeed();
-        follow = false;
-        this.aim = null;
-        this.xDest = xDest;
-        this.yDest = yDest;
-        this.sprite = sprite;
-        this.shooter = shooter;
         this.waitFor = waitFor;
-        this.goThrough = goThrough;
-        angle = (float) Math.toDegrees(Math.atan2(yDest-y, xDest-x));
+        angle = (float) Math.toDegrees(Math.atan2(this.yDest-y, this.xDest-x));
     }
     
     public void move(){
@@ -54,7 +55,7 @@ public class Bullet{
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
         boolean touched = hasTouched(angle), inRange = isInRange();
-        boolean aimAlreadyTouched = false;
+        aimAlreadyTouched = false;
         if(shooter.isMultipleShot() && aim != null && shooter.getEnemiesTouched().contains(aim))
             aimAlreadyTouched = true;
         if((!touched || aimAlreadyTouched) && inRange){
@@ -131,7 +132,7 @@ public class Bullet{
             double xDiff, yDiff;
             for(i = 0 ; i < ennemies.size() ; i++){
                 e = ennemies.get(i);
-                if(shooter.isMultipleShot() && shooter.getEnemiesTouched().contains(e))
+                if(!e.hasStarted() || (shooter.isMultipleShot() && aimAlreadyTouched))
                     continue;
                 xDiff = e.getX()-x;
                 yDiff = e.getY()-y;

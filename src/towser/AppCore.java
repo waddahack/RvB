@@ -103,12 +103,13 @@ public abstract class AppCore {
         towerSelected = null;
         BasicTower.priceP = BasicTower.startPrice;
         CircleTower.priceP = CircleTower.startPrice;
+        FlameTower.priceP = FlameTower.startPrice;
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 350;
+            money = 3500;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -491,6 +492,9 @@ public abstract class AppCore {
         b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
+        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(55*ref), size, size, Towser.textures.get("flameTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b.setItemFramed(true);
+        o.addButton(b);
         overlays.add(o);
         
         o = new Overlay(0, 0, windWidth, (int)(60*ref));
@@ -519,19 +523,26 @@ public abstract class AppCore {
             o = overlays.get(0);
             o.render();     
             
-            UnicodeFont font = Towser.fonts.get("canBuy");
-            if(money < BasicTower.priceP)
-                font = Towser.fonts.get("cantBuy");
             t = BasicTower.priceP+"";
             b = o.getButtons().get(0);
-            b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
+            if(money >= BasicTower.priceP)
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+            else
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
             
-            font = Towser.fonts.get("canBuy");
-            if(money < CircleTower.priceP)
-                font = Towser.fonts.get("cantBuy");
             t = CircleTower.priceP+"";
             b = o.getButtons().get(1);
-            b.drawText(0, -b.getH()/2-(int)(12*ref), t, font);
+            if(money >= CircleTower.priceP)
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+            else
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+            
+            t = FlameTower.priceP+"";
+            b = o.getButtons().get(2);
+            if(money >= FlameTower.priceP)
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+            else
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
         }
         //
         //// Overlay principal
@@ -571,12 +582,7 @@ public abstract class AppCore {
         o = overlays.get(0);
         for(Button b : o.getButtons()) // Check tower clicked
             if(b.isClicked(0) && towerSelected == null)
-                createTower(o.getButtons().indexOf(b)+2);
-
-        for(int i = 0 ; i < nbTower ; i++){ // Check tower pressed by keyboard
-            if(Keyboard.isKeyDown(i+2) || Keyboard.isKeyDown(79+i))
-                createTower(Keyboard.getEventKey());  
-        }
+                createTower(o.getButtons().indexOf(b));
         //
         // Overlay principal
         o = overlays.get(1);
@@ -646,15 +652,15 @@ public abstract class AppCore {
             towerSelected = null;
         }
         Tower tower = null;
-        if(id >= 79)
-            id -= 77;
-        id -= 2;
         switch(id){
             case 0 :
                 tower = new BasicTower();
                 break;
             case 1 :
                 tower = new CircleTower();
+                break;
+            case 2 :
+                tower = new FlameTower();
                 break;
         }
         if(tower != null && tower.getPrice() <= money){

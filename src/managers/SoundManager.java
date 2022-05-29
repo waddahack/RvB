@@ -83,6 +83,8 @@ public class SoundManager
     }
     
     public void setClipVolume(Clip clip, Volume v){
+        if(clip == null)
+            return;
         FloatControl volume = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
         volume.setValue(v.value);
     }

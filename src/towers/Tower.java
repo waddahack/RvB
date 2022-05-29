@@ -3,11 +3,9 @@ package towers;
 import towser.Tile;
 import ennemies.Enemy;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import towser.Shootable;
@@ -22,7 +20,7 @@ public abstract class Tower extends Tile implements Shootable{
     protected int price, range, power, bulletSpeed, life, width, totalMoneySpent;
     protected double lastShoot = 0;
     protected float shootRate, growth = 0;
-    protected String name, textureName;
+    protected String name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate, toBeRemoved;
     protected Enemy enemyAimed;
@@ -32,6 +30,7 @@ public abstract class Tower extends Tile implements Shootable{
     protected ArrayList<Upgrade> upgrades;
     protected Texture textureStatic, bulletSprite;
     protected Clip clip;
+    protected Random random = new Random();
     
     public Tower(String type){
         super(type);
@@ -186,7 +185,7 @@ public abstract class Tower extends Tile implements Shootable{
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2, imageSize/2+(int)(10*ref), imageSize, imageSize, Towser.textures.get(textureName));
+        o2.addImage(o1.getW()/2, imageSize/2+(int)(10*ref), imageSize, imageSize, textureStatic);
         for(int i = 0 ; i < upgrades.size() ; i++){
             Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"), upgrades.get(i).maxClick);
             if(upgrades.get(i).maxClick <= 0)
@@ -349,7 +348,7 @@ public abstract class Tower extends Tile implements Shootable{
         if(isMultipleShot)
             enemiesTouched.clear();
         lastShoot = System.currentTimeMillis();
-        Bullet bullet = new Bullet(this, enemyAimed, size/4, bulletSprite, false);
+        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(angle*3.14/180)/2), (float)(y+size*Math.sin(angle*3.14/180)/2), enemyAimed, size/4, bulletSprite, false);
         bullets.add(bullet);
         if(clip != null)
             SoundManager.Instance.playOnce(clip);

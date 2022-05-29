@@ -1,6 +1,5 @@
 package towers;
 
-import java.util.ArrayList;
 import managers.SoundManager;
 import towser.*;
 import static towser.Towser.ref;
@@ -24,7 +23,6 @@ public class BasicTower extends Tower{
         size = width;
         totalMoneySpent = priceP;
         name = "Razannon";
-        textureName = "basicTower";
         follow = false;
         isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
