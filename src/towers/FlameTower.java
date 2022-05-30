@@ -6,7 +6,7 @@ import static towser.Towser.ref;
 
 public class FlameTower extends Tower{
 
-    public static int startPrice = 500;
+    public static int startPrice = 900;
     public static int priceP = startPrice;
     
     public FlameTower(){
@@ -25,8 +25,10 @@ public class FlameTower extends Tower{
         name = "Flametech";
         follow = false;
         isMultipleShot = true;
-        clip = null;
+        clip = SoundManager.Instance.getClip("flamethrower");
+        volume = SoundManager.Volume.MEDIUM;
         SoundManager.Instance.setClipVolume(clip, volume);
+        continuousSound = true;
         bulletSprite = Towser.textures.get("flame");
         growth = 4*ref;
         
@@ -41,7 +43,7 @@ public class FlameTower extends Tower{
     
     @Override
     protected void raisePrice(){
-        priceP *= 1.20;
+        priceP *= 1.10;
         price = priceP;
     }
     

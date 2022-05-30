@@ -223,6 +223,8 @@ public class PopupManager {
     }   
     
     public void closeCurrentPopup(){
+        if(currentOverlay == null)
+            return;
         currentOverlay.display(false);
         currentOverlay = null;
     }

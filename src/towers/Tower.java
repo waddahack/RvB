@@ -22,7 +22,7 @@ public abstract class Tower extends Tile implements Shootable{
     protected float shootRate, growth = 0;
     protected String name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
-    protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate, toBeRemoved;
+    protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate, toBeRemoved, continuousSound = false, soundPlayed = false;
     protected Enemy enemyAimed;
     protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
     protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
@@ -44,6 +44,10 @@ public abstract class Tower extends Tile implements Shootable{
                 checkOverlayInput();
             searchAndShoot();
             updateBullets();
+            if(soundPlayed && enemyAimed == null){
+                SoundManager.Instance.stopLoop(clip);
+                soundPlayed = false;
+            }   
         }
         renderOther();
     }
@@ -105,7 +109,9 @@ public abstract class Tower extends Tile implements Shootable{
         }
         else
             aim(null);
-        if(enemyAimed != null && !enemyAimed.isDead() && enemyAimed.isInRangeOf(this) && canShoot())
+        if(enemyAimed != null && enemyAimed.isDead())
+            enemyAimed = null;
+        if(enemyAimed != null && enemyAimed.isInRangeOf(this) && canShoot())
             shoot();
     }
     
@@ -316,6 +322,14 @@ public abstract class Tower extends Tile implements Shootable{
         destroy();
     }
     
+    public boolean isSoundContinuous(){
+        return continuousSound;
+    }
+    
+    public Clip getClip(){
+        return clip;
+    }
+    
     public void setSelected(boolean b){
         selected = b;
     }
@@ -352,8 +366,16 @@ public abstract class Tower extends Tile implements Shootable{
         lastShoot = System.currentTimeMillis();
         Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4, bulletSprite, false);
         bullets.add(bullet);
-        if(clip != null)
-            SoundManager.Instance.playOnce(clip);
+        if(clip != null){
+            if(continuousSound){
+                if(!soundPlayed){
+                    SoundManager.Instance.playLoop(clip);
+                    soundPlayed = true;
+                }
+            }
+            else
+                SoundManager.Instance.playOnce(clip);
+        }
     }
     
     public Enemy getEnemyAimed(){

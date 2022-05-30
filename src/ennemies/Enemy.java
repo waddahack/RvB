@@ -64,7 +64,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     public void update(){
-        if(game.enemySelected == null && isClicked())
+        if(game.enemySelected == null && isClicked() && started)
             game.enemySelected = this;
         if(isMouseIn() && !mouseEntered && Towser.cursor != Towser.Cursor.POINTER){
             mouseEntered = true;

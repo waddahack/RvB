@@ -150,8 +150,8 @@ public class Towser{
                 exit();
                 break;
         }
-        if(!PopupManager.Instance.onPopup())
-            checkInput();
+        
+        checkInput();
         
         renderMouse();
     }  

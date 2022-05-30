@@ -11,6 +11,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioInputStream; 
 import javax.sound.sampled.Clip;  
 import javax.sound.sampled.FloatControl;
+import towers.Tower;
 import static towser.Towser.game;
 
 public class SoundManager
@@ -98,6 +99,10 @@ public class SoundManager
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     
+    public void stopLoop(Clip clip){
+        clip.stop();
+    }
+    
     public Clip getClip(String soundName) 
     {
         Clip clip = null;
@@ -114,14 +119,20 @@ public class SoundManager
     
     public void pauseAll(){
         for(Enemy e : game.enemies)
-            if(e.getStepEveryMilli() <= 1 && e.hasStarted())
+            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
                 e.getClip().stop();
+        for(Tower t : game.towers)
+            if(t.isSoundContinuous() && t.getClip() != null)
+                t.getClip().stop();
     }
     
     public void unpauseAll(){
         for(Enemy e : game.enemies)
-            if(e.getStepEveryMilli() <= 1 && e.hasStarted())
+            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
                 e.getClip().loop(Clip.LOOP_CONTINUOUSLY);
+        for(Tower t : game.towers)
+            if(t.isSoundContinuous() && t.getClip() != null && t.getEnemyAimed() != null)
+                t.getClip().loop(Clip.LOOP_CONTINUOUSLY);
     }
     
     public void pauseAllAmbiance(){
