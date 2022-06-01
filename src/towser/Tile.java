@@ -18,7 +18,7 @@ public class Tile {
     protected int angle = 0, newAngle = 0, arrowAngle = -1;
     protected ArrayList<Texture> textures;
     protected int rotateIndex = -1;
-    protected double renderX, renderY;
+    protected float renderX, renderY;
     protected String direction;
     public String type;
     public Tile previousRoad = null, nextRoad = null;
@@ -151,6 +151,14 @@ public class Tile {
     
     public float getY(){
         return y;
+    }
+    
+    public float getRealX(){
+        return renderX;
+    }
+    
+    public float getRealY(){
+        return renderY;
     }
     
     public void setX(float x){

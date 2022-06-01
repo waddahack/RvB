@@ -19,7 +19,6 @@ public class TrickyEnemy extends Enemy{
         moveSpeed = 2.9f;
         range = 0;
         life = 80;
-        weight = 3;
         width = 4*Towser.unite/5;
         eBalance = balance;
         rgb = new float[]{0.2f, 0.2f, 0.8f};
@@ -35,6 +34,8 @@ public class TrickyEnemy extends Enemy{
     @Override
     public void die(){
         if(!isInBase() && !game.ended){
+            newAngle = (int)Math.round(angle/90) * 90;
+            angle = newAngle;
             for(int i = 0 ; i < 3 ; i++){
                 Enemy e = new BasicEnemy();
                 e.setX(x);

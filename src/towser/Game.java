@@ -278,7 +278,7 @@ public class Game extends AppCore{
                 changeLastOnSide = false;
             }
         }
-        
+
         return path;
     }
     

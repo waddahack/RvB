@@ -34,10 +34,10 @@ public class FlameTower extends Tower{
         
         range = (int) (1.6*Towser.unite);
         power = 1;
-        shootRate = 60f;
+        shootRate = 30f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.4f, "Multiplicate", 100f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "Add", 200f, 1.2f, 3));
+        upgrades.add(new Upgrade("Range", range, 1.3f, "Multiplicate", 150f, 1.5f, 2));
+        upgrades.add(new Upgrade("Power", power, 1f, "Add", 400f, 1.2f, 3));
 
     }
     
@@ -54,6 +54,6 @@ public class FlameTower extends Tower{
         lastShoot = System.currentTimeMillis();
 
         bullets.remove(bullets.size()-1);
-        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(120)-60, enemyAimed.getY()+random.nextInt(120)-60, size/3, bulletSprite, true));
+        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(100)-50, enemyAimed.getY()+random.nextInt(100)-50, size/2, bulletSprite, true));
     }
 }

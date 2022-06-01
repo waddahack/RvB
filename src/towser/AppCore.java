@@ -12,7 +12,6 @@ import java.util.Scanner;
 import managers.PopupManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser.Cursor;
 import towser.Towser.Difficulty;
@@ -29,7 +28,11 @@ public abstract class AppCore {
     
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
-        BASIC(0, BasicEnemy.balance, 1, 8), FAST(1, FastEnemy.balance, 4, 10), TRICKY(2, TrickyEnemy.balance, 6, 10), STRONG(3, StrongEnemy.balance, 9, 15);
+        BASIC(0, BasicEnemy.balance, 1, 8),
+        FAST(1, FastEnemy.balance, 4, 10),
+        TRICKY(2, TrickyEnemy.balance, 6, 10),
+        FLYING(3, FlyingEnemy.balance, 13, 5),
+        STRONG(4, StrongEnemy.balance, 9, 15);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -63,6 +66,9 @@ public abstract class AppCore {
                         e = new TrickyEnemy();
                         break;
                     case 3:
+                        e = new FlyingEnemy();
+                        break;
+                    case 4:
                         e = new StrongEnemy();
                         break;
                 }
@@ -110,7 +116,7 @@ public abstract class AppCore {
         if(diff == Difficulty.EASY){
             life = 125;
             money = 3500;
-            waveNumber = 1;
+            waveNumber = 13;
             waveReward = 275;
         }
         else if(diff == Difficulty.HARD){

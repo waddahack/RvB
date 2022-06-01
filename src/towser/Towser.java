@@ -368,17 +368,21 @@ public class Towser{
             // Bullets
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));
             textures.put("flame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame.png"))));
-            textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
-            textures.put("bulletGrey", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_grey.png"))));
             // Enemies
             textures.put("basicEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy.png"))));
             textures.put("basicEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy_bright.png"))));
+            
             textures.put("fastEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/fast_enemy.png"))));
             textures.put("fastEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/fast_enemy_bright.png"))));
+            
             textures.put("strongEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy.png"))));
             textures.put("strongEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_bright.png"))));
+            
             textures.put("trickyEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy.png"))));
             textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy_bright.png"))));
+            
+            textures.put("flyingEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy.png"))));
+            textures.put("flyingEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

@@ -17,7 +17,6 @@ public class FastEnemy extends Enemy{
         moveSpeed = 4.2f;
         range = 3*Towser.unite;
         life = 42;
-        weight = 1.5f;
         width = Towser.unite;
         eBalance = balance;
         rgb = new float[]{1f, 1f, 0f};

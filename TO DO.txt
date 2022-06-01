@@ -1,8 +1,10 @@
 NEXT BIG UPDATE MUST HAVE :
+- sound of flying enemy
 - /!\ pouvoir continuer sa game created et pouvoir re enter en mode creation
+- /!\ type d'ennemies spawn indépendament (thread par type)
 - Faire title image (stylisé avec des images de tours/ennemies)
 - Créer 1 et 2 ennemies (cf discord)
-- Balance le jeu (flamethrower bcp trop fort)
+- Balance le jeu
 
 // MAJ
 - Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).

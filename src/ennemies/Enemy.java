@@ -28,7 +28,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected long stopFor = -1;
     protected String name;
     protected SoundManager.Volume volume;
-    protected float x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5f, moveSpeed, weight;
+    protected float x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5f, moveSpeed;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;
     protected Tile spawn, base;
     protected String dir;
@@ -36,7 +36,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected double waitFor = 125, startTimeWaitFor = 0;
     protected Clip clip;
     protected double stepEveryMilli, startTimeSteps;
-    private double movingBy;
+    protected double movingBy;
     private boolean mouseEntered = false;
     private int uniqueId;
     
@@ -80,13 +80,15 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         }
         if(started){
             move();
-            if(stepEveryMilli == 0){
-                stepEveryMilli = -1;
-                SoundManager.Instance.playLoop(clip);
-            }   
-            else if(stepEveryMilli > 0 && System.currentTimeMillis() - startTimeSteps >= stepEveryMilli/(double)game.gameSpeed){
-                startTimeSteps = System.currentTimeMillis();
-                SoundManager.Instance.playOnce(clip);
+            if(clip != null){
+                if(stepEveryMilli == 0){
+                    stepEveryMilli = -1;
+                    SoundManager.Instance.playLoop(clip);
+                }   
+                else if(stepEveryMilli > 0 && System.currentTimeMillis() - startTimeSteps >= stepEveryMilli/(double)game.gameSpeed){
+                    startTimeSteps = System.currentTimeMillis();
+                    SoundManager.Instance.playOnce(clip);
+                }
             }
         }
     }
@@ -124,11 +126,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             Towser.drawFilledCircle(x, y, width/2, rgb, 1);
     }
     
-    private void move(){
+    protected void move(){
         if(isOnCenterOfTile() && !isOnSameTile()){
             indiceTuile += 1;
             setPositionInCenterOfTile();
-             if(isInBase())
+            if(isInBase())
                 attack();
             else
                 setDirection();
@@ -208,7 +210,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         }
     }
     
-    private boolean isOnSameTile(){
+    protected boolean isOnSameTile(){
         if(indiceTuile == -1)
             return false;
         if(isDead())
@@ -218,11 +220,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return (x == t.getIndexX() && y == t.getIndexY());
     }
     
-    private boolean isOnCenterOfTile(){
+    protected boolean isOnCenterOfTile(){
         return (Math.floor(x)%unite <= unite/2+movingBy && Math.floor(x)%unite >= unite/2-movingBy && Math.floor(y)%unite <= unite/2+movingBy && Math.floor(y)%unite >= unite/2-movingBy);
     }
     
-    private void setPositionInCenterOfTile(){
+    protected void setPositionInCenterOfTile(){
         Tile t = game.path.get(indiceTuile);
         x = t.getX()+unite/2;
         y = t.getY()+unite/2;
@@ -245,7 +247,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return (x <= t.getX()+((t.getRange())*Math.abs(cosinus))+moveSpeed && x >= t.getX()-((t.getRange())*Math.abs(cosinus))-moveSpeed && y <= t.getY()+((t.getRange())*Math.abs(sinus))+moveSpeed && y >= t.getY()-((t.getRange())*Math.abs(sinus))-moveSpeed);
     }
     
-    private boolean isMouseIn(){
+    protected boolean isMouseIn(){
         int MX = Mouse.getX(), MY = Towser.windHeight-Mouse.getY();
         return (MX >= x-width/2 && MX <= x+width/2 && MY >= y-width/2 && MY <= y+width/2);
     }
@@ -430,9 +432,5 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public void setIsAimed(boolean b){
         isAimed = b;
-    }
-    
-    public double getWeight(){
-        return weight;
     }
 }

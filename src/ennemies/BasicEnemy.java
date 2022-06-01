@@ -18,7 +18,6 @@ public class BasicEnemy extends Enemy{
         moveSpeed = 3.3f;
         range = 3*Towser.unite;
         life = 30;
-        weight = 1;
         width = 4*Towser.unite/5;
         rgb = new float[]{1f, 0.7f, 0f};
         sprite = Towser.textures.get("basicEnemy");
