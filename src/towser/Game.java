@@ -27,11 +27,12 @@ public class Game extends AppCore{
         Random rand = new Random();
         ArrayList<ArrayList<Tile>> map = new ArrayList<>();
         ArrayList<Tile> row, path = new ArrayList<>(), neighbors = new ArrayList<>();
-        int x, y, aimX = (nbTileX-1)/2, aimY = (nbTileY-1)/2;
+        int x, y, oppositeX, oppositeY, centerX = nbTileX/2, centerY = nbTileY/2;
         Tile road, previous;
         String dir, dirToCount;
         // nombre de road de la map restante
-        int nbRoadLeft = diff.getNbRoad();
+        int nbRoad =  diff.getNbRoad();
+        int nbRoadLeft = nbRoad;
         // remplissage de la map par du vide
         for(int i = 0 ; i < nbTileY ; i++){
             row = new ArrayList<>();
@@ -40,16 +41,20 @@ public class Game extends AppCore{
             map.add(row);
         }
         // spawn random sur un bord
-        x = rand.nextInt(2);
-        if(x == 0){
-            x = rand.nextInt(nbTileX);
-            y = rand.nextInt(2)*(nbTileY-1);
-        }
-        else{
-            x = rand.nextInt(2)*(nbTileX-1);
-            y = rand.nextInt(nbTileY);
+        x = rand.nextInt(3);
+        switch(x){
+            case 0: // En haut
+                x = rand.nextInt(nbTileX);
+                y = 0;
+                break;
+            default: // Gauche et droite
+                x = rand.nextInt(2)*(nbTileX-1);
+                y = rand.nextInt(nbTileY);
+                break;
         }
         road = new Tile(x, y);
+        oppositeX = nbTileX-1-x;
+        oppositeY = nbTileY-1-y;
         if(x == 0)
             road.previousRoad = new Tile(x-1, y);
         else if(x == nbTileX-1)
@@ -245,6 +250,11 @@ public class Game extends AppCore{
                         y = (int) neighbors.get(0).getY();
                     }
                     else{ // ajoute de la proba pour le virage qui va en direction du centre de la map
+                        int aimX = oppositeX, aimY = oppositeY;
+                        if(nbRoadLeft <= nbRoad/2){
+                            aimX = centerX;
+                            aimY = centerY;
+                        }
                         if((aimX > neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() > 0) || (aimX < neighbors.get(1).getX() && neighbors.get(1).getX()-previous.getX() < 0) || (aimY > neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() > 0) || (aimY < neighbors.get(1).getY() && neighbors.get(1).getY()-previous.getY() < 0)){
                             temp = neighbors.get(0);
                             neighbors.set(0, neighbors.get(1));

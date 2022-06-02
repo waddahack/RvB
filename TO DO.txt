@@ -1,6 +1,8 @@
 NEXT BIG UPDATE MUST HAVE :
 - sound of flying enemy
 - /!\ pouvoir continuer sa game created et pouvoir re enter en mode creation
+- /!\ bouton "Modifie" en dessous de continuer la created game
+- /!\ bouton menu sur appcore
 - /!\ type d'ennemies spawn indépendament (thread par type)
 - Faire title image (stylisé avec des images de tours/ennemies)
 - Créer 1 et 2 ennemies (cf discord)

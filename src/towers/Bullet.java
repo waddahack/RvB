@@ -11,24 +11,24 @@ public class Bullet{
     
     private int speed;
     private Shootable aim, shooter;
-    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched;
+    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone;
     private float x, y, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
     
     public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower
-        build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, 0);
+        build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, false, 0);
     }
     
     public Bullet(Shootable shooter, float xStart, float yStart, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, int waitFor){ // circle tower
-        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, waitFor);
+        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, false, waitFor);
     }
     
-    public Bullet(Shootable shooter, float xStart, float yStart, float xDest, float yDest, float radius, Texture sprite, boolean goThrough){ // flame tower
-        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, 0);
+    public Bullet(Shootable shooter, float xStart, float yStart, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, boolean cone){ // flame tower
+        build(shooter, xStart, yStart, null, xDest, yDest, radius, sprite, goThrough, cone, 0);
     }
     
-    public void build(Shootable shooter, float xStart, float yStart, Shootable aim, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, int waitFor){
+    public void build(Shootable shooter, float xStart, float yStart, Shootable aim, float xDest, float yDest, float radius, Texture sprite, boolean goThrough, boolean cone, int waitFor){
         this.shooter = shooter;
         this.x = xStart;
         this.y = yStart;
@@ -46,6 +46,7 @@ public class Bullet{
         } 
         this.sprite = sprite;
         this.goThrough = goThrough;
+        this.cone = cone;
         this.waitFor = waitFor;
         angle = (float) Math.toDegrees(Math.atan2(this.yDest-y, this.xDest-x));
     }
@@ -99,7 +100,17 @@ public class Bullet{
     }
     
     private void render(){
-        Towser.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
+        if(cone){
+            // distanceDone / totalDistance
+            float distanceDone = (float) (Math.sqrt(Math.pow(x-shooter.getX(), 2) + Math.pow(y-shooter.getY(), 2)));
+            float totalDistance = (float) shooter.getRange();
+            float percentToDest = (float) (distanceDone / totalDistance);
+            if(percentToDest < 0.2)
+                percentToDest = 0.2f;
+            Towser.drawFilledRectangle(x, y, (int)((2*radius)*percentToDest), (int)((2*radius)*percentToDest), sprite, angle);
+        }
+        else
+            Towser.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
     }
     
     public double getX(){
