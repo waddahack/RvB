@@ -9,7 +9,7 @@ import ui.Overlay;
 
 public class Menu {
     
-    private Button start, random, regenerate, create, option, exit;
+    private Button start, random, regenerate, create, modify, option, exit;
     private Overlay[] overlays = new Overlay[4];
     
     public Menu(){
@@ -27,6 +27,7 @@ public class Menu {
         regenerate = new Button(random.getX(), random.getY()+random.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
         
         for(int i = 0 ; i < 4 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);
@@ -45,6 +46,7 @@ public class Menu {
                     break;
                 case 3:
                     overlays[i].addButton(create);
+                    overlays[i].addButton(modify);
                     break;
             }
         }
@@ -69,7 +71,12 @@ public class Menu {
             random.drawText(0, 0, "Continue", fonts.get("normalL"));
             regenerate.drawText(0, 0, "Regenerate", fonts.get("normal"));
         }  
-        create.drawText(0, 0, "Create", fonts.get("normalL"));
+        if(createdGame == null)
+            create.drawText(0, 0, "Create a map", fonts.get("normalL"));
+        else{
+            create.drawText(0, 0, "Continue", fonts.get("normalL"));
+            modify.drawText(0, 0, "Modify", fonts.get("normal"));
+        }
     }
     
     private void checkInput(){
@@ -77,12 +84,14 @@ public class Menu {
             regenerate.setHidden(true);
         else
             regenerate.setHidden(false);
+        if(createdGame == null)
+            modify.setHidden(true);
+        else
+            modify.setHidden(false);
         
         if(start.isClicked(0)){
             if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
                 adventureGame = new Game("1");
-            else
-                SoundManager.Instance.unpauseAll();
 
             game = adventureGame;
             switchStateTo(State.GAME);
@@ -93,7 +102,6 @@ public class Menu {
                 // Then it does newRandomMap(difficulty)
             }
             else{
-                SoundManager.Instance.unpauseAll();
                 game = randomGame;
                 switchStateTo(State.GAME);
             }   
@@ -103,19 +111,26 @@ public class Menu {
             // Then it does newRandomMap(difficulty)
         }
         if(create.isClicked(0)){
-            if(generateEmptyMap()){
-                if(createdGame == null)
+            if(createEmptyMap()){
+                System.out.println(createdGame == null);
+                if(createdGame == null){
                     creation = new Creation();
-                else{
-                    SoundManager.Instance.unpauseAll();
-                    game = createdGame;
+                    switchStateTo(State.CREATION);
                 }
-                switchStateTo(State.CREATION);
+                else{
+                    game = createdGame;
+                    switchStateTo(State.GAME);
+                }
+                
             }
             else{
                 PopupManager.Instance.popup("\n        Hmmm... Very strange...\n    Create a directory \"levels\" in\nthe same location than your game.");
             }
         }  
+        if(modify.isClicked(0)){
+            creation = new Creation();
+            switchStateTo(State.CREATION);
+        }
         if(exit.isClicked(0))
             switchStateTo(State.EXIT);
     }

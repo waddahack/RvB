@@ -167,9 +167,6 @@ public class Towser{
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
             if(PopupManager.Instance.onChoosingDifficulty())
                 PopupManager.Instance.closeCurrentPopup();
-            if(state == State.GAME)
-                SoundManager.Instance.pauseAll();
-            menu.enableAllButtons();
             switchStateTo(State.MENU);
         }
         if(s != state)
@@ -187,7 +184,7 @@ public class Towser{
         switchStateTo(State.GAME);
     }
     
-    public static boolean generateEmptyMap(){
+    public static boolean createEmptyMap(){
         try{
             File file = new File("assets/levels/level_created.txt");
             if(file.createNewFile()){
@@ -213,6 +210,16 @@ public class Towser{
         state = s;
         stateChanged = true;
         setCursor(Cursor.DEFAULT);
+        if(s == State.MENU){
+            menu.enableAllButtons();
+            SoundManager.Instance.pauseAll();
+        }  
+        else if(s == State.GAME){
+            game.enableAllButtons();
+            SoundManager.Instance.unpauseAll();
+        }
+        else if(s == State.CREATION)
+            creation.enableAllButtons();
     }
     
     public static void drawString(int x, int y, String text, UnicodeFont font){

@@ -14,6 +14,7 @@
         <group>
             <file>file:/F:/Programmation/Towser/src/towser/Game.java</file>
             <file>file:/F:/Programmation/Towser/src/ennemies/FlyingEnemy.java</file>
+            <file>file:/F:/Programmation/Towser/src/managers/SoundManager.java</file>
             <file>file:/F:/Programmation/Towser/src/towers/FlameTower.java</file>
             <file>file:/F:/Programmation/Towser/src/towser/Tile.java</file>
             <file>file:/F:/Programmation/Towser/src/towser/Towser.java</file>

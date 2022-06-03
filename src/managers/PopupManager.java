@@ -103,8 +103,6 @@ public class PopupManager {
                 Towser.switchStateTo(Towser.State.MENU);
                 currentOverlay = null;
                 gameOver.display(false);
-                if(menu != null)
-                    menu.enableAllButtons();
             }
         }
         else if(currentOverlay == enemiesUpgraded){

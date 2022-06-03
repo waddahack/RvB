@@ -15,6 +15,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser.Cursor;
 import towser.Towser.Difficulty;
+import static towser.Towser.State.MENU;
 import static towser.Towser.game;
 import static towser.Towser.mouseDown;
 import static towser.Towser.unite;
@@ -510,6 +511,9 @@ public abstract class AppCore {
         b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setHidden(true);
         o.addButton(b);
+        
+        b = new Button(o.getW()-(int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o.addButton(b);
         overlays.add(o);
         
         int width = (int) (700*ref), height = (int) (50*ref);
@@ -571,6 +575,8 @@ public abstract class AppCore {
             t = "x"+gameSpeed;
             o.getButtons().get(1).drawText(0, 0, t, Towser.fonts.get("normalB"));
         }
+        t = "Menu";
+        o.getButtons().get(2).drawText(0, 0, t, Towser.fonts.get("normal"));
         //
         //// Overlay enemy selected
         o = overlays.get(2);
@@ -609,6 +615,9 @@ public abstract class AppCore {
                     gameSpeed = 1;
                     break;
             }
+        }
+        if(o.getButtons().get(2).isClicked(0)){
+            Towser.switchStateTo(MENU);
         }
         //
     }

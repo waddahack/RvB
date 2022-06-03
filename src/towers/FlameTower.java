@@ -55,6 +55,13 @@ public class FlameTower extends Tower{
         lastShoot = System.currentTimeMillis();
 
         bullets.remove(bullets.size()-1);
-        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(100)-50, enemyAimed.getY()+random.nextInt(100)-50, size/2, bulletSprite, true, true));
+        int a = 75;
+        int addX = (int) Math.abs(Math.tan(a/2)*(enemyAimed.getY()-y));
+        int addY = (int) Math.abs(Math.tan(a/2)*(enemyAimed.getX()-x));
+        if(addX < 1)
+            addX = 1;
+        if(addY < 1)
+            addY = 1;
+        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(addX)-addX/2, enemyAimed.getY()+random.nextInt(addY)-addY/2, size/2, bulletSprite, true, true));
     }
 }

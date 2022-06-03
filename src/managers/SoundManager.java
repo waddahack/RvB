@@ -99,7 +99,7 @@ public class SoundManager
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     
-    public void stopLoop(Clip clip){
+    public void stopClip(Clip clip){
         clip.stop();
     }
     

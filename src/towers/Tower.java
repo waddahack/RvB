@@ -45,7 +45,7 @@ public abstract class Tower extends Tile implements Shootable{
             searchAndShoot();
             updateBullets();
             if(soundPlayed && enemyAimed == null){
-                SoundManager.Instance.stopLoop(clip);
+                SoundManager.Instance.stopClip(clip);
                 soundPlayed = false;
             }   
         }
@@ -92,6 +92,10 @@ public abstract class Tower extends Tile implements Shootable{
             game.map.get(getIndexY()).set(getIndexX(), grass);
             if(game.towerSelected == this)
                 game.towerSelected = null;
+            if(clip != null){
+                SoundManager.Instance.stopClip(clip);
+                SoundManager.Instance.clipToClose(clip);
+            }     
             toBeRemoved = true;
         }
     }
