@@ -1,8 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 - sound of flying enemy
-- /!\ type d'ennemies spawn indépendament (thread par type)
-- Faire title image (stylisé avec des images de tours/ennemies)
-- Créer 1 et 2 ennemies (cf discord)
+- Créer 1 tourelle et 1 ennemie (cf discord)
 - Balance le jeu
 
 - passer en parametre des callbacks

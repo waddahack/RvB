@@ -653,8 +653,8 @@ public abstract class AppCore {
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+Math.random()*(max-min)), waveBalance);
             }
         }
+        wave.shuffleEnemies();
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
-        Collections.sort(enemies);
 
         inWave = true;
     }

@@ -212,7 +212,8 @@ public class Towser{
         setCursor(Cursor.DEFAULT);
         if(s == State.MENU){
             menu.enableAllButtons();
-            SoundManager.Instance.pauseAll();
+            if(game != null)
+                SoundManager.Instance.pauseAll();
         }  
         else if(s == State.GAME){
             game.enableAllButtons();

@@ -1,6 +1,7 @@
 package ennemies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import static towser.Towser.game;
 import static towser.Towser.ref;
 
@@ -10,6 +11,7 @@ public class Wave{
     private int index;
     private ArrayList<Enemy> enemies;
     private double startTime;
+    private double waitBetween = 200;
     
     public Wave(){
         enemies = new ArrayList<>();
@@ -25,11 +27,18 @@ public class Wave{
         return enemies;
     }
     
+    public void shuffleEnemies(){
+        Collections.shuffle(enemies);
+    }
+    
     public void update(){
         if(index == enemies.size())
             return;
         Enemy nextEnemy = enemies.get(index);
-        if(System.currentTimeMillis() - startTime >= 1000*nextEnemy.getSpawnSpeed()*ref/game.gameSpeed && index < enemies.size() || index == 0){
+        Enemy previousEnemy = null;
+        if(index > 0)
+            previousEnemy = enemies.get(index-1);
+        if((System.currentTimeMillis() - startTime >= 1000*nextEnemy.getSpawnSpeed()*ref/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && System.currentTimeMillis() - startTime >= waitBetween)){
             nextEnemy.setStarted(true);
             startTime = System.currentTimeMillis();
             index++;
