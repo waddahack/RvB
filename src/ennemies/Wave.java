@@ -11,7 +11,7 @@ public class Wave{
     private int index;
     private ArrayList<Enemy> enemies;
     private double startTime;
-    private double waitBetween = 200;
+    private double waitBetween = 250;
     
     public Wave(){
         enemies = new ArrayList<>();

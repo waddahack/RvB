@@ -91,6 +91,11 @@ public class SoundManager
     }
     
     public void playOnce(Clip clip){
+        if(clip.isRunning()){
+            clip.flush();
+            clip.stop();
+        }
+        
         clip.setMicrosecondPosition(0);
         clip.start();
     }

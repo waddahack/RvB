@@ -15,7 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.Clip;
 import managers.PopupManager;
+import managers.SoundManager.Volume;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -67,6 +69,7 @@ public class Towser{
     public static Menu menu;
     public static Game game = null, adventureGame = null, randomGame = null, createdGame = null;
     public static Creation creation = null;
+    public static Map<String, Clip> clips;
     public static Map<String, Texture> textures;
     public static Map<String, UnicodeFont> fonts;
     public static Map<String, float[]> colors;
@@ -95,10 +98,6 @@ public class Towser{
         windHeight = unite*nbTileY;
         ref = unite/60f;
         
-        initTextures();
-        initColors();
-        initFonts();
-        
         init();
         
         while(!Display.isCloseRequested()){
@@ -116,7 +115,11 @@ public class Towser{
         exit();
     }
     
-    public static void init(){        
+    public static void init(){    
+        initTextures();
+        initColors();
+        initFonts();
+        
         glEnable(GL11.GL_BLEND);
         glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         glViewport(Display.getWidth()/2-windWidth/2, Display.getHeight()/2-windHeight/2, windWidth, windHeight);
@@ -127,6 +130,7 @@ public class Towser{
         Mouse.setCursorPosition(windWidth/2, windHeight/2);
         setCursor(Cursor.DEFAULT);
         SoundManager.initialize();
+        initAudio();
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
         menu = new Menu();
@@ -147,6 +151,7 @@ public class Towser{
                 break;
             case EXIT:
                 releaseTextures();
+                //releaseAudio();
                 exit();
                 break;
         }
@@ -310,8 +315,18 @@ public class Towser{
         System.exit(0);
     }
     
+    public static void initAudio(){
+        clips = new HashMap<>();
+        clips.put("sell", SoundManager.Instance.getClip("sell"));
+        SoundManager.Instance.setClipVolume(clips.get("sell"), Volume.MEDIUM);
+        clips.put("upgrade", SoundManager.Instance.getClip("upgrade"));
+        SoundManager.Instance.setClipVolume(clips.get("upgrade"), Volume.SEMI_HIGH);
+        clips.put("build", SoundManager.Instance.getClip("build"));
+        SoundManager.Instance.setClipVolume(clips.get("build"), Volume.HIGH);
+    }
+    
     public static void initColors(){
-        colors = new HashMap<String, float[]>();
+        colors = new HashMap<>();
         float[] life = {255f/255f, 80f/255f, 80f/255f};
         float[] white = {225f/255f, 240f/255f, 200f/255f};
         float[] blue = {58f/255f, 68f/255f, 102f/255f};
@@ -390,7 +405,10 @@ public class Towser{
             textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy_bright.png"))));
             
             textures.put("flyingEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy.png"))));
-            textures.put("flyingEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_bright.png"))));
+            textures.put("flyingEnemyBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_base.png"))));
+            textures.put("flyingEnemyBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_base_bright.png"))));
+            textures.put("flyingEnemyProp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop.png"))));
+            textures.put("flyingEnemyPropBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -401,6 +419,11 @@ public class Towser{
     public static void releaseTextures(){
         for(Map.Entry<String, Texture> entry : textures.entrySet())
             entry.getValue().release();
+    }
+    
+    public static void releaseAudio(){
+        for(Map.Entry<String, Clip> entry : clips.entrySet())
+            entry.getValue().close();
     }
     
     @SuppressWarnings("unchecked")

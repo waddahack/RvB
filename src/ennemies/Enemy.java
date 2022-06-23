@@ -30,7 +30,6 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected SoundManager.Volume volume;
     protected float x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5f, moveSpeed;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;
-    protected Tile spawn, base;
     protected String dir;
     protected boolean isAimed = false, isMultipleShot, started = false;
     protected double waitFor = 125, startTimeWaitFor = 0;
@@ -42,15 +41,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public Enemy(int id){
         uniqueId = id;
-        spawn = game.getSpawn();
-        base = game.getBase();
-        if(spawn != null){
-            x = spawn.getX()+unite/2;
-            y = spawn.getY()+unite/2;
+        if(game.spawn != null){
+            x = game.spawn.getX()+unite/2;
+            y = game.spawn.getY()+unite/2;
         }
-        if(base != null){
-            xBase = base.getX()+unite/2;
-            yBase = base.getY()+unite/2;
+        if(game.base != null){
+            xBase = game.base.getX()+unite/2;
+            yBase = game.base.getY()+unite/2;
         }
         startTimeMove = System.currentTimeMillis();
         startTimeSteps = System.currentTimeMillis();
@@ -221,6 +218,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     protected boolean isOnCenterOfTile(){
+        if(indiceTuile < 0)
+            return true;
         return (Math.floor(x)%unite <= unite/2+movingBy && Math.floor(x)%unite >= unite/2-movingBy && Math.floor(y)%unite <= unite/2+movingBy && Math.floor(y)%unite >= unite/2-movingBy);
     }
     

@@ -81,6 +81,7 @@ public abstract class Tower extends Tile implements Shootable{
                 totalMoneySpent += upPrice;
                 upgrades.get(i).increasePrice();
                 b.click();
+                SoundManager.Instance.playOnce(Towser.clips.get("upgrade"));
             }
         }
         if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
@@ -97,6 +98,7 @@ public abstract class Tower extends Tile implements Shootable{
                 SoundManager.Instance.clipToClose(clip);
             }     
             toBeRemoved = true;
+            SoundManager.Instance.playOnce(Towser.clips.get("sell"));
         }
     }
     
@@ -290,6 +292,7 @@ public abstract class Tower extends Tile implements Shootable{
         game.money -= price;
         raisePrice();
         isPlaced = true;
+        SoundManager.Instance.playOnce(Towser.clips.get("build"));
     }
     
     public boolean canBePlaced(){

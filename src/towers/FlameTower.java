@@ -27,7 +27,7 @@ public class FlameTower extends Tower{
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("flamethrower");
-        volume = SoundManager.Volume.MEDIUM;
+        volume = SoundManager.Volume.SEMI_HIGH;
         SoundManager.Instance.setClipVolume(clip, volume);
         continuousSound = true;
         bulletSprite = Towser.textures.get("flame");

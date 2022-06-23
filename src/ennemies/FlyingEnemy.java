@@ -1,6 +1,10 @@
 package ennemies;
 
 import managers.SoundManager;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslated;
+import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import static towser.Towser.game;
 import static towser.Towser.unite;
@@ -10,11 +14,13 @@ public class FlyingEnemy extends Enemy{
     public static int idCount = 0, balance = 100;
     
     private double xDiffConst, yDiffConst, hyp, tileEveryPixel;
+    private Texture turningSprite, turningBrightSprite, baseSprite, baseBrightSprite;
+    private int turningSpriteAngle = 0;
     
     public FlyingEnemy(){
         super(++idCount);
         name = "Bazoopter";
-        spawnSpeed = 5f;
+        spawnSpeed = 12f;
         reward = 36;
         power = 12;
         shootRate = 1;
@@ -25,13 +31,16 @@ public class FlyingEnemy extends Enemy{
         eBalance = balance;
         rgb = new float[]{0.4f, 0.9f, 0.1f};
         sprite = Towser.textures.get("flyingEnemy");
-        brightSprite = Towser.textures.get("flyingEnemyBright");
-        clip = null;
+        baseSprite = Towser.textures.get("flyingEnemyBase");
+        baseBrightSprite = Towser.textures.get("flyingEnemyBaseBright");
+        turningSprite = Towser.textures.get("flyingEnemyProp");
+        turningBrightSprite = Towser.textures.get("flyingEnemyPropBright");
+        clip = SoundManager.Instance.getClip("helicopter");
         volume = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
         
-        xDiffConst = (game.getBase().getRealX()-game.getSpawn().getRealX());
-        yDiffConst = (game.getBase().getRealY()-game.getSpawn().getRealY());
+        xDiffConst = (game.base.getRealX()-game.spawn.getRealX());
+        yDiffConst = (game.base.getRealY()-game.spawn.getRealY());
         hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst);
         tileEveryPixel = (hyp/(game.path.size()-1));
         newAngle = 90+(float) Math.toDegrees(Math.atan2(yDiffConst, xDiffConst));
@@ -42,7 +51,7 @@ public class FlyingEnemy extends Enemy{
     
     @Override
     protected void move(){
-        double xDiff = (game.getBase().getRealX()-x), yDiff = (game.getBase().getRealY()-y);
+        double xDiff = (game.base.getRealX()-x), yDiff = (game.base.getRealY()-y);
         indiceTuile = (int) (game.path.size()-1 - Math.floor(Math.sqrt(xDiff*xDiff + yDiff*yDiff)/tileEveryPixel));
 
         if(isInBase())
@@ -54,5 +63,28 @@ public class FlyingEnemy extends Enemy{
         y += yDiffConst * (speed/hyp);
         
         startTimeMove = System.currentTimeMillis();
+    }
+    
+    @Override
+    public void render(){
+        if(!started && stopFor == -1)
+            return;
+        
+        Texture sprite = this.baseSprite;
+        if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+            sprite = this.baseBrightSprite;
+        else if(startTimeWaitFor != 0)
+            startTimeWaitFor = 0;
+        
+        Towser.drawFilledRectangle(x, y, width, width, sprite, angle);
+        
+        sprite = this.turningSprite;
+        if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+            sprite = this.turningBrightSprite;
+        else if(startTimeWaitFor != 0)
+            startTimeWaitFor = 0;
+        
+        turningSpriteAngle += 2*game.gameSpeed;
+        Towser.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle);
     }
 }

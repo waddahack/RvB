@@ -1,7 +1,7 @@
 NEXT BIG UPDATE MUST HAVE :
-- sound of flying enemy
 - Créer 1 tourelle et 1 ennemie (cf discord)
-- Balance le jeu
+- faire tourner bullet sprite pour la explode tower
+- Balance le jeu (wave -> waitBetween à changer fonction de wavenumber) (flamethrower pas assez fort)
 
 - passer en parametre des callbacks
 - Opti : créer un buffer image une fois que initmap est fini pour draw texture 1 fois au lieu de chaque tile
@@ -11,6 +11,7 @@ NEXT BIG UPDATE MUST HAVE :
  Remplacer "Play" par "Fight Bazoo"
 - Créer Raztech (une tour très puissante et chère, plaçable une seule fois + cf discord)
 Raztech : invoque des tourelles ?
+- implement sons bazoo wave & defeated + build raztech
 
 - ne plus faire apparaitre ennemie selon vague (?)
 - Idée si on meurt jamais : à partir de la vague n, rendre plus exponentielle :  [plus ou moins déjà fait]
@@ -18,7 +19,6 @@ Raztech : invoque des tourelles ?
 IDEAS:
 
 - stat par tower par wave
-- implémenter les nouveaux son
 - Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types
 - Mode survie ou la gagne (mode gagne à faire)
 - Mode campagne : Adventure ? Campaign ?

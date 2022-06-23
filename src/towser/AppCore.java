@@ -82,7 +82,7 @@ public abstract class AppCore {
     }
     
     public ArrayList<ArrayList<Tile>> map;
-    protected Tile spawn, base;
+    public Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
     public ArrayList<Tower> towers, towersDestroyed;
     public ArrayList<Enemy> enemies, ennemiesDead;
@@ -116,8 +116,8 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 3500;
-            waveNumber = 13;
+            money = 35000;
+            waveNumber = 18;
             waveReward = 275;
         }
         else if(diff == Difficulty.HARD){
@@ -370,7 +370,7 @@ public abstract class AppCore {
                 inWave = false;
                 wave = null;
                 money += waveReward;
-                if(!ended)
+                if(!gameOver)
                     waveNumber++;
                 gameSpeed = 1;
                 SoundManager.Instance.closeAllClips();
@@ -739,14 +739,6 @@ public abstract class AppCore {
     
     public ArrayList<Enemy> getEnnemiesDead(){
         return ennemiesDead;
-    }
-    
-    public Tile getSpawn(){
-        return spawn;
-    }
-    
-    public Tile getBase(){
-        return base;
     }
     
     public int getLife(){
