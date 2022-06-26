@@ -24,6 +24,7 @@ public class FlameTower extends Tower{
         size = width;
         totalMoneySpent = priceP;
         name = "Flametech";
+        explode = false;
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("flamethrower");

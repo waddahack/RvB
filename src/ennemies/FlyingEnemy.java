@@ -1,9 +1,7 @@
 package ennemies;
 
+import Utils.MyMath;
 import managers.SoundManager;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
 import towser.Towser;
 import static towser.Towser.game;
@@ -41,7 +39,7 @@ public class FlyingEnemy extends Enemy{
         
         xDiffConst = (game.base.getRealX()-game.spawn.getRealX());
         yDiffConst = (game.base.getRealY()-game.spawn.getRealY());
-        hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst);
+        hyp = MyMath.distanceBetween(game.spawn, game.base);
         tileEveryPixel = (hyp/(game.path.size()-1));
         newAngle = 90+(float) Math.toDegrees(Math.atan2(yDiffConst, xDiffConst));
         angle = newAngle;
@@ -51,8 +49,7 @@ public class FlyingEnemy extends Enemy{
     
     @Override
     protected void move(){
-        double xDiff = (game.base.getRealX()-x), yDiff = (game.base.getRealY()-y);
-        indiceTuile = (int) (game.path.size()-1 - Math.floor(Math.sqrt(xDiff*xDiff + yDiff*yDiff)/tileEveryPixel));
+        indiceTuile = (int) (game.path.size()-1 - Math.floor(MyMath.distanceBetween(this, game.base)/tileEveryPixel));
 
         if(isInBase())
             attack();

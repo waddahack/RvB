@@ -1,8 +1,15 @@
 NEXT BIG UPDATE MUST HAVE :
-- Créer 1 tourelle et 1 ennemie (cf discord)
-- faire tourner bullet sprite pour la explode tower
+- big tower :
+	- faire fonction mymath de calcul d'angle
+	- finir le code (créer l'upgrade size de l'explode)
+	- son shoot big tower + son boum de la bombe
+	- bullet sprite (bombe)
+	- "animation" bombe + explode (animationi controller ?)
+
+- Créer 1 ennemie (cf discord)
 - Balance le jeu (wave -> waitBetween à changer fonction de wavenumber) (flamethrower pas assez fort)
 
+// OPTI/CODE
 - passer en parametre des callbacks
 - Opti : créer un buffer image une fois que initmap est fini pour draw texture 1 fois au lieu de chaque tile
 

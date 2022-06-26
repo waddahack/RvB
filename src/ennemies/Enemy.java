@@ -287,10 +287,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             return;
         life -= power;
         startTimeWaitFor = System.currentTimeMillis();
-        if(life <= 0){
+        if(life <= 0)
             die();
-            game.money += reward;
-        }
     }
     
     public void die(){
@@ -301,7 +299,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         if(clip != null){
             clip.stop();
             SoundManager.Instance.clipToClose(clip);
-        }  
+        } 
+        game.money += reward;
     }
     
     public int compareTo(Enemy e){
@@ -362,6 +361,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public int getWidth(){
         return width;
+    }
+    public int getExplodeRadius(){
+        return 0;
+    }
+    
+    public boolean getExplode(){
+        return false;
     }
     
     public boolean getFollow(){

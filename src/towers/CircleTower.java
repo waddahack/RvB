@@ -21,6 +21,7 @@ public class CircleTower extends Tower{
         size = width;
         totalMoneySpent = priceP;
         name = "Razingun";
+        explode = false;
         follow = false;
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("multicannon");

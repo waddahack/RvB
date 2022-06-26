@@ -12,6 +12,8 @@ public interface Shootable {
     public int getPower();
     public int getWidth();
     public boolean isDead();
+    public int getExplodeRadius();
+    public boolean getExplode();
     public boolean getFollow();
     public int getBulletSpeed();
     public int getRange();

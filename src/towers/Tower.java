@@ -17,12 +17,12 @@ import ui.*;
 
 public abstract class Tower extends Tile implements Shootable{
     
-    protected int price, range, power, bulletSpeed, life, width, totalMoneySpent;
+    protected int price, range, power, bulletSpeed, life, width, totalMoneySpent, explodeRadius;
     protected double lastShoot = 0;
     protected float shootRate, growth = 0;
     protected String name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
-    protected boolean isPlaced = false, follow, selected = true, isMultipleShot, canRotate, toBeRemoved, continuousSound = false, soundPlayed = false;
+    protected boolean isPlaced = false, follow = false, selected = true, isMultipleShot, canRotate, toBeRemoved, continuousSound = false, soundPlayed = false, explode = false;
     protected Enemy enemyAimed;
     protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
     protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
@@ -359,6 +359,16 @@ public abstract class Tower extends Tile implements Shootable{
     }
     
     @Override
+    public int getExplodeRadius(){
+        return explodeRadius;
+    }
+    
+    @Override
+    public boolean getExplode(){
+        return explode;
+    }
+    
+    @Override
     public boolean getFollow(){
         return follow;
     }
@@ -368,8 +378,7 @@ public abstract class Tower extends Tile implements Shootable{
     }
     
     public void shoot(){
-        if(isMultipleShot)
-            enemiesTouched.clear();
+        enemiesTouched.clear();
         lastShoot = System.currentTimeMillis();
         Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4, bulletSprite, false);
         bullets.add(bullet);

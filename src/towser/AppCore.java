@@ -6,7 +6,6 @@ import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 import managers.PopupManager;
@@ -85,7 +84,7 @@ public abstract class AppCore {
     public Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
     public ArrayList<Tower> towers, towersDestroyed;
-    public ArrayList<Enemy> enemies, ennemiesDead;
+    public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     protected boolean gameOver;
     protected boolean inWave, dontPlace;
@@ -103,7 +102,8 @@ public abstract class AppCore {
         towers = new ArrayList<>();
         towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
-        ennemiesDead = new ArrayList<>();
+        enemiesDead = new ArrayList<>();
+        enemiesToAdd = new ArrayList<>();
         gameOver = false;
         inWave = false;
         dontPlace = false;
@@ -111,6 +111,7 @@ public abstract class AppCore {
         BasicTower.priceP = BasicTower.startPrice;
         CircleTower.priceP = CircleTower.startPrice;
         FlameTower.priceP = FlameTower.startPrice;
+        BigTower.priceP = BigTower.startPrice;
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
         
@@ -493,10 +494,13 @@ public abstract class AppCore {
         o = new Overlay(0, windHeight-(int)(86*ref), windWidth, (int)(86*ref));
         o.setBG(Towser.textures.get("board"), 0.6f);
         o.setA(0.6f);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(55*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b.setItemFramed(true);
+        o.addButton(b);
+        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, Towser.textures.get("bigTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
         b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(55*ref), size, size, Towser.textures.get("flameTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
@@ -547,8 +551,15 @@ public abstract class AppCore {
             else
                 b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
             
-            t = FlameTower.priceP+"";
+            t = BigTower.priceP+"";
             b = o.getButtons().get(2);
+            if(money >= BigTower.priceP)
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+            else
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+            
+            t = FlameTower.priceP+"";
+            b = o.getButtons().get(3);
             if(money >= FlameTower.priceP)
                 b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
             else
@@ -624,9 +635,12 @@ public abstract class AppCore {
     
     public void clearArrays(){
         int i;
-        for(i = 0 ; i < ennemiesDead.size() ; i++)
-            enemies.remove(ennemiesDead.get(i));
-        ennemiesDead.clear();
+        for(i = 0 ; i < enemiesDead.size() ; i++)
+            enemies.remove(enemiesDead.get(i));
+        enemiesDead.clear();
+        for(i = 0 ; i < enemiesToAdd.size() ; i++)
+            enemies.add(0, enemiesToAdd.get(i));
+        enemiesToAdd.clear();
         for(i = 0 ; i < towersDestroyed.size() ; i++)
             towers.remove(towersDestroyed.get(i));
         towersDestroyed.clear();
@@ -675,6 +689,9 @@ public abstract class AppCore {
                 tower = new CircleTower();
                 break;
             case 2 :
+                tower = new BigTower();
+                break;
+            case 3 :
                 tower = new FlameTower();
                 break;
         }
@@ -733,12 +750,11 @@ public abstract class AppCore {
     }
     
     public void addEnemie(Enemy e){
-        wave.addEnemy(e);
-        enemies.add(0, e);
+        enemiesToAdd.add(0, e);
     }
     
     public ArrayList<Enemy> getEnnemiesDead(){
-        return ennemiesDead;
+        return enemiesDead;
     }
     
     public int getLife(){

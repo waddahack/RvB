@@ -1,5 +1,6 @@
 package towers;
 
+import Utils.MyMath;
 import ennemies.Enemy;
 import java.util.ArrayList;
 import org.newdawn.slick.opengl.Texture;
@@ -11,12 +12,12 @@ public class Bullet{
     
     private int speed;
     private Shootable aim, shooter;
-    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone;
+    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone, explode;
     private float x, y, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
     
-    public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower
+    public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower - big tower
         build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, false, 0);
     }
     
@@ -34,6 +35,7 @@ public class Bullet{
         this.y = yStart;
         this.radius = radius;
         speed = shooter.getBulletSpeed();
+        explode = shooter.getExplode();
         follow = shooter.getFollow();
         this.aim = aim;
         if(aim == null){
@@ -54,7 +56,7 @@ public class Bullet{
     public void move(){
         double speed = (this.speed*game.gameSpeed * Towser.deltaTime / 50) * Towser.ref;
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
-        double hyp = Math.sqrt(xDiffConst*xDiffConst + yDiffConst*yDiffConst), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
+        double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
         boolean touched = hasTouched(angle), inRange = isInRange();
         aimAlreadyTouched = false;
         if(shooter.isMultipleShot() && aim != null && shooter.getEnemiesTouched().contains(aim))
@@ -64,7 +66,7 @@ public class Bullet{
                 xDiff = aim.getX()-x;
                 yDiff = aim.getY()-y;
                 this.angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
-                hyp = Math.sqrt(xDiff*xDiff + yDiff*yDiff);
+                hyp = MyMath.distanceBetween(x, y, aim.getX(), aim.getY());
                 prop = speed/hyp;
                 x += xDiff*prop;
                 y += yDiff*prop;
@@ -80,6 +82,13 @@ public class Bullet{
         if(!aimAlreadyTouched && touched){
             shooter.getEnemiesTouched().add(aim);
             aim.attacked(shooter.getPower());
+            if(explode){
+                for(int i = 0 ; i < game.enemies.size() ; i++){
+                    Enemy e = game.enemies.get(i);
+                    if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius())
+                        e.attacked(shooter.getPower());
+                }
+            }
             if(!goThrough)
                 shooter.getBulletsToRemove().add(this);
         }
@@ -102,7 +111,7 @@ public class Bullet{
     private void render(){
         if(cone){
             // distanceDone / totalDistance
-            float distanceDone = (float) (Math.sqrt(Math.pow(x-shooter.getX(), 2) + Math.pow(y-shooter.getY(), 2)));
+            float distanceDone = (float) (MyMath.distanceBetween(x, y, shooter.getX(), shooter.getY()));
             float totalDistance = (float) shooter.getRange();
             float percentToDest = (float) (distanceDone / totalDistance);
             if(percentToDest < 0.2)

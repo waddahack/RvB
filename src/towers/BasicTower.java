@@ -15,7 +15,7 @@ public class BasicTower extends Tower{
         textures.add(Towser.textures.get("basicTowerBase"));
         textures.add(Towser.textures.get("basicTowerTurret"));
         rotateIndex = 2;
-        textureStatic = Towser.textures.get(("basicTower"));
+        textureStatic = Towser.textures.get("basicTower");
         canRotate = true;
         price = priceP;
         life = 100;
@@ -23,6 +23,7 @@ public class BasicTower extends Tower{
         size = width;
         totalMoneySpent = priceP;
         name = "Razannon";
+        explode = false;
         follow = false;
         isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
