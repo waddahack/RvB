@@ -35,7 +35,7 @@ public class BasicTower extends Tower{
         power = 18;
         shootRate = 0.5f;
         bulletSpeed = 18;
-        upgrades.add(new Upgrade("Range", range, 1.2f, "Multiplicate", 100f, 1.5f, 3));
+        upgrades.add(new Upgrade("Range", range, 1.3f, "Multiplicate", 120f, 1.5f, 3));
         upgrades.add(new Upgrade("Power", power, 1.3f, "Multiplicate", 120f, 1.4f, 3));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.25f, "Multiplicate", 150f, 1.5f, 3));
         upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 20f, "Add", 160f, 3f, 1));

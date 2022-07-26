@@ -749,8 +749,9 @@ public abstract class AppCore {
                 b.setDisabled(false);
     }
     
-    public void addEnemie(Enemy e){
+    public void addEnemy(Enemy e){
         enemiesToAdd.add(0, e);
+        wave.addEnemy(e);
     }
     
     public ArrayList<Enemy> getEnnemiesDead(){

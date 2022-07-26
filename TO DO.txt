@@ -1,13 +1,13 @@
 NEXT BIG UPDATE MUST HAVE :
 - big tower :
-	- faire fonction mymath de calcul d'angle
-	- finir le code (créer l'upgrade size de l'explode)
-	- son shoot big tower + son boum de la bombe
-	- bullet sprite (bombe)
-	- "animation" bombe + explode (animationi controller ?)
+	- animation explode
+	- bullet sprite (bombe) + animation
 
 - Créer 1 ennemie (cf discord)
-- Balance le jeu (wave -> waitBetween à changer fonction de wavenumber) (flamethrower pas assez fort)
+- Balance le jeu :
+	- wave -> waitBetween à changer fonction de wavenumber
+	- adapté vitesse helico fct distance base/spawn + plus de vie
+	- fire tower cheaté
 
 // OPTI/CODE
 - passer en parametre des callbacks

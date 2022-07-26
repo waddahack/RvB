@@ -32,6 +32,10 @@ public class Upgrade {
                 nbNumberToRound = 0;
                 icon = Towser.textures.get("bulletSpeedIcon");
                 break;  
+            case "Explode radius":
+                nbNumberToRound = 0;
+                icon = Towser.textures.get("rangeIcon");
+                break;  
         }
         setValue(value);
         this.addOrMultiplicateValue = addOrMultiplicateValue;

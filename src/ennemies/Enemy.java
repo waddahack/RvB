@@ -1,5 +1,6 @@
 package ennemies;
 
+import Utils.MyMath;
 import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
@@ -238,9 +239,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     public boolean isInRangeOf(Tower t){
-        double xDiff = t.getX()-x, yDiff = t.getY()-y;
         double angle, cosinus, sinus;
-        angle = Math.atan2(yDiff, xDiff);
+        angle = MyMath.angleBetween(this, (Shootable) t);
         cosinus = Math.floor(Math.cos(angle)*1000)/1000;
         sinus = Math.floor(Math.sin(angle)*1000)/1000;
         return (x <= t.getX()+((t.getRange())*Math.abs(cosinus))+moveSpeed && x >= t.getX()-((t.getRange())*Math.abs(cosinus))-moveSpeed && y <= t.getY()+((t.getRange())*Math.abs(sinus))+moveSpeed && y >= t.getY()-((t.getRange())*Math.abs(sinus))-moveSpeed);

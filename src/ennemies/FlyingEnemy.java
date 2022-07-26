@@ -24,7 +24,7 @@ public class FlyingEnemy extends Enemy{
         shootRate = 1;
         moveSpeed = 1.6f;
         range = 3*unite;
-        life = 100;
+        life = 180;
         width = (int) (1.25*unite);
         eBalance = balance;
         rgb = new float[]{0.4f, 0.9f, 0.1f};
@@ -41,7 +41,7 @@ public class FlyingEnemy extends Enemy{
         yDiffConst = (game.base.getRealY()-game.spawn.getRealY());
         hyp = MyMath.distanceBetween(game.spawn, game.base);
         tileEveryPixel = (hyp/(game.path.size()-1));
-        newAngle = 90+(float) Math.toDegrees(Math.atan2(yDiffConst, xDiffConst));
+        newAngle = 90+(float) MyMath.angleDegreesBetween(game.spawn, game.base);
         angle = newAngle;
         
         initBack();
@@ -55,6 +55,7 @@ public class FlyingEnemy extends Enemy{
             attack();
 
         double speed = ((moveSpeed*game.gameSpeed) * Towser.deltaTime / 50) * Towser.ref;
+        speed *= (hyp/700);
         
         x += xDiffConst * (speed/hyp);
         y += yDiffConst * (speed/hyp);

@@ -1,5 +1,6 @@
 package towers;
 
+import Utils.MyMath;
 import towser.Tile;
 import ennemies.Enemy;
 import java.util.ArrayList;
@@ -75,6 +76,9 @@ public abstract class Tower extends Tile implements Shootable{
                     case "Bullet speed":
                         bulletSpeed = (int) upgrades.get(i).setNewValue();
                         break;
+                    case "Explode radius":
+                        explodeRadius = (int) upgrades.get(i).setNewValue();
+                        break;
                 }
                 size += growth;
                 game.money -= upPrice;
@@ -129,7 +133,7 @@ public abstract class Tower extends Tile implements Shootable{
             e.setIsAimed(true);
             if(canRotate){
                 float t = 0.3f;
-                newAngle = (int) Math.toDegrees(Math.atan2(enemyAimed.getY()-y, enemyAimed.getX()-x));
+                newAngle = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
                 
                 if(newAngle-angle > 180)
                     newAngle -= 360;
@@ -192,10 +196,13 @@ public abstract class Tower extends Tile implements Shootable{
         o2 = new Overlay(0, Towser.windHeight-(int)(86*ref), Towser.windWidth, (int)(86*ref));
         o2.setBG(Towser.textures.get("board"), 0.6f);
         
-        int sep = (int) (200*ref);
+        int sep = (int) (600 * ref);
+        sep -= 90*upgrades.size();
+        if(sep < 25)
+            sep = 25;
         int imageSize = o2.getH()-(int)(20*ref);
         int butWidth = (int) (200*ref), butHeight = (int)(38*ref);
-        int marginToCenter = Towser.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2 + butWidth);
+        int marginToCenter = Towser.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2);
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;

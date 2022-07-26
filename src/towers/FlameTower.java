@@ -34,9 +34,9 @@ public class FlameTower extends Tower{
         bulletSprite = Towser.textures.get("flame");
         growth = 4*ref;
         
-        range = (int) (1.6*Towser.unite);
+        range = (int) (1.4*Towser.unite);
         power = 1;
-        shootRate = 30f;
+        shootRate = 25f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade("Range", range, 1.4f, "Multiplicate", 150f, 1.5f, 2));
         upgrades.add(new Upgrade("Power", power, 1f, "Add", 300f, 1.2f, 3));

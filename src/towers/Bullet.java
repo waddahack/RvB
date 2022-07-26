@@ -50,13 +50,13 @@ public class Bullet{
         this.goThrough = goThrough;
         this.cone = cone;
         this.waitFor = waitFor;
-        angle = (float) Math.toDegrees(Math.atan2(this.yDest-y, this.xDest-x));
+        angle = (float) MyMath.angleDegreesBetween(x, y, this.xDest, this.yDest);
     }
     
     public void move(){
         double speed = (this.speed*game.gameSpeed * Towser.deltaTime / 50) * Towser.ref;
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
-        double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = Math.atan2(yDiff, xDiff);
+        double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest);
         boolean touched = hasTouched(angle), inRange = isInRange();
         aimAlreadyTouched = false;
         if(shooter.isMultipleShot() && aim != null && shooter.getEnemiesTouched().contains(aim))
@@ -65,7 +65,7 @@ public class Bullet{
             if(follow){
                 xDiff = aim.getX()-x;
                 yDiff = aim.getY()-y;
-                this.angle = (float) Math.toDegrees(Math.atan2(yDiff, xDiff));
+                this.angle = (float) MyMath.angleDegreesBetween(x, y, aim.getX(), aim.getY());
                 hyp = MyMath.distanceBetween(x, y, aim.getX(), aim.getY());
                 prop = speed/hyp;
                 x += xDiff*prop;
@@ -83,6 +83,8 @@ public class Bullet{
             shooter.getEnemiesTouched().add(aim);
             aim.attacked(shooter.getPower());
             if(explode){
+                BigTower bt = (BigTower)shooter;
+                bt.bombExplode();
                 for(int i = 0 ; i < game.enemies.size() ; i++){
                     Enemy e = game.enemies.get(i);
                     if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius())
@@ -135,8 +137,7 @@ public class Bullet{
     }
     
     private boolean isInRange(){
-        double xDiff = xDest-shooter.getX(), yDiff = yDest-shooter.getY();
-        double angle = Math.atan2(yDiff, xDiff), cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle)), coef = 1.5;
+        double angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest), cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle)), coef = 1.5;
         if(shooter.isMultipleShot())
             coef = 1;
         if(follow)
@@ -150,14 +151,11 @@ public class Bullet{
             ArrayList<Enemy> ennemies = game.enemies;
             Enemy e;
             int i;
-            double xDiff, yDiff;
             for(i = 0 ; i < ennemies.size() ; i++){
                 e = ennemies.get(i);
                 if(!e.hasStarted() || (shooter.isMultipleShot() && aimAlreadyTouched))
                     continue;
-                xDiff = e.getX()-x;
-                yDiff = e.getY()-y;
-                angle = Math.atan2(yDiff, xDiff);
+                angle = MyMath.angleDegreesBetween(x, y, e.getX(), e.getY());
                 cosinus = Math.abs(Math.cos(angle));
                 sinus = Math.abs(Math.sin(angle));
                 if(aimTouched(e, cosinus, sinus)){
@@ -172,7 +170,7 @@ public class Bullet{
     }
     
     private boolean aimTouched(Shootable aim, double cosinus, double sinus){
-        int xHitBoxPoint = (int) ((aim.getWidth()/2)*cosinus), yHitBoxPoint = (int) ((aim.getWidth()/2)*sinus);
+        int xHitBoxPoint = (int) ((aim.getWidth()/2)*cosinus + (radius/2)*cosinus), yHitBoxPoint = (int) ((aim.getWidth()/2)*sinus + (radius/2)*sinus);
         if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
             return true;
         if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)

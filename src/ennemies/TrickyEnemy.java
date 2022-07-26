@@ -43,7 +43,7 @@ public class TrickyEnemy extends Enemy{
                 e.setIndiceTuile(indiceTuile);
                 e.setDirection();
                 e.stopFor((int) (i*350*ref/game.gameSpeed));
-                game.addEnemie(e);
+                game.addEnemy(e);
             }
         }
         super.die();
