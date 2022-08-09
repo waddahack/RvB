@@ -117,8 +117,8 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 35000;
-            waveNumber = 18;
+            money = 350;
+            waveNumber = 1;
             waveReward = 275;
         }
         else if(diff == Difficulty.HARD){

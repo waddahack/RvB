@@ -34,7 +34,7 @@ public class Upgrade {
                 break;  
             case "Explode radius":
                 nbNumberToRound = 0;
-                icon = Towser.textures.get("rangeIcon");
+                icon = Towser.textures.get("explodeRadiusIcon");
                 break;  
         }
         setValue(value);
@@ -51,10 +51,10 @@ public class Upgrade {
     
     public float setNewValue(){
         switch(addOrMultiplicate){
-            case "Add":
+            case "+":
                 setValue(value + addOrMultiplicateValue);
                 break;
-            case "Multiplicate":
+            case "*":
                 setValue(value * addOrMultiplicateValue);
                 break;
         }
@@ -71,9 +71,9 @@ public class Upgrade {
     
     public float getIncreaseValue(){
         switch(addOrMultiplicate){
-            case "Add":
+            case "+":
                 return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*addOrMultiplicateValue)/Math.pow(10, nbNumberToRound));
-            case "Multiplicate":
+            case "*":
                 return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)-value))/Math.pow(10, nbNumberToRound));
         };
         return 0;

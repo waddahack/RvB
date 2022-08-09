@@ -84,7 +84,7 @@ public class Bullet{
             aim.attacked(shooter.getPower());
             if(explode){
                 BigTower bt = (BigTower)shooter;
-                bt.bombExplode();
+                bt.bombExplode(aim.getX(), aim.getY());
                 for(int i = 0 ; i < game.enemies.size() ; i++){
                     Enemy e = game.enemies.get(i);
                     if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius())

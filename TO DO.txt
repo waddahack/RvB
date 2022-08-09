@@ -1,13 +1,5 @@
 NEXT BIG UPDATE MUST HAVE :
-- big tower :
-	- animation explode
-	- bullet sprite (bombe) + animation
-
 - Créer 1 ennemie (cf discord)
-- Balance le jeu :
-	- wave -> waitBetween à changer fonction de wavenumber
-	- adapté vitesse helico fct distance base/spawn + plus de vie
-	- fire tower cheaté
 
 // OPTI/CODE
 - passer en parametre des callbacks

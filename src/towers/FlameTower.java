@@ -3,7 +3,6 @@ package towers;
 import managers.SoundManager;
 import towser.Towser;
 import static towser.Towser.ref;
-import static towser.Towser.unite;
 
 public class FlameTower extends Tower{
 
@@ -38,8 +37,8 @@ public class FlameTower extends Tower{
         power = 1;
         shootRate = 25f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.4f, "Multiplicate", 150f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "Add", 300f, 1.2f, 3));
+        upgrades.add(new Upgrade("Range", range, 1.4f, "*", 150f, 1.5f, 2));
+        upgrades.add(new Upgrade("Power", power, 1f, "+", 300f, 1.4f, 3));
 
     }
     

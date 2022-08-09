@@ -376,6 +376,7 @@ public class Towser{
             textures.put("powerIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/power_icon.png"))));
             textures.put("attackSpeedIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/attack_speed_icon.png"))));   
             textures.put("bulletSpeedIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/bullet_speed_icon.png"))));   
+            textures.put("explodeRadiusIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/explode_radius_icon.png")))); 
             textures.put("coins", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             // Towers
@@ -395,6 +396,7 @@ public class Towser{
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));
+            textures.put("shell", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shell.png"))));
             textures.put("flame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame.png"))));
             // Enemies
             textures.put("basicEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy.png"))));

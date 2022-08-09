@@ -1,10 +1,13 @@
 package Utils;
 
 import java.lang.Math;
+import java.util.Random;
 import towser.Shootable;
 import towser.Tile;
 
 public class MyMath {
+    
+    private static Random rand = new Random();
     
     // Distance between
     public static int distanceBetween(int x1, int y1, int x2, int y2){

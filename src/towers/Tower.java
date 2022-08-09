@@ -18,7 +18,7 @@ import ui.*;
 
 public abstract class Tower extends Tile implements Shootable{
     
-    protected int price, range, power, bulletSpeed, life, width, totalMoneySpent, explodeRadius;
+    protected int price, range, power, bulletSpeed, life, width, totalMoneySpent, explodeRadius, bulletSizeBonus;
     protected double lastShoot = 0;
     protected float shootRate, growth = 0;
     protected String name;
@@ -387,7 +387,7 @@ public abstract class Tower extends Tile implements Shootable{
     public void shoot(){
         enemiesTouched.clear();
         lastShoot = System.currentTimeMillis();
-        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4, bulletSprite, false);
+        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
         bullets.add(bullet);
         if(clip != null){
             if(continuousSound){
