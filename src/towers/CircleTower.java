@@ -6,7 +6,7 @@ import static towser.Towser.ref;
 
 public class CircleTower extends Tower{
 
-    public static int startPrice = 375;
+    public static int startPrice = 400;
     public static int priceP = startPrice;
     
     public CircleTower(){
@@ -33,9 +33,9 @@ public class CircleTower extends Tower{
         power = 12;
         shootRate = 0.7f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.2f, "*", 100f, 1.5f, 2));
+        upgrades.add(new Upgrade("Range", range, 1.2f, "*", 120f, 1.5f, 2));
         upgrades.add(new Upgrade("Power", power, 5f, "+", 200f, 2f, 1));
-        upgrades.add(new Upgrade("Attack speed", shootRate, 1.5f, "*", 250f, 2f, 2));
+        upgrades.add(new Upgrade("Attack speed", shootRate, 1.5f, "*", 275f, 2f, 2));
 
     }
     
