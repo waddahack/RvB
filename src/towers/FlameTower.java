@@ -6,7 +6,7 @@ import static towser.Towser.ref;
 
 public class FlameTower extends Tower{
 
-    public static int startPrice = 900;
+    public static int startPrice = 800;
     public static int priceP = startPrice;
     
     public FlameTower(){
@@ -34,11 +34,11 @@ public class FlameTower extends Tower{
         growth = 4*ref;
         
         range = (int) (1.4*Towser.unite);
-        power = 1;
+        power = 2;
         shootRate = 25f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade("Range", range, 1.4f, "*", 150f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "+", 300f, 1.4f, 3));
+        upgrades.add(new Upgrade("Power", power, 1f, "+", 300f, 1.4f, 2));
 
     }
     

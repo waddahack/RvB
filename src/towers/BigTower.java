@@ -52,7 +52,7 @@ public class BigTower extends Tower{
         bulletSpeed = 8;
         explodeRadius = 3*Towser.unite/4;
         upgrades.add(new Upgrade("Range", range, 1.2f, "*", 120f, 1.5f, 3));
-        upgrades.add(new Upgrade("Power", power, 1.6f, "*", 350f, 1.6f, 2));
+        upgrades.add(new Upgrade("Power", power, 1.5f, "*", 275f, 1.6f, 2));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.3f, "*", 200f, 1.5f, 3));
         upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 150f, 1.8f, 2));
         upgrades.add(new Upgrade("Explode radius", explodeRadius, 2*Towser.unite/5, "+", 200f, 2f, 2));
