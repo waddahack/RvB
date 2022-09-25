@@ -11,7 +11,6 @@ public class FlameTower extends Tower{
     
     public FlameTower(){
         super("flameTower");
-        textures.add(Towser.textures.get("grass"));
         textures.add(Towser.textures.get("flameTowerBase"));
         textures.add(Towser.textures.get("flameTowerTurret"));
         rotateIndex = 2;

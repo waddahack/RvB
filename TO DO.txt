@@ -13,11 +13,9 @@ Raztech : invoque des tourelles ?
 - implement sons bazoo wave & defeated + build raztech
 
 - ne plus faire apparaitre ennemie selon vague (?)
-- Idée si on meurt jamais : à partir de la vague n, rendre plus exponentielle :  [plus ou moins déjà fait]
 
 IDEAS:
 
+- Feature changer le focus des tourelles
 - stat par tower par wave
-- Système de vague à changer : chaque type d'ennemies spawn indépendamment des autres types
 - Mode survie ou la gagne (mode gagne à faire)
-- Mode campagne : Adventure ? Campaign ?

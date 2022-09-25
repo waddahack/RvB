@@ -12,7 +12,6 @@ public class CircleTower extends Tower{
     public CircleTower(){
         super("circleTower");
         textureStatic = Towser.textures.get(("circleTower"));
-        textures.add(Towser.textures.get("grass")); 
         textures.add(textureStatic);
         canRotate = false;
         price = priceP;

@@ -23,7 +23,6 @@ public class BigTower extends Tower{
     
     public BigTower() {
         super("bigTower");
-        textures.add(Towser.textures.get("grass"));
         textures.add(Towser.textures.get("bigTowerBase"));
         textures.add(Towser.textures.get("bigTowerTurret"));
         rotateIndex = 2;

@@ -11,7 +11,6 @@ public class BasicTower extends Tower{
     
     public BasicTower() {
         super("basicTower");
-        textures.add(Towser.textures.get("grass"));
         textures.add(Towser.textures.get("basicTowerBase"));
         textures.add(Towser.textures.get("basicTowerTurret"));
         rotateIndex = 2;

@@ -116,22 +116,6 @@ public class Tile {
         }
     }
     
-    public void renderLayer(int layer){
-        glPushMatrix(); //Save the current matrix.
-        glTranslated(renderX, renderY, 0);
-        if(angle != 0 && rotateIndex == layer)
-            glRotated(angle, 0, 0, 1);
-
-        int size = unite;
-        if(layer > 0) size = this.size;
-        if(!textures.isEmpty())
-            Towser.drawFilledRectangle(-size/2, -size/2, size, size, null, 1, textures.get(layer));
-        else
-            Towser.drawFilledRectangle(-size/2, -size/2, size, size, rgb, 1, null);
-
-        glPopMatrix(); // Reset the current matrix to the one that was saved.
-    }
-    
     public void renderDirection(){
         if(arrowAngle != -1)
             Towser.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, Towser.textures.get("arrow"), arrowAngle);

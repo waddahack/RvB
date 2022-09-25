@@ -1,0 +1,21 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffbc8285b33, pid=15708, tid=4824
+#
+# JRE version: Java(TM) SE Runtime Environment 18.9 (11.0.8+10) (build 11.0.8+10-LTS)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM 18.9 (11.0.8+10-LTS, mixed mode, tiered, compressed oops, g1 gc, windows-amd64)
+# Problematic frame:
+# C  [ntdll.dll+0x25b33]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Dfile.encoding=UTF-8 -Djava.library.path=lib/ -agentlib:jdwp=transport=dt_shmem,address=javadebug --module-path=F:\Programmation\Towser\lib\AppleJavaExtensions.jar;F:\Programmation\Towser\lib\PNGDecoder.jar;F:\Programmation\Towser\lib\asm-debug-all.jar;F:\Programmation\Towser\lib\jbox2d-library-2.1.2.2.jar;F:\Programmation\Towser\lib\jbullet.jar;F:\Programmation\Towser\lib\jdom-1.1.2.jar;F:\Programmation\Towser\lib\jinput.jar;F:\Programmation\Towser\lib\laf-plugin-7.2.1.jar;F:\Programmation\Towser\lib\laf-widget-7.2.1.jar;F:\Programmation\Towser\lib\log4j-api-2.0-beta9.jar;F:\Programmation\Towser\lib\lwjgl-debug.jar;F:\Programmation\Towser\lib\lwjgl.jar;F:\Programmation\Towser\lib\lwjgl_test.jar;F:\Programmation\Towser\lib\lwjgl_util.jar;F:\Programmation\Towser\lib\lwjgl_util_applet.jar;F:\Programmation\Towser\lib\lzma.jar;F:\Programmation\Towser\lib\slf4j-api-1.6.6.jar;F:\Programmation\Towser\lib\slf4j-simple-1.6.6.jar;F:\Programmation\Towser\lib\slick-util.jar;F:\Programmation\Towser\lib\slick.jar;F:\Programmation\Towser\lib\substance-7.2.1.jar;F:\Programmation\Towser\lib\trident-7.2.1.jar;F:\Programmation\Towser\lib\vecmath.jar towser.Towser
+
+Host: Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz, 12 cores, 15G, 

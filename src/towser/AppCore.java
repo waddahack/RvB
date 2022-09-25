@@ -2,12 +2,19 @@ package towser;
 
 import managers.SoundManager;
 import ennemies.*;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import managers.PopupManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -93,6 +100,7 @@ public abstract class AppCore {
     public Tower towerSelected;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
+    protected static int textureID = -10;
     
     public AppCore(){
         
@@ -139,6 +147,11 @@ public abstract class AppCore {
         readFile("assets/levels/level_"+lvlName+".txt");
         fixRoadNeighbors();
         fixRoadSprites();
+        try {
+            createMapTexture();
+        } catch (Exception ex) {
+            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     protected void initMap(ArrayList<Tile> path){
@@ -185,6 +198,11 @@ public abstract class AppCore {
         }
         fixRoadNeighbors();
         fixRoadSprites();
+        try {
+            createMapTexture();
+        } catch (Exception ex) {
+            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     protected void readFile(String filePath){
@@ -340,6 +358,40 @@ public abstract class AppCore {
         }
     }
     
+    private void createMapTexture() throws Exception {
+        BufferedImage mapImage = new BufferedImage(windWidth, windHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = mapImage.createGraphics();
+        
+        Image RS = ImageIO.read(new File("assets/images/road_straight.png")).getScaledInstance(unite, unite, 0);
+        Image RT = ImageIO.read(new File("assets/images/road_turn.png")).getScaledInstance(unite, unite, 0);
+        Image GR = ImageIO.read(new File("assets/images/grass.png")).getScaledInstance(unite, unite, 0);
+        Image P1 = ImageIO.read(new File("assets/images/big_plant1.png")).getScaledInstance(unite, unite, 0);
+        Image P2 = ImageIO.read(new File("assets/images/big_plant2.png")).getScaledInstance(unite, unite, 0);
+        
+        for(int i = 0 ; i < map.size() ; i++){
+            for(int j = 0 ; j < map.get(i).size() ; j++){
+                AffineTransform context = g2d.getTransform();
+                
+                g2d.rotate(Math.toRadians(map.get(i).get(j).getAngle()), j*unite+unite/2, i*unite+unite/2);
+ 
+                if(map.get(i).get(j).textures.get(0) == Towser.textures.get("roadStraight"))
+                    g2d.drawImage(RS, j*unite, i*unite, null);
+                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("roadTurn"))
+                    g2d.drawImage(RT, j*unite, i*unite, null);
+                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("bigPlant1"))
+                    g2d.drawImage(P1, j*unite, i*unite, null);
+                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("bigPlant2"))
+                    g2d.drawImage(P2, j*unite, i*unite, null);
+                else
+                    g2d.drawImage(GR, j*unite, i*unite, null);
+                
+                g2d.setTransform(context);
+            }
+        }
+
+        textureID = Towser.loadTexture(mapImage);
+    }
+    
     public void update(){
         clearArrays();
         
@@ -458,28 +510,8 @@ public abstract class AppCore {
     }
     
     protected void render(){
-        ArrayList<Tile> tilesToRender = new ArrayList<>();
-        ArrayList<Tile> tilesToRenderNext = new ArrayList<>();
-        int layer = 0;
-        for(int i = 0 ; i < Towser.nbTileY ; i++){
-            for(Tile t : map.get(i)){
-                t.renderLayer(layer);
-                if(t.textures.size() > layer+1)
-                    tilesToRender.add(t);
-            }
-        }
-        while(!tilesToRender.isEmpty()){
-            layer++;
-            for(Tile t : tilesToRender){
-                t.renderLayer(layer);
-                if(t.textures.size() > layer+1)
-                    tilesToRenderNext.add(t);
-            }
-            tilesToRender.clear();
-            for(Tile t : tilesToRenderNext)
-                tilesToRender.add(t);
-            tilesToRenderNext.clear();
-        }
+        Towser.drawTextureID(0, 0, windWidth, windHeight, textureID);
+
         if(spawn != null)
             spawn.renderDirection();
     }

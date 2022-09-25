@@ -49,6 +49,7 @@ public abstract class Tower extends Tile implements Shootable{
                 SoundManager.Instance.stopClip(clip);
                 soundPlayed = false;
             }   
+            render();
         }
         renderOther();
     }
@@ -153,6 +154,11 @@ public abstract class Tower extends Tile implements Shootable{
                 newAngle = (int)Math.round(newAngle);
             }
         }   
+    }
+    
+    public void render(){
+        for(int i = 0 ; i < textures.size() ; i++)
+            Towser.drawFilledRectangle(x, y, size, size, textures.get(i), angle);
     }
     
     public void renderOther(){
