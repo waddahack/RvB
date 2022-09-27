@@ -100,7 +100,7 @@ public abstract class AppCore {
     public Tower towerSelected;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
-    protected static int textureID = -10;
+    protected int textureID = -10;
     
     public AppCore(){
         

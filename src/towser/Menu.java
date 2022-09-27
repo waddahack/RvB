@@ -112,7 +112,6 @@ public class Menu {
         }
         if(create.isClicked(0)){
             if(createEmptyMap()){
-                System.out.println(createdGame == null);
                 if(createdGame == null){
                     creation = new Creation();
                     switchStateTo(State.CREATION);
