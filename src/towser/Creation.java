@@ -36,7 +36,9 @@ public class Creation extends AppCore{
     
     @Override
     protected void render(){
-        super.render();
+        for(ArrayList<Tile> row : map)
+            for(Tile t : row)
+                Towser.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTextures().get(0), t.getAngle());
         for(Tile road : roads)
             road.renderDirection();
     }

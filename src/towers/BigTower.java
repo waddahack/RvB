@@ -10,7 +10,7 @@ import static towser.Towser.ref;
 
 public class BigTower extends Tower{
     
-    public static int startPrice = 500;
+    public static int startPrice = 450;
     public static int priceP = startPrice;
     private Clip explodeClip;
     
