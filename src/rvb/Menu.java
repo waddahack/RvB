@@ -1,9 +1,9 @@
-package towser;
+package rvb;
 
 import ui.Button;
 import managers.PopupManager;
 import managers.SoundManager;
-import static towser.Towser.*;
+import static rvb.RvB.*;
 import ui.Overlay;
 
 
@@ -16,8 +16,8 @@ public class Menu {
         int width = (int) (250*ref);
         int height = (int) (60*ref);
         
-        option = new Button(windWidth-(int)(120*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("optionIcon"), null, colors.get("green_dark"));
-        exit = new Button(windWidth-(int)(50*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), Towser.textures.get("exitIcon"), null, colors.get("green_dark"));
+        option = new Button(windWidth-(int)(120*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("optionIcon"), null, colors.get("green_dark"));
+        exit = new Button(windWidth-(int)(50*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("exitIcon"), null, colors.get("green_dark"));
         
         start = new Button(windWidth/2, windHeight/6, width, height, null, colors.get("green_dark"));
         start.setDisabled(true);
@@ -63,7 +63,7 @@ public class Menu {
         for(Overlay o : overlays){
             o.render();
         }
-        overlays[0].drawImage(windWidth/4, (int)(100*ref), windWidth/2, (int) (windWidth/5f), Towser.textures.get("title"));
+        overlays[0].drawImage(windWidth/4, (int)(100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
         start.drawText(0, 0, "    Adventure\n(inc... not soon)", fonts.get("normalL"));
         if(randomGame == null)
             random.drawText(0, 0, "New random map", fonts.get("normalL"));

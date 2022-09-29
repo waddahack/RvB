@@ -1,4 +1,4 @@
-package towser;
+package rvb;
 
 import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotated;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
-import static towser.Towser.unite;
+import static rvb.RvB.unite;
 
 public class Tile {
     
@@ -27,7 +27,7 @@ public class Tile {
         textures = new ArrayList<>();
         type = t;
         this.x = Mouse.getX();
-        this.y = Towser.windHeight-Mouse.getY();
+        this.y = RvB.windHeight-Mouse.getY();
     }
     
     public Tile(Texture text, String t){
@@ -35,7 +35,7 @@ public class Tile {
         textures.add(text);
         type = t;
         this.x = Mouse.getX();
-        this.y = Towser.windHeight-Mouse.getY();
+        this.y = RvB.windHeight-Mouse.getY();
     }
     
     public Tile(float[] rgb, String t){
@@ -46,7 +46,7 @@ public class Tile {
         this.rgb = rgb;
         type = t;
         this.x = Mouse.getX();
-        this.y = Towser.windHeight-Mouse.getY();
+        this.y = RvB.windHeight-Mouse.getY();
     }
     
     public Tile(float x, float y){
@@ -118,7 +118,7 @@ public class Tile {
     
     public void renderDirection(){
         if(arrowAngle != -1)
-            Towser.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, Towser.textures.get("arrow"), arrowAngle);
+            RvB.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, RvB.textures.get("arrow"), arrowAngle);
     }
     
     public int getIndexX(){

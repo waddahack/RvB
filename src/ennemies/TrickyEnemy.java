@@ -1,9 +1,9 @@
 package ennemies;
 
 import managers.SoundManager;
-import towser.Towser;
-import static towser.Towser.game;
-import static towser.Towser.ref;
+import rvb.RvB;
+import static rvb.RvB.game;
+import static rvb.RvB.ref;
 
 public class TrickyEnemy extends Enemy{
     
@@ -19,11 +19,11 @@ public class TrickyEnemy extends Enemy{
         moveSpeed = 2.9f;
         range = 0;
         life = 80;
-        width = 4*Towser.unite/5;
+        width = 4*RvB.unite/5;
         eBalance = balance;
         rgb = new float[]{0.2f, 0.2f, 0.8f};
-        sprite = Towser.textures.get("trickyEnemy");
-        brightSprite = Towser.textures.get("trickyEnemyBright");
+        sprite = RvB.textures.get("trickyEnemy");
+        brightSprite = RvB.textures.get("trickyEnemyBright");
         volume = SoundManager.Volume.VERY_LOW;
         clip = SoundManager.Instance.getClip("group_walking");
         stepEveryMilli = 800;

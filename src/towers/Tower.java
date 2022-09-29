@@ -1,19 +1,19 @@
 package towers;
 
 import Utils.MyMath;
-import towser.Tile;
+import rvb.Tile;
 import ennemies.Enemy;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
-import towser.Shootable;
+import rvb.RvB;
+import rvb.Shootable;
 import managers.SoundManager;
-import static towser.Towser.game;
-import static towser.Towser.ref;
-import static towser.Towser.unite;
+import static rvb.RvB.game;
+import static rvb.RvB.ref;
+import static rvb.RvB.unite;
 import ui.*;
 
 public abstract class Tower extends Tile implements Shootable{
@@ -86,12 +86,12 @@ public abstract class Tower extends Tile implements Shootable{
                 totalMoneySpent += upPrice;
                 upgrades.get(i).increasePrice();
                 b.click();
-                SoundManager.Instance.playOnce(Towser.clips.get("upgrade"));
+                SoundManager.Instance.playOnce(RvB.clips.get("upgrade"));
             }
         }
         if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
             game.money += (int)(totalMoneySpent/2);
-            Tile grass = new Tile(Towser.textures.get("grass"), "grass");
+            Tile grass = new Tile(RvB.textures.get("grass"), "grass");
             grass.setRotateIndex(0);
             grass.setX(x);
             grass.setY(y);
@@ -103,7 +103,7 @@ public abstract class Tower extends Tile implements Shootable{
                 SoundManager.Instance.clipToClose(clip);
             }     
             toBeRemoved = true;
-            SoundManager.Instance.playOnce(Towser.clips.get("sell"));
+            SoundManager.Instance.playOnce(RvB.clips.get("sell"));
         }
     }
     
@@ -158,7 +158,7 @@ public abstract class Tower extends Tile implements Shootable{
     
     public void render(){
         for(int i = 0 ; i < textures.size() ; i++)
-            Towser.drawFilledRectangle(x, y, size, size, textures.get(i), angle);
+            RvB.drawFilledRectangle(x, y, size, size, textures.get(i), angle);
     }
     
     public void renderOther(){
@@ -171,23 +171,23 @@ public abstract class Tower extends Tile implements Shootable{
     
     private void renderPrevisu(){
         if(canBePlaced()){
-            float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(Towser.windHeight-Mouse.getY(), unite)*unite;
-            Towser.drawFilledRectangle(xPos+unite/2-size/2, yPos+unite/2-size/2, size, size, null, 0.5f, textureStatic);
+            float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite;
+            RvB.drawFilledRectangle(xPos+unite/2-size/2, yPos+unite/2-size/2, size, size, null, 0.5f, textureStatic);
         }
         x = Mouse.getX();
-        y = Towser.windHeight-Mouse.getY();
+        y = RvB.windHeight-Mouse.getY();
     }
     
     public void renderDetails(){
         int xPos = (int)x, yPos = (int)y;
         if(!isPlaced){
             xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2;
-            yPos = Math.floorDiv(Towser.windHeight-Mouse.getY(), unite)*unite+unite/2;
+            yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
         }
-        Towser.drawCircle(xPos, yPos, range, Towser.colors.get("blue"));
-        Towser.drawCircle(xPos, yPos, range-1, Towser.colors.get("grey"));
-        Towser.drawCircle(xPos, yPos, range-2, Towser.colors.get("grey_light"));
-        Towser.drawFilledCircle(xPos, yPos, range-2, Towser.colors.get("grey_light"), 0.1f);
+        RvB.drawCircle(xPos, yPos, range, RvB.colors.get("blue"));
+        RvB.drawCircle(xPos, yPos, range-1, RvB.colors.get("grey"));
+        RvB.drawCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"));
+        RvB.drawFilledCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"), 0.1f);
         if(isPlaced)
             renderOverlay();
     }
@@ -195,12 +195,12 @@ public abstract class Tower extends Tile implements Shootable{
     public void initOverlay(){
         Overlay o1, o2;
         
-        o1 = new Overlay(0, Towser.windHeight-(int)((86+30)*ref), (int)(150*ref), (int)(30*ref));
-        o1.setBG(Towser.textures.get("board"), 0.6f);
+        o1 = new Overlay(0, RvB.windHeight-(int)((86+30)*ref), (int)(150*ref), (int)(30*ref));
+        o1.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o1);
         
-        o2 = new Overlay(0, Towser.windHeight-(int)(86*ref), Towser.windWidth, (int)(86*ref));
-        o2.setBG(Towser.textures.get("board"), 0.6f);
+        o2 = new Overlay(0, RvB.windHeight-(int)(86*ref), RvB.windWidth, (int)(86*ref));
+        o2.setBG(RvB.textures.get("board"), 0.6f);
         
         int sep = (int) (600 * ref);
         sep -= 90*upgrades.size();
@@ -208,18 +208,18 @@ public abstract class Tower extends Tile implements Shootable{
             sep = 25;
         int imageSize = o2.getH()-(int)(20*ref);
         int butWidth = (int) (200*ref), butHeight = (int)(38*ref);
-        int marginToCenter = Towser.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2);
+        int marginToCenter = RvB.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2);
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
         o2.addImage(o1.getW()/2, imageSize/2+(int)(10*ref), imageSize, imageSize, textureStatic);
         for(int i = 0 ; i < upgrades.size() ; i++){
-            Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"), upgrades.get(i).maxClick);
+            Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
             if(upgrades.get(i).maxClick <= 0)
                 b.setHidden(true);
             o2.addButton(b);
         }
-        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(34*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(34*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o2.addButton(b);
         overlays.add(o2);
     }
@@ -234,7 +234,7 @@ public abstract class Tower extends Tile implements Shootable{
             o.render();
         
         overlay = overlays.get(0);
-        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name, Towser.fonts.get("normalL"));
+        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name, RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
         int i;
@@ -247,19 +247,19 @@ public abstract class Tower extends Tile implements Shootable{
                 up = upgrades.get(i).getValue()+"";
             if(!b.isHidden()){
                 overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
-                overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), up, Towser.fonts.get("normal"));   
+                overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), up, RvB.fonts.get("normal"));   
             }
             else{
                 overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
-                overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, up, Towser.fonts.get("normal"));   
+                overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, up, RvB.fonts.get("normal"));   
             }
             
-            overlay.drawText(b.getX(), (int)(15*ref)+ Towser.fonts.get("normal").getHeight(t)/2, t, Towser.fonts.get("normal"));   
+            overlay.drawText(b.getX(), (int)(15*ref)+ RvB.fonts.get("normal").getHeight(t)/2, t, RvB.fonts.get("normal"));   
             
             upPrice = upgrades.get(i).price;
             if(upPrice != 0 && !b.isHidden()){
                 if(b.isHovered() && upgrades.get(i).getValue() > 0){
-                    b.drawText("+ " + upgrades.get(i).getIncreaseValue(), Towser.fonts.get("bonus"));
+                    b.drawText("+ " + upgrades.get(i).getIncreaseValue(), RvB.fonts.get("bonus"));
                 }
                 else{
                     price = (int)Math.floor(upPrice)+"";
@@ -267,21 +267,21 @@ public abstract class Tower extends Tile implements Shootable{
                     for(int j = 0 ; j < price.length() ; j++)
                         space += " ";
                     up = "Up (  "+ space +"  )";
-                    b.drawText(0, 0, up, Towser.fonts.get("normal"));
+                    b.drawText(0, 0, up, RvB.fonts.get("normal"));
                     if(game.money < (int)Math.floor(upPrice))
-                        b.drawText((Towser.fonts.get("normal").getWidth(up) - Towser.fonts.get("cantBuy").getWidth(price) - Towser.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, Towser.fonts.get("cantBuy"));
+                        b.drawText((RvB.fonts.get("normal").getWidth(up) - RvB.fonts.get("cantBuy").getWidth(price) - RvB.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, RvB.fonts.get("cantBuy"));
                     else
-                        b.drawText((Towser.fonts.get("normal").getWidth(up) - Towser.fonts.get("canBuy").getWidth(price) - Towser.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, Towser.fonts.get("canBuy"));
+                        b.drawText((RvB.fonts.get("normal").getWidth(up) - RvB.fonts.get("canBuy").getWidth(price) - RvB.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, RvB.fonts.get("canBuy"));
                 }
             }
         }
         b = overlay.getButtons().get(overlay.getButtons().size()-1);
         if(b.isHovered()){
             price = "+ "+(int)(totalMoneySpent/2);
-            b.drawText(price, Towser.fonts.get("canBuy"));
+            b.drawText(price, RvB.fonts.get("canBuy"));
         }
         else
-            b.drawText("Sell", Towser.fonts.get("normal"));
+            b.drawText("Sell", RvB.fonts.get("normal"));
         
     }
     
@@ -298,14 +298,14 @@ public abstract class Tower extends Tile implements Shootable{
     public void place(ArrayList<ArrayList<Tile>> map){
         initOverlay();
         x = Math.floorDiv(Mouse.getX(), unite);
-        y = Math.floorDiv(Towser.windHeight-Mouse.getY(), unite);
+        y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
         map.get((int) y).set((int) x, this);
         setX(x*unite+unite/2);
         setY(y*unite+unite/2);
         game.money -= price;
         raisePrice();
         isPlaced = true;
-        SoundManager.Instance.playOnce(Towser.clips.get("build"));
+        SoundManager.Instance.playOnce(RvB.clips.get("build"));
     }
     
     public boolean canBePlaced(){
@@ -322,7 +322,7 @@ public abstract class Tower extends Tile implements Shootable{
     }
 
     private boolean isInWindow() {
-        return (x < Towser.windWidth && x > 0 && y < Towser.windHeight && y > 0);
+        return (x < RvB.windWidth && x > 0 && y < RvB.windHeight && y > 0);
     }
     
     public void destroy(){
@@ -330,7 +330,7 @@ public abstract class Tower extends Tile implements Shootable{
     }
    
     private boolean isMouseIn(){
-        int MX = Mouse.getX(), MY = Towser.windHeight-Mouse.getY();
+        int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
         return (MX >= x-unite/2 && MX <= x+unite/2 && MY >= y-unite/2 && MY <= y+unite/2);
     }
     

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
+import rvb.RvB;
 
 public class Overlay {
     
@@ -73,11 +73,11 @@ public class Overlay {
         if(!display)
             return;
         if(bg != null)
-            Towser.drawFilledRectangle(x, y, width, height, null, a, bg);
+            RvB.drawFilledRectangle(x, y, width, height, null, a, bg);
         else if(rgb != null)
-            Towser.drawFilledRectangle(x, y, width, height, rgb, a, null);
+            RvB.drawFilledRectangle(x, y, width, height, rgb, a, null);
         if(borderRgb != null)
-            Towser.drawRectangle(x, y, width, height, borderRgb, borderA, borderWidth);
+            RvB.drawRectangle(x, y, width, height, borderRgb, borderA, borderWidth);
         
         for(Button b : buttons)
             b.update();
@@ -88,7 +88,7 @@ public class Overlay {
             y = texturesY.get(i);
             w = texturesW.get(i);
             h = texturesH.get(i);
-            Towser.drawFilledRectangle(x-w/2, y-h/2, w, h, null, 1, textures.get(i));
+            RvB.drawFilledRectangle(x-w/2, y-h/2, w, h, null, 1, textures.get(i));
         }
     }
    
@@ -107,7 +107,7 @@ public class Overlay {
     }
     
     private boolean isMouseIn(){
-        int MX = Mouse.getX(), MY = Towser.windHeight-Mouse.getY();
+        int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
         return (MX >= x && MX <= x+width && MY >= y && MY <= y+height);
     }
     
@@ -161,10 +161,10 @@ public class Overlay {
     }
     
     public void drawImage(int x, int y, int width, int height, Texture t){
-        Towser.drawFilledRectangle(this.x+x, this.y+y, width, height, rgb, 1, t);
+        RvB.drawFilledRectangle(this.x+x, this.y+y, width, height, rgb, 1, t);
     }
     
     public void drawText(int x, int y, String text, UnicodeFont font) {
-        Towser.drawString(this.x+x, this.y+y, text, font);
+        RvB.drawString(this.x+x, this.y+y, text, font);
     }
 }

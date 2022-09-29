@@ -1,7 +1,7 @@
 package towers;
 
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
+import rvb.RvB;
 
 public class Upgrade {
     
@@ -18,23 +18,23 @@ public class Upgrade {
         switch(name){
             case "Range":
                 nbNumberToRound = 0;
-                icon = Towser.textures.get("rangeIcon");
+                icon = RvB.textures.get("rangeIcon");
                 break;
             case "Power":
                 nbNumberToRound = 0;
-                icon = Towser.textures.get("powerIcon");
+                icon = RvB.textures.get("powerIcon");
                 break;
             case "Attack speed":
                 nbNumberToRound = 1;
-                icon = Towser.textures.get("attackSpeedIcon");
+                icon = RvB.textures.get("attackSpeedIcon");
                 break;
             case "Bullet speed":
                 nbNumberToRound = 0;
-                icon = Towser.textures.get("bulletSpeedIcon");
+                icon = RvB.textures.get("bulletSpeedIcon");
                 break;  
             case "Explode radius":
                 nbNumberToRound = 0;
-                icon = Towser.textures.get("explodeRadiusIcon");
+                icon = RvB.textures.get("explodeRadiusIcon");
                 break;  
         }
         setValue(value);

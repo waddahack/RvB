@@ -12,7 +12,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;  
 import javax.sound.sampled.FloatControl;
 import towers.Tower;
-import static towser.Towser.game;
+import static rvb.RvB.game;
 
 public class SoundManager
 { 

@@ -1,8 +1,8 @@
 package towers;
 
 import managers.SoundManager;
-import towser.Towser;
-import static towser.Towser.ref;
+import rvb.RvB;
+import static rvb.RvB.ref;
 
 public class FlameTower extends Tower{
 
@@ -11,14 +11,14 @@ public class FlameTower extends Tower{
     
     public FlameTower(){
         super("flameTower");
-        textures.add(Towser.textures.get("flameTowerBase"));
-        textures.add(Towser.textures.get("flameTowerTurret"));
+        textures.add(RvB.textures.get("flameTowerBase"));
+        textures.add(RvB.textures.get("flameTowerTurret"));
         rotateIndex = 2;
-        textureStatic = Towser.textures.get(("flameTower"));
+        textureStatic = RvB.textures.get(("flameTower"));
         canRotate = true;
         price = priceP;
         life = 100;
-        width = 4*Towser.unite/5;
+        width = 4*RvB.unite/5;
         size = width;
         totalMoneySpent = priceP;
         name = "Flametech";
@@ -29,10 +29,10 @@ public class FlameTower extends Tower{
         volume = SoundManager.Volume.SEMI_HIGH;
         SoundManager.Instance.setClipVolume(clip, volume);
         continuousSound = true;
-        bulletSprite = Towser.textures.get("flame");
+        bulletSprite = RvB.textures.get("flame");
         growth = 4*ref;
         
-        range = (int) (1.4*Towser.unite);
+        range = (int) (1.4*RvB.unite);
         power = 1;
         shootRate = 25f;
         bulletSpeed = 25;

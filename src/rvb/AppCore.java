@@ -1,4 +1,4 @@
-package towser;
+package rvb;
 
 import managers.SoundManager;
 import ennemies.*;
@@ -19,15 +19,15 @@ import managers.PopupManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser.Cursor;
-import towser.Towser.Difficulty;
-import static towser.Towser.State.MENU;
-import static towser.Towser.game;
-import static towser.Towser.mouseDown;
-import static towser.Towser.unite;
-import static towser.Towser.ref;
-import static towser.Towser.windHeight;
-import static towser.Towser.windWidth;
+import rvb.RvB.Cursor;
+import rvb.RvB.Difficulty;
+import static rvb.RvB.State.MENU;
+import static rvb.RvB.game;
+import static rvb.RvB.mouseDown;
+import static rvb.RvB.unite;
+import static rvb.RvB.ref;
+import static rvb.RvB.windHeight;
+import static rvb.RvB.windWidth;
 import ui.*;
 
 
@@ -166,18 +166,18 @@ public abstract class AppCore {
         Texture t;
         Tile tile;
         int n;
-        for(int i = 0 ; i < Towser.nbTileY ; i++){
+        for(int i = 0 ; i < RvB.nbTileY ; i++){
             row = new ArrayList<>();
-            for(int j = 0 ; j < Towser.nbTileX ; j++){
+            for(int j = 0 ; j < RvB.nbTileX ; j++){
                 n = rand.nextInt(100)+1;
                 if(n > 93)
-                    t = Towser.textures.get("bigPlant1");
+                    t = RvB.textures.get("bigPlant1");
                 else if(n > 86)
-                    t = Towser.textures.get("bigPlant2");
+                    t = RvB.textures.get("bigPlant2");
                 else
-                    t = Towser.textures.get("grass");
+                    t = RvB.textures.get("grass");
                 n = 0;
-                if(t != Towser.textures.get("grass"))
+                if(t != RvB.textures.get("grass"))
                     n = (int)Math.round(rand.nextInt(361)/90)*90;  
                 tile = new Tile(t, "grass");
                 tile.setAngle(n);
@@ -189,7 +189,7 @@ public abstract class AppCore {
             map.add(row);
         }
         for(Tile road : path){
-            tile = new Tile(Towser.textures.get("roadStraight"), "road");
+            tile = new Tile(RvB.textures.get("roadStraight"), "road");
             tile.setRotateIndex(0);
             tile.setX(road.getX()*unite);
             tile.setY(road.getY()*unite);
@@ -231,28 +231,28 @@ public abstract class AppCore {
                         case ".":
                             n = rand.nextInt(100)+1;
                             if(n > 93)
-                                t = Towser.textures.get("bigPlant1");
+                                t = RvB.textures.get("bigPlant1");
                             else if(n > 86)
-                                t = Towser.textures.get("bigPlant2");
+                                t = RvB.textures.get("bigPlant2");
                             else
-                                t = Towser.textures.get("grass");
+                                t = RvB.textures.get("grass");
                             n = 0;
-                            if(t != Towser.textures.get("grass"))
+                            if(t != RvB.textures.get("grass"))
                                 n = Math.round(rand.nextInt(361)/90)*90;  
                             tile = new Tile(t, "grass");
                             tile.setAngle(n);
                             tile.setRotateIndex(0);
                             break;
                         case "0":
-                            tile = new Tile(Towser.textures.get("roadStraight"), "road");
+                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
                             tile.setRotateIndex(0);
                             break;
                         case "S":
-                            tile = new Tile(Towser.textures.get("roadStraight"), "road");
+                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
                             tile.setRotateIndex(0);
                             break;
                         case "B":
-                            tile = new Tile(Towser.textures.get("roadStraight"), "road");
+                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
                             tile.setRotateIndex(0);
                             break;
                         case "PATH:":
@@ -268,7 +268,7 @@ public abstract class AppCore {
                     tile.setY(i*unite);
                     row.add(tile);
 
-                    if(row.size() == Towser.nbTileX){
+                    if(row.size() == RvB.nbTileX){
                         map.add(row);
                         row = new ArrayList<>();
                         j = 0;
@@ -332,27 +332,27 @@ public abstract class AppCore {
 
             // Si previousRoad est à GAUCHE et nextRoad est en BAS ou l'inverse
             if((previousRoad.getX()+unite/2 < road.getX() && nextRoad.getY()+unite/2 > road.getY()+unite) || (nextRoad.getX()+unite/2 < road.getX() && previousRoad.getY()+unite/2 > road.getY()+unite)){
-                road.setTexture(Towser.textures.get("roadTurn"));
+                road.setTexture(RvB.textures.get("roadTurn"));
                 road.setAngle(180);
             }
             // Si previousRoad est à GAUCHE et nextRoad est en HAUT ou l'inverse
             else if((previousRoad.getX()+unite/2 < road.getX() && nextRoad.getY()+unite/2 < road.getY()) || (nextRoad.getX()+unite/2 < road.getX() && previousRoad.getY()+unite/2 < road.getY())){
-                road.setTexture(Towser.textures.get("roadTurn"));
+                road.setTexture(RvB.textures.get("roadTurn"));
                 road.setAngle(270);
             }
             // Si previousRoad est à DROITE et nextRoad est en BAS ou l'inverse
             else if((previousRoad.getX()+unite/2 > road.getX()+unite && nextRoad.getY()+unite/2 > road.getY()+unite) || (nextRoad.getX()+unite/2 > road.getX()+unite && previousRoad.getY()+unite/2 > road.getY()+unite)){
-                road.setTexture(Towser.textures.get("roadTurn"));
+                road.setTexture(RvB.textures.get("roadTurn"));
                 road.setAngle(90);
             }
             // Si previousRoad est à DROITE et nextRoad est en HAUT ou l'inverse
             else if((previousRoad.getX()+unite/2 > road.getX()+unite && nextRoad.getY()+unite/2 < road.getY()) || (nextRoad.getX()+unite/2 > road.getX()+unite && previousRoad.getY()+unite/2 < road.getY())){
-                road.setTexture(Towser.textures.get("roadTurn"));
+                road.setTexture(RvB.textures.get("roadTurn"));
                 road.setAngle(0);
             }
             // Si previousRoad est à DROITE et nextRoad est à GAUCHE ou l'inverse
             else if((previousRoad.getX()+unite/2 > road.getX()+unite && nextRoad.getX()+unite/2 < road.getX()) || (nextRoad.getX()+unite/2 > road.getX()+unite && previousRoad.getX()+unite/2 < road.getX())){
-                road.setTexture(Towser.textures.get("roadStraight"));
+                road.setTexture(RvB.textures.get("roadStraight"));
                 road.setAngle(90);
             }
         }
@@ -374,13 +374,13 @@ public abstract class AppCore {
                 
                 g2d.rotate(Math.toRadians(map.get(i).get(j).getAngle()), j*unite+unite/2, i*unite+unite/2);
  
-                if(map.get(i).get(j).textures.get(0) == Towser.textures.get("roadStraight"))
+                if(map.get(i).get(j).textures.get(0) == RvB.textures.get("roadStraight"))
                     g2d.drawImage(RS, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("roadTurn"))
+                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("roadTurn"))
                     g2d.drawImage(RT, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("bigPlant1"))
+                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("bigPlant1"))
                     g2d.drawImage(P1, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == Towser.textures.get("bigPlant2"))
+                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("bigPlant2"))
                     g2d.drawImage(P2, j*unite, i*unite, null);
                 else
                     g2d.drawImage(GR, j*unite, i*unite, null);
@@ -389,13 +389,13 @@ public abstract class AppCore {
             }
         }
 
-        textureID = Towser.loadTexture(mapImage);
+        textureID = RvB.loadTexture(mapImage);
     }
     
     public void update(){
         clearArrays();
         
-        if(this == Towser.game && !inWave){
+        if(this == RvB.game && !inWave){
             if(SoundManager.Instance.isReady())
                 overlays.get(1).getButtons().get(0).setDisabled(false);
             else
@@ -470,12 +470,12 @@ public abstract class AppCore {
             if(!t.isPlaced() && Mouse.isButtonDown(0) && t.canBePlaced() && !dontPlace && !mouseDown){
                 t.place(map);
                 mouseDown = true;
-                Towser.setCursor(Cursor.DEFAULT);
+                RvB.setCursor(Cursor.DEFAULT);
             }
             else if(!t.isPlaced() && Mouse.isButtonDown(1)){
                 selectTower(null);
                 t.destroy();
-                Towser.setCursor(Cursor.DEFAULT);
+                RvB.setCursor(Cursor.DEFAULT);
             }
             if(t.isClicked(0) && towerSelected == null)
                 selectTower(t);
@@ -503,14 +503,14 @@ public abstract class AppCore {
     }
     
     protected void renderEnemySelected(){
-        Towser.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2, Towser.colors.get("green_dark"));
-        Towser.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+0.5f, Towser.colors.get("green_dark"));
-        Towser.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1, Towser.colors.get("green_dark"));
-        Towser.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1.5f, Towser.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+0.5f, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1.5f, RvB.colors.get("green_dark"));
     }
     
     protected void render(){
-        Towser.drawTextureID(0, 0, windWidth, windHeight, textureID);
+        RvB.drawTextureID(0, 0, windWidth, windHeight, textureID);
 
         if(spawn != null)
             spawn.renderDirection();
@@ -524,38 +524,38 @@ public abstract class AppCore {
         int sep = (int) (200*ref);
         
         o = new Overlay(0, windHeight-(int)(86*ref), windWidth, (int)(86*ref));
-        o.setBG(Towser.textures.get("board"), 0.6f);
+        o.setBG(RvB.textures.get("board"), 0.6f);
         o.setA(0.6f);
-        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(55*ref), size, size, Towser.textures.get("basicTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(55*ref), size, size, RvB.textures.get("basicTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, Towser.textures.get("circleTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, RvB.textures.get("circleTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, Towser.textures.get("bigTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, RvB.textures.get("bigTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(55*ref), size, size, Towser.textures.get("flameTower"), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(55*ref), size, size, RvB.textures.get("flameTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
         overlays.add(o);
         
         o = new Overlay(0, 0, windWidth, (int)(60*ref));
-        o.setBG(Towser.textures.get("board"), 0.6f);
-        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o.setBG(RvB.textures.get("board"), 0.6f);
+        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setHidden(true);
         o.addButton(b);
         
-        b = new Button(o.getW()-(int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
         
         int width = (int) (700*ref), height = (int) (50*ref);
         o = new Overlay(windWidth/2-width/2, (int)(5*ref), width, height);
-        o.setBG(Towser.textures.get("darkBoard"), 0.4f);
-        o.setBorder(Towser.colors.get("green_dark"), 2, 0.8f);
+        o.setBG(RvB.textures.get("darkBoard"), 0.4f);
+        o.setBorder(RvB.colors.get("green_dark"), 2, 0.8f);
         overlays.add(o);
     }
     
@@ -572,30 +572,30 @@ public abstract class AppCore {
             t = BasicTower.priceP+"";
             b = o.getButtons().get(0);
             if(money >= BasicTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
             
             t = CircleTower.priceP+"";
             b = o.getButtons().get(1);
             if(money >= CircleTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
             
             t = BigTower.priceP+"";
             b = o.getButtons().get(2);
             if(money >= BigTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
             
             t = FlameTower.priceP+"";
             b = o.getButtons().get(3);
             if(money >= FlameTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, Towser.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
         }
         //
         //// Overlay principal
@@ -603,23 +603,23 @@ public abstract class AppCore {
         o.render();
         
         t = money+"";
-        o.drawText((int)(80*ref), o.getH()/2, t, Towser.fonts.get("money"));
-        Towser.drawFilledRectangle((int)((90+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, Towser.textures.get("coins"));
+        o.drawText((int)(80*ref), o.getH()/2, t, RvB.fonts.get("money"));
+        RvB.drawFilledRectangle((int)((90+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
         
         t = life+"";
-        o.drawText((int)(200*ref), o.getH()/2, t, Towser.fonts.get("life"));
-        Towser.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, Towser.textures.get("heart"));
+        o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("life"));
+        RvB.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
 
         if(!o.getButtons().get(0).isHidden()){
             t = "Wave " + waveNumber;
-            o.getButtons().get(0).drawText(0, 0, t, Towser.fonts.get("normalB"));
+            o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get("normalB"));
         }
         if(!o.getButtons().get(1).isHidden()){
             t = "x"+gameSpeed;
-            o.getButtons().get(1).drawText(0, 0, t, Towser.fonts.get("normalB"));
+            o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
         }
         t = "Menu";
-        o.getButtons().get(2).drawText(0, 0, t, Towser.fonts.get("normal"));
+        o.getButtons().get(2).drawText(0, 0, t, RvB.fonts.get("normal"));
         //
         //// Overlay enemy selected
         o = overlays.get(2);
@@ -627,7 +627,7 @@ public abstract class AppCore {
         if(enemySelected != null)
             enemySelected.renderInfo(o);
         else
-            o.drawText(o.getW()/2, o.getH()/2, "Select an enemy", Towser.fonts.get("normal"));
+            o.drawText(o.getW()/2, o.getH()/2, "Select an enemy", RvB.fonts.get("normal"));
         //
     }
     
@@ -660,7 +660,7 @@ public abstract class AppCore {
             }
         }
         if(o.getButtons().get(2).isClicked(0)){
-            Towser.switchStateTo(MENU);
+            RvB.switchStateTo(MENU);
         }
         //
     }
@@ -730,21 +730,21 @@ public abstract class AppCore {
         if(tower != null && tower.getPrice() <= money){
             towers.add(tower);
             towerSelected = tower;
-            Towser.setCursor(Cursor.GRAB);
+            RvB.setCursor(Cursor.GRAB);
         }
     }
     
     public int getMouseIndexX(){
         int indexX = Mouse.getX()/unite;
         if(indexX < 0) indexX = 0;
-        else if(indexX > Towser.nbTileX-1) indexX = Towser.nbTileX-1;
+        else if(indexX > RvB.nbTileX-1) indexX = RvB.nbTileX-1;
         return indexX;
     }
     
     public int getMouseIndexY(){
         int indexY = (windHeight-Mouse.getY())/unite;
         if(indexY < 0) indexY = 0;
-        else if(indexY > Towser.nbTileY-1) indexY = Towser.nbTileY-1;
+        else if(indexY > RvB.nbTileY-1) indexY = RvB.nbTileY-1;
         return indexY;
     }
     

@@ -2,8 +2,8 @@ package ennemies;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import static towser.Towser.game;
-import static towser.Towser.ref;
+import static rvb.RvB.game;
+import static rvb.RvB.ref;
 
 
 public class Wave{

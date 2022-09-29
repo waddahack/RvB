@@ -1,8 +1,8 @@
 package towers;
 
 import managers.SoundManager;
-import towser.Towser;
-import static towser.Towser.ref;
+import rvb.RvB;
+import static rvb.RvB.ref;
 
 public class CircleTower extends Tower{
 
@@ -11,12 +11,12 @@ public class CircleTower extends Tower{
     
     public CircleTower(){
         super("circleTower");
-        textureStatic = Towser.textures.get(("circleTower"));
+        textureStatic = RvB.textures.get(("circleTower"));
         textures.add(textureStatic);
         canRotate = false;
         price = priceP;
         life = 100;
-        width = 4*Towser.unite/5;
+        width = 4*RvB.unite/5;
         size = width;
         totalMoneySpent = priceP;
         name = "Razingun";
@@ -25,10 +25,10 @@ public class CircleTower extends Tower{
         isMultipleShot = true;
         clip = SoundManager.Instance.getClip("multicannon");
         SoundManager.Instance.setClipVolume(clip, volume);
-        bulletSprite = Towser.textures.get("bullet");
+        bulletSprite = RvB.textures.get("bullet");
         growth = 4*ref;
         
-        range = (int) (1.2*Towser.unite);
+        range = (int) (1.2*RvB.unite);
         power = 12;
         shootRate = 0.7f;
         bulletSpeed = 25;

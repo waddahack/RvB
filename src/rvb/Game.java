@@ -1,11 +1,11 @@
-package towser;
+package rvb;
 
 import java.util.ArrayList;
 import java.util.Random;
 import managers.PopupManager;
-import towser.Towser.Difficulty;
-import static towser.Towser.nbTileX;
-import static towser.Towser.nbTileY;
+import rvb.RvB.Difficulty;
+import static rvb.RvB.nbTileX;
+import static rvb.RvB.nbTileY;
 
 public class Game extends AppCore{
     

@@ -1,4 +1,4 @@
-package towser;
+package rvb;
 
 import managers.SoundManager;
 import java.awt.Color;
@@ -34,7 +34,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
-public class Towser{
+public class RvB{
     
     public static enum State{
         MENU, GAME, CREATION, EXIT
@@ -442,9 +442,9 @@ public class Towser{
             textures.put("flyingEnemyProp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop.png"))));
             textures.put("flyingEnemyPropBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop_bright.png"))));
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -505,43 +505,43 @@ public class Towser{
         float[] color;
         String police = "Bahnschrift";
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         Font awtFont = new Font(police, Font.PLAIN, (int)(16*ref));
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.PLAIN, (int)(25*ref));
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.PLAIN, (int)(34*ref));
         UnicodeFont normalXL = new UnicodeFont(awtFont);
         normalXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXL.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.BOLD, (int)(20*ref));
         UnicodeFont normalB = new UnicodeFont(awtFont);
         normalB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalB.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont normalLB = new UnicodeFont(awtFont);
         normalLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalLB.addAsciiGlyphs();
         
-        color = Towser.colors.get("white");
+        color = RvB.colors.get("white");
         awtFont = new Font(police, Font.BOLD, (int)(34*ref));
         UnicodeFont normalXLB = new UnicodeFont(awtFont);
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
@@ -553,7 +553,7 @@ public class Towser{
         money.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
         money.addAsciiGlyphs();
         
-        color = Towser.colors.get("life");
+        color = RvB.colors.get("life");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont life = new UnicodeFont(awtFont);
         life.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
@@ -610,7 +610,7 @@ public class Towser{
             bonus.loadGlyphs();
             fonts.put("bonus", bonus);
         } catch (SlickException ex) {
-            Logger.getLogger(Towser.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

@@ -4,9 +4,9 @@ import Utils.MyMath;
 import ennemies.Enemy;
 import java.util.ArrayList;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
-import towser.Shootable;
-import static towser.Towser.game;
+import rvb.RvB;
+import rvb.Shootable;
+import static rvb.RvB.game;
 
 public class Bullet{
     
@@ -54,7 +54,7 @@ public class Bullet{
     }
     
     public void move(){
-        double speed = (this.speed*game.gameSpeed * Towser.deltaTime / 50) * Towser.ref;
+        double speed = (this.speed*game.gameSpeed * RvB.deltaTime / 50) * RvB.ref;
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest);
         boolean touched = hasTouched(angle), inRange = isInRange();
@@ -118,10 +118,10 @@ public class Bullet{
             float percentToDest = (float) (distanceDone / totalDistance);
             if(percentToDest < 0.2)
                 percentToDest = 0.2f;
-            Towser.drawFilledRectangle(x, y, (int)((2*radius)*percentToDest), (int)((2*radius)*percentToDest), sprite, angle);
+            RvB.drawFilledRectangle(x, y, (int)((2*radius)*percentToDest), (int)((2*radius)*percentToDest), sprite, angle);
         }
         else
-            Towser.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
+            RvB.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
     }
     
     public double getX(){
@@ -141,7 +141,7 @@ public class Bullet{
         if(shooter.isMultipleShot())
             coef = 1;
         if(follow)
-            return (x <= Towser.windWidth && x >= 0 && y <= Towser.windHeight && y >= 0 && !aim.isDead());
+            return (x <= RvB.windWidth && x >= 0 && y <= RvB.windHeight && y >= 0 && !aim.isDead());
         return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef);
     }
     

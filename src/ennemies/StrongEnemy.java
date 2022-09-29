@@ -1,7 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
-import towser.Towser;
+import rvb.RvB;
 
 public class StrongEnemy extends Enemy{
     
@@ -15,13 +15,13 @@ public class StrongEnemy extends Enemy{
         power = 10;
         shootRate = 1;
         moveSpeed = 2.4f;
-        range = 3*Towser.unite;
+        range = 3*RvB.unite;
         life = 280;
-        width = Towser.unite;
+        width = RvB.unite;
         eBalance = balance;
         rgb = new float[]{0.4f, 0.9f, 0.1f};
-        sprite = Towser.textures.get("strongEnemy");
-        brightSprite = Towser.textures.get("strongEnemyBright");
+        sprite = RvB.textures.get("strongEnemy");
+        brightSprite = RvB.textures.get("strongEnemyBright");
         clip = SoundManager.Instance.getClip("tank");
         volume = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;

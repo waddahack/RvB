@@ -11,12 +11,12 @@ import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
 import towers.Bullet;
 import towers.Tower;
-import towser.Shootable;
+import rvb.Shootable;
 import managers.SoundManager;
-import towser.Tile;
-import towser.Towser;
-import static towser.Towser.game;
-import static towser.Towser.unite;
+import rvb.Tile;
+import rvb.RvB;
+import static rvb.RvB.game;
+import static rvb.RvB.unite;
 import ui.Overlay;
 
 public abstract class Enemy implements Shootable, Comparable<Enemy>{
@@ -64,13 +64,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public void update(){
         if(game.enemySelected == null && isClicked() && started)
             game.enemySelected = this;
-        if(isMouseIn() && !mouseEntered && Towser.cursor != Towser.Cursor.POINTER){
+        if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.POINTER){
             mouseEntered = true;
-            Towser.setCursor(Towser.Cursor.POINTER);
+            RvB.setCursor(RvB.Cursor.POINTER);
         }
-        else if(!isMouseIn() && Towser.cursor != Towser.Cursor.DEFAULT && mouseEntered){
+        else if(!isMouseIn() && RvB.cursor != RvB.Cursor.DEFAULT && mouseEntered){
             mouseEntered = false;
-            Towser.setCursor(Towser.Cursor.DEFAULT);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
         }
         if(stopFor != -1 && (System.currentTimeMillis() - startTimeStopFor >= stopFor)){
             started = true;
@@ -116,12 +116,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             else if(startTimeWaitFor != 0)
                 startTimeWaitFor = 0;
 
-            Towser.drawFilledRectangle(-width/2, -width/2, width, width, null, 1, sprite);
+            RvB.drawFilledRectangle(-width/2, -width/2, width, width, null, 1, sprite);
 
             glPopMatrix(); // Reset the current matrix to the one that was saved.
         }  
         else
-            Towser.drawFilledCircle(x, y, width/2, rgb, 1);
+            RvB.drawFilledCircle(x, y, width/2, rgb, 1);
     }
     
     protected void move(){
@@ -134,7 +134,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
                 setDirection();
         }
 
-        movingBy = ((moveSpeed*game.gameSpeed) * Towser.deltaTime / 50) * Towser.ref;
+        movingBy = ((moveSpeed*game.gameSpeed) * RvB.deltaTime / 50) * RvB.ref;
         switch(dir){
             case "down" : 
                 y += movingBy;
@@ -247,7 +247,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     protected boolean isMouseIn(){
-        int MX = Mouse.getX(), MY = Towser.windHeight-Mouse.getY();
+        int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
         return (MX >= x-width/2 && MX <= x+width/2 && MY >= y-width/2 && MY <= y+width/2);
     }
     
@@ -259,16 +259,16 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public void renderInfo(Overlay o){
         
         // Sprites
-        Towser.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
-        Towser.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
-        int width = (int) (290*Towser.ref), height = 16;
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, Towser.colors.get("white"), 1, null);
-        Towser.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, Towser.colors.get("life"), 1, null);
-        Towser.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, Towser.colors.get("green_dark"), 0.8f, 2);        
+        int width = (int) (290*RvB.ref), height = 16;
+        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, RvB.colors.get("white"), 1, null);
+        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, RvB.colors.get("life"), 1, null);
+        RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
-        o.drawText(o.getW()/2, 12, name, Towser.fonts.get("normalL"));
-        o.drawText(o.getW()/2+Towser.fonts.get("normalL").getWidth(name)/2+Towser.fonts.get("life").getWidth(""+maxLife)/2+5, 12, ""+maxLife, Towser.fonts.get("life"));
+        o.drawText(o.getW()/2, 12, name, RvB.fonts.get("normalL"));
+        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name)/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, 12, ""+maxLife, RvB.fonts.get("life"));
     }
     
     public void attack(){

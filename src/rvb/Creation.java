@@ -1,4 +1,4 @@
-package towser;
+package rvb;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -7,14 +7,14 @@ import java.util.Random;
 import managers.PopupManager;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser.State;
-import static towser.Towser.mouseDown;
-import static towser.Towser.stateChanged;
-import static towser.Towser.unite;
-import static towser.Towser.windHeight;
+import rvb.RvB.State;
+import static rvb.RvB.mouseDown;
+import static rvb.RvB.stateChanged;
+import static rvb.RvB.unite;
+import static rvb.RvB.windHeight;
 import ui.Button;
 import ui.Overlay;
-import static towser.Towser.ref;
+import static rvb.RvB.ref;
 
 public class Creation extends AppCore{
     
@@ -22,7 +22,7 @@ public class Creation extends AppCore{
     private ArrayList<Tile> roads;
     
     public Creation(){
-        init(Towser.Difficulty.MEDIUM);
+        init(RvB.Difficulty.MEDIUM);
         initOverlays();   
         initMap("created");
         
@@ -38,7 +38,7 @@ public class Creation extends AppCore{
     protected void render(){
         for(ArrayList<Tile> row : map)
             for(Tile t : row)
-                Towser.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTextures().get(0), t.getAngle());
+                RvB.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTextures().get(0), t.getAngle());
         for(Tile road : roads)
             road.renderDirection();
     }
@@ -49,10 +49,10 @@ public class Creation extends AppCore{
         Overlay o;
         Button b;
         
-        o = new Overlay(0, (int) (windHeight-80*ref), Towser.windWidth, (int) (80*ref));
-        b = new Button((int) (80*ref), (int) (10*ref), (int) (100*ref), (int) (26*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        o = new Overlay(0, (int) (windHeight-80*ref), RvB.windWidth, (int) (80*ref));
+        b = new Button((int) (80*ref), (int) (10*ref), (int) (100*ref), (int) (26*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button((int) (80*ref), (int) (50*ref), (int) (100*ref), (int) (26*ref), Towser.colors.get("green_semidark"), Towser.colors.get("green_dark"));
+        b = new Button((int) (80*ref), (int) (50*ref), (int) (100*ref), (int) (26*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
     }
@@ -66,8 +66,8 @@ public class Creation extends AppCore{
         //// Overlay principal
         o = overlays.get(0);
         o.render();
-        o.getButtons().get(0).drawText(0, 0, "Save & Play", Towser.fonts.get("normalS"));
-        o.getButtons().get(1).drawText(0, 0, "Back", Towser.fonts.get("normalS"));
+        o.getButtons().get(0).drawText(0, 0, "Save & Play", RvB.fonts.get("normalS"));
+        o.getButtons().get(1).drawText(0, 0, "Back", RvB.fonts.get("normalS"));
         //
     }
     
@@ -81,16 +81,16 @@ public class Creation extends AppCore{
             String error = calculatePath();
             if(error.isEmpty()){
                 saveLevel();
-                Towser.createdGame = new Game("created");
-                Towser.game = Towser.createdGame;
-                Towser.switchStateTo(State.GAME);
+                RvB.createdGame = new Game("created");
+                RvB.game = RvB.createdGame;
+                RvB.switchStateTo(State.GAME);
             }
             else{
                 PopupManager.Instance.popup(error);
             }
         }
         else if(o.getButtons().get(1).isClicked(0) && Mouse.getEventButtonState() && !mouseDown){ // Back button clicked
-            Towser.state = State.MENU;
+            RvB.state = State.MENU;
         }
         //
     }
@@ -105,7 +105,7 @@ public class Creation extends AppCore{
             int indexY = getMouseIndexY();
             
             if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged){ // Puts road
-                Tile road = new Tile(Towser.textures.get("roadStraight"), "road");
+                Tile road = new Tile(RvB.textures.get("roadStraight"), "road");
                 road.setRotateIndex(0);
                 road.setX(indexX*unite);
                 road.setY(indexY*unite);
@@ -117,13 +117,13 @@ public class Creation extends AppCore{
                 Texture t;
                 int n = rand.nextInt(100)+1;
                 if(n > 93)
-                    t = Towser.textures.get("bigPlant1");
+                    t = RvB.textures.get("bigPlant1");
                 else if(n > 86)
-                    t = Towser.textures.get("bigPlant2");
+                    t = RvB.textures.get("bigPlant2");
                 else
-                    t = Towser.textures.get("grass");
+                    t = RvB.textures.get("grass");
                 n = 0;
-                if(t != Towser.textures.get("grass"))
+                if(t != RvB.textures.get("grass"))
                     n = (int)Math.round(rand.nextInt(361)/90)*90;  
                 Tile grass = new Tile(t, "grass");
                 grass.setAngle(n);
@@ -293,32 +293,32 @@ public class Creation extends AppCore{
 
         // Si previousRoad est à GAUCHE et nextRoad est en BAS ou l'inverse
         if((previousRoad.getX() < road.getX() && nextRoad.getY() > road.getY()) || (nextRoad.getX() < road.getX() && previousRoad.getY() > road.getY())){
-            road.setTexture(Towser.textures.get("roadTurn"));
+            road.setTexture(RvB.textures.get("roadTurn"));
             road.setAngle(180);
         }
         // Si previousRoad est à GAUCHE et nextRoad est en HAUT ou l'inverse
         else if((previousRoad.getX() < road.getX() && nextRoad.getY() < road.getY()) || (nextRoad.getX() < road.getX() && previousRoad.getY() < road.getY())){
-            road.setTexture(Towser.textures.get("roadTurn"));
+            road.setTexture(RvB.textures.get("roadTurn"));
             road.setAngle(270);
         }
         // Si previousRoad est à DROITE et nextRoad est en BAS ou l'inverse
         else if((previousRoad.getX() > road.getX() && nextRoad.getY() > road.getY()) || (nextRoad.getX() > road.getX() && previousRoad.getY() > road.getY())){
-            road.setTexture(Towser.textures.get("roadTurn"));
+            road.setTexture(RvB.textures.get("roadTurn"));
             road.setAngle(90);
         }
         // Si previousRoad est à DROITE et nextRoad est en HAUT ou l'inverse
         else if((previousRoad.getX() > road.getX() && nextRoad.getY() < road.getY()) || (nextRoad.getX() > road.getX() && previousRoad.getY() < road.getY())){
-            road.setTexture(Towser.textures.get("roadTurn"));
+            road.setTexture(RvB.textures.get("roadTurn"));
             road.setAngle(0);
         }
         // Si previousRoad est à DROITE et nextRoad est à GAUCHE ou l'inverse
         else if((previousRoad.getX() > road.getX() && nextRoad.getX() < road.getX()) || (nextRoad.getX() > road.getX() && previousRoad.getX() < road.getX())){
-            road.setTexture(Towser.textures.get("roadStraight"));
+            road.setTexture(RvB.textures.get("roadStraight"));
             road.setAngle(90);
         }
         // Si previousRoad est en HAUT et nextRoad est en BAS ou l'inverse
         else if((previousRoad.getY() < road.getY() && nextRoad.getY() > road.getY()) || (nextRoad.getY() < road.getY() && previousRoad.getY() > road.getY())){
-            road.setTexture(Towser.textures.get("roadStraight"));
+            road.setTexture(RvB.textures.get("roadStraight"));
             road.setAngle(0);
         }
     }

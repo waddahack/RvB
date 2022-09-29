@@ -1,8 +1,8 @@
 package towers;
 
+import rvb.RvB;
 import managers.SoundManager;
-import towser.*;
-import static towser.Towser.ref;
+import static rvb.RvB.ref;
 
 public class BasicTower extends Tower{
     
@@ -11,14 +11,14 @@ public class BasicTower extends Tower{
     
     public BasicTower() {
         super("basicTower");
-        textures.add(Towser.textures.get("basicTowerBase"));
-        textures.add(Towser.textures.get("basicTowerTurret"));
+        textures.add(RvB.textures.get("basicTowerBase"));
+        textures.add(RvB.textures.get("basicTowerTurret"));
         rotateIndex = 2;
-        textureStatic = Towser.textures.get("basicTower");
+        textureStatic = RvB.textures.get("basicTower");
         canRotate = true;
         price = priceP;
         life = 100;
-        width = 4*Towser.unite/5;
+        width = 4*RvB.unite/5;
         size = width;
         totalMoneySpent = priceP;
         name = "Razannon";
@@ -27,10 +27,10 @@ public class BasicTower extends Tower{
         isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
         SoundManager.Instance.setClipVolume(clip, volume);
-        bulletSprite = Towser.textures.get("bullet");
+        bulletSprite = RvB.textures.get("bullet");
         growth = 2*ref;
         
-        range = 3*Towser.unite;
+        range = 3*RvB.unite;
         power = 18;
         shootRate = 0.5f;
         bulletSpeed = 18;

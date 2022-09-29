@@ -1,7 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
-import towser.Towser;
+import rvb.RvB;
 
 public class FastEnemy extends Enemy{
     
@@ -15,13 +15,13 @@ public class FastEnemy extends Enemy{
         power = 4;
         shootRate = 1;
         moveSpeed = 4.2f;
-        range = 3*Towser.unite;
+        range = 3*RvB.unite;
         life = 42;
-        width = Towser.unite;
+        width = RvB.unite;
         eBalance = balance;
         rgb = new float[]{1f, 1f, 0f};
-        sprite = Towser.textures.get("fastEnemy");
-        brightSprite = Towser.textures.get("fastEnemyBright");
+        sprite = RvB.textures.get("fastEnemy");
+        brightSprite = RvB.textures.get("fastEnemyBright");
         volume = SoundManager.Volume.VERY_LOW;
         clip = SoundManager.Instance.getClip("quad");
         stepEveryMilli = 0;

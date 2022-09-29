@@ -2,8 +2,8 @@ package Utils;
 
 import java.lang.Math;
 import java.util.Random;
-import towser.Shootable;
-import towser.Tile;
+import rvb.Shootable;
+import rvb.Tile;
 
 public class MyMath {
     

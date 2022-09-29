@@ -3,9 +3,9 @@ package ennemies;
 import Utils.MyMath;
 import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
-import static towser.Towser.game;
-import static towser.Towser.unite;
+import rvb.RvB;
+import static rvb.RvB.game;
+import static rvb.RvB.unite;
 
 public class FlyingEnemy extends Enemy{
     
@@ -28,11 +28,11 @@ public class FlyingEnemy extends Enemy{
         width = (int) (1.25*unite);
         eBalance = balance;
         rgb = new float[]{0.4f, 0.9f, 0.1f};
-        sprite = Towser.textures.get("flyingEnemy");
-        baseSprite = Towser.textures.get("flyingEnemyBase");
-        baseBrightSprite = Towser.textures.get("flyingEnemyBaseBright");
-        turningSprite = Towser.textures.get("flyingEnemyProp");
-        turningBrightSprite = Towser.textures.get("flyingEnemyPropBright");
+        sprite = RvB.textures.get("flyingEnemy");
+        baseSprite = RvB.textures.get("flyingEnemyBase");
+        baseBrightSprite = RvB.textures.get("flyingEnemyBaseBright");
+        turningSprite = RvB.textures.get("flyingEnemyProp");
+        turningBrightSprite = RvB.textures.get("flyingEnemyPropBright");
         clip = SoundManager.Instance.getClip("helicopter");
         volume = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
@@ -54,7 +54,7 @@ public class FlyingEnemy extends Enemy{
         if(isInBase())
             attack();
 
-        double speed = ((moveSpeed*game.gameSpeed) * Towser.deltaTime / 50) * Towser.ref;
+        double speed = ((moveSpeed*game.gameSpeed) * RvB.deltaTime / 50) * RvB.ref;
         speed *= (hyp/700);
         
         x += xDiffConst * (speed/hyp);
@@ -74,7 +74,7 @@ public class FlyingEnemy extends Enemy{
         else if(startTimeWaitFor != 0)
             startTimeWaitFor = 0;
         
-        Towser.drawFilledRectangle(x, y, width, width, sprite, angle);
+        RvB.drawFilledRectangle(x, y, width, width, sprite, angle);
         
         sprite = this.turningSprite;
         if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
@@ -83,6 +83,6 @@ public class FlyingEnemy extends Enemy{
             startTimeWaitFor = 0;
         
         turningSpriteAngle += 2*game.gameSpeed;
-        Towser.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle);
+        RvB.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle);
     }
 }

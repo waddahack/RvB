@@ -3,10 +3,10 @@ package ui;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
-import towser.Towser;
-import towser.Towser.Cursor;
-import static towser.Towser.mouseDown;
-import static towser.Towser.ref;
+import rvb.RvB;
+import rvb.RvB.Cursor;
+import static rvb.RvB.mouseDown;
+import static rvb.RvB.ref;
 
 
 public class Button {
@@ -81,12 +81,12 @@ public class Button {
     
     public void update(){
         if(!disabled){
-            if(isMouseIn() && !mouseEntered && Towser.cursor != Cursor.GRAB){
-                Towser.setCursor(Cursor.POINTER);
+            if(isMouseIn() && !mouseEntered && RvB.cursor != Cursor.GRAB){
+                RvB.setCursor(Cursor.POINTER);
                 mouseEntered = true;
             }
-            else if(!isMouseIn() && mouseEntered && Towser.cursor != Cursor.GRAB){
-                Towser.setCursor(Cursor.DEFAULT);
+            else if(!isMouseIn() && mouseEntered && RvB.cursor != Cursor.GRAB){
+                RvB.setCursor(Cursor.DEFAULT);
                 mouseEntered = false;
             } 
         }
@@ -100,19 +100,19 @@ public class Button {
             
         //hover
         if(isMouseIn() && borderRgb != null && !disabled)
-            Towser.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
+            RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
         if(rgb != null)
-            Towser.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
+            RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
         if(bg != null){
             if(itemFramed)
-                Towser.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
+                RvB.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
             else
-                Towser.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
+                RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
         }
         // text
         if(text != null && font != null)
-            Towser.drawString(x, y, text, font);
+            RvB.drawString(x, y, text, font);
     }
     
     public void drawText(String text, UnicodeFont font){
@@ -120,11 +120,11 @@ public class Button {
     }
     
     public void drawText(int x, int y, String text, UnicodeFont font){
-        Towser.drawString(this.x+x, this.y+y, text, font);
+        RvB.drawString(this.x+x, this.y+y, text, font);
     }
     
     private boolean isMouseIn(){
-        int MX = Mouse.getX(), MY = Towser.windHeight-Mouse.getY();
+        int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
         return (!hidden && MX >= x-width/2 && MX <= x+width/2 && MY >= y-height/2 && MY <= y+height/2);
     }
     
