@@ -16,7 +16,7 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.*;
 
-public abstract class Tower extends Tile implements Shootable{
+public abstract class Tower implements Shootable{
     
     protected int price, range, power, bulletSpeed, life, width, totalMoneySpent, explodeRadius, bulletSizeBonus;
     protected double lastShoot = 0;
@@ -32,9 +32,18 @@ public abstract class Tower extends Tile implements Shootable{
     protected Texture textureStatic, bulletSprite;
     protected Clip clip;
     protected Random random = new Random();
+    protected float x, y;
+    protected int size = unite;
+    protected int angle = 0, newAngle = 0;
+    protected ArrayList<Texture> textures;
+    protected int rotateIndex = -1;
+    public String type;
     
     public Tower(String type){
-        super(type);
+        textures = new ArrayList<>();
+        this.type = type;
+        this.x = Mouse.getX();
+        this.y = RvB.windHeight-Mouse.getY();
         upgrades = new ArrayList<>();
         overlays = new ArrayList<>();
     }
@@ -157,8 +166,9 @@ public abstract class Tower extends Tile implements Shootable{
     }
     
     public void render(){
-        for(int i = 0 ; i < textures.size() ; i++)
-            RvB.drawFilledRectangle(x, y, size, size, textures.get(i), angle);
+        for(int i = 0 ; i < textures.size() ; i++){
+            RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0);
+        }
     }
     
     public void renderOther(){
@@ -299,9 +309,9 @@ public abstract class Tower extends Tile implements Shootable{
         initOverlay();
         x = Math.floorDiv(Mouse.getX(), unite);
         y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
-        map.get((int) y).set((int) x, this);
-        setX(x*unite+unite/2);
-        setY(y*unite+unite/2);
+        map.get((int) y).set((int) x, null);
+        x = x*unite+unite/2;
+        y = y*unite+unite/2;
         game.money -= price;
         raisePrice();
         isPlaced = true;
@@ -311,8 +321,10 @@ public abstract class Tower extends Tile implements Shootable{
     public boolean canBePlaced(){
         if(!isInWindow())
             return false;
-        String tileType = game.map.get(Math.floorDiv((int)y, unite)).get(Math.floorDiv((int) x, unite)).getType(); // middle point
-        if(tileType == "grass")
+        Tile tile = game.map.get(Math.floorDiv((int)y, unite)).get(Math.floorDiv((int) x, unite));
+        if(tile == null)
+            return false;
+        if(tile.getType() == "grass")
             return true;
         return false;
     }
@@ -348,6 +360,14 @@ public abstract class Tower extends Tile implements Shootable{
     
     public Clip getClip(){
         return clip;
+    }
+    
+    public float getX(){
+        return x;
+    }
+    
+    public float getY(){
+        return y;
     }
     
     public void setSelected(boolean b){
@@ -431,6 +451,14 @@ public abstract class Tower extends Tile implements Shootable{
     
     public int getPrice(){
         return price;
+    }
+    
+    public int getIndexX(){
+        return (int)(x/unite);
+    }
+    
+    public int getIndexY(){   
+        return (int)(y/unite);
     }
     
     @Override

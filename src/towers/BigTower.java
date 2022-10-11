@@ -25,7 +25,7 @@ public class BigTower extends Tower{
         super("bigTower");
         textures.add(RvB.textures.get("bigTowerBase"));
         textures.add(RvB.textures.get("bigTowerTurret"));
-        rotateIndex = 2;
+        rotateIndex = 1;
         textureStatic = RvB.textures.get("bigTower");
         canRotate = true;
         price = priceP;

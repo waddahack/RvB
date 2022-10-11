@@ -4,10 +4,6 @@ import Utils.MyMath;
 import java.util.ArrayList;
 import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
 import towers.Bullet;
 import towers.Tower;
@@ -25,7 +21,6 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected int eBalance;
     protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width;
     protected Texture sprite = null, brightSprite = null;
-    protected float[] rgb;
     protected long stopFor = -1;
     protected String name;
     protected SoundManager.Volume volume;
@@ -38,10 +33,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected double stepEveryMilli, startTimeSteps;
     protected double movingBy;
     private boolean mouseEntered = false;
-    private int uniqueId;
     
-    public Enemy(int id){
-        uniqueId = id;
+    public Enemy(){
         if(game.spawn != null){
             x = game.spawn.getX()+unite/2;
             y = game.spawn.getY()+unite/2;
@@ -63,7 +56,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public void update(){
         if(game.enemySelected == null && isClicked() && started)
-            game.enemySelected = this;
+            game.setEnemySelected(this);
         if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.POINTER){
             mouseEntered = true;
             RvB.setCursor(RvB.Cursor.POINTER);
@@ -105,23 +98,14 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
 
             angle = Math.round(angle);
 
-            glPushMatrix(); //Save the current matrix.
-            glTranslated(x, y, 0);
-            if(angle != 0)
-                glRotated(angle, 0, 0, 1);
-            
             Texture sprite = this.sprite;
             if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
                 sprite = this.brightSprite;
             else if(startTimeWaitFor != 0)
                 startTimeWaitFor = 0;
 
-            RvB.drawFilledRectangle(-width/2, -width/2, width, width, null, 1, sprite);
-
-            glPopMatrix(); // Reset the current matrix to the one that was saved.
+            RvB.drawFilledRectangle(x, y, width, width, sprite, angle);
         }  
-        else
-            RvB.drawFilledCircle(x, y, width/2, rgb, 1);
     }
     
     protected void move(){
@@ -256,8 +240,9 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
-    public void renderInfo(Overlay o){
-        
+    public void renderInfo(){
+        Overlay o = game.getOverlays().get(2);
+        o.render();
         // Sprites
         RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
@@ -322,10 +307,6 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public double getSpawnSpeed(){
         return spawnSpeed;
-    }
-    
-    public float[] getRGB(){
-        return rgb;
     }
     
     public int getIndiceTuile(){

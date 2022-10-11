@@ -7,10 +7,10 @@ import static rvb.RvB.ref;
 
 public class TrickyEnemy extends Enemy{
     
-    public static int idCount = 0, balance = 30;
+    public static int balance = 30;
     
     public TrickyEnemy(){
-        super(++idCount);
+        super();
         name = "Group of Bazooldier";
         spawnSpeed = 1.8f;
         reward = 12;
@@ -21,7 +21,6 @@ public class TrickyEnemy extends Enemy{
         life = 80;
         width = 4*RvB.unite/5;
         eBalance = balance;
-        rgb = new float[]{0.2f, 0.2f, 0.8f};
         sprite = RvB.textures.get("trickyEnemy");
         brightSprite = RvB.textures.get("trickyEnemyBright");
         volume = SoundManager.Volume.VERY_LOW;

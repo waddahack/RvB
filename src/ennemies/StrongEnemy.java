@@ -5,10 +5,10 @@ import rvb.RvB;
 
 public class StrongEnemy extends Enemy{
     
-    public static int idCount = 0, balance = 40;
+    public static int balance = 40;
     
     public StrongEnemy(){
-        super(++idCount);
+        super();
         name = "Bazank";
         spawnSpeed = 2.2f;
         reward = 28;
@@ -19,7 +19,6 @@ public class StrongEnemy extends Enemy{
         life = 280;
         width = RvB.unite;
         eBalance = balance;
-        rgb = new float[]{0.4f, 0.9f, 0.1f};
         sprite = RvB.textures.get("strongEnemy");
         brightSprite = RvB.textures.get("strongEnemyBright");
         clip = SoundManager.Instance.getClip("tank");

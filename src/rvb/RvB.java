@@ -441,6 +441,17 @@ public class RvB{
             textures.put("flyingEnemyBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_base_bright.png"))));
             textures.put("flyingEnemyProp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop.png"))));
             textures.put("flyingEnemyPropBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop_bright.png"))));
+            
+            textures.put("bazoo", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo.png"))));
+            textures.put("bazooBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_bright.png"))));
+            textures.put("bazooEvo1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo1.png"))));
+            textures.put("bazooEvo1Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo1_bright.png"))));
+            textures.put("bazooEvo2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo2.png"))));
+            textures.put("bazooEvo2Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo2_bright.png"))));
+            textures.put("bazooEvo3", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo3.png"))));
+            textures.put("bazooEvo3Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo3_bright.png"))));
+            textures.put("bazooEvo4", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo4.png"))));
+            textures.put("bazooEvo4Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo4_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

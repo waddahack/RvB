@@ -2,10 +2,6 @@ package rvb;
 
 import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glRotated;
-import static org.lwjgl.opengl.GL11.glTranslated;
 import org.newdawn.slick.opengl.Texture;
 import static rvb.RvB.unite;
 

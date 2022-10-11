@@ -1,10 +1,4 @@
 NEXT BIG UPDATE MUST HAVE :
-- Créer 1 ennemie (cf discord)
-
-// OPTI/CODE
-- passer en parametre des callbacks
-- Opti : créer un buffer image une fois que initmap est fini pour draw texture 1 fois au lieu de chaque tile
-
 // MAJ
 - Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).
  Remplacer "Play" par "Fight Bazoo"
@@ -12,7 +6,7 @@ NEXT BIG UPDATE MUST HAVE :
 Raztech : invoque des tourelles ?
 - implement sons bazoo wave & defeated + build raztech
 
-- ne plus faire apparaitre ennemie selon vague (?)
+- Créer 1 ennemie (cf discord)
 
 IDEAS:
 

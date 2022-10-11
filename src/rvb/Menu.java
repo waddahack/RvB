@@ -66,7 +66,7 @@ public class Menu {
         overlays[0].drawImage(windWidth/4, (int)(100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
         start.drawText(0, 0, "    Adventure\n(inc... not soon)", fonts.get("normalL"));
         if(randomGame == null)
-            random.drawText(0, 0, "New random map", fonts.get("normalL"));
+            random.drawText(0, 0, "Fight Bazoo", fonts.get("normalL"));
         else{
             random.drawText(0, 0, "Continue", fonts.get("normalL"));
             regenerate.drawText(0, 0, "Regenerate", fonts.get("normal"));

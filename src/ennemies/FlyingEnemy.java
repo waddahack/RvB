@@ -9,14 +9,14 @@ import static rvb.RvB.unite;
 
 public class FlyingEnemy extends Enemy{
     
-    public static int idCount = 0, balance = 100;
+    public static int balance = 100;
     
     private double xDiffConst, yDiffConst, hyp, tileEveryPixel;
-    private Texture turningSprite, turningBrightSprite, baseSprite, baseBrightSprite;
+    private static Texture turningSprite, turningBrightSprite, baseSprite, baseBrightSprite;
     private int turningSpriteAngle = 0;
     
     public FlyingEnemy(){
-        super(++idCount);
+        super();
         name = "Bazoopter";
         spawnSpeed = 12f;
         reward = 36;
@@ -27,7 +27,6 @@ public class FlyingEnemy extends Enemy{
         life = 180;
         width = (int) (1.25*unite);
         eBalance = balance;
-        rgb = new float[]{0.4f, 0.9f, 0.1f};
         sprite = RvB.textures.get("flyingEnemy");
         baseSprite = RvB.textures.get("flyingEnemyBase");
         baseBrightSprite = RvB.textures.get("flyingEnemyBaseBright");
@@ -36,7 +35,6 @@ public class FlyingEnemy extends Enemy{
         clip = SoundManager.Instance.getClip("helicopter");
         volume = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
-        
         xDiffConst = (game.base.getRealX()-game.spawn.getRealX());
         yDiffConst = (game.base.getRealY()-game.spawn.getRealY());
         hyp = MyMath.distanceBetween(game.spawn, game.base);

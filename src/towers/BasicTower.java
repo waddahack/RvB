@@ -13,7 +13,7 @@ public class BasicTower extends Tower{
         super("basicTower");
         textures.add(RvB.textures.get("basicTowerBase"));
         textures.add(RvB.textures.get("basicTowerTurret"));
-        rotateIndex = 2;
+        rotateIndex = 1;
         textureStatic = RvB.textures.get("basicTower");
         canRotate = true;
         price = priceP;

@@ -32,14 +32,15 @@ import ui.*;
 
 
 public abstract class AppCore {
-    
+
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
         BASIC(0, BasicEnemy.balance, 1, 8),
         FAST(1, FastEnemy.balance, 4, 10),
         TRICKY(2, TrickyEnemy.balance, 6, 10),
         FLYING(3, FlyingEnemy.balance, 13, 5),
-        STRONG(4, StrongEnemy.balance, 9, 15);
+        STRONG(4, StrongEnemy.balance, 9, 15),
+        BOSS(5, 1, 0, 0);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -78,6 +79,9 @@ public abstract class AppCore {
                     case 4:
                         e = new StrongEnemy();
                         break;
+                    case 5:
+                        e = new Bazoo(0);
+                        break;
                 }
                 e.decreaseSpawnSpeedBy(0.1*game.waveNumber);
                 game.wave.addEnemy(e);
@@ -100,6 +104,7 @@ public abstract class AppCore {
     public Tower towerSelected;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
+
     protected int textureID = -10;
     
     public AppCore(){
@@ -418,14 +423,12 @@ public abstract class AppCore {
             }
             // Wave check
             if(inWave && wave.isDone()){
-                overlays.get(1).getButtons().get(0).setHidden(false);
-                overlays.get(1).getButtons().get(1).setHidden(true);
+                overlays.get(1).getButtons().get(0).setDisabled(false);
                 inWave = false;
                 wave = null;
                 money += waveReward;
                 if(!gameOver)
                     waveNumber++;
-                gameSpeed = 1;
                 SoundManager.Instance.closeAllClips();
                 if(waveNumber%5 == 0){
                     int up = 0;
@@ -491,9 +494,9 @@ public abstract class AppCore {
                 }
                 if(enemySelected != null && !overlays.get(1).isClicked(0)){
                     if(towerSelected == null && !overlays.get(0).isClicked(0))
-                        enemySelected = null;
+                        setEnemySelected(null);
                     else if(towerSelected != null && !towerSelected.isClicked(0) && !overlays.get(0).isClicked(0))
-                        enemySelected = null;
+                        setEnemySelected(null);
                 }
             }
             
@@ -544,11 +547,10 @@ public abstract class AppCore {
         o.setBG(RvB.textures.get("board"), 0.6f);
         b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setHidden(true);
+        b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
         
-        b = new Button(o.getW()-(int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
         overlays.add(o);
         
@@ -609,26 +611,18 @@ public abstract class AppCore {
         t = life+"";
         o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("life"));
         RvB.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
-
-        if(!o.getButtons().get(0).isHidden()){
-            t = "Wave " + waveNumber;
-            o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get("normalB"));
-        }
-        if(!o.getButtons().get(1).isHidden()){
-            t = "x"+gameSpeed;
-            o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
-        }
+        
+        t = inWave ? "Attacking..." : "I'm ready";
+        o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
+            
+        t = "x"+gameSpeed;
+        o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
+        
         t = "Menu";
         o.getButtons().get(2).drawText(0, 0, t, RvB.fonts.get("normal"));
         //
-        //// Overlay enemy selected
-        o = overlays.get(2);
-        o.render();
         if(enemySelected != null)
-            enemySelected.renderInfo(o);
-        else
-            o.drawText(o.getW()/2, o.getH()/2, "Select an enemy", RvB.fonts.get("normal"));
-        //
+            enemySelected.renderInfo();
     }
     
     public void checkOverlaysInput(){
@@ -642,8 +636,8 @@ public abstract class AppCore {
         // Overlay principal
         o = overlays.get(1);
         if(o.getButtons().get(0).isClicked(0) && !inWave && Mouse.getEventButtonState()){
-            o.getButtons().get(0).setHidden(true);
-            o.getButtons().get(1).setHidden(false);
+            o.getButtons().get(0).setDisabled(true);
+            RvB.setCursor(Cursor.DEFAULT);
             startWave();
         }
         else if(o.getButtons().get(1).isClicked(0)){
@@ -689,7 +683,7 @@ public abstract class AppCore {
         
         wave = new Wave();
         int min, max;
-        while(waveBalance >= uEnemies[0].balance){
+        /*while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
@@ -699,7 +693,8 @@ public abstract class AppCore {
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+Math.random()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();
+        wave.shuffleEnemies();*/
+        uEnemies[uEnemies.length-1].addToWave(1, 1);
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
 
         inWave = true;
@@ -779,6 +774,18 @@ public abstract class AppCore {
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
                 b.setDisabled(false);
+    }
+    
+    public void setEnemySelected(Enemy e) {
+        if(e == null)
+            overlays.get(2).display(false);
+        else
+            overlays.get(2).display(true);
+        enemySelected = e;
+    }
+    
+    public ArrayList<Overlay> getOverlays() {
+        return overlays;
     }
     
     public void addEnemy(Enemy e){

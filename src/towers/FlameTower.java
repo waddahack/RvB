@@ -13,7 +13,7 @@ public class FlameTower extends Tower{
         super("flameTower");
         textures.add(RvB.textures.get("flameTowerBase"));
         textures.add(RvB.textures.get("flameTowerTurret"));
-        rotateIndex = 2;
+        rotateIndex = 1;
         textureStatic = RvB.textures.get(("flameTower"));
         canRotate = true;
         price = priceP;
