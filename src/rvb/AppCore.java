@@ -79,9 +79,9 @@ public abstract class AppCore {
                     case 4:
                         e = new StrongEnemy();
                         break;
-                    case 5:
+                    /*case 5:
                         e = new Bazoo(0);
-                        break;
+                        break;*/
                 }
                 e.decreaseSpawnSpeedBy(0.1*game.waveNumber);
                 game.wave.addEnemy(e);
@@ -130,7 +130,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 35000;
+            money = 350;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -683,7 +683,7 @@ public abstract class AppCore {
         
         wave = new Wave();
         int min, max;
-        /*while(waveBalance >= uEnemies[0].balance){
+        while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
@@ -693,7 +693,7 @@ public abstract class AppCore {
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+Math.random()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();*/
+        wave.shuffleEnemies();
         uEnemies[uEnemies.length-1].addToWave(1, 1);
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
 
