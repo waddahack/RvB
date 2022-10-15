@@ -19,7 +19,7 @@ public class SoundManager
     public static SoundManager Instance;
 
     public static enum Volume{
-        VERY_HIGH(4), HIGH(-2), SEMI_HIGH(-7), MEDIUM(-10), SEMI_LOW(-13), LOW(-18), VERY_LOW(-24);
+        VERY_HIGH(0), HIGH(-6), SEMI_HIGH(-11), MEDIUM(-14), SEMI_LOW(-17), LOW(-22), VERY_LOW(-28);
         
         public int value;
         
@@ -28,19 +28,33 @@ public class SoundManager
         }
     }
     
-    private ArrayList<Clip> clipsToClose;
+    private ArrayList<Clip> clipsToClose, clipsToPlayNextFrame;
     private Map<String, Clip> ambianceClips;
     private boolean ready = true;
+    public static Clip SOUND_BUILD, SOUND_WAVE;
     
     public SoundManager(){ 
         clipsToClose = new ArrayList<Clip>();
+        clipsToPlayNextFrame = new ArrayList<Clip>();
         ambianceClips = new HashMap<String, Clip>();
         addAmbianceSound("war", SoundManager.Volume.SEMI_LOW);
+        
+        SOUND_BUILD = getClip("build");
+        setClipVolume(SOUND_BUILD, SoundManager.Volume.SEMI_HIGH);
+        SOUND_WAVE = getClip("click_wave");
+        setClipVolume(SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
     }
 
     public static void initialize(){
         if(Instance == null)
             Instance = new SoundManager();
+    }
+    
+    public void update(){
+        for(int i = 0 ; i < clipsToPlayNextFrame.size() ; i++)
+            if(clipsToPlayNextFrame.get(i) != null)
+                playOnce(clipsToPlayNextFrame.get(i));
+        clipsToPlayNextFrame.clear();
     }
     
     public void closeAllClips(){
@@ -91,8 +105,15 @@ public class SoundManager
     }
     
     public void playOnce(Clip clip){
-        clip.setMicrosecondPosition(0);
-        clip.start();
+        if(!clip.isRunning()){
+            clip.setMicrosecondPosition(0);
+            clip.start();
+        }
+        else{
+            clip.stop();
+            clipsToPlayNextFrame.add(clip);
+        }
+        
     }
     
     public void playLoop(Clip clip){

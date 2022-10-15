@@ -87,7 +87,7 @@ public class Bullet{
                 bt.bombExplode(aim.getX(), aim.getY());
                 for(int i = 0 ; i < game.enemies.size() ; i++){
                     Enemy e = game.enemies.get(i);
-                    if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius())
+                    if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius() && e != aim)
                         e.attacked(shooter.getPower());
                 }
             }
@@ -142,7 +142,7 @@ public class Bullet{
             coef = 1;
         if(follow)
             return (x <= RvB.windWidth && x >= 0 && y <= RvB.windHeight && y >= 0 && !aim.isDead());
-        return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef);
+        return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef+3 && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef+3);
     }
     
     private boolean hasTouched(double angle){

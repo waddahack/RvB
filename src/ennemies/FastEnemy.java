@@ -10,7 +10,6 @@ public class FastEnemy extends Enemy{
     public FastEnemy(){
         super();
         name = "Quazoo";
-        spawnSpeed = 1.2f;
         reward = 6;
         power = 4;
         shootRate = 1;

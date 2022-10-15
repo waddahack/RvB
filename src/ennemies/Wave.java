@@ -11,12 +11,20 @@ public class Wave{
     private int index;
     private ArrayList<Enemy> enemies;
     private double startTime;
-    private double waitBetween = 250;
+    private double waitBetweenType = 900,  waitBetween = 450;
     
     public Wave(){
         enemies = new ArrayList<>();
         index = 0;
         startTime = System.currentTimeMillis();
+        waitBetweenType -= game.waveNumber*10;
+        if(waitBetweenType < 250)
+            waitBetweenType = 250;
+        waitBetween -= game.waveNumber*10;
+        if(waitBetween < 250)
+            waitBetween = 250;
+        waitBetweenType *= ref;
+        waitBetween *= ref;
     }
     
     public void addEnemy(Enemy e){
@@ -38,10 +46,13 @@ public class Wave{
         Enemy previousEnemy = null;
         if(index > 0)
             previousEnemy = enemies.get(index-1);
-        if((System.currentTimeMillis() - startTime >= 1000*nextEnemy.getSpawnSpeed()*ref/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && System.currentTimeMillis() - startTime >= waitBetween)){
-            nextEnemy.setStarted(true);
-            startTime = System.currentTimeMillis();
-            index++;
+        double time = System.currentTimeMillis();
+        if((time - startTime >= waitBetweenType/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween/game.gameSpeed)){
+            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000/game.gameSpeed){
+                nextEnemy.setStarted(true);
+                startTime = System.currentTimeMillis();
+                index++;
+            }
         }
     }
     

@@ -17,9 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.Clip;
 import managers.PopupManager;
-import managers.SoundManager.Volume;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -73,7 +71,6 @@ public class RvB{
     public static Menu menu;
     public static Game game = null, adventureGame = null, randomGame = null, createdGame = null;
     public static Creation creation = null;
-    public static Map<String, Clip> clips;
     public static Map<String, Texture> textures;
     public static Map<String, UnicodeFont> fonts;
     public static Map<String, float[]> colors;
@@ -134,7 +131,6 @@ public class RvB{
         Mouse.setCursorPosition(windWidth/2, windHeight/2);
         setCursor(Cursor.DEFAULT);
         SoundManager.initialize();
-        initAudio();
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
         menu = new Menu();
@@ -161,6 +157,8 @@ public class RvB{
         }
         
         checkInput();
+        PopupManager.Instance.update();
+        SoundManager.Instance.update();
         
         renderMouse();
     }  
@@ -340,39 +338,6 @@ public class RvB{
         System.exit(0);
     }
     
-    public static void initAudio(){
-        clips = new HashMap<>();
-        clips.put("sell", SoundManager.Instance.getClip("sell"));
-        SoundManager.Instance.setClipVolume(clips.get("sell"), Volume.MEDIUM);
-        clips.put("upgrade", SoundManager.Instance.getClip("upgrade"));
-        SoundManager.Instance.setClipVolume(clips.get("upgrade"), Volume.SEMI_HIGH);
-        clips.put("build", SoundManager.Instance.getClip("build"));
-        SoundManager.Instance.setClipVolume(clips.get("build"), Volume.HIGH);
-    }
-    
-    public static void initColors(){
-        colors = new HashMap<>();
-        float[] life = {255f/255f, 80f/255f, 80f/255f};
-        float[] white = {225f/255f, 240f/255f, 200f/255f};
-        float[] blue = {58f/255f, 68f/255f, 102f/255f};
-        float[] blueDark = {38f/255f, 43f/255f, 68f/255f};
-        float[] grey = {90f/255f, 105f/255f, 136f/255f};
-        float[] greyLight = {139f/255f, 155f/255f, 180f/255f};
-        float[] green = {92f/255f, 126f/255f, 41f/255f};
-        float[] greenSemidark = {72f/255f, 98f/255f, 34f/255f};
-        float[] greenDark = {38f/255f, 52f/255f, 18f/255f};
-        
-        colors.put("life", life);
-        colors.put("white", white);
-        colors.put("blue", blue);
-        colors.put("blue_dark", blueDark);
-        colors.put("grey", grey);
-        colors.put("grey_light", greyLight);
-        colors.put("green", green);
-        colors.put("green_semidark", greenSemidark);
-        colors.put("green_dark", greenDark);
-    }
-    
     public static void initTextures() {
         try {     
             textures = new HashMap<>();
@@ -384,8 +349,6 @@ public class RvB{
             textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/disabled.png"))));
             textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/board.png"))));
             textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/dark_board.png"))));
-            textures.put("red", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/red.png"))));
-            textures.put("white", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/white.png"))));
             textures.put("title", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/title.png"))));
             // Map
             textures.put("roadStraight", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_straight.png"))));
@@ -395,6 +358,8 @@ public class RvB{
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
             // Icons
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
+            textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
+            textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));
             textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
             textures.put("exitIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/exit_icon.png"))));
             textures.put("rangeIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/range_icon.png"))));
@@ -441,9 +406,10 @@ public class RvB{
             textures.put("flyingEnemyBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_base_bright.png"))));
             textures.put("flyingEnemyProp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop.png"))));
             textures.put("flyingEnemyPropBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_prop_bright.png"))));
-            
+            // Bazoo
             textures.put("bazoo", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo.png"))));
             textures.put("bazooBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_bright.png"))));
+            textures.put("bazooZoomed", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_zoomed.png"))));
             textures.put("bazooEvo1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo1.png"))));
             textures.put("bazooEvo1Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo1_bright.png"))));
             textures.put("bazooEvo2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo2.png"))));
@@ -505,9 +471,33 @@ public class RvB{
         return textureID;
     }
     
-    public static void releaseAudio(){
-        for(Map.Entry<String, Clip> entry : clips.entrySet())
-            entry.getValue().close();
+    public static void initColors(){
+        colors = new HashMap<>();
+        float[] life = {255f/255f, 80f/255f, 80f/255f};
+        float[] money = {240f/255f, 220f/255f, 0};
+        float[] lightGreen = {225f/255f, 240f/255f, 200f/255f};
+        float[] blue = {58f/255f, 68f/255f, 102f/255f};
+        float[] blueDark = {38f/255f, 43f/255f, 68f/255f};
+        float[] grey = {90f/255f, 105f/255f, 136f/255f};
+        float[] greyLight = {139f/255f, 155f/255f, 180f/255f};
+        float[] green = {92f/255f, 126f/255f, 41f/255f};
+        float[] greenSemidark = {72f/255f, 98f/255f, 34f/255f};
+        float[] greenDark = {38f/255f, 52f/255f, 18f/255f};
+        float[] bonus = {150f/255f, 195f/255f, 255f/255f};
+        float[] lightRed = {245f/255f, 225f/255f, 220f/255f};
+        
+        colors.put("life", life);
+        colors.put("money", money);
+        colors.put("lightGreen", lightGreen);
+        colors.put("lightRed", lightRed);
+        colors.put("blue", blue);
+        colors.put("blue_dark", blueDark);
+        colors.put("grey", grey);
+        colors.put("grey_light", greyLight);
+        colors.put("green", green);
+        colors.put("green_semidark", greenSemidark);
+        colors.put("green_dark", greenDark);
+        colors.put("bonus", bonus);
     }
     
     @SuppressWarnings("unchecked")
@@ -516,52 +506,52 @@ public class RvB{
         float[] color;
         String police = "Bahnschrift";
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         Font awtFont = new Font(police, Font.PLAIN, (int)(16*ref));
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(25*ref));
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(34*ref));
         UnicodeFont normalXL = new UnicodeFont(awtFont);
         normalXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXL.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(20*ref));
         UnicodeFont normalB = new UnicodeFont(awtFont);
         normalB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalB.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont normalLB = new UnicodeFont(awtFont);
         normalLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalLB.addAsciiGlyphs();
         
-        color = RvB.colors.get("white");
+        color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(34*ref));
         UnicodeFont normalXLB = new UnicodeFont(awtFont);
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXLB.addAsciiGlyphs();
         
-        //color = Towser.colors.get("white");
+        color = RvB.colors.get("money");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont money = new UnicodeFont(awtFont);
-        money.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
+        money.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         money.addAsciiGlyphs();
         
         color = RvB.colors.get("life");
@@ -570,22 +560,22 @@ public class RvB{
         life.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         life.addAsciiGlyphs();
         
-        //color = Towser.colors.get("white");
+        color = RvB.colors.get("money");
         awtFont = new Font(police, Font.BOLD, (int)(18*ref));
         UnicodeFont canBuy = new UnicodeFont(awtFont);
-        canBuy.getEffects().add(new ColorEffect(new Color(240, 220, 0)));
+        canBuy.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         canBuy.addAsciiGlyphs();
         
-        //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int)(18*ref));
+        color = RvB.colors.get("lightRed");
+        awtFont = new Font(police, Font.PLAIN, (int)(18*ref));
         UnicodeFont cantBuy = new UnicodeFont(awtFont);
-        cantBuy.getEffects().add(new ColorEffect(new Color(210, 30, 30)));
+        cantBuy.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         cantBuy.addAsciiGlyphs();
         
-        //color = Towser.colors.get("white");
-        awtFont = new Font(police, Font.BOLD, (int)(20*ref));
+        color = RvB.colors.get("bonus");
+        awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont bonus = new UnicodeFont(awtFont);
-        bonus.getEffects().add(new ColorEffect(new Color(30, 210, 30)));
+        bonus.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         bonus.addAsciiGlyphs();
         
         // DISPLAY ALL FONTS AVAILABLE

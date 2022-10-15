@@ -12,7 +12,6 @@ public class TrickyEnemy extends Enemy{
     public TrickyEnemy(){
         super();
         name = "Group of Bazooldier";
-        spawnSpeed = 1.8f;
         reward = 12;
         power = 6;
         shootRate = 1;

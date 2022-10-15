@@ -11,7 +11,6 @@ public class BasicEnemy extends Enemy{
     public BasicEnemy(){
         super();
         name = "Bazooldier";
-        spawnSpeed = 0.8f;
         reward = 2;
         power = 2;
         shootRate = 1;

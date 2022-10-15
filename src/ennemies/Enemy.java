@@ -24,11 +24,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected long stopFor = -1;
     protected String name;
     protected SoundManager.Volume volume;
-    protected float x, y, xBase, yBase, spawnSpeed, minSpawnSpeed = 0.5f, moveSpeed;
+    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;
     protected String dir;
     protected boolean isAimed = false, isMultipleShot, started = false;
-    protected double waitFor = 125, startTimeWaitFor = 0;
+    protected double waitFor = 175, startTimeWaitFor = 0;
     protected Clip clip;
     protected double stepEveryMilli, startTimeSteps;
     protected double movingBy;
@@ -48,8 +48,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     protected void initBack(){
-        moveSpeed = (float) (moveSpeed * (1+bonusMS/100));
-        life = (int)Math.round(life * (1+bonusLife/100));
+        moveSpeed = (float) (moveSpeed + (moveSpeed*bonusMS/100));
+        life = (int)Math.round(life + (life*bonusLife/100));
         maxLife = life;
         SoundManager.Instance.setClipVolume(clip, volume);
     }
@@ -248,7 +248,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
         int width = (int) (290*RvB.ref), height = 16;
-        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, RvB.colors.get("white"), 1, null);
+        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, RvB.colors.get("lightGreen"), 1, null);
         RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, RvB.colors.get("life"), 1, null);
         RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
@@ -305,10 +305,6 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         started = b;
     }
     
-    public double getSpawnSpeed(){
-        return spawnSpeed;
-    }
-    
     public int getIndiceTuile(){
         return indiceTuile;
     }
@@ -323,13 +319,6 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public float getY(){
         return y;
-    }
-    
-    public void decreaseSpawnSpeedBy(double decrease){
-        if(spawnSpeed - decrease >= minSpawnSpeed)
-            spawnSpeed -= decrease;
-        else
-            spawnSpeed = minSpawnSpeed;
     }
     
     public void setX(float x){

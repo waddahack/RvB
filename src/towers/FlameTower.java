@@ -6,7 +6,7 @@ import static rvb.RvB.ref;
 
 public class FlameTower extends Tower{
 
-    public static int startPrice = 600;
+    public static int startPrice = 750;
     public static int priceP = startPrice;
     
     public FlameTower(){
@@ -34,16 +34,16 @@ public class FlameTower extends Tower{
         
         range = (int) (1.4*RvB.unite);
         power = 1;
-        shootRate = 25f;
+        shootRate = 35f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.4f, "*", 150f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "+", 450f, 1.3f, 2));
+        upgrades.add(new Upgrade("Range", range, 1.3f, "*", 180f, 1.5f, 2));
+        upgrades.add(new Upgrade("Power", power, 1f, "+", 400f, 1.6f, 2));
 
     }
     
     @Override
     protected void raisePrice(){
-        priceP *= 1.2;
+        priceP *= 1.1;
         price = priceP;
     }
     

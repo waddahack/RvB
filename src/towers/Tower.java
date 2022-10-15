@@ -38,6 +38,7 @@ public abstract class Tower implements Shootable{
     protected ArrayList<Texture> textures;
     protected int rotateIndex = -1;
     public String type;
+    protected boolean mouseEntered = false;
     
     public Tower(String type){
         textures = new ArrayList<>();
@@ -49,7 +50,13 @@ public abstract class Tower implements Shootable{
     }
     
     public void update(){
-        if(isPlaced){
+        if(selected && (isPlaced || canBePlaced()))
+            renderDetails();
+        
+        if(!isPlaced)
+            renderPrevisu();
+        else{
+            render();
             if(selected)
                 checkOverlayInput();
             searchAndShoot();
@@ -58,9 +65,16 @@ public abstract class Tower implements Shootable{
                 SoundManager.Instance.stopClip(clip);
                 soundPlayed = false;
             }   
-            render();
+            // Mouse hover
+            if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
+                RvB.setCursor(RvB.Cursor.POINTER);
+                mouseEntered = true;
+            }
+            else if(!isMouseIn() && mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
+                RvB.setCursor(RvB.Cursor.DEFAULT);
+                mouseEntered = false;
+            } 
         }
-        renderOther();
     }
     
     private void checkOverlayInput(){
@@ -95,7 +109,6 @@ public abstract class Tower implements Shootable{
                 totalMoneySpent += upPrice;
                 upgrades.get(i).increasePrice();
                 b.click();
-                SoundManager.Instance.playOnce(RvB.clips.get("upgrade"));
             }
         }
         if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
@@ -112,7 +125,6 @@ public abstract class Tower implements Shootable{
                 SoundManager.Instance.clipToClose(clip);
             }     
             toBeRemoved = true;
-            SoundManager.Instance.playOnce(RvB.clips.get("sell"));
         }
     }
     
@@ -171,14 +183,6 @@ public abstract class Tower implements Shootable{
         }
     }
     
-    public void renderOther(){
-        if(!isPlaced)
-            renderPrevisu();
-        
-        if(selected && (isPlaced || canBePlaced()))
-            renderDetails();
-    }
-    
     private void renderPrevisu(){
         if(canBePlaced()){
             float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite;
@@ -205,37 +209,39 @@ public abstract class Tower implements Shootable{
     public void initOverlay(){
         Overlay o1, o2;
         
-        o1 = new Overlay(0, RvB.windHeight-(int)((86+30)*ref), (int)(150*ref), (int)(30*ref));
+        o1 = new Overlay(0, RvB.windHeight-(int)((60+30)*ref), (int)(140*ref), (int)(30*ref));
         o1.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o1);
         
-        o2 = new Overlay(0, RvB.windHeight-(int)(86*ref), RvB.windWidth, (int)(86*ref));
+        o2 = new Overlay(0, RvB.windHeight-(int)(60*ref), RvB.windWidth, (int)(60*ref));
         o2.setBG(RvB.textures.get("board"), 0.6f);
         
-        int sep = (int) (600 * ref);
+        int sep = (int) (700 * ref);
         sep -= 90*upgrades.size();
         if(sep < 25)
             sep = 25;
-        int imageSize = o2.getH()-(int)(20*ref);
-        int butWidth = (int) (200*ref), butHeight = (int)(38*ref);
+        int imageSize = o2.getH()-(int)(5*ref);
+        int butWidth = (int) (32*ref), butHeight = (int)(32*ref);
         int marginToCenter = RvB.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2);
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2, imageSize/2+(int)(10*ref), imageSize, imageSize, textureStatic);
+        o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
         for(int i = 0 ; i < upgrades.size() ; i++){
-            Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, 2*o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
+            Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
+            b.setBG(RvB.textures.get("plus"));
             if(upgrades.get(i).maxClick <= 0)
                 b.setHidden(true);
+            b.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
             o2.addButton(b);
         }
-        Button b = new Button(o1.getW()+(int)(40*ref), o2.getH()/2, (int)(80*ref), (int)(34*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        Button b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setClickSound(SoundManager.Instance.getClip("sell"), SoundManager.Volume.MEDIUM);
         o2.addButton(b);
         overlays.add(o2);
     }
     
     public void renderOverlay(){
-        String t = "";
         float upPrice;
         Button b;
         Overlay overlay;
@@ -248,41 +254,34 @@ public abstract class Tower implements Shootable{
         
         overlay = overlays.get(1);
         int i;
-        String space, price, up;
+        String price, up, nextUp;
         for(i = 0 ; i < upgrades.size() ; i++){
             b = overlay.getButtons().get(i);
-            if(upgrades.get(i).nbNumberToRound == 0)
+            upPrice = upgrades.get(i).price;
+            if(upgrades.get(i).nbNumberToRound == 0){
                 up = (int)upgrades.get(i).getValue()+"";
-            else
+                nextUp = (int)(upgrades.get(i).getValue()+upgrades.get(i).getIncreaseValue())+"";
+            }
+                
+            else{
                 up = upgrades.get(i).getValue()+"";
+                nextUp = (upgrades.get(i).getValue()+upgrades.get(i).getIncreaseValue())+"";
+            }
+                
             if(!b.isHidden()){
-                overlay.drawImage(b.getX()-(int)(36*ref), (int)(4*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
-                overlay.drawText(b.getX()+(int)(20*ref), (int)(20*ref), up, RvB.fonts.get("normal"));   
+                overlay.drawImage(b.getX()-(int)(90*ref)-(int)(16*ref), overlay.getH()/3-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);
+                if(b.isHovered())
+                    overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, nextUp, RvB.fonts.get("bonus"));
+                else   
+                    overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, up, RvB.fonts.get("normal"));
+                if(game.money >= (int)Math.floor(upPrice))
+                    overlay.drawText(b.getX()-(int)(45*ref), 2*overlay.getH()/3+(int)(5*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
+                else
+                    overlay.drawText(b.getX()-(int)(45*ref), 2*overlay.getH()/3+(int)(5*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
             }
             else{
-                overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
-                overlay.drawText(b.getX()+(int)(20*ref), overlay.getH()/2, up, RvB.fonts.get("normal"));   
-            }
-            
-            overlay.drawText(b.getX(), (int)(15*ref)+ RvB.fonts.get("normal").getHeight(t)/2, t, RvB.fonts.get("normal"));   
-            
-            upPrice = upgrades.get(i).price;
-            if(upPrice != 0 && !b.isHidden()){
-                if(b.isHovered() && upgrades.get(i).getValue() > 0){
-                    b.drawText("+ " + upgrades.get(i).getIncreaseValue(), RvB.fonts.get("bonus"));
-                }
-                else{
-                    price = (int)Math.floor(upPrice)+"";
-                    space = "";
-                    for(int j = 0 ; j < price.length() ; j++)
-                        space += " ";
-                    up = "Up (  "+ space +"  )";
-                    b.drawText(0, 0, up, RvB.fonts.get("normal"));
-                    if(game.money < (int)Math.floor(upPrice))
-                        b.drawText((RvB.fonts.get("normal").getWidth(up) - RvB.fonts.get("cantBuy").getWidth(price) - RvB.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, RvB.fonts.get("cantBuy"));
-                    else
-                        b.drawText((RvB.fonts.get("normal").getWidth(up) - RvB.fonts.get("canBuy").getWidth(price) - RvB.fonts.get("normal").getWidth("  )"))/2 - 2, 0, price, RvB.fonts.get("canBuy"));
-                }
+                overlay.drawImage(b.getX()-(int)(90*ref)-(int)(16*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
+                overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/2, up, RvB.fonts.get("normal"));   
             }
         }
         b = overlay.getButtons().get(overlay.getButtons().size()-1);
@@ -315,7 +314,7 @@ public abstract class Tower implements Shootable{
         game.money -= price;
         raisePrice();
         isPlaced = true;
-        SoundManager.Instance.playOnce(RvB.clips.get("build"));
+        SoundManager.Instance.playOnce(SoundManager.SOUND_BUILD);
     }
     
     public boolean canBePlaced(){
@@ -341,7 +340,7 @@ public abstract class Tower implements Shootable{
         game.towersDestroyed.add(this);
     }
    
-    private boolean isMouseIn(){
+    public boolean isMouseIn(){
         int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
         return (MX >= x-unite/2 && MX <= x+unite/2 && MY >= y-unite/2 && MY <= y+unite/2);
     }
@@ -407,13 +406,17 @@ public abstract class Tower implements Shootable{
     }
     
     public boolean canShoot(){
-        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && angle >= newAngle-4 && angle <= newAngle+4);
+        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && angle >= newAngle-6 && angle <= newAngle+6);
     }
     
     public void shoot(){
         enemiesTouched.clear();
         lastShoot = System.currentTimeMillis();
-        Bullet bullet = new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
+        float x = (float)(this.x+size*Math.cos(Math.toRadians(angle))/2);
+        float y = (float)(this.y+size*Math.sin(Math.toRadians(angle))/2);
+        x = Math.abs(x) < 2 ? 0 : x;
+        y = Math.abs(y) < 2 ? 0 : y;
+        Bullet bullet = new Bullet(this, x, y, enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
         bullets.add(bullet);
         if(clip != null){
             if(continuousSound){

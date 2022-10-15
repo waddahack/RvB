@@ -18,7 +18,6 @@ public class FlyingEnemy extends Enemy{
     public FlyingEnemy(){
         super();
         name = "Bazoopter";
-        spawnSpeed = 12f;
         reward = 36;
         power = 12;
         shootRate = 1;

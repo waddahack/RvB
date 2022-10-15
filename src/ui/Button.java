@@ -1,5 +1,7 @@
 package ui;
 
+import javax.sound.sampled.Clip;
+import managers.SoundManager;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
@@ -20,6 +22,8 @@ public class Button {
     private boolean hidden = false, disabled = false;
     private boolean mouseEntered = false;
     private boolean itemFramed = false;
+    private Clip click;
+    private boolean clickSound = true;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -62,6 +66,8 @@ public class Button {
         this.rgb = rgb;
         this.borderRgb = borderRgb;
         this.bg = bg;
+        click = SoundManager.Instance.getClip("click");
+        SoundManager.Instance.setClipVolume(click, SoundManager.Volume.SEMI_HIGH);
     }
     
     public void click(){
@@ -88,7 +94,9 @@ public class Button {
             else if(!isMouseIn() && mouseEntered && RvB.cursor != Cursor.GRAB){
                 RvB.setCursor(Cursor.DEFAULT);
                 mouseEntered = false;
-            } 
+            }
+            if(isClicked(0) && clickSound)
+                SoundManager.Instance.playOnce(click);
         }
             
         render();
@@ -148,6 +156,19 @@ public class Button {
         disabled = d;
     }
     
+    public void disableClickSound(){
+        clickSound = false;
+    }
+    
+    public void enableClickSound(){
+        clickSound = true;
+    }
+    
+    public void setClickSound(Clip sound, SoundManager.Volume v){
+        click = sound;
+        SoundManager.Instance.setClipVolume(click, v);
+    }
+    
     public int getNbClicks(){
         return nbClicks;
     }
@@ -166,6 +187,10 @@ public class Button {
     
     public void setY(int y){
         this.y = y;
+    }
+    
+    public void setText(String text){
+        this.text = text;
     }
     
     public String getText(){

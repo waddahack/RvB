@@ -1,6 +1,7 @@
 package managers;
 
 import java.util.ArrayList;
+import java.util.Random;
 import org.newdawn.slick.UnicodeFont;
 import rvb.RvB;
 import static rvb.RvB.creation;
@@ -22,8 +23,10 @@ public class PopupManager {
     private ArrayList<String> lines;
     private ArrayList<String> buttonsText;
     private ArrayList<UnicodeFont> fonts;
+    private static Random random;
 
     public PopupManager(){
+        random = new Random();
         currentOverlay = null;
         lines = new ArrayList<>();
         buttonsText = new ArrayList<>();
@@ -71,7 +74,7 @@ public class PopupManager {
         enemiesUpgraded.display(false);
         enemiesUpgraded.setBG(RvB.textures.get("board"), 0.8f);
         enemiesUpgraded.setBorder(RvB.colors.get("green_dark"), 4, 1);
-        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (butWith*1.2), butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         enemiesUpgraded.addButton(b);
     }
     
@@ -80,8 +83,12 @@ public class PopupManager {
             return;
         RvB.drawFilledRectangle(0, 0, RvB.windWidth, RvB.windHeight, null, 0.4f, RvB.textures.get("board"));
         currentOverlay.render();
-        for(int i = 0 ; i < lines.size() ; i++)
-            currentOverlay.drawText(currentOverlay.getW()/2, height/4+i*fonts.get(i).getHeight(lines.get(i)), lines.get(i), fonts.get(i));
+        int top = height/4;
+        for(int i = 0 ; i < lines.size() ; i++){
+            if(i > 0)
+                top += fonts.get(i).getHeight(lines.get(i));
+            currentOverlay.drawText(currentOverlay.getW()/2, top, lines.get(i), fonts.get(i));
+        }
         for(int i = 0 ; i < buttonsText.size() ; i++)
             currentOverlay.getButtons().get(i).drawText(0, 0, buttonsText.get(i), RvB.fonts.get("normalLB"));
         checkPopupInput();
@@ -150,24 +157,19 @@ public class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
     }
     
-    public void popup(String texte){
+    public void popup(String text){
         initPopup(popup);
-        lines.add(texte);
-        fonts.add(RvB.fonts.get("normalXL"));
+        addText(text, RvB.fonts.get("normalXL"));
         
         buttonsText.add("Ok");
     }
     
     public void chooseDifficulty(){
         initPopup(chooseDifficulty);
-        lines.add(" ");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add("Select a difficulty");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add(" ");
-        fonts.add(RvB.fonts.get("normalL"));
-        lines.add("(Escape to cancel)");
-        fonts.add(RvB.fonts.get("normalL"));
+        addText(" ", RvB.fonts.get("normalXL"));
+        addText("Select a difficulty", RvB.fonts.get("normalXL"));
+        addText(" ", RvB.fonts.get("normalXL"));
+        addText("(Escape to cancel)", RvB.fonts.get("normalL"));
         
         buttonsText.add("Easy");
         buttonsText.add("Normal");
@@ -178,34 +180,88 @@ public class PopupManager {
         if(currentOverlay == gameOver)
             return;
         initPopup(gameOver);
-        lines.add("Bazoo and his army have been stronger...");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add("He's won a battle, but not the war.");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add(" ");
-        fonts.add(RvB.fonts.get("normalL"));
-        lines.add("Wave "+game.waveNumber);
-        fonts.add(RvB.fonts.get("normalXLB"));
+        addText("Bazoo and his army have been stronger...", RvB.fonts.get("normalXL"));
+        addText("He's won a battle, but not the war.", RvB.fonts.get("normalXL"));
+        addText(" ", RvB.fonts.get("normalL"));
+        addText("Wave "+game.waveNumber, RvB.fonts.get("normalXLB"));
         
         buttonsText.add("Return to menu");
     }
     
-    public void enemiesUpgraded(String upgradeInfo){
+    public void enemiesUpgraded(String[] infoLines){
         oldGameSpeed = game.gameSpeed;
         game.gameSpeed = 0;
         initPopup(enemiesUpgraded);
-        lines.add("Bazoo has provided new technologies");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add("to his army.");
-        fonts.add(RvB.fonts.get("normalXL"));
-        lines.add(" ");
-        fonts.add(RvB.fonts.get("normalL"));
-        lines.add(upgradeInfo);
-        fonts.add(RvB.fonts.get("normalXLB"));
         
-        buttonsText.add("Crap !");
+        double r = random.nextFloat();
+        String t;
+        if(game.bossDefeated){
+            if(r >= 0.8)
+                t = "I will be back much stronger !";
+            else if(r >= 0.6)
+                t = "You should not mess with me filthy bug !";
+            else if(r >= 0.4)
+                t = "It is just a matter of time...";
+            else if(r >= 0.2)
+                t = "I will unleash my true power !";
+            else
+                t = "The more I suffer, the more powerful I get !";
+        }
+        else{
+            if(r >= 0.8)
+                t = "You are weak.";
+            else if(r >= 0.6)
+                t = "I am the end, and I am coming fast !";
+            else if(r >= 0.4)
+                t = "You shall DIE !";
+            else if(r >= 0.2)
+                t = "It has always been a matter of time.";
+            else
+                t = "I have not noticed, did you even hit me ?";
+        }
+            
+        addText(t, RvB.fonts.get("normalXL"));
+        addText(" ", RvB.fonts.get("normalXL"));
+        addText(" ", RvB.fonts.get("normalXL"));
+        addText("All enemies", RvB.fonts.get("normalL"));
+        for(int i = 0 ; i < infoLines.length ; i++)
+            addText(infoLines[i], RvB.fonts.get("normalXLB"));
+        
+        r = random.nextFloat();
+        if(game.bossDefeated){
+            if(r >= 0.8)
+                t = "Still standing !";
+            else if(r >= 0.6)
+                t = "Where're you ?";
+            else if(r >= 0.4)
+                t = "I'm waiting...";
+            else if(r >= 0.2)
+                t = "Not afraid !";
+            else
+                t = "Looser !";
+        }
+        else{
+            if(r >= 0.8)
+                t = "Noooo !";
+            else if(r >= 0.6)
+                t = "Still alive !";
+            else if(r >= 0.4)
+                t = "Ouch !";
+            else if(r >= 0.2)
+                t = "Watch yourself";
+            else
+                t = "yolo ceci est à changer";
+        }
+        
+        
+        buttonsText.add(t);
     }
 
+    private void addText(String text, UnicodeFont font){
+        lines.add(text);
+        fonts.add(font);
+    }
+    
     private void initPopup(Overlay overlay){
         lines.clear();
         buttonsText.clear();

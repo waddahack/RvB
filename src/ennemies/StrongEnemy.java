@@ -10,7 +10,6 @@ public class StrongEnemy extends Enemy{
     public StrongEnemy(){
         super();
         name = "Bazank";
-        spawnSpeed = 2.2f;
         reward = 28;
         power = 10;
         shootRate = 1;

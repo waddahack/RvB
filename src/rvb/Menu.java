@@ -2,7 +2,6 @@ package rvb;
 
 import ui.Button;
 import managers.PopupManager;
-import managers.SoundManager;
 import static rvb.RvB.*;
 import ui.Overlay;
 
@@ -55,7 +54,6 @@ public class Menu {
     public void update(){
         render();
         checkInput();
-        PopupManager.Instance.update();
     }
     
     private void render(){

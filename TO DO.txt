@@ -1,15 +1,27 @@
 NEXT BIG UPDATE MUST HAVE :
 // MAJ
-- Créer Bazoo toutes les n vagues, bazoo le boss apparait. Popup pour dire qu'il reviendra plus fort s'il meurt(50 dam ? OS ?).
- Remplacer "Play" par "Fight Bazoo"
 - Créer Raztech (une tour très puissante et chère, plaçable une seule fois + cf discord)
 Raztech : invoque des tourelles ?
-- implement sons bazoo wave & defeated + build raztech
 
-- Créer 1 ennemie (cf discord)
+- overlays creation
+
+- faire classe evolution
+
+- Balance
+
+- explosion en rond
+- bug sprite qui tourne (va trop vite ? Commence en plein milieu ? A pas le temps de finir ?)
+
+- Rocher qui bloque la constru
+
+- système de langue, faire Français
 
 IDEAS:
 
 - Feature changer le focus des tourelles
 - stat par tower par wave
 - Mode survie ou la gagne (mode gagne à faire)
+- Mode 1 vie
+- Télécharger la map générée random
+
+

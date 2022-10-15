@@ -39,8 +39,7 @@ public abstract class AppCore {
         FAST(1, FastEnemy.balance, 4, 10),
         TRICKY(2, TrickyEnemy.balance, 6, 10),
         FLYING(3, FlyingEnemy.balance, 13, 5),
-        STRONG(4, StrongEnemy.balance, 9, 15),
-        BOSS(5, 1, 0, 0);
+        STRONG(4, StrongEnemy.balance, 9, 15);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -79,11 +78,7 @@ public abstract class AppCore {
                     case 4:
                         e = new StrongEnemy();
                         break;
-                    /*case 5:
-                        e = new Bazoo(0);
-                        break;*/
                 }
-                e.decreaseSpawnSpeedBy(0.1*game.waveNumber);
                 game.wave.addEnemy(e);
                 balance -= this.balance;
             }
@@ -98,17 +93,19 @@ public abstract class AppCore {
     public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     protected boolean gameOver;
-    protected boolean inWave, dontPlace;
+    protected boolean inWave, dontPlace, towerHovered = false;
     public Enemy enemySelected = null;
     public boolean ended = false;
     public Tower towerSelected;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
+    public boolean bossDead = false, bossDefeated = false;
+    private static Random random;
 
     protected int textureID = -10;
     
     public AppCore(){
-        
+        random = new Random();
     }
     
     protected void init(Difficulty diff){
@@ -130,7 +127,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 350;
+            money = 35000;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -142,7 +139,7 @@ public abstract class AppCore {
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
-            money = 300;
+            money = 30000;
             waveNumber = 1;
             waveReward = 250;
         }
@@ -162,7 +159,7 @@ public abstract class AppCore {
     protected void initMap(ArrayList<Tile> path){
         map = new ArrayList<>();
         this.path = new ArrayList<>();
-        if(path.size() == 0){
+        if(path.isEmpty()){
             this.path = path;
             return;
         }
@@ -185,10 +182,13 @@ public abstract class AppCore {
                 if(t != RvB.textures.get("grass"))
                     n = (int)Math.round(rand.nextInt(361)/90)*90;  
                 tile = new Tile(t, "grass");
+                if(i == 0 || i == RvB.nbTileY-1)
+                    tile.type = "null";
                 tile.setAngle(n);
                 tile.setRotateIndex(0);
                 tile.setX(j*unite);
                 tile.setY(i*unite);
+
                 row.add(tile);
             }
             map.add(row);
@@ -373,11 +373,14 @@ public abstract class AppCore {
         Image P1 = ImageIO.read(new File("assets/images/big_plant1.png")).getScaledInstance(unite, unite, 0);
         Image P2 = ImageIO.read(new File("assets/images/big_plant2.png")).getScaledInstance(unite, unite, 0);
         
+        Tile tile;
         for(int i = 0 ; i < map.size() ; i++){
             for(int j = 0 ; j < map.get(i).size() ; j++){
+                tile = map.get(i).get(j);
+                
                 AffineTransform context = g2d.getTransform();
                 
-                g2d.rotate(Math.toRadians(map.get(i).get(j).getAngle()), j*unite+unite/2, i*unite+unite/2);
+                g2d.rotate(Math.toRadians(tile.getAngle()), j*unite+unite/2, i*unite+unite/2);
  
                 if(map.get(i).get(j).textures.get(0) == RvB.textures.get("roadStraight"))
                     g2d.drawImage(RS, j*unite, i*unite, null);
@@ -421,7 +424,7 @@ public abstract class AppCore {
                 if(enemySelected != null)
                     renderEnemySelected();
             }
-            // Wave check
+            // Wave check if done
             if(inWave && wave.isDone()){
                 overlays.get(1).getButtons().get(0).setDisabled(false);
                 inWave = false;
@@ -430,18 +433,13 @@ public abstract class AppCore {
                 if(!gameOver)
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
-                if(waveNumber%5 == 0){
-                    int up = 0;
-                    if(Math.random() > 0.5){
-                        up = 4+(waveNumber/5)*(waveNumber/5);
-                        Enemy.bonusLife += up;
-                        PopupManager.Instance.enemiesUpgraded("+"+up+"% life point");
-                    }
-                    else{
-                        up = 9+(waveNumber/5)*(waveNumber/5);
-                        Enemy.bonusMS += up;
-                        PopupManager.Instance.enemiesUpgraded("+"+up+"% move speed");
-                    }
+                if(bossDead){
+                    Enemy.bonusLife += 15;
+                    Enemy.bonusMS += 5;
+                    PopupManager.Instance.enemiesUpgraded(new String[]{
+                        "+15% life point",
+                        "+5% move speed"
+                    });
                 }
             }
         }
@@ -451,16 +449,13 @@ public abstract class AppCore {
             if(towers.get(i).toRemove()){
                 towers.remove(i);
                 i--;
-            }
+            }  
         }
-            
         
         renderOverlays();
         
         if(gameOver)
             gameOver();
-        
-        PopupManager.Instance.update();
     }
     
     protected void checkInput(){
@@ -480,10 +475,16 @@ public abstract class AppCore {
                 t.destroy();
                 RvB.setCursor(Cursor.DEFAULT);
             }
-            if(t.isClicked(0) && towerSelected == null)
+            if(!mouseDown){
+                if(t.isClicked(0) && towerSelected == null)
                 selectTower(t);
+            else if(t.isClicked(0) && towerSelected != null && t == towerSelected && !overlays.get(0).isClicked(0))
+                selectTower(null);
             else if(t.isClicked(0) && towerSelected != null && towerSelected.isPlaced() && !overlays.get(0).isClicked(0))
                 selectTower(t);
+            }
+            
+            
         }
         // Click check
         while(Mouse.next() || Keyboard.next()){
@@ -523,22 +524,22 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int size = (int) (58*ref);
+        int size = (int) (50*ref);
         int sep = (int) (200*ref);
         
-        o = new Overlay(0, windHeight-(int)(86*ref), windWidth, (int)(86*ref));
+        o = new Overlay(0, windHeight-(int)(60*ref), windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         o.setA(0.6f);
-        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(55*ref), size, size, RvB.textures.get("basicTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(30*ref), size, size, RvB.textures.get("basicTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int)(55*ref), size, size, RvB.textures.get("circleTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(windWidth/2 - size/2 - sep/2, (int)(30*ref), size, size, RvB.textures.get("circleTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int)(55*ref), size, size, RvB.textures.get("bigTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(windWidth/2 + size/2 + sep/2, (int)(30*ref), size, size, RvB.textures.get("bigTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
-        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(55*ref), size, size, RvB.textures.get("flameTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(30*ref), size, size, RvB.textures.get("flameTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
         overlays.add(o);
@@ -546,11 +547,13 @@ public abstract class AppCore {
         o = new Overlay(0, 0, windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.disableClickSound();
         o.addButton(b);
         b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
         
-        b = new Button((int)(400*ref), o.getH()/2, (int)(100*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int)(60*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setBG(RvB.textures.get("arrowBack"));
         o.addButton(b);
         overlays.add(o);
         
@@ -574,30 +577,30 @@ public abstract class AppCore {
             t = BasicTower.priceP+"";
             b = o.getButtons().get(0);
             if(money >= BasicTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
             
             t = CircleTower.priceP+"";
             b = o.getButtons().get(1);
             if(money >= CircleTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
             
             t = BigTower.priceP+"";
             b = o.getButtons().get(2);
             if(money >= BigTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
             
             t = FlameTower.priceP+"";
             b = o.getButtons().get(3);
             if(money >= FlameTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("canBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
             else
-                b.drawText(0, -b.getH()/2-(int)(12*ref), t, RvB.fonts.get("cantBuy"));
+                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
         }
         //
         //// Overlay principal
@@ -605,21 +608,18 @@ public abstract class AppCore {
         o.render();
         
         t = money+"";
-        o.drawText((int)(80*ref), o.getH()/2, t, RvB.fonts.get("money"));
-        RvB.drawFilledRectangle((int)((90+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+        o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("money"));
+        RvB.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
         
         t = life+"";
-        o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("life"));
-        RvB.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+        o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
+        RvB.drawFilledRectangle((int)((330+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
         
-        t = inWave ? "Attacking..." : "I'm ready";
+        t = inWave ? "Defending..." : "I'm ready";
         o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
             
         t = "x"+gameSpeed;
         o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
-        
-        t = "Menu";
-        o.getButtons().get(2).drawText(0, 0, t, RvB.fonts.get("normal"));
         //
         if(enemySelected != null)
             enemySelected.renderInfo();
@@ -638,6 +638,7 @@ public abstract class AppCore {
         if(o.getButtons().get(0).isClicked(0) && !inWave && Mouse.getEventButtonState()){
             o.getButtons().get(0).setDisabled(true);
             RvB.setCursor(Cursor.DEFAULT);
+            SoundManager.Instance.playOnce(SoundManager.SOUND_WAVE);
             startWave();
         }
         else if(o.getButtons().get(1).isClicked(0)){
@@ -677,12 +678,12 @@ public abstract class AppCore {
         UEnemy[] uEnemies = UEnemy.values();
         int waveBalance = (waveNumber*waveNumber + waveNumber)/2;
         if(waveNumber >= uEnemies[uEnemies.length-1].enterAt + 1)
-            waveBalance *= 13;// old : 10+(uEnemies[uEnemies.length-1].enterAt+ 1) - Math.min(waveNumber, 18);
+            waveBalance *= 15;
         else
             waveBalance *= 10;
-        
+        waveBalance = (int) (waveNumber%5 == 0 ? Math.round(waveBalance*0.8) : waveBalance);
         wave = new Wave();
-        int min, max;
+        /*int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
@@ -690,13 +691,13 @@ public abstract class AppCore {
                 max = min+(waveNumber-uEnemies[i].enterAt)*2;
                 if(min > uEnemies[i].nbMax) min = uEnemies[i].nbMax;
                 if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
-                waveBalance = uEnemies[i].addToWave((int) Math.floor(min+Math.random()*(max-min)), waveBalance);
+                waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();
-        uEnemies[uEnemies.length-1].addToWave(1, 1);
+        wave.shuffleEnemies();*/
+        //if(waveNumber%5 == 0)
+            wave.addEnemy(new Bazoo(4/*waveNumber/5-1*/));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
-
         inWave = true;
     }
     
