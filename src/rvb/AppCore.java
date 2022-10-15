@@ -127,7 +127,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 35000;
+            money = 350;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -139,7 +139,7 @@ public abstract class AppCore {
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
-            money = 30000;
+            money = 300;
             waveNumber = 1;
             waveReward = 250;
         }
@@ -440,6 +440,8 @@ public abstract class AppCore {
                         "+15% life point",
                         "+5% move speed"
                     });
+                    bossDead = false;
+                    bossDefeated = false;
                 }
             }
         }
@@ -529,7 +531,6 @@ public abstract class AppCore {
         
         o = new Overlay(0, windHeight-(int)(60*ref), windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
-        o.setA(0.6f);
         b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(30*ref), size, size, RvB.textures.get("basicTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         o.addButton(b);
@@ -681,9 +682,9 @@ public abstract class AppCore {
             waveBalance *= 15;
         else
             waveBalance *= 10;
-        waveBalance = (int) (waveNumber%5 == 0 ? Math.round(waveBalance*0.8) : waveBalance);
+        waveBalance = (int) (waveNumber%5 == 0 ? Math.round(waveBalance*0.15) : waveBalance);
         wave = new Wave();
-        /*int min, max;
+        int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
@@ -694,9 +695,9 @@ public abstract class AppCore {
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();*/
-        //if(waveNumber%5 == 0)
-            wave.addEnemy(new Bazoo(4/*waveNumber/5-1*/));
+        wave.shuffleEnemies();
+        if(waveNumber%5 == 0)
+            wave.addEnemy(new Bazoo(waveNumber/5-1));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
         inWave = true;
     }

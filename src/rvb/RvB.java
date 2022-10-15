@@ -191,6 +191,12 @@ public class RvB{
         switchStateTo(State.GAME);
     }
     
+    public static void newCreatedMap(Difficulty difficulty){
+        createdGame = new Game("created", difficulty);
+        game = createdGame;
+        switchStateTo(State.GAME);
+    }
+    
     public static boolean createEmptyMap(){
         try{
             File file = new File("assets/levels/level_created.txt");

@@ -89,14 +89,14 @@ public class Menu {
         
         if(start.isClicked(0)){
             if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
-                adventureGame = new Game("1");
+                adventureGame = new Game("1", Difficulty.MEDIUM);
 
             game = adventureGame;
             switchStateTo(State.GAME);
         }  
         if(random.isClicked(0)){
             if(randomGame == null){
-                PopupManager.Instance.chooseDifficulty();
+                PopupManager.Instance.chooseDifficulty("random");
                 // Then it does newRandomMap(difficulty)
             }
             else{
@@ -105,7 +105,7 @@ public class Menu {
             }   
         }
         if(regenerate.isClicked(0)){
-            PopupManager.Instance.chooseDifficulty();
+            PopupManager.Instance.chooseDifficulty("random");
             // Then it does newRandomMap(difficulty)
         }
         if(create.isClicked(0)){

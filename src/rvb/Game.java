@@ -9,8 +9,8 @@ import static rvb.RvB.nbTileY;
 
 public class Game extends AppCore{
     
-    public Game(String lvlName){
-        init(Difficulty.MEDIUM);
+    public Game(String lvlName, Difficulty diff){
+        init(diff);
         initOverlays();
         initMap(lvlName);
     }
@@ -30,9 +30,12 @@ public class Game extends AppCore{
             }
         }while(path.isEmpty() && i < 10);
         if(path.isEmpty())
-            PopupManager.Instance.popup("Error. Try again.");
-        else
-            initMap(path);
+            PopupManager.Instance.popup(new String[]{
+                "Bazoo is actually the real good guy here.",
+                "Raztech is defending something he took from him."
+            }, "What ?");
+        
+        initMap(path);
     }
     
     private static ArrayList<Tile> generateRandomPath(Difficulty diff){

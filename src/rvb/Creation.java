@@ -49,25 +49,32 @@ public class Creation extends AppCore{
         Overlay o;
         Button b;
         
-        o = new Overlay(0, (int) (windHeight-80*ref), RvB.windWidth, (int) (80*ref));
-        b = new Button((int) (80*ref), (int) (10*ref), (int) (100*ref), (int) (26*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        o = new Overlay(0, 0, RvB.windWidth, (int) (60*ref));
+        o.setBG(RvB.textures.get("board"), 0.6f);
+        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (180*ref), (int) (38*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         o.addButton(b);
-        b = new Button((int) (80*ref), (int) (50*ref), (int) (100*ref), (int) (26*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int) (60*ref), (int) (30*ref), (int) (32*ref), (int) (32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setBG(RvB.textures.get("arrowBack"));
         o.addButton(b);
+        overlays.add(o);
+        
+        o = new Overlay(0, (int) (windHeight-60*ref), RvB.windWidth, (int) (60*ref));
+        o.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o);
     }
     
     @Override
     public void renderOverlays(){ 
-        String t;
         Overlay o;
-        Button b;
         
-        //// Overlay principal
+        //// Overlay du haut
         o = overlays.get(0);
         o.render();
-        o.getButtons().get(0).drawText(0, 0, "Save & Play", RvB.fonts.get("normalS"));
-        o.getButtons().get(1).drawText(0, 0, "Back", RvB.fonts.get("normalS"));
+        o.getButtons().get(0).drawText(0, 0, "Save & Play", RvB.fonts.get("normalL"));
+        //
+        //// Overlay du bas
+        o = overlays.get(1);
+        o.render();
         //
     }
     
@@ -78,12 +85,10 @@ public class Creation extends AppCore{
         // Overlay principal
         o = overlays.get(0);
         if(o.getButtons().get(0).isClicked(0) && Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
-            String error = calculatePath();
-            if(error.isEmpty()){
+            String[] error = calculatePath();
+            if(error == null){
                 saveLevel();
-                RvB.createdGame = new Game("created");
-                RvB.game = RvB.createdGame;
-                RvB.switchStateTo(State.GAME);
+                PopupManager.Instance.chooseDifficulty("created");
             }
             else{
                 PopupManager.Instance.popup(error);
@@ -104,7 +109,7 @@ public class Creation extends AppCore{
             int indexX = getMouseIndexX();
             int indexY = getMouseIndexY();
             
-            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged){ // Puts road
+            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged && indexY >= 1 && indexY <= RvB.nbTileY-1){ // Puts road
                 Tile road = new Tile(RvB.textures.get("roadStraight"), "road");
                 road.setRotateIndex(0);
                 road.setX(indexX*unite);
@@ -151,34 +156,41 @@ public class Creation extends AppCore{
         }
     }
     
-    private String calculatePath(){
+    private String[] calculatePath(){
         if(roads.size() == 0)
-            return "???";
+            return new String[]{"???"};
         path.clear();
         spawn = null;
         base = null;
         for(Tile road : roads){
             if(road.arrowAngle == -1)
-                return "                   Path not valid.\nIt has to begin, and end, from a side.";
+                return new String[]{"Path not valid.", "It has to begin, and end, from the left or right side.", "It cannot have extra roads."};
             if(road.previousRoad != null && road.previousRoad.type == "nothing"){
                 if(spawn == null)
                     spawn = road;
                 else
-                    return "There can't be more than one path... yet !";
+                    return new String[]{"There can't be more than one path !"};
             } 
 
             if(road.nextRoad != null && road.nextRoad.type == "nothing")
                 base = road;
         }
         if(spawn == null || base == null)
-            return "Can't be a loop !";
-        
+            return new String[]{"Can't be a loop !"};
         Tile road = spawn;
+        int n = 0;
+        while(road != null){
+            road = road.nextRoad;
+            n++;
+        }
+        if(n < roads.size())
+            return new String[]{"It cannot have extra roads."};
+        road = spawn;
         while(road.type != "nothing"){
             path.add(road);
             road = road.nextRoad;
         }
-        return "";
+        return null;
     }
     
     private void saveLevel(){

@@ -31,13 +31,13 @@ public class BasicTower extends Tower{
         growth = 2*ref;
         
         range = 3*RvB.unite;
-        power = 18;
+        power = 24;
         shootRate = 0.5f;
-        bulletSpeed = 18;
+        bulletSpeed = 20;
         upgrades.add(new Upgrade("Range", range, 1.3f, "*", 120f, 1.5f, 2));
         upgrades.add(new Upgrade("Power", power, 1.3f, "*", 120f, 1.4f, 3));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.25f, "*", 150f, 1.5f, 2));
-        upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 20f, "+", 160f, 3f, 1));
+        upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
     }
     
     @Override

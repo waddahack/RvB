@@ -29,11 +29,11 @@ public class CircleTower extends Tower{
         growth = 4*ref;
         
         range = (int) (1.2*RvB.unite);
-        power = 12;
+        power = 20;
         shootRate = 0.7f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.2f, "*", 120f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 5f, "+", 200f, 2f, 1));
+        upgrades.add(new Upgrade("Range", range, 1.2f, "*", 100f, 1.5f, 2));
+        upgrades.add(new Upgrade("Power", power, 5f, "+", 200f, 1.5f, 2));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.5f, "*", 275f, 2f, 2));
 
     }

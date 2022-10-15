@@ -27,7 +27,7 @@ public class Bazoo extends Enemy{
     private static ArrayList<Float> evolutionsThresholds = new ArrayList<Float>();
     private int evoIndex;
     private int displayWidth;
-    private static int baseLife = 200;
+    private static int baseLife = 500;
     
     public Bazoo(int lvl){
         super();
@@ -37,10 +37,10 @@ public class Bazoo extends Enemy{
         reward = lvl*100;
         power = 50;
         shootRate = 1;
-        moveSpeed = 3f;
+        moveSpeed = 2.2f;
         range = 3*RvB.unite;
         baseLife = (int)Math.round(baseLife + (baseLife*bonusLife*5/100));
-        life = game.waveNumber/5 == 1 ? baseLife : baseLife+game.waveNumber*game.waveNumber*4;
+        life = game.waveNumber/5 == 1 ? baseLife : baseLife+game.waveNumber*game.waveNumber*8;
         displayWidth = 3*RvB.unite;
         width = (int) (displayWidth*0.51);
         sprite = RvB.textures.get("bazoo");
@@ -53,8 +53,6 @@ public class Bazoo extends Enemy{
         SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
         stepEveryMilli = 1100;
         eBalance = balance;
-        game.bossDead = false;
-        game.bossDefeated = false;
         
         initBack();
         

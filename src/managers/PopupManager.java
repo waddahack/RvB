@@ -24,6 +24,7 @@ public class PopupManager {
     private ArrayList<String> buttonsText;
     private ArrayList<UnicodeFont> fonts;
     private static Random random;
+    private String gameType;
 
     public PopupManager(){
         random = new Random();
@@ -86,7 +87,7 @@ public class PopupManager {
         int top = height/4;
         for(int i = 0 ; i < lines.size() ; i++){
             if(i > 0)
-                top += fonts.get(i).getHeight(lines.get(i));
+                top += fonts.get(i).getHeight(lines.get(i))+8;
             currentOverlay.drawText(currentOverlay.getW()/2, top, lines.get(i), fonts.get(i));
         }
         for(int i = 0 ; i < buttonsText.size() ; i++)
@@ -146,29 +147,54 @@ public class PopupManager {
                 currentOverlay = null;
                 chooseDifficulty.display(false);
             }
-            if(chooseDifficulty.getButtons().get(0).isClicked(0))
-                RvB.newRandomMap(RvB.Difficulty.EASY);
-            else if(chooseDifficulty.getButtons().get(1).isClicked(0))
-                RvB.newRandomMap(RvB.Difficulty.MEDIUM);
-            else if(chooseDifficulty.getButtons().get(2).isClicked(0))
-                RvB.newRandomMap(RvB.Difficulty.HARD);
+            if(chooseDifficulty.getButtons().get(0).isClicked(0)){
+                if(gameType.equals("random"))
+                    RvB.newRandomMap(RvB.Difficulty.EASY);
+                else
+                    RvB.newCreatedMap(RvB.Difficulty.EASY);
+            }  
+            else if(chooseDifficulty.getButtons().get(1).isClicked(0)){
+                if(gameType.equals("random"))
+                    RvB.newRandomMap(RvB.Difficulty.MEDIUM);
+                else
+                    RvB.newCreatedMap(RvB.Difficulty.MEDIUM);
+            }  
+            else if(chooseDifficulty.getButtons().get(2).isClicked(0)){
+                if(gameType.equals("random"))
+                    RvB.newRandomMap(RvB.Difficulty.HARD);
+                else
+                    RvB.newCreatedMap(RvB.Difficulty.HARD);
+            }  
         }
         if(clicked)
             RvB.setCursor(RvB.Cursor.DEFAULT);
     }
     
-    public void popup(String text){
-        initPopup(popup);
-        addText(text, RvB.fonts.get("normalXL"));
-        
-        buttonsText.add("Ok");
+    public void popup(String text, String butText){
+        popup(new String[]{text}, butText);
     }
     
-    public void chooseDifficulty(){
+    public void popup(String text){
+        popup(new String[]{text}, "Ok");
+    }
+    
+    public void popup(String[] infoLines){
+        popup(infoLines, "Ok");
+    }
+    
+    public void popup(String[] infoLines, String butText){
+        initPopup(popup);
+        for(int i = 0 ; i < infoLines.length ; i++)
+            addText(infoLines[i], RvB.fonts.get("normalXL"));
+        
+        buttonsText.add(butText);
+    }
+    
+    public void chooseDifficulty(String gameType){
         initPopup(chooseDifficulty);
-        addText(" ", RvB.fonts.get("normalXL"));
+        this.gameType = gameType;
+        
         addText("Select a difficulty", RvB.fonts.get("normalXL"));
-        addText(" ", RvB.fonts.get("normalXL"));
         addText("(Escape to cancel)", RvB.fonts.get("normalL"));
         
         buttonsText.add("Easy");
@@ -182,7 +208,7 @@ public class PopupManager {
         initPopup(gameOver);
         addText("Bazoo and his army have been stronger...", RvB.fonts.get("normalXL"));
         addText("He's won a battle, but not the war.", RvB.fonts.get("normalXL"));
-        addText(" ", RvB.fonts.get("normalL"));
+        addText("\n", RvB.fonts.get("normalL"));
         addText("Wave "+game.waveNumber, RvB.fonts.get("normalXLB"));
         
         buttonsText.add("Return to menu");
@@ -221,8 +247,7 @@ public class PopupManager {
         }
             
         addText(t, RvB.fonts.get("normalXL"));
-        addText(" ", RvB.fonts.get("normalXL"));
-        addText(" ", RvB.fonts.get("normalXL"));
+        addText("\n", RvB.fonts.get("normalXL"));
         addText("All enemies", RvB.fonts.get("normalL"));
         for(int i = 0 ; i < infoLines.length ; i++)
             addText(infoLines[i], RvB.fonts.get("normalXLB"));
@@ -250,7 +275,7 @@ public class PopupManager {
             else if(r >= 0.2)
                 t = "Watch yourself";
             else
-                t = "yolo ceci est à changer";
+                t = "Grrrrr...";
         }
         
         

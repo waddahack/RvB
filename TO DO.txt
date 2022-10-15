@@ -1,9 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 // MAJ
-- Créer Raztech (une tour très puissante et chère, plaçable une seule fois + cf discord)
-Raztech : invoque des tourelles ?
-
-- overlays creation
+- Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - faire classe evolution
 
@@ -22,6 +19,7 @@ IDEAS:
 - stat par tower par wave
 - Mode survie ou la gagne (mode gagne à faire)
 - Mode 1 vie
+- Mode aventure (ne pas faire de fichier)
 - Télécharger la map générée random
 
 
