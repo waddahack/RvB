@@ -28,7 +28,6 @@ public class BasicTower extends Tower{
         clip = SoundManager.Instance.getClip("cannon");
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("bullet");
-        growth = 2*ref;
         
         range = 3*RvB.unite;
         power = 24;
@@ -38,6 +37,10 @@ public class BasicTower extends Tower{
         upgrades.add(new Upgrade("Power", power, 1.3f, "*", 120f, 1.4f, 3));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.25f, "*", 150f, 1.5f, 2));
         upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
+        int n = 0;
+        for(int i = 0 ; i < upgrades.size() ; i++)
+            n += upgrades.get(i).maxClick;
+        growth = 20*ref/n;
     }
     
     @Override

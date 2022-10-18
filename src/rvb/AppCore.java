@@ -101,7 +101,6 @@ public abstract class AppCore {
     protected ArrayList<Overlay> overlays;
     public boolean bossDead = false, bossDefeated = false;
     private static Random random;
-
     protected int textureID = -10;
     
     public AppCore(){
@@ -127,7 +126,7 @@ public abstract class AppCore {
         
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 350;
+            money = 35000;
             waveNumber = 1;
             waveReward = 275;
         }
@@ -575,33 +574,17 @@ public abstract class AppCore {
             o = overlays.get(0);
             o.render();     
             
-            t = BasicTower.priceP+"";
             b = o.getButtons().get(0);
-            if(money >= BasicTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
-            else
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
+            drawPrice(BasicTower.priceP, b, o);
             
-            t = CircleTower.priceP+"";
             b = o.getButtons().get(1);
-            if(money >= CircleTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
-            else
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
+            drawPrice(CircleTower.priceP, b, o);
             
-            t = BigTower.priceP+"";
             b = o.getButtons().get(2);
-            if(money >= BigTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
-            else
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
+            drawPrice(BigTower.priceP, b, o);
             
-            t = FlameTower.priceP+"";
             b = o.getButtons().get(3);
-            if(money >= FlameTower.priceP)
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("canBuy"));
-            else
-                b.drawText(0, -b.getH()/2-(int)(10*ref), t, RvB.fonts.get("cantBuy"));
+            drawPrice(FlameTower.priceP, b, o);
         }
         //
         //// Overlay principal
@@ -610,11 +593,11 @@ public abstract class AppCore {
         
         t = money+"";
         o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("money"));
-        RvB.drawFilledRectangle((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+        o.drawImage((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("coins"));
         
         t = life+"";
         o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
-        RvB.drawFilledRectangle((int)((330+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+        o.drawImage((int)((330+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
         
         t = inWave ? "Defending..." : "I'm ready";
         o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
@@ -624,6 +607,17 @@ public abstract class AppCore {
         //
         if(enemySelected != null)
             enemySelected.renderInfo();
+    }
+    
+    private void drawPrice(int priceP, Button b, Overlay o){
+        if(money >= priceP){
+            b.drawText(-(int)(12*ref), -b.getH()/2-(int)(10*ref), priceP+"", RvB.fonts.get("canBuy"));
+            o.drawImage(b.getX()+(int)(6*ref), b.getY()-o.getY()-b.getH()/2-(int)((10+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
+        } 
+        else{
+            b.drawText(-(int)(12*ref), -b.getH()/2-(int)(10*ref), priceP+"", RvB.fonts.get("cantBuy"));
+            o.drawImage(b.getX()+(int)(6*ref), b.getY()-o.getY()-b.getH()/2-(int)((10+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
+        } 
     }
     
     public void checkOverlaysInput(){

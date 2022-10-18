@@ -83,8 +83,12 @@ public abstract class Tower implements Shootable{
         int i;
         for(i = 0 ; i < upgrades.size() ; i++){
             b = overlays.get(1).getButtons().get(i);
+            upPrice = upgrades.get(i).price;
+            if(game.money < upPrice)
+                b.disableClickSound();
+            else
+                b.enableClickSound();
             if(b.isClicked(0)){
-                upPrice = upgrades.get(i).price;
                 if(game.money < upPrice)
                     continue;
                 switch(upgrades.get(i).name){
@@ -260,12 +264,12 @@ public abstract class Tower implements Shootable{
             upPrice = upgrades.get(i).price;
             if(upgrades.get(i).nbNumberToRound == 0){
                 up = (int)upgrades.get(i).getValue()+"";
-                nextUp = (int)(upgrades.get(i).getValue()+upgrades.get(i).getIncreaseValue())+"";
+                nextUp = (int)upgrades.get(i).getIncreasedValue()+"";
             }
                 
             else{
                 up = upgrades.get(i).getValue()+"";
-                nextUp = (upgrades.get(i).getValue()+upgrades.get(i).getIncreaseValue())+"";
+                nextUp = upgrades.get(i).getIncreasedValue()+"";
             }
                 
             if(!b.isHidden()){
@@ -274,10 +278,15 @@ public abstract class Tower implements Shootable{
                     overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, nextUp, RvB.fonts.get("bonus"));
                 else   
                     overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, up, RvB.fonts.get("normal"));
-                if(game.money >= (int)Math.floor(upPrice))
-                    overlay.drawText(b.getX()-(int)(45*ref), 2*overlay.getH()/3+(int)(5*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
-                else
-                    overlay.drawText(b.getX()-(int)(45*ref), 2*overlay.getH()/3+(int)(5*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
+                if(game.money >= (int)Math.floor(upPrice)){
+                    overlay.drawText(b.getX()-(int)((54)*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
+                    overlay.drawImage(b.getX()-(int)((36)*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
+                } 
+                else{
+                    overlay.drawText(b.getX()-(int)((54)*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
+                    overlay.drawImage(b.getX()-(int)((36)*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
+                }
+                    
             }
             else{
                 overlay.drawImage(b.getX()-(int)(90*ref)-(int)(16*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   

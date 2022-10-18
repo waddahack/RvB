@@ -56,7 +56,10 @@ public class BigTower extends Tower{
         upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 150f, 1.8f, 2));
         upgrades.add(new Upgrade("Explode radius", explodeRadius, RvB.unite/4, "+", 180f, 1.8f, 3));
         
-        growth = (12/5)*ref;
+        int n = 0;
+        for(int i = 0 ; i < upgrades.size() ; i++)
+            n += upgrades.get(i).maxClick;
+        growth = 20*ref/n;
     }
     
     @Override

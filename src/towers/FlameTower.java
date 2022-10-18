@@ -30,7 +30,6 @@ public class FlameTower extends Tower{
         SoundManager.Instance.setClipVolume(clip, volume);
         continuousSound = true;
         bulletSprite = RvB.textures.get("flame");
-        growth = 4*ref;
         
         range = (int) (1.4*RvB.unite);
         power = 1;
@@ -38,7 +37,10 @@ public class FlameTower extends Tower{
         bulletSpeed = 25;
         upgrades.add(new Upgrade("Range", range, 1.3f, "*", 180f, 1.5f, 2));
         upgrades.add(new Upgrade("Power", power, 1f, "+", 400f, 1.6f, 2));
-
+        int n = 0;
+        for(int i = 0 ; i < upgrades.size() ; i++)
+            n += upgrades.get(i).maxClick;
+        growth = 20*ref/n;
     }
     
     @Override

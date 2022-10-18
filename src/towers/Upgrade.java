@@ -69,12 +69,12 @@ public class Upgrade {
         value = (float) (Math.ceil(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
     }
     
-    public float getIncreaseValue(){
+    public float getIncreasedValue(){
         switch(addOrMultiplicate){
             case "+":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*addOrMultiplicateValue)/Math.pow(10, nbNumberToRound));
+                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*(value+addOrMultiplicateValue))/Math.pow(10, nbNumberToRound));
             case "*":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)-value))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value+value*addOrMultiplicateValue)-value))/Math.pow(10, nbNumberToRound));
         };
         return 0;
     }

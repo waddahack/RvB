@@ -40,7 +40,7 @@ public class Bazoo extends Enemy{
         moveSpeed = 2.2f;
         range = 3*RvB.unite;
         baseLife = (int)Math.round(baseLife + (baseLife*bonusLife*5/100));
-        life = game.waveNumber/5 == 1 ? baseLife : baseLife+game.waveNumber*game.waveNumber*8;
+        life = game.waveNumber/5 == 1 ? baseLife : baseLife+game.waveNumber*game.waveNumber*4;
         displayWidth = 3*RvB.unite;
         width = (int) (displayWidth*0.51);
         sprite = RvB.textures.get("bazoo");

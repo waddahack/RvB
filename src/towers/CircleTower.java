@@ -26,7 +26,6 @@ public class CircleTower extends Tower{
         clip = SoundManager.Instance.getClip("multicannon");
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("bullet");
-        growth = 4*ref;
         
         range = (int) (1.2*RvB.unite);
         power = 20;
@@ -35,6 +34,10 @@ public class CircleTower extends Tower{
         upgrades.add(new Upgrade("Range", range, 1.2f, "*", 100f, 1.5f, 2));
         upgrades.add(new Upgrade("Power", power, 5f, "+", 200f, 1.5f, 2));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.5f, "*", 275f, 2f, 2));
+        int n = 0;
+        for(int i = 0 ; i < upgrades.size() ; i++)
+            n += upgrades.get(i).maxClick;
+        growth = 20*ref/n;
 
     }
     
