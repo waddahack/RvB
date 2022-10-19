@@ -19,6 +19,7 @@ public class BasicTower extends Tower{
         price = priceP;
         life = 100;
         width = 4*RvB.unite/5;
+        hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
         name = "Razannon";

@@ -25,6 +25,7 @@ public class FlyingEnemy extends Enemy{
         range = 3*unite;
         life = 180;
         width = (int) (1.25*unite);
+        hitboxWidth = width;
         eBalance = balance;
         sprite = RvB.textures.get("flyingEnemy");
         baseSprite = RvB.textures.get("flyingEnemyBase");

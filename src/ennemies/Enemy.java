@@ -2,6 +2,7 @@ package ennemies;
 
 import Utils.MyMath;
 import java.util.ArrayList;
+import java.util.Stack;
 import javax.sound.sampled.Clip;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
@@ -19,7 +20,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public static double bonusLife = 0, bonusMS = 0;
     protected int eBalance;
-    protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width;
+    protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width, hitboxWidth;
     protected Texture sprite = null, brightSprite = null;
     protected long stopFor = -1;
     protected String name;
@@ -33,6 +34,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected double stepEveryMilli, startTimeSteps;
     protected double movingBy;
     private boolean mouseEntered = false;
+    protected Stack<Evolution> evolutions = new Stack<>();
+    private static Clip armorBreak = SoundManager.Instance.getClip("armor_break");
     
     public Enemy(){
         if(game.spawn != null){
@@ -45,6 +48,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         }
         startTimeMove = System.currentTimeMillis();
         startTimeSteps = System.currentTimeMillis();
+        SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
     }
     
     protected void initBack(){
@@ -99,12 +103,17 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             angle = Math.round(angle);
 
             Texture sprite = this.sprite;
-            if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
-                sprite = this.brightSprite;
-            else if(startTimeWaitFor != 0)
-                startTimeWaitFor = 0;
+            if(evolutions.isEmpty()){
+                if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+                    sprite = this.brightSprite;
+                else if(startTimeWaitFor != 0)
+                    startTimeWaitFor = 0;
+            }
 
             RvB.drawFilledRectangle(x, y, width, width, sprite, angle);
+            
+            if(!evolutions.isEmpty())
+                evolutions.peek().render();
         }  
     }
     
@@ -248,8 +257,10 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
         int width = (int) (290*RvB.ref), height = 16;
-        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, RvB.colors.get("lightGreen"), 1, null);
-        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, (int)(((double)life/(double)maxLife)*width), height, RvB.colors.get("life"), 1, null);
+        int currentLife = (int) (evolutions.isEmpty() ? ((double)life/(double)maxLife)*width : ((double)evolutions.peek().life/(double)evolutions.peek().maxLife)*width);
+        float[] bgColor = evolutions.isEmpty() ? RvB.colors.get("lightGreen") : evolutions.size() > 1 ? evolutions.get(evolutions.size()-2).lifeColor : RvB.colors.get("life");
+        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, bgColor, 1, null);
+        RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, currentLife, height, evolutions.isEmpty() ? RvB.colors.get("life") : evolutions.peek().lifeColor, 1, null);
         RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
         o.drawText(o.getW()/2, 12, name, RvB.fonts.get("normalL"));
@@ -270,7 +281,16 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public void attacked(int power){
         if(!started)
             return;
-        life -= power;
+        if(!evolutions.isEmpty()){
+            evolutions.peek().attacked(power);
+            if(evolutions.peek().life <= 0){
+                evolutions.pop();
+                SoundManager.Instance.playOnce(armorBreak);
+            }
+        }
+        else
+            life -= power;
+            
         startTimeWaitFor = System.currentTimeMillis();
         if(life <= 0)
             die();
@@ -332,6 +352,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public int getWidth(){
         return width;
     }
+    
+    @Override
+    public int getHitboxWidth(){
+        return hitboxWidth;
+    }
+    
     public int getExplodeRadius(){
         return 0;
     }

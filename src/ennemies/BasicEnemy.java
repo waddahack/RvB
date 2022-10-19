@@ -18,6 +18,7 @@ public class BasicEnemy extends Enemy{
         range = 3*RvB.unite;
         life = 30;
         width = 4*RvB.unite/5;
+        hitboxWidth = width;
         sprite = RvB.textures.get("basicEnemy");
         brightSprite = RvB.textures.get("basicEnemyBright");
         volume = SoundManager.Volume.VERY_LOW;

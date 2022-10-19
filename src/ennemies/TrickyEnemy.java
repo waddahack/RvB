@@ -19,6 +19,7 @@ public class TrickyEnemy extends Enemy{
         range = 0;
         life = 80;
         width = 4*RvB.unite/5;
+        hitboxWidth = width;
         eBalance = balance;
         sprite = RvB.textures.get("trickyEnemy");
         brightSprite = RvB.textures.get("trickyEnemyBright");

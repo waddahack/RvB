@@ -1,8 +1,10 @@
 NEXT BIG UPDATE MUST HAVE :
 // MAJ
-- Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
-- faire classe evolution
+- faire classe evolution /!\ in progress
+- automatiser enemy balance fonction de speed et life
+
+- Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance
 

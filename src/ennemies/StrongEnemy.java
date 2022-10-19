@@ -17,6 +17,7 @@ public class StrongEnemy extends Enemy{
         range = 3*RvB.unite;
         life = 280;
         width = RvB.unite;
+        hitboxWidth = width;
         eBalance = balance;
         sprite = RvB.textures.get("strongEnemy");
         brightSprite = RvB.textures.get("strongEnemyBright");

@@ -17,6 +17,7 @@ public class FastEnemy extends Enemy{
         range = 3*RvB.unite;
         life = 42;
         width = RvB.unite;
+        hitboxWidth = width;
         eBalance = balance;
         sprite = RvB.textures.get("fastEnemy");
         brightSprite = RvB.textures.get("fastEnemyBright");

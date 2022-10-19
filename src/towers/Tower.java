@@ -18,7 +18,7 @@ import ui.*;
 
 public abstract class Tower implements Shootable{
     
-    protected int price, range, power, bulletSpeed, life, width, totalMoneySpent, explodeRadius, bulletSizeBonus;
+    protected int price, range, power, bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus;
     protected double lastShoot = 0;
     protected float shootRate, growth = 0;
     protected String name;
@@ -390,9 +390,13 @@ public abstract class Tower implements Shootable{
         return toBeRemoved;
     }
     
-    @Override
     public int getWidth(){
         return width;
+    }
+    
+    @Override
+    public int getHitboxWidth(){
+        return hitboxWidth;
     }
     
     public void setFollow(boolean b){

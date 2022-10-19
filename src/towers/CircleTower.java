@@ -17,6 +17,7 @@ public class CircleTower extends Tower{
         price = priceP;
         life = 100;
         width = 4*RvB.unite/5;
+        hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
         name = "Razingun";

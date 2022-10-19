@@ -476,13 +476,13 @@ public abstract class AppCore {
                 t.destroy();
                 RvB.setCursor(Cursor.DEFAULT);
             }
-            if(!mouseDown){
+            if(!mouseDown && t.isPlaced()){
                 if(t.isClicked(0) && towerSelected == null)
-                selectTower(t);
-            else if(t.isClicked(0) && towerSelected != null && t == towerSelected && !overlays.get(0).isClicked(0))
-                selectTower(null);
-            else if(t.isClicked(0) && towerSelected != null && towerSelected.isPlaced() && !overlays.get(0).isClicked(0))
-                selectTower(t);
+                    selectTower(t);
+                else if(t.isClicked(0) && towerSelected != null && t == towerSelected && !overlays.get(0).isClicked(0))
+                    selectTower(null);
+                else if(t.isClicked(0) && towerSelected != null && towerSelected.isPlaced() && !overlays.get(0).isClicked(0))
+                    selectTower(t);
             }
             
             
@@ -508,10 +508,10 @@ public abstract class AppCore {
     }
     
     protected void renderEnemySelected(){
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+0.5f, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getWidth()/2+1.5f, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+0.5f, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+1, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+1.5f, RvB.colors.get("green_dark"));
     }
     
     protected void render(){
@@ -678,7 +678,7 @@ public abstract class AppCore {
             waveBalance *= 10;
         waveBalance = (int) (waveNumber%5 == 0 ? Math.round(waveBalance*0.15) : waveBalance);
         wave = new Wave();
-        int min, max;
+        /*int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
@@ -690,8 +690,8 @@ public abstract class AppCore {
             }
         }
         wave.shuffleEnemies();
-        if(waveNumber%5 == 0)
-            wave.addEnemy(new Bazoo(waveNumber/5-1));
+        if(waveNumber%5 == 0)*/
+            wave.addEnemy(new Bazoo(4/*waveNumber/5-1*/));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
         inWave = true;
     }

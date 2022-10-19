@@ -425,6 +425,10 @@ public class RvB{
             textures.put("bazooEvo3Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo3_bright.png"))));
             textures.put("bazooEvo4", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo4.png"))));
             textures.put("bazooEvo4Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo4_bright.png"))));
+            textures.put("bazooEvo5", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo5.png"))));
+            textures.put("bazooEvo5Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo5_bright.png"))));
+            textures.put("bazooEvo6", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo6.png"))));
+            textures.put("bazooEvo6Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo6_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -481,6 +485,12 @@ public class RvB{
     public static void initColors(){
         colors = new HashMap<>();
         float[] life = {255f/255f, 80f/255f, 80f/255f};
+        float[] life1 = {255f/255f, 120f/255f, 75f/255f};
+        float[] life2 = {255f/255f, 155f/255f, 75f/255f};
+        float[] life3 = {255f/255f, 195f/255f, 80f/255f};
+        float[] life4 = {255f/255f, 225f/255f, 80f/255f};
+        float[] life5 = {255f/255f, 255f/255f, 25f/255f};
+        float[] life6 = {210f/255f, 255f/255f, 25f/255f};
         float[] money = {240f/255f, 220f/255f, 0};
         float[] lightGreen = {225f/255f, 240f/255f, 200f/255f};
         float[] blue = {58f/255f, 68f/255f, 102f/255f};
@@ -494,6 +504,12 @@ public class RvB{
         float[] lightRed = {245f/255f, 225f/255f, 220f/255f};
         
         colors.put("life", life);
+        colors.put("life1", life1);
+        colors.put("life2", life2);
+        colors.put("life3", life3);
+        colors.put("life4", life4);
+        colors.put("life5", life5);
+        colors.put("life6", life6);
         colors.put("money", money);
         colors.put("lightGreen", lightGreen);
         colors.put("lightRed", lightRed);

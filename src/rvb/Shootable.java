@@ -10,7 +10,7 @@ public interface Shootable {
     public ArrayList<Bullet> getBullets();
     public void attacked(int power);
     public int getPower();
-    public int getWidth();
+    public int getHitboxWidth();
     public boolean isDead();
     public int getExplodeRadius();
     public boolean getExplode();
