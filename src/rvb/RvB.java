@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import managers.TextManager;
 import managers.PopupManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -133,6 +134,7 @@ public class RvB{
         SoundManager.initialize();
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
+        TextManager.initialize();
         menu = new Menu();
         lastUpdate = System.currentTimeMillis();
     }
@@ -363,6 +365,8 @@ public class RvB{
             textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
             // Icons
+            textures.put("FR", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_francais.png"))));
+            textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));

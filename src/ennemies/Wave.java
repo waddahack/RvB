@@ -48,7 +48,7 @@ public class Wave{
             previousEnemy = enemies.get(index-1);
         double time = System.currentTimeMillis();
         if((time - startTime >= waitBetweenType/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween/game.gameSpeed)){
-            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 4000/game.gameSpeed){
+            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000/game.gameSpeed){
                 nextEnemy.setStarted(true);
                 startTime = System.currentTimeMillis();
                 index++;

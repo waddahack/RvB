@@ -102,6 +102,7 @@ public abstract class AppCore {
     public boolean bossDead = false, bossDefeated = false;
     private static Random random;
     protected int textureID = -10;
+    private float waveBalanceMult;
     
     public AppCore(){
         random = new Random();
@@ -117,30 +118,33 @@ public abstract class AppCore {
         inWave = false;
         dontPlace = false;
         towerSelected = null;
+        
         BasicTower.priceP = BasicTower.startPrice;
         CircleTower.priceP = CircleTower.startPrice;
         FlameTower.priceP = FlameTower.startPrice;
         BigTower.priceP = BigTower.startPrice;
+        Bazoo.bossLevel = 0;
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
         
+        waveNumber = 1;
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 35000;
-            waveNumber = 1;
+            money = 325;
             waveReward = 275;
+            waveBalanceMult = 0.8f;
         }
         else if(diff == Difficulty.HARD){
             life = 75;
-            money = 250;
-            waveNumber = 1;
+            money = 275;
             waveReward = 225;
+            waveBalanceMult = 1.2f;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
             money = 300;
-            waveNumber = 1;
             waveReward = 250;
+            waveBalanceMult = 1f;
         }
     }
     
@@ -163,14 +167,13 @@ public abstract class AppCore {
             return;
         }
         ArrayList<Tile> row;
-        Random rand = new Random();
         Texture t;
         Tile tile;
         int n;
         for(int i = 0 ; i < RvB.nbTileY ; i++){
             row = new ArrayList<>();
             for(int j = 0 ; j < RvB.nbTileX ; j++){
-                n = rand.nextInt(100)+1;
+                n = random.nextInt(100)+1;
                 if(n > 93)
                     t = RvB.textures.get("bigPlant1");
                 else if(n > 86)
@@ -179,7 +182,7 @@ public abstract class AppCore {
                     t = RvB.textures.get("grass");
                 n = 0;
                 if(t != RvB.textures.get("grass"))
-                    n = (int)Math.round(rand.nextInt(361)/90)*90;  
+                    n = (int)Math.round(random.nextInt(361)/90)*90;  
                 tile = new Tile(t, "grass");
                 if(i == 0 || i == RvB.nbTileY-1)
                     tile.type = "null";
@@ -218,7 +221,6 @@ public abstract class AppCore {
             ArrayList<Tile> row = new ArrayList<>();
             int i = 0, j = 0, n;
             Texture t;
-            Random rand = new Random();
             String data;
             Tile tile = null;
             boolean readPath = false;
@@ -233,7 +235,7 @@ public abstract class AppCore {
                 else{
                     switch(data){
                         case ".":
-                            n = rand.nextInt(100)+1;
+                            n = random.nextInt(100)+1;
                             if(n > 93)
                                 t = RvB.textures.get("bigPlant1");
                             else if(n > 86)
@@ -242,7 +244,7 @@ public abstract class AppCore {
                                 t = RvB.textures.get("grass");
                             n = 0;
                             if(t != RvB.textures.get("grass"))
-                                n = Math.round(rand.nextInt(361)/90)*90;  
+                                n = Math.round(random.nextInt(361)/90)*90;  
                             tile = new Tile(t, "grass");
                             tile.setAngle(n);
                             tile.setRotateIndex(0);
@@ -676,22 +678,23 @@ public abstract class AppCore {
             waveBalance *= 15;
         else
             waveBalance *= 10;
-        waveBalance = (int) (waveNumber%5 == 0 ? Math.round(waveBalance*0.15) : waveBalance);
+        waveBalance *= waveBalanceMult;
+        waveBalance = (int) (bossRound() ? waveBalance*0.4 : waveBalance);
         wave = new Wave();
-        /*int min, max;
+        int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
                 max = min+(waveNumber-uEnemies[i].enterAt)*2;
-                if(min > uEnemies[i].nbMax) min = uEnemies[i].nbMax;
+                if(min < uEnemies[i].nbMax) min = uEnemies[i].nbMax;
                 if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
         }
         wave.shuffleEnemies();
-        if(waveNumber%5 == 0)*/
-            wave.addEnemy(new Bazoo(4/*waveNumber/5-1*/));
+        if(bossRound())
+            wave.addEnemy(new Bazoo(Bazoo.bossLevel));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
         inWave = true;
     }
@@ -747,6 +750,10 @@ public abstract class AppCore {
         } 
     }
 
+    public static boolean bossRound(){
+        return game.waveNumber%8 == 0;
+    }
+    
     protected static void gameOver(){
         PopupManager.Instance.gameOver();
     }

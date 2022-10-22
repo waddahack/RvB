@@ -1,15 +1,17 @@
 package rvb;
 
+import managers.TextManager;
 import ui.Button;
 import managers.PopupManager;
+import managers.TextManager.Text;
 import static rvb.RvB.*;
 import ui.Overlay;
 
 
 public class Menu {
     
-    private Button start, random, regenerate, create, modify, option, exit;
-    private Overlay[] overlays = new Overlay[4];
+    private Button start, random, regenerate, create, modify, option, exit, FR, ENG;
+    private Overlay[] overlays = new Overlay[5];
     
     public Menu(){
         int width = (int) (250*ref);
@@ -28,7 +30,11 @@ public class Menu {
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
         modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
         
-        for(int i = 0 ; i < 4 ; i++){
+        FR = new Button(unite, 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("FR"), null, colors.get("green_semidark"));
+        FR.setSelected(true);
+        ENG = new Button(unite*2+(int)(10*ref), 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("ENG"), null, colors.get("green_semidark"));
+        
+        for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);
             switch(i){
                 case 0:
@@ -47,6 +53,11 @@ public class Menu {
                     overlays[i].addButton(create);
                     overlays[i].addButton(modify);
                     break;
+                case 4:
+                    overlays[4] = new Overlay(0, windHeight-FR.getH(), windWidth, FR.getH());
+                    overlays[4].addButton(FR);
+                    overlays[4].addButton(ENG);
+                    break;
             }
         }
     }
@@ -62,18 +73,18 @@ public class Menu {
             o.render();
         }
         overlays[0].drawImage(windWidth/4, (int)(100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
-        start.drawText(0, 0, "    Adventure\n(inc... not soon)", fonts.get("normalL"));
+        start.drawText(0, 0, Text.ADVENTURE.getText(), fonts.get("normalL"));
         if(randomGame == null)
-            random.drawText(0, 0, "Fight Bazoo", fonts.get("normalL"));
+            random.drawText(0, 0, Text.RANDOM_MAP.getText(), fonts.get("normalL"));
         else{
-            random.drawText(0, 0, "Continue", fonts.get("normalL"));
-            regenerate.drawText(0, 0, "Regenerate", fonts.get("normal"));
+            random.drawText(0, 0, Text.CONTINUE.getText(), fonts.get("normalL"));
+            regenerate.drawText(0, 0, Text.REGENERATE.getText(), fonts.get("normal"));
         }  
         if(createdGame == null)
-            create.drawText(0, 0, "Create a map", fonts.get("normalL"));
+            create.drawText(0, 0, Text.CREATE_MAP.getText(), fonts.get("normalL"));
         else{
-            create.drawText(0, 0, "Continue", fonts.get("normalL"));
-            modify.drawText(0, 0, "Modify", fonts.get("normal"));
+            create.drawText(0, 0, Text.CONTINUE.getText(), fonts.get("normalL"));
+            modify.drawText(0, 0, Text.MODIFY.getText(), fonts.get("normal"));
         }
     }
     
@@ -118,10 +129,9 @@ public class Menu {
                     game = createdGame;
                     switchStateTo(State.GAME);
                 }
-                
             }
             else{
-                PopupManager.Instance.popup("\n        Hmmm... Very strange...\n    Create a directory \"levels\" in\nthe same location than your game.");
+                PopupManager.Instance.popup(Text.MISSING_FILE_LEVELS.getLines());
             }
         }  
         if(modify.isClicked(0)){
@@ -130,6 +140,16 @@ public class Menu {
         }
         if(exit.isClicked(0))
             switchStateTo(State.EXIT);
+        if(FR.isClicked(0)){
+            FR.setSelected(true);
+            ENG.setSelected(false);
+            TextManager.Instance.setLanguage("FR");
+        }
+        else if(ENG.isClicked(0)){
+            ENG.setSelected(true);
+            FR.setSelected(false);
+            TextManager.Instance.setLanguage("ENG");
+        }
     }
     
     public void disableAllButtons(){

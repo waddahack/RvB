@@ -2,6 +2,7 @@ package ui;
 
 import javax.sound.sampled.Clip;
 import managers.SoundManager;
+import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
@@ -14,7 +15,7 @@ import static rvb.RvB.ref;
 public class Button {
     
     private int x, y, width, height, nbClicks = 0, nbClicksMax;
-    private String text;
+    private Text text;
     private float[] rgb;
     private float[] borderRgb;
     private UnicodeFont font;
@@ -24,6 +25,7 @@ public class Button {
     private boolean itemFramed = false;
     private Clip click;
     private boolean clickSound = true;
+    private boolean selected = false;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -37,11 +39,11 @@ public class Button {
         build(x ,y, width, height, null, null, bg, rgb, borderRgb, 0);
     }
     
-    public Button(int x, int y, int width, int height, String text, UnicodeFont font, Texture bg, float[] borderRgb){
+    public Button(int x, int y, int width, int height, Text text, UnicodeFont font, Texture bg, float[] borderRgb){
         build(x ,y, width, height, text, font, bg, null, borderRgb, 0);
     }
     
-    public Button(int x, int y, int width, int height, String text, UnicodeFont font, float[] rgb, float[] borderRgb, int nbClicksMax){
+    public Button(int x, int y, int width, int height, Text text, UnicodeFont font, float[] rgb, float[] borderRgb, int nbClicksMax){
         build(x ,y, width, height, text, font, null, rgb, borderRgb, nbClicksMax);
     }
     
@@ -55,7 +57,7 @@ public class Button {
      * @param bgName Background name, null if no background
      * @param borderRgb RGB of the borders on mouse hover, null if no borders
      */
-    private void build(int x, int y, int width, int height, String text, UnicodeFont font, Texture bg, float[] rgb, float[] borderRgb, int nbClicksMax){
+    private void build(int x, int y, int width, int height, Text text, UnicodeFont font, Texture bg, float[] rgb, float[] borderRgb, int nbClicksMax){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -107,7 +109,7 @@ public class Button {
             return;
             
         //hover
-        if(isMouseIn() && borderRgb != null && !disabled)
+        if((isMouseIn() || selected) && borderRgb != null && !disabled)
             RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
         if(rgb != null)
@@ -120,7 +122,7 @@ public class Button {
         }
         // text
         if(text != null && font != null)
-            RvB.drawString(x, y, text, font);
+            RvB.drawString(x, y, text.getText(), font);
     }
     
     public void drawText(String text, UnicodeFont font){
@@ -146,6 +148,10 @@ public class Button {
     
     public void setBG(Texture t){
         bg = t;
+    }
+    
+    public void setSelected(boolean selected){
+        this.selected = selected;
     }
     
     public void setItemFramed(boolean b){
@@ -189,11 +195,11 @@ public class Button {
         this.y = y;
     }
     
-    public void setText(String text){
+    public void setText(Text text){
         this.text = text;
     }
     
-    public String getText(){
+    public Text getText(){
         return text;
     }
     

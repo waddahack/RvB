@@ -1,8 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
-// MAJ
 
-- faire classe evolution /!\ in progress
-- automatiser enemy balance fonction de speed et life
+- système de langue, faire Français /!\ in progress, menu fait
 
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
@@ -12,8 +10,6 @@ NEXT BIG UPDATE MUST HAVE :
 - bug sprite qui tourne (va trop vite ? Commence en plein milieu ? A pas le temps de finir ?)
 
 - Rocher qui bloque la constru
-
-- système de langue, faire Français
 
 IDEAS:
 
