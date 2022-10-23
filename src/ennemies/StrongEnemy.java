@@ -1,6 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 
 public class StrongEnemy extends Enemy{
@@ -9,7 +10,7 @@ public class StrongEnemy extends Enemy{
     
     public StrongEnemy(){
         super();
-        name = "Bazank";
+        name = Text.ENEMY_STRONG.getText();
         reward = 28;
         power = 10;
         shootRate = 1;

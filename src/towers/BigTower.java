@@ -6,6 +6,7 @@ import java.util.Random;
 import javax.sound.sampled.Clip;
 import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
+import managers.TextManager.Text;
 import static rvb.RvB.ref;
 
 public class BigTower extends Tower{
@@ -34,7 +35,7 @@ public class BigTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = "Razkull";
+        name = Text.TOWER_BIG.getText();
         explode = true;
         follow = false;
         isMultipleShot = false;

@@ -1,6 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 
 public class FastEnemy extends Enemy{
@@ -9,7 +10,7 @@ public class FastEnemy extends Enemy{
     
     public FastEnemy(){
         super();
-        name = "Quazoo";
+        name = Text.ENEMY_FAST.getText();
         reward = 6;
         power = 4;
         shootRate = 1;

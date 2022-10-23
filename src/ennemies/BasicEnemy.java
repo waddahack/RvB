@@ -1,6 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 
 
@@ -10,7 +11,7 @@ public class BasicEnemy extends Enemy{
     
     public BasicEnemy(){
         super();
-        name = "Bazooldier";
+        name = Text.ENEMY_BASIC.getText();
         reward = 2;
         power = 2;
         shootRate = 1;

@@ -31,8 +31,8 @@ public class Menu {
         modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
         
         FR = new Button(unite, 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("FR"), null, colors.get("green_semidark"));
-        FR.setSelected(true);
         ENG = new Button(unite*2+(int)(10*ref), 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("ENG"), null, colors.get("green_semidark"));
+        ENG.setSelected(true);
         
         for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);

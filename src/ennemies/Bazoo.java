@@ -3,6 +3,7 @@ package ennemies;
 import static ennemies.BasicEnemy.balance;
 import javax.sound.sampled.Clip;
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
 import ui.Overlay;
@@ -19,7 +20,7 @@ public class Bazoo extends Enemy{
     public Bazoo(int lvl){
         super();
         level = lvl;
-        name = "Bazoo";
+        name = Text.ENEMY_BOSS.getText();
         reward = lvl*100;
         power = 50;
         shootRate = 1;

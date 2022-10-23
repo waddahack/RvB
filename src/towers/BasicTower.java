@@ -2,6 +2,7 @@ package towers;
 
 import rvb.RvB;
 import managers.SoundManager;
+import managers.TextManager.Text;
 import static rvb.RvB.ref;
 
 public class BasicTower extends Tower{
@@ -22,7 +23,7 @@ public class BasicTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = "Razannon";
+        name = Text.TOWER_BASIC.getText();
         explode = false;
         follow = false;
         isMultipleShot = false;

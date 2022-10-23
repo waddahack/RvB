@@ -6,6 +6,7 @@ import ennemies.Enemy;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.sound.sampled.Clip;
+import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
@@ -299,7 +300,7 @@ public abstract class Tower implements Shootable{
             b.drawText(price, RvB.fonts.get("canBuy"));
         }
         else
-            b.drawText("Sell", RvB.fonts.get("normal"));
+            b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
         
     }
     

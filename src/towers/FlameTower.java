@@ -1,6 +1,7 @@
 package towers;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.ref;
 
@@ -22,7 +23,7 @@ public class FlameTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = "Flametech";
+        name = Text.TOWER_FLAME.getText();
         explode = false;
         follow = false;
         isMultipleShot = true;

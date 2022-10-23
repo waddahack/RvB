@@ -3,6 +3,7 @@ package ennemies;
 import Utils.MyMath;
 import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
 import static rvb.RvB.unite;
@@ -17,7 +18,7 @@ public class FlyingEnemy extends Enemy{
     
     public FlyingEnemy(){
         super();
-        name = "Bazoopter";
+        name = Text.ENEMY_FLYING.getText();
         reward = 36;
         power = 12;
         shootRate = 1;

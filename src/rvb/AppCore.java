@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import managers.PopupManager;
+import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
@@ -132,13 +133,13 @@ public abstract class AppCore {
             life = 125;
             money = 325;
             waveReward = 275;
-            waveBalanceMult = 0.8f;
+            waveBalanceMult = 0.9f;
         }
         else if(diff == Difficulty.HARD){
             life = 75;
             money = 275;
             waveReward = 225;
-            waveBalanceMult = 1.2f;
+            waveBalanceMult = 1.1f;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
@@ -287,7 +288,7 @@ public abstract class AppCore {
             myReader.close();
         }
         catch (FileNotFoundException e){
-            System.out.println("File : "+path+" doesn't exist.");
+            System.out.println("File : "+filePath+" doesn't exist.");
             e.printStackTrace();
         }
     }
@@ -438,8 +439,8 @@ public abstract class AppCore {
                     Enemy.bonusLife += 15;
                     Enemy.bonusMS += 5;
                     PopupManager.Instance.enemiesUpgraded(new String[]{
-                        "+15% life point",
-                        "+5% move speed"
+                        "+15% "+Text.HP.getText(),
+                        "+5% "+Text.MS.getText()
                     });
                     bossDead = false;
                     bossDefeated = false;
@@ -601,7 +602,7 @@ public abstract class AppCore {
         o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
         o.drawImage((int)((330+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
         
-        t = inWave ? "Defending..." : "I'm ready";
+        t = inWave ? Text.DEFENDING.getText() : Text.START_WAVE.getText();
         o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
             
         t = "x"+gameSpeed;
@@ -678,22 +679,23 @@ public abstract class AppCore {
             waveBalance *= 15;
         else
             waveBalance *= 10;
-        waveBalance *= waveBalanceMult;
+        if(waveNumber >= uEnemies[1].enterAt)
+            waveBalance *= waveBalanceMult;
         waveBalance = (int) (bossRound() ? waveBalance*0.4 : waveBalance);
         wave = new Wave();
-        int min, max;
+        /*int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
                 max = min+(waveNumber-uEnemies[i].enterAt)*2;
-                if(min < uEnemies[i].nbMax) min = uEnemies[i].nbMax;
+                if(min > uEnemies[i].nbMax) min = uEnemies[i].nbMax;
                 if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();
-        if(bossRound())
+        wave.shuffleEnemies();*/
+        if(bossRound() ||true)
             wave.addEnemy(new Bazoo(Bazoo.bossLevel));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
         inWave = true;

@@ -3,6 +3,7 @@ package managers;
 import java.util.ArrayList;
 import java.util.Random;
 import org.newdawn.slick.UnicodeFont;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.creation;
 import static rvb.RvB.game;
@@ -194,24 +195,23 @@ public class PopupManager {
         initPopup(chooseDifficulty);
         this.gameType = gameType;
         
-        addText("Select a difficulty", RvB.fonts.get("normalXL"));
-        addText("(Escape to cancel)", RvB.fonts.get("normalL"));
+        addText(Text.SELECT_DIFF.getText(), RvB.fonts.get("normalXL"));
+        addText("("+Text.CANCEL.getText()+")", RvB.fonts.get("normalL"));
         
-        buttonsText.add("Easy");
-        buttonsText.add("Normal");
-        buttonsText.add("Hard");
+        buttonsText.add(Text.EASY.getText());
+        buttonsText.add(Text.NORMAL.getText());
+        buttonsText.add(Text.HARD.getText());
     }
     
     public void gameOver(){
         if(currentOverlay == gameOver)
             return;
         initPopup(gameOver);
-        addText("Bazoo and his army have been stronger...", RvB.fonts.get("normalXL"));
-        addText("He's won a battle, but not the war.", RvB.fonts.get("normalXL"));
+        addText(Text.GAME_OVER.getLines(), RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalL"));
-        addText("Wave "+game.waveNumber, RvB.fonts.get("normalXLB"));
+        addText(Text.WAVE.getText()+" "+game.waveNumber, RvB.fonts.get("normalXLB"));
         
-        buttonsText.add("Return to menu");
+        buttonsText.add(Text.MENU.getText());
     }
     
     public void enemiesUpgraded(String[] infoLines){
@@ -219,72 +219,27 @@ public class PopupManager {
         game.gameSpeed = 0;
         initPopup(enemiesUpgraded);
         
-        double r = random.nextFloat();
-        String t;
-        if(game.bossDefeated){
-            if(r >= 0.8)
-                t = "I will be back much stronger !";
-            else if(r >= 0.6)
-                t = "You should not mess with me filthy bug !";
-            else if(r >= 0.4)
-                t = "It is just a matter of time...";
-            else if(r >= 0.2)
-                t = "I will unleash my true power !";
-            else
-                t = "The more I suffer, the more powerful I get !";
-        }
-        else{
-            if(r >= 0.8)
-                t = "You are weak.";
-            else if(r >= 0.6)
-                t = "I am the end, and I am coming fast !";
-            else if(r >= 0.4)
-                t = "You shall DIE !";
-            else if(r >= 0.2)
-                t = "It has always been a matter of time.";
-            else
-                t = "I have not noticed, did you even hit me ?";
-        }
-            
-        addText(t, RvB.fonts.get("normalXL"));
+        int r = random.nextInt(5);      
+        addText(game.bossDefeated ? Text.BOSS_DEFEATED.getLines()[r] : Text.BOSS_NOT_DEFEATED.getLines()[r], RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalXL"));
-        addText("All enemies", RvB.fonts.get("normalL"));
+        addText(Text.ALL_ENEMIES.getText(), RvB.fonts.get("normalL"));
         for(int i = 0 ; i < infoLines.length ; i++)
             addText(infoLines[i], RvB.fonts.get("normalXLB"));
         
-        r = random.nextFloat();
-        if(game.bossDefeated){
-            if(r >= 0.8)
-                t = "Still standing !";
-            else if(r >= 0.6)
-                t = "Where're you ?";
-            else if(r >= 0.4)
-                t = "I'm waiting...";
-            else if(r >= 0.2)
-                t = "Not afraid !";
-            else
-                t = "Looser !";
-        }
-        else{
-            if(r >= 0.8)
-                t = "Noooo !";
-            else if(r >= 0.6)
-                t = "Still alive !";
-            else if(r >= 0.4)
-                t = "Ouch !";
-            else if(r >= 0.2)
-                t = "Watch yourself";
-            else
-                t = "Grrrrr...";
-        }
-        
-        
-        buttonsText.add(t);
+        r = random.nextInt(5); 
+        buttonsText.add(game.bossDefeated ? Text.BOSS_DEFEATED_ANSWER.getLines()[r] : Text.BOSS_NOT_DEFEATED_ANSWER.getLines()[r]);
     }
 
     private void addText(String text, UnicodeFont font){
         lines.add(text);
         fonts.add(font);
+    }
+    
+    private void addText(String[] lines, UnicodeFont font){
+        for(String t : lines){
+            this.lines.add(t);
+            fonts.add(font);
+        }
     }
     
     private void initPopup(Overlay overlay){

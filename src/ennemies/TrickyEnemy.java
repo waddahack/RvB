@@ -1,6 +1,7 @@
 package ennemies;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
@@ -11,7 +12,7 @@ public class TrickyEnemy extends Enemy{
     
     public TrickyEnemy(){
         super();
-        name = "Bazooldier group";
+        name = Text.ENEMY_TRICKY.getText();
         reward = 12;
         power = 6;
         shootRate = 1;

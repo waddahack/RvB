@@ -1,7 +1,5 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- système de langue, faire Français /!\ in progress, menu fait
-
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance

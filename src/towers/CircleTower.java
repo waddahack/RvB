@@ -1,6 +1,7 @@
 package towers;
 
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.ref;
 
@@ -20,7 +21,7 @@ public class CircleTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = "Razingun";
+        name = Text.TOWER_CIRCLE.getText();
         explode = false;
         follow = false;
         isMultipleShot = true;
