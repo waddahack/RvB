@@ -120,6 +120,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected void move(){
         if(isOnCenterOfTile() && !isOnSameTile()){
             indiceTuile += 1;
+            if(indiceTuile > 0)
+                game.path.get(indiceTuile-1).stepped();
             setPositionInCenterOfTile();
             if(isInBase())
                 attack();

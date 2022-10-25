@@ -38,7 +38,7 @@ public class Creation extends AppCore{
     protected void render(){
         for(ArrayList<Tile> row : map)
             for(Tile t : row)
-                RvB.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTextures().get(0), t.getAngle());
+                RvB.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTexture(), t.getAngle());
         for(Tile road : roads)
             road.renderDirection();
     }

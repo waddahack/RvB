@@ -360,7 +360,17 @@ public class RvB{
             textures.put("title", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/title.png"))));
             // Map
             textures.put("roadStraight", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_straight.png"))));
+            textures.put("steps0", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps0.png"))));
+            textures.put("steps1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps1.png"))));
+            textures.put("steps2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps2.png"))));
+            textures.put("steps3", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps3.png"))));
+            textures.put("steps4", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps4.png"))));
             textures.put("roadTurn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/road_turn.png"))));
+            textures.put("steps0Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps0_turn.png"))));
+            textures.put("steps1Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps1_turn.png"))));
+            textures.put("steps2Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps2_turn.png"))));
+            textures.put("steps3Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps3_turn.png"))));
+            textures.put("steps4Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps4_turn.png"))));
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
             textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));

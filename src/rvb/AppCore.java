@@ -384,13 +384,13 @@ public abstract class AppCore {
                 
                 g2d.rotate(Math.toRadians(tile.getAngle()), j*unite+unite/2, i*unite+unite/2);
  
-                if(map.get(i).get(j).textures.get(0) == RvB.textures.get("roadStraight"))
+                if(map.get(i).get(j).getTexture() == RvB.textures.get("roadStraight"))
                     g2d.drawImage(RS, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("roadTurn"))
+                else if(map.get(i).get(j).getTexture() == RvB.textures.get("roadTurn"))
                     g2d.drawImage(RT, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("bigPlant1"))
+                else if(map.get(i).get(j).getTexture() == RvB.textures.get("bigPlant1"))
                     g2d.drawImage(P1, j*unite, i*unite, null);
-                else if(map.get(i).get(j).textures.get(0) == RvB.textures.get("bigPlant2"))
+                else if(map.get(i).get(j).getTexture() == RvB.textures.get("bigPlant2"))
                     g2d.drawImage(P2, j*unite, i*unite, null);
                 else
                     g2d.drawImage(GR, j*unite, i*unite, null);
@@ -522,6 +522,9 @@ public abstract class AppCore {
 
         if(spawn != null)
             spawn.renderDirection();
+        
+        for(Tile road : path)
+            road.renderSteps();
     }
     
     protected void initOverlays(){
@@ -683,7 +686,7 @@ public abstract class AppCore {
             waveBalance *= waveBalanceMult;
         waveBalance = (int) (bossRound() ? waveBalance*0.4 : waveBalance);
         wave = new Wave();
-        /*int min, max;
+        int min, max;
         while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
@@ -694,8 +697,8 @@ public abstract class AppCore {
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
         }
-        wave.shuffleEnemies();*/
-        if(bossRound() ||true)
+        wave.shuffleEnemies();
+        if(bossRound())
             wave.addEnemy(new Bazoo(Bazoo.bossLevel));
         enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
         inWave = true;

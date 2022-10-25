@@ -1,5 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 
+- GAME ICON
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance
@@ -8,6 +9,7 @@ NEXT BIG UPDATE MUST HAVE :
 - bug sprite qui tourne (va trop vite ? Commence en plein milieu ? A pas le temps de finir ?)
 
 - Rocher qui bloque la constru
+- revoir sprite (plus réaliste, chemin plus confondu...) ?
 
 IDEAS:
 

@@ -1,6 +1,5 @@
 package rvb;
 
-import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import static rvb.RvB.unite;
@@ -12,44 +11,49 @@ public class Tile {
     protected float r, g, b;
     protected float[] rgb;
     protected int angle = 0, newAngle = 0, arrowAngle = -1;
-    protected ArrayList<Texture> textures;
+    protected Texture texture, stepTexture = null;
     protected int rotateIndex = -1;
     protected float renderX, renderY;
     protected String direction;
+    protected int nbStepped = 0;
     public String type;
     public Tile previousRoad = null, nextRoad = null;
     
     public Tile(String t){
-        textures = new ArrayList<>();
+        texture = null;
         type = t;
-        this.x = Mouse.getX();
-        this.y = RvB.windHeight-Mouse.getY();
+        setX(Mouse.getX());
+        setY(RvB.windHeight-Mouse.getY());
     }
     
     public Tile(Texture text, String t){
-        textures = new ArrayList<>();
-        textures.add(text);
+        texture = text;
         type = t;
-        this.x = Mouse.getX();
-        this.y = RvB.windHeight-Mouse.getY();
+        setX(Mouse.getX());
+        setY(RvB.windHeight-Mouse.getY());
     }
     
     public Tile(float[] rgb, String t){
-        textures = new ArrayList<>();
+        texture = null;
         this.r = r;
         this.g = g;
         this.b = b;
         this.rgb = rgb;
         type = t;
-        this.x = Mouse.getX();
-        this.y = RvB.windHeight-Mouse.getY();
+        setX(Mouse.getX());
+        setY(RvB.windHeight-Mouse.getY());
     }
     
     public Tile(float x, float y){
-        textures = new ArrayList<>();
+        texture = null;
         type = "nothing";
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
+    }
+    
+    public void renderSteps(){
+        if(stepTexture != null)
+            RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle);
     }
     
     public void setPreviousRoad(Tile road){
@@ -64,6 +68,24 @@ public class Tile {
     
     public String getDirection(){
         return direction;
+    }
+    
+    public boolean isRoadTurn(){
+        return nextRoad.getIndexX() != previousRoad.getIndexX() && nextRoad.getIndexY() != previousRoad.getIndexY();
+    }
+    
+    public void stepped(){
+        nbStepped++;
+        if(nbStepped == 1)
+            stepTexture = RvB.textures.get("steps0" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped == 15)
+            stepTexture = RvB.textures.get("steps1" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped == 50)
+            stepTexture = RvB.textures.get("steps2" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped == 150)
+            stepTexture = RvB.textures.get("steps3" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped == 300)
+            stepTexture = RvB.textures.get("steps4" + (isRoadTurn() ? "Turn" : ""));
     }
     
     public void setDirectionWithPos(){
@@ -151,15 +173,12 @@ public class Tile {
         renderY = Math.floorDiv((int)y, unite)*unite+unite/2;
     }
     
-    public ArrayList<Texture> getTextures(){
-        return textures;
+    public Texture getTexture(){
+        return texture;
     }
     
     public void setTexture(Texture t){
-        if(textures.size() == 1){
-            textures.clear();
-            textures.add(t);
-        }
+        texture = t;
     }
     
     public void setRotateIndex(int i){

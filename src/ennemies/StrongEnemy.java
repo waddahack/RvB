@@ -6,7 +6,7 @@ import rvb.RvB;
 
 public class StrongEnemy extends Enemy{
     
-    public static int balance = 40;
+    public static int balance = 60;
     
     public StrongEnemy(){
         super();
