@@ -233,6 +233,10 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return null;
     }
     
+    public int getMaxLife(){
+        return maxLife;
+    }
+    
     public boolean isInRangeOf(Tower t){
         double angle, cosinus, sinus;
         angle = MyMath.angleBetween(this, (Shootable) t);

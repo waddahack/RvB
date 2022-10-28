@@ -27,7 +27,7 @@ public class PopupManager {
     private static Random random;
     private String gameType;
 
-    public PopupManager(){
+    private PopupManager(){
         random = new Random();
         currentOverlay = null;
         lines = new ArrayList<>();

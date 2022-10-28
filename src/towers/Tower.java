@@ -12,6 +12,7 @@ import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
 import rvb.Shootable;
 import managers.SoundManager;
+import managers.TextManager;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
@@ -40,6 +41,7 @@ public abstract class Tower implements Shootable{
     protected int rotateIndex = -1;
     public String type;
     protected boolean mouseEntered = false;
+    private Button focusButton;
     
     public Tower(String type){
         textures = new ArrayList<>();
@@ -57,11 +59,11 @@ public abstract class Tower implements Shootable{
         if(!isPlaced)
             renderPrevisu();
         else{
-            render();
             if(selected)
                 checkOverlayInput();
             searchAndShoot();
             updateBullets();
+            render();
             if(soundPlayed && enemyAimed == null){
                 SoundManager.Instance.stopClip(clip);
                 soundPlayed = false;
@@ -113,7 +115,6 @@ public abstract class Tower implements Shootable{
                 game.money -= upPrice;
                 totalMoneySpent += upPrice;
                 upgrades.get(i).increasePrice();
-                b.click();
             }
         }
         if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
@@ -135,14 +136,27 @@ public abstract class Tower implements Shootable{
     
     public void searchAndShoot(){
         ArrayList<Enemy> enemies = game.enemies;
-        Enemy first = null;
         if(enemies != null && !enemies.isEmpty()){
-            for(int i = 0 ; i < enemies.size() ; i++)
-                if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
-                    if(first == null || enemies.get(i).getIndiceTuile() > first.getIndiceTuile() || (enemies.get(i).getIndiceTuile() == first.getIndiceTuile() && enemies.get(i).getMoveSpeed() > first.getMoveSpeed()))
-                        first = enemies.get(i);
-                }
-            aim(first);
+            switch(focusButton.indexSwitch){
+                case 0: // Dans l'ordre du text (cf TextManager)
+                    aim(searchForFirst(enemies));
+                    break;
+                case 1:
+                    aim(searchForLast(enemies));
+                    break;
+                case 2:
+                    aim(searchForStrongest(enemies));
+                    break;
+                case 3:
+                    aim(searchForWeakest(enemies));
+                    break;
+                case 4:
+                    aim(searchForClosest(enemies));
+                    break;
+                default:
+                    aim(null);
+                    break;
+            }
         }
         else
             aim(null);
@@ -152,40 +166,96 @@ public abstract class Tower implements Shootable{
             shoot();
     }
     
+    private Enemy searchForFirst(ArrayList<Enemy> enemies){
+        Enemy first = null;
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                if(first == null || enemies.get(i).getIndiceTuile() > first.getIndiceTuile() || (enemies.get(i).getIndiceTuile() == first.getIndiceTuile() && enemies.get(i).getMoveSpeed() > first.getMoveSpeed()))
+                    first = enemies.get(i);
+            }
+        return first;
+    }
+    
+    private Enemy searchForLast(ArrayList<Enemy> enemies){
+        Enemy last = null;
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                if(last == null || enemies.get(i).getIndiceTuile() < last.getIndiceTuile() || (enemies.get(i).getIndiceTuile() == last.getIndiceTuile() && enemies.get(i).getMoveSpeed() < last.getMoveSpeed()))
+                    last = enemies.get(i);
+            }
+        return last;
+    }
+    
+    private Enemy searchForStrongest(ArrayList<Enemy> enemies){
+        Enemy strongest = null;
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                if(strongest == null || enemies.get(i).getMaxLife() > strongest.getMaxLife())
+                    strongest = enemies.get(i);
+            }
+        return strongest;
+    }
+    
+    private Enemy searchForWeakest(ArrayList<Enemy> enemies){
+        Enemy weakest = null;
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                if(weakest == null || enemies.get(i).getMaxLife() < weakest.getMaxLife())
+                    weakest = enemies.get(i);
+            }
+        return weakest;
+    }
+    
+    private Enemy searchForClosest(ArrayList<Enemy> enemies){
+        Enemy closest = null;
+        float minDist = 10000000;
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                if(closest == null || MyMath.distanceBetween(this, enemies.get(i)) < minDist){
+                    closest = enemies.get(i);
+                    minDist = (float)MyMath.distanceBetween(this, enemies.get(i));
+                }
+                    
+            }
+        return closest;
+    }
+    
     public void aim(Enemy e){
         if(e == null && enemyAimed != null)
             enemyAimed.setIsAimed(false);
         enemyAimed = e;
-        if(e != null){
-            e.setIsAimed(true);
-            if(canRotate){
-                float t = 0.3f;
-                newAngle = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
-                
-                if(newAngle-angle > 180)
-                    newAngle -= 360;
-                else if(angle-newAngle > 180)
-                    newAngle += 360;
-                if(Math.abs(angle-newAngle) <= 5)
-                    t = 1;
-                
-                angle = (int) ((1-t)*angle + t*newAngle);
-                
-                if(angle >= 360)
-                    angle -= 360;
-                else if(angle <= -360)
-                    angle += 360;
-                
-                angle = (int)Math.round(angle);
-                newAngle = (int)Math.round(newAngle);
-            }
-        }   
+        if(e == null)
+            return;
+        e.setIsAimed(true);
+        if(canRotate){
+            float t = 0.3f;
+            newAngle = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
+
+            if(newAngle-angle > 180)
+                newAngle -= 360;
+            else if(angle-newAngle > 180)
+                newAngle += 360;
+            if(Math.abs(angle-newAngle) <= 5)
+                t = 1;
+
+            angle = (int) ((1-t)*angle + t*newAngle);
+
+            if(angle >= 360)
+                angle -= 360;
+            else if(angle <= -360)
+                angle += 360;
+
+            angle = (int)Math.round(angle);
+            newAngle = (int)Math.round(newAngle);
+        } 
     }
     
     public void render(){
         for(int i = 0 ; i < textures.size() ; i++){
             RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0);
         }
+        if(selected)
+            renderOverlay();
     }
     
     private void renderPrevisu(){
@@ -207,8 +277,6 @@ public abstract class Tower implements Shootable{
         RvB.drawCircle(xPos, yPos, range-1, RvB.colors.get("grey"));
         RvB.drawCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"));
         RvB.drawFilledCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"), 0.1f);
-        if(isPlaced)
-            renderOverlay();
     }
     
     public void initOverlay(){
@@ -232,16 +300,21 @@ public abstract class Tower implements Shootable{
         if(marginToCenter < 0)
             marginToCenter = 0;
         o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
+        Button b;
         for(int i = 0 ; i < upgrades.size() ; i++){
-            Button b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
+            b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
             b.setBG(RvB.textures.get("plus"));
             if(upgrades.get(i).maxClick <= 0)
                 b.setHidden(true);
             b.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
             o2.addButton(b);
         }
-        Button b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setClickSound(SoundManager.Instance.getClip("sell"), SoundManager.Volume.MEDIUM);
+        o2.addButton(b);
+        b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+        b.setSwitch();
+        focusButton = b;
         o2.addButton(b);
         overlays.add(o2);
     }
@@ -280,12 +353,12 @@ public abstract class Tower implements Shootable{
                 else   
                     overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, up, RvB.fonts.get("normal"));
                 if(game.money >= (int)Math.floor(upPrice)){
-                    overlay.drawText(b.getX()-(int)((54)*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
-                    overlay.drawImage(b.getX()-(int)((36)*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
+                    overlay.drawText(b.getX()-(int)(54*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
+                    overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
                 } 
                 else{
-                    overlay.drawText(b.getX()-(int)((54)*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
-                    overlay.drawImage(b.getX()-(int)((36)*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
+                    overlay.drawText(b.getX()-(int)(54*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
+                    overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
                 }
                     
             }
@@ -294,14 +367,15 @@ public abstract class Tower implements Shootable{
                 overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/2, up, RvB.fonts.get("normal"));   
             }
         }
-        b = overlay.getButtons().get(overlay.getButtons().size()-1);
+        b = overlay.getButtons().get(overlay.getButtons().size()-2);
         if(b.isHovered()){
             price = "+ "+(int)(totalMoneySpent/2);
             b.drawText(price, RvB.fonts.get("canBuy"));
         }
         else
             b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
-        
+        b = overlay.getButtons().get(overlay.getButtons().size()-1);
+        overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
     }
     
     public void updateBullets(){
@@ -420,7 +494,7 @@ public abstract class Tower implements Shootable{
     }
     
     public boolean canShoot(){
-        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && angle >= newAngle-6 && angle <= newAngle+6);
+        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && (angle >= newAngle-6 && angle <= newAngle+6 || enemyAimed == null));
     }
     
     public void shoot(){

@@ -1,6 +1,7 @@
 NEXT BIG UPDATE MUST HAVE :
 
 - GAME ICON
+- passer en parametre des fonctions (boutons, cf discord) IMPORTANT
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance
@@ -8,12 +9,9 @@ NEXT BIG UPDATE MUST HAVE :
 - explosion en rond
 - bug sprite qui tourne (va trop vite ? Commence en plein milieu ? A pas le temps de finir ?)
 
-- Rocher qui bloque la constru
-- revoir sprite (plus réaliste, chemin plus confondu...) ?
-
 IDEAS:
 
-- Feature changer le focus des tourelles
+- Rocher qui bloque la constru
 - stat par tower par wave
 - Mode survie ou la gagne (mode gagne à faire)
 - Mode 1 vie

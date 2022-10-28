@@ -89,6 +89,12 @@ public class TextManager {
         TOWER_FLAME(
             new String[]{"Flametech"},
             new String[]{"Flametech"}),
+        FOCUS_SWITCH(
+            new String[]{"Premier", "Dernier", "Plus fort", "Plus faible", "Plus proche"},
+            new String[]{"First", "Last", "Strongest", "Weakest", "Closest"}),
+        FOCUS(
+            new String[]{"Vise le"},
+            new String[]{"Focus the"}),
         
         // POPUPS
         SELECT_DIFF(
@@ -121,7 +127,7 @@ public class TextManager {
 
         private String[] FR_text, ENG_text;
         
-        Text(String[] FR_text, String[] ENG_text){
+        private Text(String[] FR_text, String[] ENG_text){
             this.FR_text = FR_text;
             this.ENG_text = ENG_text;
         }

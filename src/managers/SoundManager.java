@@ -33,7 +33,7 @@ public class SoundManager
     private boolean ready = true;
     public static Clip SOUND_BUILD, SOUND_WAVE;
     
-    public SoundManager(){ 
+    private SoundManager(){ 
         clipsToClose = new ArrayList<Clip>();
         clipsToPlayNextFrame = new ArrayList<Clip>();
         ambianceClips = new HashMap<String, Clip>();

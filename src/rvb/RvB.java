@@ -544,7 +544,13 @@ public class RvB{
         String police = "Bahnschrift";
         
         color = RvB.colors.get("lightGreen");
-        Font awtFont = new Font(police, Font.PLAIN, (int)(16*ref));
+        Font awtFont = new Font(police, Font.BOLD, (int)(16*ref));
+        UnicodeFont normalSB = new UnicodeFont(awtFont);
+        normalSB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        normalSB.addAsciiGlyphs();
+        
+        color = RvB.colors.get("lightGreen");
+        awtFont = new Font(police, Font.PLAIN, (int)(16*ref));
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
@@ -625,6 +631,8 @@ public class RvB{
         try {
             normalS.loadGlyphs();
             fonts.put("normalS", normalS);
+            normalSB.loadGlyphs();
+            fonts.put("normalSB", normalSB);
             normal.loadGlyphs();
             fonts.put("normal", normal);
             normalL.loadGlyphs();

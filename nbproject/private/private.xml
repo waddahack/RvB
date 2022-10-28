@@ -14,10 +14,13 @@
         <group>
             <file>file:/F:/Programmation/Towser/src/managers/PopupManager.java</file>
             <file>file:/F:/Programmation/Towser/src/rvb/RvB.java</file>
+            <file>file:/F:/Programmation/Towser/src/rvb/Game.java</file>
             <file>file:/F:/Programmation/Towser/src/rvb/AppCore.java</file>
             <file>file:/F:/Programmation/Towser/src/managers/TextManager.java</file>
-            <file>file:/F:/Programmation/Towser/src/ennemies/Bazoo.java</file>
+            <file>file:/F:/Programmation/Towser/src/rvb/Tile.java</file>
+            <file>file:/F:/Programmation/Towser/src/ennemies/Enemy.java</file>
             <file>file:/F:/Programmation/Towser/src/towers/Tower.java</file>
+            <file>file:/F:/Programmation/Towser/src/ennemies/StrongEnemy.java</file>
             <file>file:/F:/Programmation/Towser/src/rvb/Menu.java</file>
         </group>
     </open-files>

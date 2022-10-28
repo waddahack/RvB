@@ -131,7 +131,7 @@ public abstract class AppCore {
         waveNumber = 1;
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 325;
+            money = 32500;
             waveReward = 275;
             waveBalanceMult = 0.9f;
         }

@@ -26,6 +26,7 @@ public class Button {
     private Clip click;
     private boolean clickSound = true;
     private boolean selected = false;
+    public int indexSwitch = -1;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -72,10 +73,18 @@ public class Button {
         SoundManager.Instance.setClipVolume(click, SoundManager.Volume.SEMI_HIGH);
     }
     
+    public void setSwitch(){
+        indexSwitch = 0;
+    }
+    
     public void click(){
         nbClicks++;
         if(nbClicks == nbClicksMax)
             hidden = true;
+        if(clickSound)
+            SoundManager.Instance.playOnce(click);
+        if(indexSwitch >= 0)
+            indexSwitch = indexSwitch == text.getLines().length-1 ? 0 : indexSwitch+1;
     }
     
     public void setHidden(boolean b){
@@ -97,8 +106,8 @@ public class Button {
                 RvB.setCursor(Cursor.DEFAULT);
                 mouseEntered = false;
             }
-            if(isClicked(0) && clickSound)
-                SoundManager.Instance.playOnce(click);
+            if(isClicked(0))
+                click();
         }
             
         render();
@@ -122,7 +131,7 @@ public class Button {
         }
         // text
         if(text != null && font != null)
-            RvB.drawString(x, y, text.getText(), font);
+            RvB.drawString(x, y, indexSwitch >= 0 ? text.getLines()[indexSwitch] : text.getText(), font);
     }
     
     public void drawText(String text, UnicodeFont font){
@@ -142,8 +151,8 @@ public class Button {
         return isMouseIn() && !disabled;
     }
     
-    public boolean isClicked(int but){
-        return (!disabled && isMouseIn() && Mouse.isButtonDown(0) && !mouseDown);
+    public boolean isClicked(int but){ 
+        return (!disabled && isMouseIn() && Mouse.isButtonDown(but) && !mouseDown);
     }
     
     public void setBG(Texture t){
