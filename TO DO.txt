@@ -1,6 +1,5 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- GAME ICON
 - passer en parametre des fonctions (boutons, cf discord) IMPORTANT
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 

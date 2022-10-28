@@ -1,5 +1,6 @@
 package rvb;
 
+import de.matthiasmann.twl.utils.PNGDecoder;
 import managers.SoundManager;
 import java.awt.Color;
 import java.awt.Font;
@@ -9,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.nio.ByteBuffer;
@@ -19,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import managers.TextManager;
 import managers.PopupManager;
-import org.lwjgl.BufferUtils;
+import static org.lwjgl.BufferUtils.createByteBuffer;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -86,12 +88,19 @@ public class RvB{
             Display.setFullscreen(true);
             //Display.setDisplayMode(new DisplayMode(windWidth, windHeight));
             Display.setResizable(false);
-            Display.setTitle("Towser");
+            Display.setTitle("RvB");
+            Display.setIcon(new ByteBuffer[] {
+                loadIcon(16),
+                loadIcon(32),
+            });
+
             Display.create();
         }catch (LWJGLException e) {
             e.printStackTrace();
             Display.destroy();
             System.exit(1);
+        } catch (IOException ex) {
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
         unite = Math.min(Math.floorDiv(Display.getWidth(), nbTileX), Math.floorDiv(Display.getHeight(), nbTileY));
         if(unite%2 != 0)
@@ -115,6 +124,20 @@ public class RvB{
         }
         releaseTextures();
         exit();
+    }
+    
+    private static ByteBuffer loadIcon(int bytes) throws IOException {
+        File initialFile = new File("assets/images/game_icon"+bytes+".png");
+        InputStream is = new FileInputStream(initialFile);
+        try {
+            PNGDecoder decoder = new PNGDecoder(is);
+            ByteBuffer bb = ByteBuffer.allocateDirect(decoder.getWidth()*decoder.getHeight()*4);
+            decoder.decode(bb, decoder.getWidth()*4, PNGDecoder.Format.RGBA);
+            bb.flip();
+            return bb;
+        } finally {
+            is.close();
+        }
     }
     
     public static void init(){    
@@ -460,7 +483,7 @@ public class RvB{
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
+        ByteBuffer buffer = createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
 
         for(int y = 0; y < image.getHeight(); y++){
             for(int x = 0; x < image.getWidth(); x++){
