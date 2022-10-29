@@ -51,6 +51,21 @@ public class PopupManager {
         popup.setBG(RvB.textures.get("board"), 0.8f);
         popup.setBorder(RvB.colors.get("green_dark"), 4, 1);
         b = new Button(popup.getW()/2, 3*popup.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            popup.display(false);
+            if(menu != null)
+                menu.enableAllButtons();
+            if(game != null){
+                if(game.gameSpeed == 0)
+                    game.gameSpeed = oldGameSpeed;
+                game.enableAllButtons();
+            }
+            if(creation != null)
+                creation.enableAllButtons();
+             
+        });
         popup.addButton(b);
         //
         // CHOOSE DIFFICULTY
@@ -59,10 +74,40 @@ public class PopupManager {
         chooseDifficulty.setBG(RvB.textures.get("board"), 0.8f);
         chooseDifficulty.setBorder(RvB.colors.get("green_dark"), 4, 1);
         b = new Button(chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            chooseDifficulty.display(false);
+            if(gameType.equals("random"))
+                RvB.newRandomMap(RvB.Difficulty.EASY);
+            else
+                RvB.newCreatedMap(RvB.Difficulty.EASY);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
         chooseDifficulty.addButton(b);
         b = new Button(2*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            chooseDifficulty.display(false);
+            if(gameType.equals("random"))
+                RvB.newRandomMap(RvB.Difficulty.MEDIUM);
+            else
+                RvB.newCreatedMap(RvB.Difficulty.MEDIUM);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
         chooseDifficulty.addButton(b);
         b = new Button(3*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            chooseDifficulty.display(false);
+            if(gameType.equals("random"))
+                RvB.newRandomMap(RvB.Difficulty.HARD);
+            else
+                RvB.newCreatedMap(RvB.Difficulty.HARD);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
         chooseDifficulty.addButton(b);
         // GAME OVER
         gameOver = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
@@ -70,6 +115,18 @@ public class PopupManager {
         gameOver.setBG(RvB.textures.get("board"), 0.8f);
         gameOver.setBorder(RvB.colors.get("green_dark"), 4, 1);
         b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, (int) (250*ref), (int)(50*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            game.ended = true;
+            for(int i = 0 ; i < game.enemies.size() ; i++)
+                game.enemies.get(i).die();
+            game.clearArrays();
+            SoundManager.Instance.closeAllClips();
+            RvB.switchStateTo(RvB.State.MENU);
+            currentOverlay = null;
+            gameOver.display(false);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
         gameOver.addButton(b);
         // ENEMIES UPGRADED
         enemiesUpgraded = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
@@ -77,6 +134,14 @@ public class PopupManager {
         enemiesUpgraded.setBG(RvB.textures.get("board"), 0.8f);
         enemiesUpgraded.setBorder(RvB.colors.get("green_dark"), 4, 1);
         b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (butWith*1.2), butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            enemiesUpgraded.display(false);
+            game.gameSpeed = oldGameSpeed;
+            game.enableAllButtons();
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
         enemiesUpgraded.addButton(b);
     }
     
@@ -85,6 +150,8 @@ public class PopupManager {
             return;
         RvB.drawFilledRectangle(0, 0, RvB.windWidth, RvB.windHeight, null, 0.4f, RvB.textures.get("board"));
         currentOverlay.render();
+        if(currentOverlay == null)
+            return;
         int top = height/4;
         for(int i = 0 ; i < lines.size() ; i++){
             if(i > 0)
@@ -93,82 +160,6 @@ public class PopupManager {
         }
         for(int i = 0 ; i < buttonsText.size() ; i++)
             currentOverlay.getButtons().get(i).drawText(0, 0, buttonsText.get(i), RvB.fonts.get("normalLB"));
-        checkPopupInput();
-    }
-    
-    private void checkPopupInput(){
-        if(currentOverlay == null)
-            return;
-        boolean clicked = false;
-        if(currentOverlay == gameOver){
-            if(gameOver.getButtons().get(0).isClicked(0)){
-                clicked = true;
-                stateChanged = true;
-                game.ended = true;
-                for(int i = 0 ; i < game.enemies.size() ; i++)
-                    game.enemies.get(i).die();
-                game.clearArrays();
-                SoundManager.Instance.closeAllClips();
-                RvB.switchStateTo(RvB.State.MENU);
-                currentOverlay = null;
-                gameOver.display(false);
-            }
-        }
-        else if(currentOverlay == enemiesUpgraded){
-            if(enemiesUpgraded.getButtons().get(0).isClicked(0)){
-                clicked = true;
-                stateChanged = true;
-                currentOverlay = null;
-                enemiesUpgraded.display(false);
-                game.gameSpeed = oldGameSpeed;
-                game.enableAllButtons();
-            }
-        }
-        else if(currentOverlay == popup){
-            if(popup.getButtons().get(0).isClicked(0)){
-                clicked = true;
-                stateChanged = true;
-                currentOverlay = null;
-                popup.display(false);
-                if(menu != null)
-                    menu.enableAllButtons();
-                if(game != null){
-                    if(game.gameSpeed == 0)
-                        game.gameSpeed = oldGameSpeed;
-                    game.enableAllButtons();
-                }
-                if(creation != null)
-                    creation.enableAllButtons();
-            }
-        }
-        else if(currentOverlay == chooseDifficulty){
-            if(chooseDifficulty.getButtons().get(0).isClicked(0) || chooseDifficulty.getButtons().get(1).isClicked(0) || chooseDifficulty.getButtons().get(2).isClicked(0)){
-                clicked = true;
-                stateChanged = true;
-                currentOverlay = null;
-                chooseDifficulty.display(false);
-            }
-            if(chooseDifficulty.getButtons().get(0).isClicked(0)){
-                if(gameType.equals("random"))
-                    RvB.newRandomMap(RvB.Difficulty.EASY);
-                else
-                    RvB.newCreatedMap(RvB.Difficulty.EASY);
-            }  
-            else if(chooseDifficulty.getButtons().get(1).isClicked(0)){
-                if(gameType.equals("random"))
-                    RvB.newRandomMap(RvB.Difficulty.MEDIUM);
-                else
-                    RvB.newCreatedMap(RvB.Difficulty.MEDIUM);
-            }  
-            else if(chooseDifficulty.getButtons().get(2).isClicked(0)){
-                if(gameType.equals("random"))
-                    RvB.newRandomMap(RvB.Difficulty.HARD);
-                else
-                    RvB.newCreatedMap(RvB.Difficulty.HARD);
-            }  
-        }
-        if(clicked)
-            RvB.setCursor(RvB.Cursor.DEFAULT);
     }
     
     public void popup(String text, String butText){
@@ -254,6 +245,7 @@ public class PopupManager {
             game.disableAllButtons();
         if(creation != null)
             creation.disableAllButtons();
+        RvB.setCursor(RvB.Cursor.DEFAULT);
     }   
     
     public void closeCurrentPopup(){

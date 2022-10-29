@@ -59,8 +59,6 @@ public abstract class Tower implements Shootable{
         if(!isPlaced)
             renderPrevisu();
         else{
-            if(selected)
-                checkOverlayInput();
             searchAndShoot();
             updateBullets();
             render();
@@ -77,60 +75,6 @@ public abstract class Tower implements Shootable{
                 RvB.setCursor(RvB.Cursor.DEFAULT);
                 mouseEntered = false;
             } 
-        }
-    }
-    
-    private void checkOverlayInput(){
-        Button b;
-        float upPrice;
-        int i;
-        for(i = 0 ; i < upgrades.size() ; i++){
-            b = overlays.get(1).getButtons().get(i);
-            upPrice = upgrades.get(i).price;
-            if(game.money < upPrice)
-                b.disableClickSound();
-            else
-                b.enableClickSound();
-            if(b.isClicked(0)){
-                if(game.money < upPrice)
-                    continue;
-                switch(upgrades.get(i).name){
-                    case "Range":
-                        range = (int) upgrades.get(i).setNewValue();
-                        break;
-                    case "Power":
-                        power = (int) upgrades.get(i).setNewValue();
-                        break;
-                    case "Attack speed":
-                        shootRate = upgrades.get(i).setNewValue();
-                        break;
-                    case "Bullet speed":
-                        bulletSpeed = (int) upgrades.get(i).setNewValue();
-                        break;
-                    case "Explode radius":
-                        explodeRadius = (int) upgrades.get(i).setNewValue();
-                        break;
-                }
-                size += growth;
-                game.money -= upPrice;
-                totalMoneySpent += upPrice;
-                upgrades.get(i).increasePrice();
-            }
-        }
-        if(overlays.get(1).getButtons().get(i).isClicked(0)){ // Sell button
-            game.money += (int)(totalMoneySpent/2);
-            Tile grass = new Tile(RvB.textures.get("grass"), "grass");
-            grass.setRotateIndex(0);
-            grass.setX(x);
-            grass.setY(y);
-            game.map.get(getIndexY()).set(getIndexX(), grass);
-            if(game.towerSelected == this)
-                game.towerSelected = null;
-            if(clip != null){
-                SoundManager.Instance.stopClip(clip);
-                SoundManager.Instance.clipToClose(clip);
-            }     
-            toBeRemoved = true;
         }
     }
     
@@ -294,24 +238,36 @@ public abstract class Tower implements Shootable{
         if(sep < 25)
             sep = 25;
         int imageSize = o2.getH()-(int)(5*ref);
-        int butWidth = (int) (32*ref), butHeight = (int)(32*ref);
-        int marginToCenter = RvB.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1)*butWidth + butWidth/2);
+        int marginToCenter = RvB.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1));
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
         o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
         Button b;
+        // init upgrades position
         for(int i = 0 ; i < upgrades.size() ; i++){
-            b = new Button(o1.getW() + marginToCenter + i*sep + i*butWidth + butWidth/2, o2.getH()/3, butWidth, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), upgrades.get(i).maxClick);
-            b.setBG(RvB.textures.get("plus"));
-            if(upgrades.get(i).maxClick <= 0)
-                b.setHidden(true);
-            b.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
-            o2.addButton(b);
+            upgrades.get(i).initPosAndButton(o1.getW() + marginToCenter + i*sep, o2.getY() + o2.getH()/2, this);
         }
+        // button sell
         b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setClickSound(SoundManager.Instance.getClip("sell"), SoundManager.Volume.MEDIUM);
+        b.setFunction(__ -> {
+            game.money += (int)(totalMoneySpent/2);
+            Tile grass = new Tile(RvB.textures.get("grass"), "grass");
+            grass.setRotateIndex(0);
+            grass.setX(x);
+            grass.setY(y);
+            game.map.get(getIndexY()).set(getIndexX(), grass);
+            if(game.towerSelected == this)
+                game.towerSelected = null;
+            if(clip != null){
+                SoundManager.Instance.stopClip(clip);
+                SoundManager.Instance.clipToClose(clip);
+            }     
+            toBeRemoved = true;
+        });
         o2.addButton(b);
+        // button focus
         b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
         b.setSwitch();
         focusButton = b;
@@ -320,7 +276,6 @@ public abstract class Tower implements Shootable{
     }
     
     public void renderOverlay(){
-        float upPrice;
         Button b;
         Overlay overlay;
         
@@ -331,42 +286,9 @@ public abstract class Tower implements Shootable{
         overlay.drawText(overlay.getW()/2, overlay.getH()/2, name, RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
-        int i;
-        String price, up, nextUp;
-        for(i = 0 ; i < upgrades.size() ; i++){
-            b = overlay.getButtons().get(i);
-            upPrice = upgrades.get(i).price;
-            if(upgrades.get(i).nbNumberToRound == 0){
-                up = (int)upgrades.get(i).getValue()+"";
-                nextUp = (int)upgrades.get(i).getIncreasedValue()+"";
-            }
-                
-            else{
-                up = upgrades.get(i).getValue()+"";
-                nextUp = upgrades.get(i).getIncreasedValue()+"";
-            }
-                
-            if(!b.isHidden()){
-                overlay.drawImage(b.getX()-(int)(90*ref)-(int)(16*ref), overlay.getH()/3-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);
-                if(b.isHovered())
-                    overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, nextUp, RvB.fonts.get("bonus"));
-                else   
-                    overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/3, up, RvB.fonts.get("normal"));
-                if(game.money >= (int)Math.floor(upPrice)){
-                    overlay.drawText(b.getX()-(int)(54*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("canBuy"));
-                    overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
-                } 
-                else{
-                    overlay.drawText(b.getX()-(int)(54*ref), overlay.getH()-(int)(12*ref), (int)Math.floor(upPrice)+"", RvB.fonts.get("cantBuy"));
-                    overlay.drawImage(b.getX()-(int)(36*ref), overlay.getH()-(int)((12+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
-                }
-                    
-            }
-            else{
-                overlay.drawImage(b.getX()-(int)(90*ref)-(int)(16*ref), overlay.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), upgrades.get(i).icon);   
-                overlay.drawText(b.getX()-(int)(45*ref), overlay.getH()/2, up, RvB.fonts.get("normal"));   
-            }
-        }
+        for(Upgrade up : upgrades)
+            up.render();
+        String price;
         b = overlay.getButtons().get(overlay.getButtons().size()-2);
         if(b.isHovered()){
             price = "+ "+(int)(totalMoneySpent/2);

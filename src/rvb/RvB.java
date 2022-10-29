@@ -197,9 +197,9 @@ public class RvB{
         State s = state;
         // ESCAPE MENU
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-            if(PopupManager.Instance.onChoosingDifficulty())
-                PopupManager.Instance.closeCurrentPopup();
             switchStateTo(State.MENU);
+            if(PopupManager.Instance.onPopup())
+                PopupManager.Instance.closeCurrentPopup();
         }
         if(s != state)
             setCursor(Cursor.DEFAULT);
@@ -266,6 +266,8 @@ public class RvB{
     }
     
     public static void drawRectangle(int x, int y, int width, int height, float[] rgb, float a, int thickness){
+        glDisable(GL_TEXTURE_2D);
+        
         glColor4f(rgb[0], rgb[1], rgb[2], a);
         
         glBegin(GL_LINES);
@@ -321,9 +323,11 @@ public class RvB{
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, a);
         }
-        else
+        else{
+            glDisable(GL_TEXTURE_2D);
             glColor4f(rgb[0], rgb[1], rgb[2], a);
-
+        }
+        
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0);
             glVertex2d(x, y);

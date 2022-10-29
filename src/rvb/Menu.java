@@ -18,20 +18,76 @@ public class Menu {
         int height = (int) (60*ref);
         
         option = new Button(windWidth-(int)(120*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("optionIcon"), null, colors.get("green_dark"));
+        option.setFunction(__ -> {
+            PopupManager.Instance.popup(Text.NO_OPTIONS.getLines());
+        });
         exit = new Button(windWidth-(int)(50*ref), (int)(50*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("exitIcon"), null, colors.get("green_dark"));
+        exit.setFunction(__ -> {
+            switchStateTo(State.EXIT);
+        });
         
         start = new Button(windWidth/2, windHeight/6, width, height, null, colors.get("green_dark"));
-        start.setDisabled(true);
+        start.disable();
         start.setBG(textures.get("disabled"));
+        start.setFunction(__ -> {
+            if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
+                adventureGame = new Game("1", Difficulty.MEDIUM);
+
+            game = adventureGame;
+            switchStateTo(State.GAME);
+        });
         
         random = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        random.setFunction(__ -> {
+            if(randomGame == null){
+                PopupManager.Instance.chooseDifficulty("random");
+                // Then it does newRandomMap(difficulty)
+            }
+            else{
+                game = randomGame;
+                switchStateTo(State.GAME);
+            }
+        });
         regenerate = new Button(random.getX(), random.getY()+random.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
+        regenerate.setFunction(__ -> {
+            PopupManager.Instance.chooseDifficulty("random");
+            // Then it does newRandomMap(difficulty)
+        });
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        create.setFunction(__ -> {
+            if(createEmptyMap()){
+                if(createdGame == null){
+                    creation = new Creation();
+                    switchStateTo(State.CREATION);
+                }
+                else{
+                    game = createdGame;
+                    switchStateTo(State.GAME);
+                }
+            }
+            else{
+                PopupManager.Instance.popup(Text.MISSING_FILE_LEVELS.getLines());
+            }
+        });
         modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
+        modify.setFunction(__ -> {
+            creation = new Creation();
+            switchStateTo(State.CREATION);
+        });
         
         FR = new Button(unite, 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("FR"), null, colors.get("green_semidark"));
+        FR.setFunction(__ -> {
+            FR.setSelected(true);
+            ENG.setSelected(false);
+            TextManager.Instance.setLanguage("FR");
+        });
         ENG = new Button(unite*2+(int)(10*ref), 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("ENG"), null, colors.get("green_semidark"));
+        ENG.setFunction(__ -> {
+            ENG.setSelected(true);
+            FR.setSelected(false);
+            TextManager.Instance.setLanguage("ENG");
+        });
         ENG.setSelected(true);
         
         for(int i = 0 ; i < 5 ; i++){
@@ -64,7 +120,14 @@ public class Menu {
     
     public void update(){
         render();
-        checkInput();
+        if(randomGame == null)
+            regenerate.setHidden(true);
+        else
+            regenerate.setHidden(false);
+        if(createdGame == null)
+            modify.setHidden(true);
+        else
+            modify.setHidden(false);
     }
     
     private void render(){
@@ -88,81 +151,17 @@ public class Menu {
         }
     }
     
-    private void checkInput(){
-        if(randomGame == null)
-            regenerate.setHidden(true);
-        else
-            regenerate.setHidden(false);
-        if(createdGame == null)
-            modify.setHidden(true);
-        else
-            modify.setHidden(false);
-        
-        if(start.isClicked(0)){
-            if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
-                adventureGame = new Game("1", Difficulty.MEDIUM);
-
-            game = adventureGame;
-            switchStateTo(State.GAME);
-        }  
-        if(random.isClicked(0)){
-            if(randomGame == null){
-                PopupManager.Instance.chooseDifficulty("random");
-                // Then it does newRandomMap(difficulty)
-            }
-            else{
-                game = randomGame;
-                switchStateTo(State.GAME);
-            }   
-        }
-        if(regenerate.isClicked(0)){
-            PopupManager.Instance.chooseDifficulty("random");
-            // Then it does newRandomMap(difficulty)
-        }
-        if(create.isClicked(0)){
-            if(createEmptyMap()){
-                if(createdGame == null){
-                    creation = new Creation();
-                    switchStateTo(State.CREATION);
-                }
-                else{
-                    game = createdGame;
-                    switchStateTo(State.GAME);
-                }
-            }
-            else{
-                PopupManager.Instance.popup(Text.MISSING_FILE_LEVELS.getLines());
-            }
-        }  
-        if(modify.isClicked(0)){
-            creation = new Creation();
-            switchStateTo(State.CREATION);
-        }
-        if(exit.isClicked(0))
-            switchStateTo(State.EXIT);
-        if(FR.isClicked(0)){
-            FR.setSelected(true);
-            ENG.setSelected(false);
-            TextManager.Instance.setLanguage("FR");
-        }
-        else if(ENG.isClicked(0)){
-            ENG.setSelected(true);
-            FR.setSelected(false);
-            TextManager.Instance.setLanguage("ENG");
-        }
-    }
-    
     public void disableAllButtons(){
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
-                b.setDisabled(true);
+                b.disable();
     }
     
     public void enableAllButtons(){
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
-                b.setDisabled(false);
-        start.setDisabled(true);
+                b.enable();
+        start.enable();
     }
     
     public Button getStart(){

@@ -1,7 +1,12 @@
 package towers;
 
+import java.util.function.Consumer;
+import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
+import ui.Button;
+import static rvb.RvB.ref;
+import static rvb.RvB.game;
 
 public class Upgrade {
     
@@ -12,6 +17,8 @@ public class Upgrade {
     public int nbNumberToRound;
     private String addOrMultiplicate;
     private float value, addOrMultiplicateValue, multiplicatePrice;
+    private int x = 0, y = 0;
+    public Button button;
     
     public Upgrade(String name, float value, float addOrMultiplicateValue, String addOrMultiplicate, float price, float multiplicatePrice, int maxClick){
         this.name = name;
@@ -43,6 +50,74 @@ public class Upgrade {
         this.price = price;
         this.multiplicatePrice = multiplicatePrice;
         this.maxClick = maxClick;
+    }
+    
+    public void initPosAndButton(int x, int y, Tower tower){
+        this.x = x;
+        this.y = y;
+        button = new Button(x+(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), maxClick);
+        button.setBG(RvB.textures.get("plus"));
+        button.setFunction(__ -> {
+            switch(name){
+                case "Range":
+                    tower.range = (int) setNewValue();
+                    break;
+                case "Power":
+                    tower.power = (int) setNewValue();
+                    break;
+                case "Attack speed":
+                    tower.shootRate = setNewValue();
+                    break;
+                case "Bullet speed":
+                    tower.bulletSpeed = (int) setNewValue();
+                    break;
+                case "Explode radius":
+                    tower.explodeRadius = (int) setNewValue();
+                    break;
+            }
+            tower.size += tower.growth;
+            game.money -= price;
+            tower.totalMoneySpent += price;
+            increasePrice();
+        });
+        if(maxClick <= 0)
+            button.setHidden(true);
+        button.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
+    }
+    
+    
+    public void render(){
+        if(game.money < price && button.isEnabled()){
+            button.disable();
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        }    
+        else if(game.money >= price)
+            button.enable();
+        button.update();
+        
+        String up, nextUp, upPrice = (int)Math.floor(price)+"";
+        up = nbNumberToRound == 0 ? (int)getValue()+"" : getValue()+"";
+        nextUp = nbNumberToRound == 0 ? (int)getIncreasedValue()+"" : getIncreasedValue()+"";
+        
+        if(!button.isHidden()){
+            RvB.drawFilledRectangle(x-(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), icon, 0);
+            if(button.isHovered())
+                RvB.drawString(x, y-(int)(9*ref), nextUp, RvB.fonts.get("bonus"));
+            else   
+                RvB.drawString(x, y-(int)(9*ref), up, RvB.fonts.get("normal"));
+            if(game.money >= (int)Math.floor(price)){
+                RvB.drawString(x-(int)(10*ref), y+(int)(18*ref), upPrice, RvB.fonts.get("canBuy"));
+                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"), 0);
+            } 
+            else{
+                RvB.drawString(x-(int)(10*ref), y+(int)(18*ref), upPrice, RvB.fonts.get("cantBuy"));
+                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"), 0);
+            }
+        }
+        else{
+            RvB.drawFilledRectangle(x-(int)(20*ref), y, (int)(32*ref), (int)(32*ref), icon, 0);   
+            RvB.drawString(x+(int)(20*ref), y, up, RvB.fonts.get("normal"));   
+        }
     }
     
     public void increasePrice(){

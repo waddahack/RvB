@@ -1,6 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- passer en parametre des fonctions (boutons, cf discord) IMPORTANT
+- passer en parametre des fonctions (boutons, cf discord) EN COURS (upgrades done)
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance

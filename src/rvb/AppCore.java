@@ -407,9 +407,9 @@ public abstract class AppCore {
         
         if(this == RvB.game && !inWave){
             if(SoundManager.Instance.isReady())
-                overlays.get(1).getButtons().get(0).setDisabled(false);
+                overlays.get(1).getButtons().get(0).enable();
             else
-                overlays.get(1).getButtons().get(0).setDisabled(true);
+                overlays.get(1).getButtons().get(0).disable();
         }
         
         if(!PopupManager.Instance.onPopup())
@@ -428,7 +428,7 @@ public abstract class AppCore {
             }
             // Wave check if done
             if(inWave && wave.isDone()){
-                overlays.get(1).getButtons().get(0).setDisabled(false);
+                overlays.get(1).getButtons().get(0).enable();
                 inWave = false;
                 wave = null;
                 money += waveReward;
@@ -504,9 +504,6 @@ public abstract class AppCore {
                         setEnemySelected(null);
                 }
             }
-            
-            // Overlays inputs
-            checkOverlaysInput();
         }
     }
     
@@ -531,38 +528,85 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
+        int nbTower = 4;
         int size = (int) (50*ref);
         int sep = (int) (200*ref);
+        int startPos = windWidth/2 - (nbTower-1)*size/2 - (nbTower-1)*sep/2;
         
+        // Overlay tours
         o = new Overlay(0, windHeight-(int)(60*ref), windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
-        b = new Button(windWidth/2 - 3*size/2 - 3*sep/2, (int)(30*ref), size, size, RvB.textures.get("basicTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setItemFramed(true);
-        o.addButton(b);
-        b = new Button(windWidth/2 - size/2 - sep/2, (int)(30*ref), size, size, RvB.textures.get("circleTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setItemFramed(true);
-        o.addButton(b);
-        b = new Button(windWidth/2 + size/2 + sep/2, (int)(30*ref), size, size, RvB.textures.get("bigTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setItemFramed(true);
-        o.addButton(b);
-        b = new Button(windWidth/2 + 3*size/2 + 3*sep/2, (int)(30*ref), size, size, RvB.textures.get("flameTower"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setItemFramed(true);
-        o.addButton(b);
+        String textureName = "";
+        for(int i = 0 ; i < nbTower ; i++){
+            switch(i){
+                case 0:
+                    textureName = "basicTower";
+                    break;
+                case 1:
+                    textureName = "circleTower";
+                    break;
+                case 2:
+                    textureName = "bigTower";
+                    break;
+                case 3:
+                    textureName = "flameTower";
+                    break;
+                default:
+                    textureName = "basicTower";
+                    break;
+            }
+            b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setItemFramed(true);
+            int index = i;
+            b.setFunction(__ -> {
+                if(towerSelected == null)
+                    createTower(index);
+            });
+            o.addButton(b);
+        }
         overlays.add(o);
         
+        // Overlay top
         o = new Overlay(0, 0, windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
+        // Wave button
         b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.disableClickSound();
+        b.setClickSound(SoundManager.SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
+        Button thisBut = b;
+        b.setFunction(__ -> {
+            if(!inWave && Mouse.getEventButtonState()){
+                thisBut.disable();
+                RvB.setCursor(Cursor.DEFAULT);
+                startWave();
+            }
+        });
         o.addButton(b);
+        // game speed button
         b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            switch(gameSpeed){
+                case 1:
+                    gameSpeed = 2;
+                    break;
+                case 2:
+                    gameSpeed = 4;
+                    break;
+                case 4:
+                    gameSpeed = 1;
+                    break;
+            }
+        });
         o.addButton(b);
-        
+        // back button
         b = new Button((int)(60*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setBG(RvB.textures.get("arrowBack"));
+        b.setFunction(__ -> {
+            RvB.switchStateTo(MENU);
+        });
         o.addButton(b);
         overlays.add(o);
         
+        // overlay enemy selected
         int width = (int) (700*ref), height = (int) (50*ref);
         o = new Overlay(windWidth/2-width/2, (int)(5*ref), width, height);
         o.setBG(RvB.textures.get("darkBoard"), 0.4f);
@@ -624,41 +668,6 @@ public abstract class AppCore {
             b.drawText(-(int)(12*ref), -b.getH()/2-(int)(10*ref), priceP+"", RvB.fonts.get("cantBuy"));
             o.drawImage(b.getX()+(int)(6*ref), b.getY()-o.getY()-b.getH()/2-(int)((10+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
         } 
-    }
-    
-    public void checkOverlaysInput(){
-        Overlay o;
-        // Overlay selections tours
-        o = overlays.get(0);
-        for(Button b : o.getButtons()) // Check tower clicked
-            if(b.isClicked(0) && towerSelected == null)
-                createTower(o.getButtons().indexOf(b));
-        //
-        // Overlay principal
-        o = overlays.get(1);
-        if(o.getButtons().get(0).isClicked(0) && !inWave && Mouse.getEventButtonState()){
-            o.getButtons().get(0).setDisabled(true);
-            RvB.setCursor(Cursor.DEFAULT);
-            SoundManager.Instance.playOnce(SoundManager.SOUND_WAVE);
-            startWave();
-        }
-        else if(o.getButtons().get(1).isClicked(0)){
-            switch(gameSpeed){
-                case 1:
-                    gameSpeed = 2;
-                    break;
-                case 2:
-                    gameSpeed = 4;
-                    break;
-                case 4:
-                    gameSpeed = 1;
-                    break;
-            }
-        }
-        if(o.getButtons().get(2).isClicked(0)){
-            RvB.switchStateTo(MENU);
-        }
-        //
     }
     
     public void clearArrays(){
@@ -775,13 +784,13 @@ public abstract class AppCore {
     public void disableAllButtons(){
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
-                b.setDisabled(true);
+                b.disable();
     }
     
     public void enableAllButtons(){
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
-                b.setDisabled(false);
+                b.enable();
     }
     
     public void setEnemySelected(Enemy e) {

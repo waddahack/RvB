@@ -8,6 +8,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
 import rvb.RvB.Cursor;
+import java.util.function.Consumer;
 import static rvb.RvB.mouseDown;
 import static rvb.RvB.ref;
 
@@ -27,6 +28,7 @@ public class Button {
     private boolean clickSound = true;
     private boolean selected = false;
     public int indexSwitch = -1;
+    private Consumer<Object> clickFunction;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -73,18 +75,24 @@ public class Button {
         SoundManager.Instance.setClipVolume(click, SoundManager.Volume.SEMI_HIGH);
     }
     
+    public void setFunction(Consumer<Object> function){
+        clickFunction = function;
+    }
+    
     public void setSwitch(){
         indexSwitch = 0;
     }
     
     public void click(){
         nbClicks++;
-        if(nbClicks == nbClicksMax)
-            hidden = true;
         if(clickSound)
             SoundManager.Instance.playOnce(click);
+        if(nbClicks == nbClicksMax)
+            hidden = true;
         if(indexSwitch >= 0)
             indexSwitch = indexSwitch == text.getLines().length-1 ? 0 : indexSwitch+1;
+        if(clickFunction != null)
+            clickFunction.accept(null);
     }
     
     public void setHidden(boolean b){
@@ -117,7 +125,7 @@ public class Button {
         if(hidden)
             return;
             
-        //hover
+        // hover
         if((isMouseIn() || selected) && borderRgb != null && !disabled)
             RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
@@ -167,8 +175,18 @@ public class Button {
         itemFramed = b;
     }
     
-    public void setDisabled(boolean d){
-        disabled = d;
+    public boolean isEnabled(){
+        return !disabled;
+    }
+    
+    public void disable(){
+        disabled = true;
+        clickSound = false;
+    }
+    
+    public void enable(){
+        disabled = false;
+        clickSound = true;
     }
     
     public void disableClickSound(){

@@ -31,6 +31,9 @@ public class TextManager {
         SELL(
             new String[]{"Vendre"},
             new String[]{"Sell"}),
+        NO_OPTIONS(
+            new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
+            new String[]{"Bazoo hacked the system !", "Options are unavailable..."}),
         
         
         // MENU

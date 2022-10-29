@@ -51,10 +51,28 @@ public class Creation extends AppCore{
         
         o = new Overlay(0, 0, RvB.windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
+        // Play button
         b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (180*ref), (int) (38*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            if(Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
+                String[] error = calculatePath();
+                if(error == null){
+                    saveLevel();
+                    PopupManager.Instance.chooseDifficulty("created");
+                }
+                else{
+                    PopupManager.Instance.popup(error);
+                }
+            }
+        });
         o.addButton(b);
+        // Back button
         b = new Button((int) (60*ref), (int) (30*ref), (int) (32*ref), (int) (32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setBG(RvB.textures.get("arrowBack"));
+        b.setFunction(__ -> {
+            if(Mouse.getEventButtonState() && !mouseDown) // Back button clicked
+                RvB.state = State.MENU;
+        });
         o.addButton(b);
         overlays.add(o);
         
@@ -75,28 +93,6 @@ public class Creation extends AppCore{
         //// Overlay du bas
         o = overlays.get(1);
         o.render();
-        //
-    }
-    
-    @Override
-    public void checkOverlaysInput(){
-        Overlay o;
-
-        // Overlay principal
-        o = overlays.get(0);
-        if(o.getButtons().get(0).isClicked(0) && Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
-            String[] error = calculatePath();
-            if(error == null){
-                saveLevel();
-                PopupManager.Instance.chooseDifficulty("created");
-            }
-            else{
-                PopupManager.Instance.popup(error);
-            }
-        }
-        else if(o.getButtons().get(1).isClicked(0) && Mouse.getEventButtonState() && !mouseDown){ // Back button clicked
-            RvB.state = State.MENU;
-        }
         //
     }
     
@@ -150,9 +146,6 @@ public class Creation extends AppCore{
                 }
                 roads.remove(oldRoad);
             }
-            
-            // Overlays inputs
-            checkOverlaysInput();
         }
     }
     

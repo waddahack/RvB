@@ -38,7 +38,7 @@ public class FlameTower extends Tower{
         shootRate = 35f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade("Range", range, 1.3f, "*", 180f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "+", 400f, 1.6f, 2));
+        upgrades.add(new Upgrade("Power", power, 1f, "+", 400f, 1.6f, 5));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
