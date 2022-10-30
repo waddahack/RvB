@@ -34,6 +34,12 @@ public class TextManager {
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
             new String[]{"Bazoo hacked the system !", "Options are unavailable..."}),
+        SECRET_REVEAL(
+            new String[]{"Bazoo est en fait le gentil ici.", "Raztech défend quelque chose qu'il lui a prit."},
+            new String[]{"Bazoo is actually the real good guy here.", "Raztech is defending something he took from him."}),
+        WHAT(
+            new String[]{"Quoi ?"},
+            new String[]{"What ?"}),
         
         
         // MENU

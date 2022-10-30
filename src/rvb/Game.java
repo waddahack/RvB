@@ -3,6 +3,7 @@ package rvb;
 import java.util.ArrayList;
 import java.util.Random;
 import managers.PopupManager;
+import managers.TextManager.Text;
 import rvb.RvB.Difficulty;
 import static rvb.RvB.nbTileX;
 import static rvb.RvB.nbTileY;
@@ -30,10 +31,7 @@ public class Game extends AppCore{
             }
         }while(path.isEmpty() && i < 10);
         if(path.isEmpty())
-            PopupManager.Instance.popup(new String[]{
-                "Bazoo is actually the real good guy here.",
-                "Raztech is defending something he took from him."
-            }, "What ?");
+            PopupManager.Instance.popup(Text.SECRET_REVEAL.getLines(), Text.WHAT.getText());
         
         initMap(path);
     }

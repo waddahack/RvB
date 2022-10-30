@@ -539,9 +539,6 @@ public abstract class AppCore {
         String textureName = "";
         for(int i = 0 ; i < nbTower ; i++){
             switch(i){
-                case 0:
-                    textureName = "basicTower";
-                    break;
                 case 1:
                     textureName = "circleTower";
                     break;
@@ -551,7 +548,7 @@ public abstract class AppCore {
                 case 3:
                     textureName = "flameTower";
                     break;
-                default:
+                default: // 0 or default
                     textureName = "basicTower";
                     break;
             }

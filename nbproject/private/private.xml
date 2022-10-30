@@ -14,11 +14,14 @@
         <group>
             <file>file:/F:/Programmation/RvB/src/rvb/Menu.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/Upgrade.java</file>
+            <file>file:/F:/Programmation/RvB/src/managers/TextManager.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/RvB.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/FlameTower.java</file>
             <file>file:/F:/Programmation/RvB/src/ui/Button.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/Tower.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/AppCore.java</file>
+            <file>file:/F:/Programmation/RvB/src/rvb/Creation.java</file>
+            <file>file:/F:/Programmation/RvB/src/managers/PopupManager.java</file>
         </group>
     </open-files>
 </project-private>

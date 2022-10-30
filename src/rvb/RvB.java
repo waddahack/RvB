@@ -401,6 +401,7 @@ public class RvB{
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
             textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
+            textures.put("rock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock.png"))));
             // Icons
             textures.put("FR", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_francais.png"))));
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
