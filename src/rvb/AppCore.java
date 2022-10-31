@@ -93,6 +93,7 @@ public abstract class AppCore {
     public ArrayList<Tower> towers, towersDestroyed;
     public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
+    public ArrayList<Rock> rocks;
     protected boolean gameOver;
     protected boolean inWave, dontPlace, towerHovered = false;
     public Enemy enemySelected = null;
@@ -110,6 +111,7 @@ public abstract class AppCore {
     }
     
     protected void init(Difficulty diff){
+        rocks = new ArrayList<>();
         towers = new ArrayList<>();
         towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -158,6 +160,7 @@ public abstract class AppCore {
         } catch (Exception ex) {
             Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
         }
+        addRocks();
     }
     
     protected void initMap(ArrayList<Tile> path){
@@ -211,6 +214,7 @@ public abstract class AppCore {
         } catch (Exception ex) {
             Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
         }
+        addRocks();
     }
     
     protected void readFile(String filePath){
@@ -402,6 +406,28 @@ public abstract class AppCore {
         textureID = RvB.loadTexture(mapImage);
     }
     
+    public void addRocks(){
+        float p;
+        for(int i = 0 ; i < map.size() ; i++)
+            for(int j = 0 ; j < map.get(i).size() ; j++){
+                if(map.get(i).get(j).type != "grass")
+                    continue;
+                p = 0.02f;
+                // S'il y a une road à côté
+                if((i > 0 && map.get(i-1).get(j).type != "grass") || (i < RvB.nbTileY-1 && map.get(i+1).get(j).type != "grass") || (j > 0 && map.get(i).get(j-1).type != "grass") || (j < RvB.nbTileX-1 && map.get(i).get(j+1).type != "grass"))
+                    p = 0.08f;
+                // Ou s'il y a une road sur les diago
+                else if((i > 0 && j > 0 && map.get(i-1).get(j-1).type != "grass") || (i < RvB.nbTileY-1 && j < RvB.nbTileX-1 && map.get(i+1).get(j+1).type != "grass") || (i > 0 && j < RvB.nbTileX-1 && map.get(i-1).get(j+1).type != "grass") || (i < RvB.nbTileY-1 && j > 0 && map.get(i+1).get(j-1).type != "grass"))
+                    p = 0.08f;
+                if(random.nextFloat() <= p){
+                    Rock r = new Rock(j*unite, i*unite, 0);
+                    r.setAngle(Math.floorDiv(random.nextInt(360), 90)*90);
+                    rocks.add(r);
+                    map.get(i).set(j, r);
+                }  
+            }
+    }
+    
     public void update(){
         clearArrays();
         
@@ -522,6 +548,8 @@ public abstract class AppCore {
         
         for(Tile road : path)
             road.renderSteps();
+        for(Rock rock : rocks)
+            rock.render();
     }
     
     protected void initOverlays(){

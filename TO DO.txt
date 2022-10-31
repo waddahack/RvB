@@ -1,6 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- Rocher qui bloque la constru
+- Rocks : faire 1 ou 2 autres sprite avec size différente
 (algo qui add une rock avec faible proba sur every tile, proba higher à côté des raods)
 - stat par tower par wave
 

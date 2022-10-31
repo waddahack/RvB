@@ -51,6 +51,10 @@ public class Tile {
         setY(y);
     }
     
+    public void render(){
+        RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle);
+    }
+    
     public void renderSteps(){
         if(stepTexture != null)
             RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle);
