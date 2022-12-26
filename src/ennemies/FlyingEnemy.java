@@ -22,9 +22,9 @@ public class FlyingEnemy extends Enemy{
         reward = 36;
         power = 12;
         shootRate = 1;
-        moveSpeed = 1.6f;
+        moveSpeed = 1.8f;
         range = 3*unite;
-        life = 180;
+        life = 120;
         width = (int) (1.25*unite);
         hitboxWidth = width;
         eBalance = balance;

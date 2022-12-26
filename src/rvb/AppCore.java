@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import managers.PopupManager;
 import managers.TextManager.Text;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
@@ -130,10 +129,10 @@ public abstract class AppCore {
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
         
-        waveNumber = 1;
+        waveNumber = 6;
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 32500;
+            money = 325;
             waveReward = 275;
             waveBalanceMult = 0.9f;
         }
@@ -160,7 +159,7 @@ public abstract class AppCore {
         } catch (Exception ex) {
             Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
         }
-        addRocks();
+        //addRocks();
     }
     
     protected void initMap(ArrayList<Tile> path){
@@ -214,7 +213,7 @@ public abstract class AppCore {
         } catch (Exception ex) {
             Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
         }
-        addRocks();
+        //addRocks();
     }
     
     protected void readFile(String filePath){
@@ -412,16 +411,15 @@ public abstract class AppCore {
             for(int j = 0 ; j < map.get(i).size() ; j++){
                 if(map.get(i).get(j).type != "grass")
                     continue;
-                p = 0.02f;
+                p = 0.01f;
                 // S'il y a une road à côté
-                if((i > 0 && map.get(i-1).get(j).type != "grass") || (i < RvB.nbTileY-1 && map.get(i+1).get(j).type != "grass") || (j > 0 && map.get(i).get(j-1).type != "grass") || (j < RvB.nbTileX-1 && map.get(i).get(j+1).type != "grass"))
+                if((i > 0 && map.get(i-1).get(j).type == "road") || (i < RvB.nbTileY-1 && map.get(i+1).get(j).type == "road") || (j > 0 && map.get(i).get(j-1).type == "road") || (j < RvB.nbTileX-1 && map.get(i).get(j+1).type == "road"))
                     p = 0.08f;
                 // Ou s'il y a une road sur les diago
-                else if((i > 0 && j > 0 && map.get(i-1).get(j-1).type != "grass") || (i < RvB.nbTileY-1 && j < RvB.nbTileX-1 && map.get(i+1).get(j+1).type != "grass") || (i > 0 && j < RvB.nbTileX-1 && map.get(i-1).get(j+1).type != "grass") || (i < RvB.nbTileY-1 && j > 0 && map.get(i+1).get(j-1).type != "grass"))
+                else if((i > 0 && j > 0 && map.get(i-1).get(j-1).type == "road") || (i < RvB.nbTileY-1 && j < RvB.nbTileX-1 && map.get(i+1).get(j+1).type == "road") || (i > 0 && j < RvB.nbTileX-1 && map.get(i-1).get(j+1).type == "road") || (i < RvB.nbTileY-1 && j > 0 && map.get(i+1).get(j-1).type == "road"))
                     p = 0.08f;
                 if(random.nextFloat() <= p){
-                    Rock r = new Rock(j*unite, i*unite, 0);
-                    r.setAngle(Math.floorDiv(random.nextInt(360), 90)*90);
+                    Rock r = new Rock(j*unite, i*unite, random.nextInt(3));
                     rocks.add(r);
                     map.get(i).set(j, r);
                 }  
@@ -442,6 +440,15 @@ public abstract class AppCore {
             checkInput();
         
         render();
+        
+        for(int i = 0 ; i < towers.size() ; i++){
+            towers.get(i).update();
+            if(towers.get(i).toRemove()){
+                towers.remove(i);
+                i--;
+            }  
+        }
+        
         if(gameSpeed > 0){
             if(inWave){
                 wave.update();
@@ -462,24 +469,16 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    Enemy.bonusLife += 15;
+                    Enemy.bonusLife += 10;
                     Enemy.bonusMS += 5;
                     PopupManager.Instance.enemiesUpgraded(new String[]{
-                        "+15% "+Text.HP.getText(),
+                        "+10% "+Text.HP.getText(),
                         "+5% "+Text.MS.getText()
                     });
                     bossDead = false;
                     bossDefeated = false;
                 }
             }
-        }
-        
-        for(int i = 0 ; i < towers.size() ; i++){
-            towers.get(i).update();
-            if(towers.get(i).toRemove()){
-                towers.remove(i);
-                i--;
-            }  
         }
         
         renderOverlays();
@@ -517,7 +516,7 @@ public abstract class AppCore {
             
         }
         // Click check
-        while(Mouse.next() || Keyboard.next()){
+        while(Mouse.next()){
             // Reinitializing if clicking nowhere
             if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) && !mouseDown){
                 if(towerSelected != null && !towerSelected.isClicked(0) && !overlays.get(0).isClicked(0) && !overlays.get(1).isClicked(0)){
@@ -718,7 +717,7 @@ public abstract class AppCore {
             waveBalance *= 10;
         if(waveNumber >= uEnemies[1].enterAt)
             waveBalance *= waveBalanceMult;
-        waveBalance = (int) (bossRound() ? waveBalance*0.4 : waveBalance);
+        waveBalance = (int) (bossRound() ? waveBalance*0.5 : waveBalance);
         wave = new Wave();
         int min, max;
         while(waveBalance >= uEnemies[0].balance){
@@ -790,7 +789,7 @@ public abstract class AppCore {
     }
 
     public static boolean bossRound(){
-        return game.waveNumber%8 == 0;
+        return game.waveNumber%6 == 0;
     }
     
     protected static void gameOver(){

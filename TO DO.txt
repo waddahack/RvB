@@ -1,15 +1,25 @@
 NEXT BIG UPDATE MUST HAVE :
 
-- Rocks : faire 1 ou 2 autres sprite avec size différente
-(algo qui add une rock avec faible proba sur every tile, proba higher à côté des raods)
+Faire RAZTECH puis faire le site avant de continuer
+
+ROCKS :
+	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.
+	comme ça les rocks se trouvent dans les data de la map
+	- pouvoir ajouter des rocks en creatif
+
+
 - stat par tower par wave
+- refaire système mouse et keyboard input : dans la boucle rvb mettre dans une array
+les input pressé, puis check avec la liste, pour use une seule fois .next()
+- debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)
+- animations : peut-on draw qu'une partie d'une texture ?
 
 - Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance
 
 - explosion en rond
-- bug sprite qui tourne (va trop vite ? Commence en plein milieu ? A pas le temps de finir ?)
+- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?)
 
 IDEAS:
 

@@ -11,7 +11,7 @@ import static rvb.RvB.ref;
 
 public class BigTower extends Tower{
     
-    public static int startPrice = 450;
+    public static int startPrice = 550;
     public static int priceP = startPrice;
     private Clip explodeClip;
     
@@ -51,7 +51,7 @@ public class BigTower extends Tower{
         power = 20;
         shootRate = 0.2f;
         bulletSpeed = 8;
-        explodeRadius = 3*RvB.unite/4;
+        explodeRadius = 4*RvB.unite/5;
         upgrades.add(new Upgrade("Range", range, 1.2f, "*", 120f, 1.5f, 3));
         upgrades.add(new Upgrade("Power", power, 1.5f, "*", 275f, 1.6f, 2));
         upgrades.add(new Upgrade("Attack speed", shootRate, 1.3f, "*", 200f, 1.5f, 2));

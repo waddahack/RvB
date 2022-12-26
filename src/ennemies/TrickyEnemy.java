@@ -16,7 +16,7 @@ public class TrickyEnemy extends Enemy{
         reward = 12;
         power = 6;
         shootRate = 1;
-        moveSpeed = 2.9f;
+        moveSpeed = 3.1f;
         range = 0;
         life = 80;
         width = 4*RvB.unite/5;

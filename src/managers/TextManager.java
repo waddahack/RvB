@@ -5,11 +5,11 @@ public class TextManager {
     public enum Text{
         // RANDOM TEXT
         MS(
-            new String[]{"Vitesse de déplacement"},
-            new String[]{"Move speed"}),
+            new String[]{"vitesse de déplacement"},
+            new String[]{"move speed"}),
         HP(
-            new String[]{"Point de vie"},
-            new String[]{"Health point"}),
+            new String[]{"point de vie"},
+            new String[]{"health point"}),
         DEFENDING(
             new String[]{"Je défends..."},
             new String[]{"Defending..."}),
@@ -33,7 +33,7 @@ public class TextManager {
             new String[]{"Sell"}),
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
-            new String[]{"Bazoo hacked the system !", "Options are unavailable..."}),
+            new String[]{"Bazoo had the system hacked !", "Options are unavailable..."}),
         SECRET_REVEAL(
             new String[]{"Bazoo est en fait le gentil ici.", "Raztech défend quelque chose qu'il lui a prit."},
             new String[]{"Bazoo is actually the real good guy here.", "Raztech is defending something he took from him."}),
@@ -122,13 +122,13 @@ public class TextManager {
             new String[]{"Difficile"},
             new String[]{"Hard"}),
         BOSS_DEFEATED(
-            new String[]{"Je reviendrai plus fort !", "Tu ne devrais pas plaisanter avec moi minable insecte !", "Ce n'est qu'une question de temps...", "Je vais libérer ma vrai puissance !", "Plus je souffre, plus je deviens puissant !"},
+            new String[]{"Je reviendrai plus fort !", "Tu ne devrais pas plaisanter avec moi vermine !", "Ce n'est qu'une question de temps...", "Je vais libérer ma vrai puissance !", "Plus je souffre, plus je deviens puissant !"},
             new String[]{"I will be back much stronger !", "You should not mess with me filthy bug !", "It is just a matter of time...", "I will unleash my true power !", "The more I suffer, the more powerful I get !"}),
         BOSS_NOT_DEFEATED(
-            new String[]{"Tu es faible.", "Je suis la fin, et j'arrive vite !", "Tu MOURRAS !", "Ça a toujours été une question de temps.", "Je n'ai pas fait attention, m'as-tu touché ?"},
+            new String[]{"Tu es faible.", "Je suis la fin, et j'arrive vite !", "MEUUUURS !", "Ça a toujours été une question de temps.", "Je n'ai pas fait attention, m'as-tu touché ?"},
             new String[]{"You are weak.", "I am the end, and I am coming fast !", "You shall DIE !", "It has always been a matter of time.", "I have not noticed, did you even hit me ?"}),
         BOSS_DEFEATED_ANSWER(
-            new String[]{"Toujours debout !", "Où es-tu ?", "J'attend...", "Même pas peur !", "Looser !"},
+            new String[]{"Toujours debout !", "Où es-tu ?", "J'attends...", "Même pas peur !", "Looser !"},
             new String[]{"Still standing !", "Where're you ?", "I'm waiting...", "Not afraid !", "Looser !"}),
         BOSS_NOT_DEFEATED_ANSWER(
             new String[]{"Noooon !", "Toujours vivant !", "Ouch !", "Attention à toi", "Grrrrr..."},

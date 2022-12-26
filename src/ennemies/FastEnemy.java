@@ -14,7 +14,7 @@ public class FastEnemy extends Enemy{
         reward = 6;
         power = 4;
         shootRate = 1;
-        moveSpeed = 4.2f;
+        moveSpeed = 4.4f;
         range = 3*RvB.unite;
         life = 42;
         width = RvB.unite;

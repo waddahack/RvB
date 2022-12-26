@@ -14,6 +14,7 @@ public class Overlay {
     private Texture bg = null;
     private float a = 1, borderA = 1;
     private boolean display;
+    private String anchor = "center";
     private ArrayList<Button> buttons = new ArrayList<>();
     private ArrayList<Integer> texturesX = new ArrayList<>(), texturesY = new ArrayList<>(), texturesW = new ArrayList<>(), texturesH = new ArrayList<>();
     private ArrayList<Texture> textures;
@@ -63,6 +64,10 @@ public class Overlay {
     
     public void setA(float a){
         this.a = a;
+    }
+    
+    public void setAnchor(String anchor){
+        this.anchor = anchor;
     }
     
     public void setBorderA(float borderA){
@@ -165,6 +170,22 @@ public class Overlay {
     }
     
     public void drawText(int x, int y, String text, UnicodeFont font) {
-        RvB.drawString(this.x+x, this.y+y, text, font);
+        switch(anchor){
+            case "topLeft":
+                RvB.drawString(this.x+x + font.getWidth(text)/2, this.y+y + font.getHeight(text)/2, text, font);
+                break;
+            case "topRight":
+                RvB.drawString(this.x+x - font.getWidth(text)/2, this.y+y + font.getHeight(text)/2, text, font);
+                break;
+            case "bottomLeft":
+                RvB.drawString(this.x+x + font.getWidth(text)/2, this.y+y - font.getHeight(text)/2, text, font);
+                break;
+            case "bottomRight":
+                RvB.drawString(this.x+x - font.getWidth(text)/2, this.y+y - font.getHeight(text)/2, text, font);
+                break;
+            case "center":
+                RvB.drawString(this.x+x, this.y+y, text, font);
+                break;
+        }
     }
 }

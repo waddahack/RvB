@@ -81,26 +81,30 @@ public abstract class Tower implements Shootable{
     public void searchAndShoot(){
         ArrayList<Enemy> enemies = game.enemies;
         if(enemies != null && !enemies.isEmpty()){
-            switch(focusButton.indexSwitch){
-                case 0: // Dans l'ordre du text (cf TextManager)
-                    aim(searchForFirst(enemies));
-                    break;
-                case 1:
-                    aim(searchForLast(enemies));
-                    break;
-                case 2:
-                    aim(searchForStrongest(enemies));
-                    break;
-                case 3:
-                    aim(searchForWeakest(enemies));
-                    break;
-                case 4:
-                    aim(searchForClosest(enemies));
-                    break;
-                default:
-                    aim(null);
-                    break;
+            if(canRotate){
+                switch(focusButton.indexSwitch){
+                    case 0: // Dans l'ordre du text (cf TextManager)
+                        aim(searchForFirst(enemies));
+                        break;
+                    case 1:
+                        aim(searchForLast(enemies));
+                        break;
+                    case 2:
+                        aim(searchForStrongest(enemies));
+                        break;
+                    case 3:
+                        aim(searchForWeakest(enemies));
+                        break;
+                    case 4:
+                        aim(searchForClosest(enemies));
+                        break;
+                    default:
+                        aim(null);
+                        break;
+                }
             }
+            else
+                aim(searchForAnyone(enemies));
         }
         else
             aim(null);
@@ -162,6 +166,14 @@ public abstract class Tower implements Shootable{
                     
             }
         return closest;
+    }
+    
+    private Enemy searchForAnyone(ArrayList<Enemy> enemies){
+        for(int i = 0 ; i < enemies.size() ; i++)
+            if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
+                return enemies.get(i); 
+            }
+        return null;
     }
     
     public void aim(Enemy e){
@@ -268,10 +280,12 @@ public abstract class Tower implements Shootable{
         });
         o2.addButton(b);
         // button focus
-        b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
-        b.setSwitch();
-        focusButton = b;
-        o2.addButton(b);
+        if(canRotate){
+            b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+            b.setSwitch();
+            focusButton = b;
+            o2.addButton(b);
+        }
         overlays.add(o2);
     }
     
@@ -289,15 +303,17 @@ public abstract class Tower implements Shootable{
         for(Upgrade up : upgrades)
             up.render();
         String price;
-        b = overlay.getButtons().get(overlay.getButtons().size()-2);
+        b = overlay.getButtons().get(0);
         if(b.isHovered()){
             price = "+ "+(int)(totalMoneySpent/2);
             b.drawText(price, RvB.fonts.get("canBuy"));
         }
         else
             b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
-        b = overlay.getButtons().get(overlay.getButtons().size()-1);
-        overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+        if(canRotate){
+            b = overlay.getButtons().get(1);
+            overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+        }
     }
     
     public void updateBullets(){

@@ -14,7 +14,7 @@ public class StrongEnemy extends Enemy{
         reward = 28;
         power = 10;
         shootRate = 1;
-        moveSpeed = 2.4f;
+        moveSpeed = 2.6f;
         range = 3*RvB.unite;
         life = 280;
         width = RvB.unite;

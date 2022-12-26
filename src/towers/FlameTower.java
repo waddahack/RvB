@@ -7,7 +7,7 @@ import static rvb.RvB.ref;
 
 public class FlameTower extends Tower{
 
-    public static int startPrice = 750;
+    public static int startPrice = 800;
     public static int priceP = startPrice;
     
     public FlameTower(){
@@ -35,10 +35,10 @@ public class FlameTower extends Tower{
         
         range = (int) (1.4*RvB.unite);
         power = 1;
-        shootRate = 35f;
+        shootRate = 30f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade("Range", range, 1.3f, "*", 180f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "+", 400f, 1.6f, 2));
+        upgrades.add(new Upgrade("Power", power, 1f, "+", 600f, 1.6f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

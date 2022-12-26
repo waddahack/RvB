@@ -34,6 +34,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
+import ui.Overlay;
 
 public class RvB{
     
@@ -66,10 +67,11 @@ public class RvB{
     public static Cursor cursor = null;
     public static int nbTileX = 32, nbTileY = 18; // Tilemap size. Doit être en accord avec le format des levels campagne à venir (32/18)
     public static int unite;
-    public static int fps = 120, windWidth, windHeight;
+    public static int windWidth, windHeight;
+    public static int syncFPS = 120, averageFPS = syncFPS, FPScounter = 0, counter = 0;
     public static float ref;
     public static boolean mouseDown = false, stateChanged = false;
-    public static double lastUpdate;
+    public static double lastUpdate, lastUpdateFPS;
     public static double deltaTime;
     public static Menu menu;
     public static Game game = null, adventureGame = null, randomGame = null, createdGame = null;
@@ -80,6 +82,7 @@ public class RvB{
     public static DecimalFormat formatter = new DecimalFormat("#.##");
     public static Texture cursorTexture = null;
     public static int[] cursorPos = new int[2];
+    private static Overlay debugTool;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -119,11 +122,27 @@ public class RvB{
             stateChanged = false;
             
             Display.update();
-            Display.sync(fps);
+            Display.sync(syncFPS);
+            
             deltaTime = System.currentTimeMillis() - lastUpdate;
+            calculateFPS();
+            
         }
         releaseTextures();
         exit();
+    }
+    
+    private static void calculateFPS(){
+        FPScounter += Math.round(1000/deltaTime);
+        counter++;
+        if(System.currentTimeMillis() - lastUpdateFPS >= 500){
+            lastUpdateFPS = System.currentTimeMillis();
+            averageFPS = Math.round(FPScounter/counter);
+            if(averageFPS > syncFPS)
+                averageFPS = syncFPS;
+            FPScounter = 0;
+            counter = 0;
+        }
     }
     
     private static ByteBuffer loadIcon(int bytes) throws IOException {
@@ -144,6 +163,7 @@ public class RvB{
         initTextures();
         initColors();
         initFonts();
+        initDebugTool();
         
         glEnable(GL11.GL_BLEND);
         glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -160,6 +180,7 @@ public class RvB{
         TextManager.initialize();
         menu = new Menu();
         lastUpdate = System.currentTimeMillis();
+        lastUpdateFPS = System.currentTimeMillis();
     }
 
     public static void update() {
@@ -185,8 +206,27 @@ public class RvB{
         PopupManager.Instance.update();
         SoundManager.Instance.update();
         
+        // DEBUG
+        renderDebugTool();     
+        
         renderMouse();
     }  
+    
+    private static void initDebugTool(){
+        debugTool = new Overlay(windWidth-260, windHeight/6, 250, 4*windHeight/6);
+        debugTool.setRGBA(new float[]{70/255f, 70/255f, 70/255f}, 0.4f);
+        debugTool.display(false);
+    }
+    
+    private static void renderDebugTool(){
+        if(!debugTool.isDisplayed())
+            return;
+        debugTool.render();
+        debugTool.setAnchor("topLeft");
+        // FPS
+        debugTool.drawText(10, 10, "FPS : ", fonts.get("normalS"));
+        debugTool.drawText(60, 10, averageFPS+"", fonts.get("normalS"));
+    }
     
     public static void renderMouse(){
         if(cursorTexture != null)
@@ -195,12 +235,28 @@ public class RvB{
     
     public static void checkInput() {
         State s = state;
-        // ESCAPE MENU
-        if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-            switchStateTo(State.MENU);
-            if(PopupManager.Instance.onPopup())
-                PopupManager.Instance.closeCurrentPopup();
+        if(Keyboard.next()){
+            
+            // ESCAPE MENU
+            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0)){
+                switchStateTo(State.MENU);
+                if(PopupManager.Instance.onPopup())
+                    PopupManager.Instance.closeCurrentPopup();
+            }
+            
+            // DEBUG & CHEATS KEY BINDS
+            if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
+                if(Keyboard.isKeyDown(Keyboard.KEY_M)){
+                    if(game != null)
+                        game.money += 10000;
+                }
+                else if(Keyboard.isKeyDown(Keyboard.KEY_D))
+                    debugTool.display(!debugTool.isDisplayed());
+            }
+            
+            //System.out.println(Keyboard.getEventKey());
         }
+        
         if(s != state)
             setCursor(Cursor.DEFAULT);
     }
@@ -401,7 +457,8 @@ public class RvB{
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
             textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
             textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
-            textures.put("rock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock.png"))));
+            textures.put("rock1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock1.png"))));
+            textures.put("rock2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock2.png"))));
             // Icons
             textures.put("FR", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_francais.png"))));
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));

@@ -15,7 +15,7 @@ public class BasicEnemy extends Enemy{
         reward = 2;
         power = 2;
         shootRate = 1;
-        moveSpeed = 3.3f;
+        moveSpeed = 3.5f;
         range = 3*RvB.unite;
         life = 30;
         width = 4*RvB.unite/5;
