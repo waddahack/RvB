@@ -555,7 +555,7 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int nbTower = 4;
+        int nbTower = 5;
         int size = (int) (50*ref);
         int sep = (int) (200*ref);
         int startPos = windWidth/2 - (nbTower-1)*size/2 - (nbTower-1)*sep/2;
@@ -567,16 +567,19 @@ public abstract class AppCore {
         for(int i = 0 ; i < nbTower ; i++){
             switch(i){
                 case 1:
-                    textureName = "circleTower";
+                    textureName = "basicTower";
                     break;
                 case 2:
-                    textureName = "bigTower";
+                    textureName = "circleTower";
                     break;
                 case 3:
+                    textureName = "bigTower";
+                    break;
+                case 4:
                     textureName = "flameTower";
                     break;
                 default: // 0 or default
-                    textureName = "basicTower";
+                    textureName = "raztech";
                     break;
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -649,15 +652,18 @@ public abstract class AppCore {
             o.render();     
             
             b = o.getButtons().get(0);
-            drawPrice(BasicTower.priceP, b, o);
+            drawPrice(Raztech.priceP, b, o);
             
             b = o.getButtons().get(1);
-            drawPrice(CircleTower.priceP, b, o);
+            drawPrice(BasicTower.priceP, b, o);
             
             b = o.getButtons().get(2);
-            drawPrice(BigTower.priceP, b, o);
+            drawPrice(CircleTower.priceP, b, o);
             
             b = o.getButtons().get(3);
+            drawPrice(BigTower.priceP, b, o);
+            
+            b = o.getButtons().get(4);
             drawPrice(FlameTower.priceP, b, o);
         }
         //
@@ -747,15 +753,18 @@ public abstract class AppCore {
         Tower tower = null;
         switch(id){
             case 0 :
-                tower = new BasicTower();
+                tower = new Raztech();
                 break;
             case 1 :
-                tower = new CircleTower();
+                tower = new BasicTower();
                 break;
             case 2 :
-                tower = new BigTower();
+                tower = new CircleTower();
                 break;
             case 3 :
+                tower = new BigTower();
+                break;
+            case 4 :
                 tower = new FlameTower();
                 break;
         }

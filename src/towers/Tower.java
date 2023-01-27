@@ -20,7 +20,7 @@ import ui.*;
 
 public abstract class Tower implements Shootable{
     
-    protected int price, range, power, bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus;
+    protected int price, range, power, bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus = 0;
     protected double lastShoot = 0;
     protected float shootRate, growth = 0;
     protected String name;
@@ -36,7 +36,7 @@ public abstract class Tower implements Shootable{
     protected Random random = new Random();
     protected float x, y;
     protected int size = unite;
-    protected int angle = 0, newAngle = 0;
+    protected int angle = 180, newAngle = 0;
     protected ArrayList<Texture> textures;
     protected int rotateIndex = -1;
     public String type;
@@ -208,7 +208,7 @@ public abstract class Tower implements Shootable{
     
     public void render(){
         for(int i = 0 ; i < textures.size() ; i++){
-            RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0);
+            RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0, 1);
         }
         if(selected)
             renderOverlay();
@@ -217,7 +217,7 @@ public abstract class Tower implements Shootable{
     private void renderPrevisu(){
         if(canBePlaced()){
             float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite;
-            RvB.drawFilledRectangle(xPos+unite/2-size/2, yPos+unite/2-size/2, size, size, null, 0.5f, textureStatic);
+            RvB.drawFilledRectangle(xPos+unite/2, yPos+unite/2, size, size, textureStatic, angle, 0.5f);
         }
         x = Mouse.getX();
         y = RvB.windHeight-Mouse.getY();

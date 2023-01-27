@@ -1,6 +1,8 @@
 NEXT BIG UPDATE MUST HAVE :
 
 Faire RAZTECH puis faire le site avant de continuer
+- Créer Raztech : une tour que tu peux déplacer entre les waves (coût).
+Tue des enemies pour gagner des buffs
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.
@@ -13,8 +15,6 @@ ROCKS :
 les input pressé, puis check avec la liste, pour use une seule fois .next()
 - debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)
 - animations : peut-on draw qu'une partie d'une texture ?
-
-- Créer Raztech : une tour que tu peux déplacer entre les waves. A des sorts avec cooldown
 
 - Balance
 

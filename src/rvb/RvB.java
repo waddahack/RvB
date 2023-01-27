@@ -360,15 +360,15 @@ public class RvB{
         
         glPopMatrix(); // Reset the current matrix to the one that was saved.
     }
-    
-    public static void drawFilledRectangle(float x, float y, int width, int height, Texture texture, double angle){
+     
+    public static void drawFilledRectangle(float x, float y, int width, int height, Texture texture, double angle, float a){
         glPushMatrix(); //Save the current matrix.
         
         glTranslated(x, y, 0);
         if(angle != 0)
             glRotated(angle, 0, 0, 1);
 
-        drawFilledRectangle(-width/2, -height/2, width, height, null, 1, texture);
+        drawFilledRectangle(-width/2, -height/2, width, height, null, a, texture);
         
         glPopMatrix(); // Reset the current matrix to the one that was saved.
     }
@@ -476,6 +476,8 @@ public class RvB{
             textures.put("coinsCantBuy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins_cantBuy.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             // Towers
+            textures.put("raztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/raztech.png"))));
+            
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
             textures.put("basicTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_turret.png"))));
@@ -492,6 +494,7 @@ public class RvB{
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));
+            textures.put("gun_bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/gun_bullet.png"))));
             textures.put("shell", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shell.png"))));
             textures.put("flame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame.png"))));
             // Enemies

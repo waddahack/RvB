@@ -94,7 +94,7 @@ public class BigTower extends Tower{
                 checkTime = System.currentTimeMillis();
             }  
             for(int i = 0 ; i < nbFlames ; i++)
-                RvB.drawFilledRectangle(explodeX + flamesX.get(i), explodeY + flamesY.get(i), 50, 50, RvB.textures.get("flame"), 0);
+                RvB.drawFilledRectangle(explodeX + flamesX.get(i), explodeY + flamesY.get(i), 50, 50, RvB.textures.get("flame"), 0, 1);
             if(count > 8)
                 explodeX = 10000;
         }

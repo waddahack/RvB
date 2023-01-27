@@ -52,12 +52,12 @@ public class Tile {
     }
     
     public void render(){
-        RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle);
+        RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle, 1);
     }
     
     public void renderSteps(){
         if(stepTexture != null)
-            RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle);
+            RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle, 1);
     }
     
     public void setPreviousRoad(Tile road){
@@ -140,7 +140,7 @@ public class Tile {
     
     public void renderDirection(){
         if(arrowAngle != -1)
-            RvB.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, RvB.textures.get("arrow"), arrowAngle);
+            RvB.drawFilledRectangle(x+unite/2, y+unite/2, unite/2, unite/2, RvB.textures.get("arrow"), arrowAngle, 1);
     }
     
     public int getIndexX(){

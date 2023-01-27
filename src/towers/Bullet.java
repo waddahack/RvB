@@ -118,10 +118,10 @@ public class Bullet{
             float percentToDest = (float) (distanceDone / totalDistance);
             if(percentToDest < 0.2)
                 percentToDest = 0.2f;
-            RvB.drawFilledRectangle(x, y, (int)((2*radius)*percentToDest), (int)((2*radius)*percentToDest), sprite, angle);
+            RvB.drawFilledRectangle(x, y, (int)((2*radius)*percentToDest), (int)((2*radius)*percentToDest), sprite, angle, 1);
         }
         else
-            RvB.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle);
+            RvB.drawFilledRectangle(x, y, (int)(2*radius), (int)(2*radius), sprite, angle, 1);
     }
     
     public double getX(){
@@ -142,7 +142,7 @@ public class Bullet{
             coef = 1;
         if(follow)
             return (x <= RvB.windWidth && x >= 0 && y <= RvB.windHeight && y >= 0 && !aim.isDead());
-        return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef+3 && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef+3);
+        return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef+RvB.unite/2 && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef+RvB.unite/2);
     }
     
     private boolean hasTouched(double angle){

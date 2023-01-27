@@ -73,7 +73,7 @@ public class FlyingEnemy extends Enemy{
         else if(startTimeWaitFor != 0)
             startTimeWaitFor = 0;
         
-        RvB.drawFilledRectangle(x, y, width, width, sprite, angle);
+        RvB.drawFilledRectangle(x, y, width, width, sprite, angle, 1);
         
         sprite = this.turningSprite;
         if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
@@ -82,6 +82,6 @@ public class FlyingEnemy extends Enemy{
             startTimeWaitFor = 0;
         
         turningSpriteAngle += 2*game.gameSpeed;
-        RvB.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle);
+        RvB.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle, 1);
     }
 }

@@ -100,22 +100,22 @@ public class Upgrade {
         nextUp = nbNumberToRound == 0 ? (int)getIncreasedValue()+"" : getIncreasedValue()+"";
         
         if(!button.isHidden()){
-            RvB.drawFilledRectangle(x-(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), icon, 0);
+            RvB.drawFilledRectangle(x-(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), icon, 0, 1);
             if(button.isHovered())
                 RvB.drawString(x, y-(int)(9*ref), nextUp, RvB.fonts.get("bonus"));
             else   
                 RvB.drawString(x, y-(int)(9*ref), up, RvB.fonts.get("normal"));
             if(game.money >= (int)Math.floor(price)){
                 RvB.drawString(x-(int)(10*ref), y+(int)(18*ref), upPrice, RvB.fonts.get("canBuy"));
-                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"), 0);
+                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"), 0, 1);
             } 
             else{
                 RvB.drawString(x-(int)(10*ref), y+(int)(18*ref), upPrice, RvB.fonts.get("cantBuy"));
-                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"), 0);
+                RvB.drawFilledRectangle(x+(int)(24*ref), y+(int)(18*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"), 0, 1);
             }
         }
         else{
-            RvB.drawFilledRectangle(x-(int)(20*ref), y, (int)(32*ref), (int)(32*ref), icon, 0);   
+            RvB.drawFilledRectangle(x-(int)(20*ref), y, (int)(32*ref), (int)(32*ref), icon, 0, 1);   
             RvB.drawString(x+(int)(20*ref), y, up, RvB.fonts.get("normal"));   
         }
     }

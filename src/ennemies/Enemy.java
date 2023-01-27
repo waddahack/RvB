@@ -110,7 +110,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
                     startTimeWaitFor = 0;
             }
 
-            RvB.drawFilledRectangle(x, y, width, width, sprite, angle);
+            RvB.drawFilledRectangle(x, y, width, width, sprite, angle, 1);
             
             if(!evolutions.isEmpty())
                 evolutions.peek().render();
