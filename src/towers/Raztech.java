@@ -1,13 +1,18 @@
 package towers;
 
+import ennemies.Enemy;
 import java.util.ArrayList;
 import rvb.RvB;
 import managers.SoundManager;
+import managers.TextManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
 import static rvb.RvB.game;
+import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import rvb.Tile;
+import ui.Button;
+import ui.Overlay;
 
 public class Raztech extends Tower{
     
@@ -15,6 +20,7 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
+    public int xp = 0, maxXP = 100;
     private boolean right = true;
     
     public Raztech() {
@@ -31,7 +37,7 @@ public class Raztech extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.TOWER_BASIC.getText();
+        name = Text.RAZTECH.getText();
         explode = false;
         follow = false;
         isMultipleShot = false;
@@ -44,7 +50,60 @@ public class Raztech extends Tower{
         power = 6;
         shootRate = 2f;
         bulletSpeed = 20;
-        growth = 0;
+        growth = 4;
+    }
+    
+    @Override
+    public void initOverlay(){
+        Overlay o1, o2;
+        
+        o1 = new Overlay(0, RvB.windHeight-(int)((60+45)*ref), (int)(200*ref), (int)(45*ref));
+        o1.setBG(RvB.textures.get("board"), 0.6f);
+        overlays.add(o1);
+        
+        o2 = new Overlay(0, RvB.windHeight-(int)(60*ref), RvB.windWidth, (int)(60*ref));
+        o2.setBG(RvB.textures.get("board"), 0.6f);
+        int imageSize = o2.getH()-(int)(5*ref);
+        o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, RvB.textures.get("raztech"));
+        
+        // button focus
+        if(canRotate){
+            focusButton = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+            focusButton.setSwitch();
+            o2.addButton(focusButton);
+        }
+        overlays.add(o2);
+    }
+    
+    @Override
+    public void renderOverlay(){
+        Button b;
+        Overlay overlay;
+        
+        for(Overlay o : overlays)
+            o.render();
+        
+        overlay = overlays.get(0);
+        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name+" ("+Text.RAZTECH_LVL.getText()+" "+lvl+")", RvB.fonts.get("normalL"));
+        
+        overlay = overlays.get(1);
+        int width = (int) (600*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
+        int xpWidth = (int) ((float)(xp)/(float)(maxXP) * width);
+
+        RvB.drawString(overlays.get(0).getW()+(int)(20*ref), y+height/2, Text.XP.getText()+" :", RvB.fonts.get("normal"));
+        
+        RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
+        RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
+        RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
+        
+        RvB.drawString(x+width/2, y+height/2, xp+"/"+maxXP, RvB.fonts.get("normalBlack"));
+        
+        RvB.drawString(x+width+(int)(300*ref), y+height/2, "ICI ON NOTE LES STATS", RvB.fonts.get("normal"));
+        
+        if(canRotate){
+            b = overlay.getButtons().get(0);
+            overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+        }
     }
     
     @Override
@@ -111,5 +170,32 @@ public class Raztech extends Tower{
     protected void raisePrice(){
         priceP *= 1.2;
         price = priceP;
+    }
+    
+    @Override
+    public void updateStats(Enemy e){
+        super.updateStats(e);
+        if(e.getLife()-power <= 0)
+            gainXP(e.getMaxLife());
+    }
+    
+    public void gainXP(int amount){
+        xp += amount;
+        if(xp >= maxXP){
+            levelUp();
+        }
+    }
+    
+    public void levelUp(){
+        xp -= maxXP;
+        if(xp < 0) xp = 0;
+        maxXP *= 5;
+        
+        range += RvB.unite/8 + lvl*RvB.unite/8;
+        shootRate += 0.1f + lvl*0.1f;
+        power += 1 + lvl*1;
+        size += growth;
+        
+        lvl++;
     }
 }

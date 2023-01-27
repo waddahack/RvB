@@ -40,6 +40,9 @@ public class TextManager {
         WHAT(
             new String[]{"Quoi ?"},
             new String[]{"What ?"}),
+        XP(
+            new String[]{"XP"},
+            new String[]{"XP"}),
         
         
         // MENU
@@ -86,6 +89,12 @@ public class TextManager {
             new String[]{"Bazoo"}),
         
         // TOWERS
+        RAZTECH(
+            new String[]{"Raztech"},
+            new String[]{"Raztech"}),
+        RAZTECH_LVL(
+            new String[]{"Niv."},
+            new String[]{"Lvl"}),
         TOWER_BASIC(
             new String[]{"Razanon"},
             new String[]{"Razannon"}),

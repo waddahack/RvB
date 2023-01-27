@@ -252,6 +252,15 @@ public class RvB{
                 }
                 else if(Keyboard.isKeyDown(Keyboard.KEY_D))
                     debugTool.display(!debugTool.isDisplayed());
+                else if(Keyboard.isKeyDown(Keyboard.KEY_L)){
+                    if(game != null && game.gameSpeed > 0 && game.raztech != null)
+                        game.raztech.levelUp();
+                }
+            }
+            // RACCOURCIS INGAME
+            if(game != null && game.gameSpeed > 0){
+                if(Keyboard.isKeyDown(Keyboard.KEY_R))
+                    game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).click();
             }
             
             //System.out.println(Keyboard.getEventKey());
@@ -597,10 +606,12 @@ public class RvB{
         float[] life6 = {210f/255f, 255f/255f, 25f/255f};
         float[] money = {240f/255f, 220f/255f, 0};
         float[] lightGreen = {225f/255f, 240f/255f, 200f/255f};
+        float[] lightBlue = {116f/255f, 136f/255f, 204f/255f};
         float[] blue = {58f/255f, 68f/255f, 102f/255f};
         float[] blueDark = {38f/255f, 43f/255f, 68f/255f};
         float[] grey = {90f/255f, 105f/255f, 136f/255f};
         float[] greyLight = {139f/255f, 155f/255f, 180f/255f};
+        float[] black = {20f/255f, 20f/255f, 20f/255f};
         float[] green = {92f/255f, 126f/255f, 41f/255f};
         float[] greenSemidark = {72f/255f, 98f/255f, 34f/255f};
         float[] greenDark = {38f/255f, 52f/255f, 18f/255f};
@@ -617,10 +628,12 @@ public class RvB{
         colors.put("money", money);
         colors.put("lightGreen", lightGreen);
         colors.put("lightRed", lightRed);
+        colors.put("lightBlue", lightBlue);
         colors.put("blue", blue);
         colors.put("blue_dark", blueDark);
         colors.put("grey", grey);
         colors.put("grey_light", greyLight);
+        colors.put("black", black);
         colors.put("green", green);
         colors.put("green_semidark", greenSemidark);
         colors.put("green_dark", greenDark);
@@ -650,6 +663,12 @@ public class RvB{
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
+        
+        color = RvB.colors.get("black");
+        awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
+        UnicodeFont normalBlack = new UnicodeFont(awtFont);
+        normalBlack.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        normalBlack.addAsciiGlyphs();
         
         color = RvB.colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(25*ref));
@@ -725,6 +744,8 @@ public class RvB{
             fonts.put("normalSB", normalSB);
             normal.loadGlyphs();
             fonts.put("normal", normal);
+            normalBlack.loadGlyphs();
+            fonts.put("normalBlack", normalBlack);
             normalL.loadGlyphs();
             fonts.put("normalL", normalL);
             normalXL.loadGlyphs();

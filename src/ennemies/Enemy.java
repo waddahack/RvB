@@ -284,22 +284,34 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         y = yBase;
     }
 
-    public void attacked(int power){
+    @Override
+    public void updateStats(Tower t){
+        
+    }
+    
+    @Override
+    public void updateStats(Enemy e){
+        // Not supposed to happen
+    }
+    
+    @Override
+    public void attacked(Shootable attacker){
         if(!started)
             return;
+        attacker.updateStats(this);
         if(!evolutions.isEmpty()){
-            evolutions.peek().attacked(power);
+            evolutions.peek().attacked(attacker.getPower());
             if(evolutions.peek().life <= 0){
                 evolutions.pop();
                 SoundManager.Instance.playOnce(armorBreak);
             }
         }
         else
-            life -= power;
+            life -= attacker.getPower();
             
         startTimeWaitFor = System.currentTimeMillis();
         if(life <= 0)
-            die();
+            die();  
     }
     
     public void die(){
@@ -312,6 +324,10 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             SoundManager.Instance.clipToClose(clip);
         } 
         game.money += reward;
+    }
+    
+    public int getLife(){
+        return life;
     }
     
     public int compareTo(Enemy e){

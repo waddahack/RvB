@@ -41,7 +41,9 @@ public abstract class Tower implements Shootable{
     protected int rotateIndex = -1;
     public String type;
     protected boolean mouseEntered = false;
-    private Button focusButton;
+    protected Button focusButton;
+    // STATS VARIABLES
+    public int damagesDone = 0, enemiesKilled = 0;
     
     public Tower(String type){
         textures = new ArrayList<>();
@@ -490,6 +492,10 @@ public abstract class Tower implements Shootable{
         return (int)(y/unite);
     }
     
+    public void setRange(int range){
+        this.range = range;
+    }
+    
     @Override
     public int getPower(){
         return power;
@@ -514,10 +520,25 @@ public abstract class Tower implements Shootable{
     }
     
     @Override
-    public void attacked(int power){
-        this.life -= power;
+    public void attacked(Shootable attacker){
+        this.life -= attacker.getPower();
         if(life <= 0)
             die();
+        attacker.updateStats(this);
+    }
+    
+    @Override
+    public void updateStats(Enemy e){
+        damagesDone += power;
+        if(e.getLife()-power <= 0){
+            enemiesKilled += 1;
+            damagesDone += e.getLife()-power; // Enlève le surplus de dégât (on ajoute forcément 0 ou moins)
+        } 
+    }
+    
+    @Override
+    public void updateStats(Tower t){
+        // Not supposed to happen
     }
     
     @Override

@@ -2,7 +2,11 @@ NEXT BIG UPDATE MUST HAVE :
 
 Faire RAZTECH puis faire le site avant de continuer
 Raztech : 
-- Gagne de l'xp en tuant pour débloquer des tourelles et des buffs
+- Déplacer raztech coûte de l'xp (20% de maxXP ?)
+- Bloquer les tourelles et les débloquer selon lvl raztech
+- Ajout des stats dans overlay raztech
+- Ajout du choix du buff au lvl up (popup avec 3 choix)
+- Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.

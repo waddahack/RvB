@@ -780,6 +780,7 @@ public abstract class AppCore {
                 }
                 else{
                     tower = new Raztech();
+                    tower.setRange(raztech.getRange());
                 } 
                 break;
         }

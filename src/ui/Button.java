@@ -125,9 +125,6 @@ public class Button {
         if(hidden)
             return;
             
-        // hover
-        if((isMouseIn() || selected) && borderRgb != null && !disabled)
-            RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // background
         if(rgb != null)
             RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
@@ -137,6 +134,9 @@ public class Button {
             else
                 RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
         }
+        // hover
+        if((isMouseIn() || selected) && borderRgb != null && !disabled)
+            RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
         // text
         if(text != null && font != null)
             RvB.drawString(x, y, indexSwitch >= 0 ? text.getLines()[indexSwitch] : text.getText(), font);

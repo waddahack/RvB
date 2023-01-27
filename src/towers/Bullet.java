@@ -81,14 +81,14 @@ public class Bullet{
             
         if(!aimAlreadyTouched && touched){
             shooter.getEnemiesTouched().add(aim);
-            aim.attacked(shooter.getPower());
+            aim.attacked(shooter);
             if(explode){
                 BigTower bt = (BigTower)shooter;
                 bt.bombExplode(aim.getX(), aim.getY());
                 for(int i = 0 ; i < game.enemies.size() ; i++){
                     Enemy e = game.enemies.get(i);
                     if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius() && e != aim)
-                        e.attacked(shooter.getPower());
+                        e.attacked(shooter);
                 }
             }
             if(!goThrough)

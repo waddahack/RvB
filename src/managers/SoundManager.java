@@ -44,9 +44,9 @@ public class SoundManager
         SOUND_WAVE = getClip("click_wave");
         setClipVolume(SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
         SOUND_RAZTECH1 = getClip("raztech_laugh1");
-        setClipVolume(SOUND_WAVE, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_WAVE, SoundManager.Volume.MEDIUM);
         SOUND_RAZTECH2 = getClip("raztech_laugh2");
-        setClipVolume(SOUND_WAVE, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_WAVE, SoundManager.Volume.MEDIUM);
     }
 
     public static void initialize(){
