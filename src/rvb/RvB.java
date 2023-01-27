@@ -464,6 +464,8 @@ public class RvB{
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
+            textures.put("place", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place.png"))));
+            textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place_raztech.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));
             textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
             textures.put("exitIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/exit_icon.png"))));

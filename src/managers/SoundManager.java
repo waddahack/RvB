@@ -31,7 +31,7 @@ public class SoundManager
     private ArrayList<Clip> clipsToClose, clipsToPlayNextFrame;
     private Map<String, Clip> ambianceClips;
     private boolean ready = true;
-    public static Clip SOUND_BUILD, SOUND_WAVE;
+    public static Clip SOUND_BUILD, SOUND_WAVE, SOUND_RAZTECH1, SOUND_RAZTECH2;
     
     private SoundManager(){ 
         clipsToClose = new ArrayList<Clip>();
@@ -43,6 +43,10 @@ public class SoundManager
         setClipVolume(SOUND_BUILD, SoundManager.Volume.SEMI_HIGH);
         SOUND_WAVE = getClip("click_wave");
         setClipVolume(SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
+        SOUND_RAZTECH1 = getClip("raztech_laugh1");
+        setClipVolume(SOUND_WAVE, SoundManager.Volume.SEMI_HIGH);
+        SOUND_RAZTECH2 = getClip("raztech_laugh2");
+        setClipVolume(SOUND_WAVE, SoundManager.Volume.SEMI_HIGH);
     }
 
     public static void initialize(){

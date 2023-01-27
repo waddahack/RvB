@@ -1,8 +1,8 @@
 NEXT BIG UPDATE MUST HAVE :
 
 Faire RAZTECH puis faire le site avant de continuer
-- Créer Raztech : une tour que tu peux déplacer entre les waves (coût).
-Tue des enemies pour gagner des buffs
+Raztech : 
+- Gagne de l'xp en tuant pour débloquer des tourelles et des buffs
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.

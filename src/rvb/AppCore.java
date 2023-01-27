@@ -94,10 +94,11 @@ public abstract class AppCore {
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
     protected boolean gameOver;
-    protected boolean inWave, dontPlace, towerHovered = false;
+    protected boolean inWave, dontPlace;
     public Enemy enemySelected = null;
     public boolean ended = false;
     public Tower towerSelected;
+    public Raztech raztech = null;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     public boolean bossDead = false, bossDefeated = false;
@@ -501,6 +502,10 @@ public abstract class AppCore {
             }
             else if(!t.isPlaced() && Mouse.isButtonDown(1)){
                 selectTower(null);
+                if(t == raztech){
+                    towersDestroyed.add(raztech);
+                    raztech = null;
+                }
                 t.destroy();
                 RvB.setCursor(Cursor.DEFAULT);
             }
@@ -555,7 +560,7 @@ public abstract class AppCore {
         overlays = new ArrayList<>();
         Overlay o;
         Button b;
-        int nbTower = 5;
+        int nbTower = 4;
         int size = (int) (50*ref);
         int sep = (int) (200*ref);
         int startPos = windWidth/2 - (nbTower-1)*size/2 - (nbTower-1)*sep/2;
@@ -566,20 +571,17 @@ public abstract class AppCore {
         String textureName = "";
         for(int i = 0 ; i < nbTower ; i++){
             switch(i){
-                case 1:
+                case 0:
                     textureName = "basicTower";
                     break;
-                case 2:
+                case 1:
                     textureName = "circleTower";
                     break;
-                case 3:
+                case 2:
                     textureName = "bigTower";
                     break;
-                case 4:
+                case 3:
                     textureName = "flameTower";
-                    break;
-                default: // 0 or default
-                    textureName = "raztech";
                     break;
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -591,6 +593,13 @@ public abstract class AppCore {
             });
             o.addButton(b);
         }
+        b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setItemFramed(true);
+        b.setFunction(__ -> {
+            if(towerSelected == null)
+                createTower(4);
+        });
+        o.addButton(b);
         overlays.add(o);
         
         // Overlay top
@@ -652,19 +661,19 @@ public abstract class AppCore {
             o.render();     
             
             b = o.getButtons().get(0);
-            drawPrice(Raztech.priceP, b, o);
-            
-            b = o.getButtons().get(1);
             drawPrice(BasicTower.priceP, b, o);
             
-            b = o.getButtons().get(2);
+            b = o.getButtons().get(1);
             drawPrice(CircleTower.priceP, b, o);
             
-            b = o.getButtons().get(3);
+            b = o.getButtons().get(2);
             drawPrice(BigTower.priceP, b, o);
             
-            b = o.getButtons().get(4);
+            b = o.getButtons().get(3);
             drawPrice(FlameTower.priceP, b, o);
+            
+            b = o.getButtons().get(4);
+            drawPrice(Raztech.priceP, b, o);
         }
         //
         //// Overlay principal
@@ -753,19 +762,25 @@ public abstract class AppCore {
         Tower tower = null;
         switch(id){
             case 0 :
-                tower = new Raztech();
-                break;
-            case 1 :
                 tower = new BasicTower();
                 break;
-            case 2 :
+            case 1 :
                 tower = new CircleTower();
                 break;
-            case 3 :
+            case 2 :
                 tower = new BigTower();
                 break;
-            case 4 :
+            case 3 :
                 tower = new FlameTower();
+                break;
+            case 4 :
+                if(raztech == null){
+                   raztech = new Raztech();
+                   tower = raztech; 
+                }
+                else{
+                    tower = new Raztech();
+                } 
                 break;
         }
         if(tower != null && tower.getPrice() <= money){
