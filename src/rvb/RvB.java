@@ -257,11 +257,6 @@ public class RvB{
                         game.raztech.levelUp();
                 }
             }
-            // RACCOURCIS INGAME
-            if(game != null && game.gameSpeed > 0){
-                if(Keyboard.isKeyDown(Keyboard.KEY_R))
-                    game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).click();
-            }
             
             //System.out.println(Keyboard.getEventKey());
         }
@@ -473,6 +468,7 @@ public class RvB{
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
+            textures.put("lock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/lock.png"))));
             textures.put("place", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place.png"))));
             textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place_raztech.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));

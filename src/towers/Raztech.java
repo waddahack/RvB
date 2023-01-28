@@ -16,11 +16,11 @@ import ui.Overlay;
 
 public class Raztech extends Tower{
     
-    public static int startPrice = 100;
+    public static int startPrice = 0;
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 100;
+    public int xp = 0, maxXP = 30;
     private boolean right = true;
     
     public Raztech() {
@@ -47,7 +47,7 @@ public class Raztech extends Tower{
         bulletSprite = RvB.textures.get("gun_bullet");
         
         range = 4*RvB.unite;
-        power = 6;
+        power = 2;
         shootRate = 2f;
         bulletSpeed = 20;
         growth = 4;
@@ -84,11 +84,12 @@ public class Raztech extends Tower{
             o.render();
         
         overlay = overlays.get(0);
-        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name+" ("+Text.RAZTECH_LVL.getText()+" "+lvl+")", RvB.fonts.get("normalL"));
+        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name+" ("+Text.LVL.getText()+lvl+")", RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
-        int width = (int) (600*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
+        int width = (int) (500*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
         int xpWidth = (int) ((float)(xp)/(float)(maxXP) * width);
+        if(xpWidth < 0) xpWidth = 0;
 
         RvB.drawString(overlays.get(0).getW()+(int)(20*ref), y+height/2, Text.XP.getText()+" :", RvB.fonts.get("normal"));
         
@@ -149,6 +150,7 @@ public class Raztech extends Tower{
             map.get((int) game.raztech.y).set((int) game.raztech.x, new Tile("grass"));
             game.towersDestroyed.add(this);
             game.towerSelected = null;
+            game.raztech.xp -= 0.2*game.raztech.maxXP;
         }   
         game.raztech.x = Math.floorDiv(Mouse.getX(), unite);
         game.raztech.y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
@@ -157,9 +159,6 @@ public class Raztech extends Tower{
         game.raztech.y = game.raztech.y*unite+unite/2;
         game.raztech.isPlaced = true;
         
-        game.money -= price;
-        raisePrice();
-        
         if(Math.random() < 0.5)
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
         else
@@ -167,15 +166,9 @@ public class Raztech extends Tower{
     }
     
     @Override
-    protected void raisePrice(){
-        priceP *= 1.2;
-        price = priceP;
-    }
-    
-    @Override
     public void updateStats(Enemy e){
         super.updateStats(e);
-        if(e.getLife()-power <= 0)
+        if(e.getLife()-power <= 0 && e.name != Text.ENEMY_BOSS.getText())
             gainXP(e.getMaxLife());
     }
     
@@ -189,13 +182,21 @@ public class Raztech extends Tower{
     public void levelUp(){
         xp -= maxXP;
         if(xp < 0) xp = 0;
-        maxXP *= 5;
+        maxXP = 100+maxXP*2;
         
-        range += RvB.unite/8 + lvl*RvB.unite/8;
-        shootRate += 0.1f + lvl*0.1f;
-        power += 1 + lvl*1;
+        range += RvB.unite/2;
+        shootRate += 0.2f;
+        power += 2;
         size += growth;
         
         lvl++;
+        if(lvl == 2)
+            game.getOverlays().get(0).getButtons().get(0).unlock();
+        else if(lvl == 4)
+            game.getOverlays().get(0).getButtons().get(1).unlock();
+        else if(lvl == 6)
+            game.getOverlays().get(0).getButtons().get(2).unlock();
+        else if(lvl == 8)
+            game.getOverlays().get(0).getButtons().get(3).unlock();
     }
 }

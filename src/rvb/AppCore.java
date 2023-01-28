@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import managers.PopupManager;
 import managers.TextManager.Text;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
@@ -130,7 +131,7 @@ public abstract class AppCore {
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
         
-        waveNumber = 6;
+        waveNumber = 1;
         if(diff == Difficulty.EASY){
             life = 125;
             money = 325;
@@ -535,6 +536,9 @@ public abstract class AppCore {
                 }
             }
         }
+        // RACCOURCIS CLAVIER
+        if(Keyboard.isKeyDown(Keyboard.KEY_R) && gameSpeed > 0)
+            overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
     }
     
     protected void renderEnemySelected(){
@@ -586,6 +590,8 @@ public abstract class AppCore {
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setItemFramed(true);
+            b.disable();
+            b.lock();
             int index = i;
             b.setFunction(__ -> {
                 if(towerSelected == null)
@@ -661,19 +667,31 @@ public abstract class AppCore {
             o.render();     
             
             b = o.getButtons().get(0);
-            drawPrice(BasicTower.priceP, b, o);
+            if(!b.isLocked())
+                drawPrice(BasicTower.priceP, b, o);
             
             b = o.getButtons().get(1);
-            drawPrice(CircleTower.priceP, b, o);
+            if(!b.isLocked())
+                drawPrice(CircleTower.priceP, b, o);
             
             b = o.getButtons().get(2);
-            drawPrice(BigTower.priceP, b, o);
+            if(!b.isLocked())
+                drawPrice(BigTower.priceP, b, o);
             
             b = o.getButtons().get(3);
-            drawPrice(FlameTower.priceP, b, o);
+            if(!b.isLocked())
+                drawPrice(FlameTower.priceP, b, o);
             
-            b = o.getButtons().get(4);
-            drawPrice(Raztech.priceP, b, o);
+            if(raztech != null && raztech.isPlaced()){
+                int width = (int) (150*ref), height = (int) (14*ref), x = (int)(30*ref), y = o.getY()+2*o.getH()/3-height/2;
+                int xpWidth = (int) ((float)(raztech.xp)/(float)(raztech.maxXP) * width);
+                if(xpWidth < 0) xpWidth = 0;
+                
+                o.drawText(x+width/2, o.getH()/3, Text.LVL.getText()+raztech.lvl, RvB.fonts.get("normalS"));
+                RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
+                RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
+                RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
+            }
         }
         //
         //// Overlay principal
@@ -732,7 +750,7 @@ public abstract class AppCore {
             waveBalance *= 10;
         if(waveNumber >= uEnemies[1].enterAt)
             waveBalance *= waveBalanceMult;
-        waveBalance = (int) (bossRound() ? waveBalance*0.5 : waveBalance);
+        waveBalance = (int) (bossRound() ? waveBalance*0.6 : waveBalance);
         wave = new Wave();
         int min, max;
         while(waveBalance >= uEnemies[0].balance){

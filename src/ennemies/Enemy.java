@@ -23,7 +23,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width, hitboxWidth;
     protected Texture sprite = null, brightSprite = null;
     protected long stopFor = -1;
-    protected String name;
+    public String name;
     protected SoundManager.Volume volume;
     protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;

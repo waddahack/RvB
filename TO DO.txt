@@ -2,8 +2,6 @@ NEXT BIG UPDATE MUST HAVE :
 
 Faire RAZTECH puis faire le site avant de continuer
 Raztech : 
-- Déplacer raztech coûte de l'xp (20% de maxXP ?)
-- Bloquer les tourelles et les débloquer selon lvl raztech
 - Ajout des stats dans overlay raztech
 - Ajout du choix du buff au lvl up (popup avec 3 choix)
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)

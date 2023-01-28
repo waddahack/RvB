@@ -21,7 +21,7 @@ public class Button {
     private float[] borderRgb;
     private UnicodeFont font;
     private Texture bg = null;
-    private boolean hidden = false, disabled = false;
+    private boolean hidden = false, disabled = false, locked = false;
     private boolean mouseEntered = false;
     private boolean itemFramed = false;
     private Clip click;
@@ -129,10 +129,14 @@ public class Button {
         if(rgb != null)
             RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
         if(bg != null){
+            float a = locked ? 0.5f : 1f;
             if(itemFramed)
-                RvB.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
+                RvB.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, a, bg);
             else
-                RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
+                RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, a, bg);
+        }
+        if(locked){
+            RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, RvB.textures.get("lock"));
         }
         // hover
         if((isMouseIn() || selected) && borderRgb != null && !disabled)
@@ -185,8 +189,24 @@ public class Button {
     }
     
     public void enable(){
+        if(locked)
+            return;
         disabled = false;
         clickSound = true;
+    }
+    
+    public void lock(){
+        locked = true;
+    }
+    
+    public void unlock(){
+        locked = false;
+        disabled = false;
+        clickSound = true;
+    }
+    
+    public boolean isLocked(){
+        return locked;
     }
     
     public void disableClickSound(){

@@ -43,6 +43,9 @@ public class TextManager {
         XP(
             new String[]{"XP"},
             new String[]{"XP"}),
+        LVL(
+            new String[]{"Niv. "},
+            new String[]{"Lvl "}),
         
         
         // MENU
@@ -92,9 +95,6 @@ public class TextManager {
         RAZTECH(
             new String[]{"Raztech"},
             new String[]{"Raztech"}),
-        RAZTECH_LVL(
-            new String[]{"Niv."},
-            new String[]{"Lvl"}),
         TOWER_BASIC(
             new String[]{"Razanon"},
             new String[]{"Razannon"}),
