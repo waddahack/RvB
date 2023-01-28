@@ -46,6 +46,15 @@ public class TextManager {
         LVL(
             new String[]{"Niv. "},
             new String[]{"Lvl "}),
+        LEVEL(
+            new String[]{"Niveau "},
+            new String[]{"Level "}),
+        RAZTECH_LVLUP(
+            new String[]{"Raztech a gagné un niveau !"},
+            new String[]{"Raztech has leveled up !"}),
+        SELECT_REWARD(
+            new String[]{"Choisis une récompense."},
+            new String[]{"Choose a reward."}),
         
         
         // MENU
@@ -113,6 +122,14 @@ public class TextManager {
         FOCUS(
             new String[]{"Vise le"},
             new String[]{"Focus the"}),
+        
+        // BUFFS
+        BUFF_UPGRADE(
+            new String[]{"Égoiste"},
+            new String[]{"Selfish"}),
+        BUFF_SLOW(
+            new String[]{"Ennuyeux"},
+            new String[]{"Annoying"}),
         
         // POPUPS
         SELECT_DIFF(

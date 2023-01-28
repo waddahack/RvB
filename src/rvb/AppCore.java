@@ -94,6 +94,7 @@ public abstract class AppCore {
     public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
+    public ArrayList<String> buffsIDLeft;
     protected boolean gameOver;
     protected boolean inWave, dontPlace;
     public Enemy enemySelected = null;
@@ -118,6 +119,9 @@ public abstract class AppCore {
         enemies = new ArrayList<>();
         enemiesDead = new ArrayList<>();
         enemiesToAdd = new ArrayList<>();
+        buffsIDLeft = new ArrayList<>();
+        for(String id : Buff.BuffsID)
+            buffsIDLeft.add(id);
         gameOver = false;
         inWave = false;
         dontPlace = false;
@@ -451,16 +455,18 @@ public abstract class AppCore {
             }  
         }
         
-        if(gameSpeed > 0){
-            if(inWave){
+        if(inWave){
+            if(gameSpeed > 0){
                 wave.update();
                 for(int i = enemies.size()-1 ; i >= 0 ; i--)
                     enemies.get(i).update();
-                for(Enemy e : enemies)
-                    e.render();
-                if(enemySelected != null)
-                    renderEnemySelected();
             }
+            for(Enemy e : enemies)
+                e.render();
+            if(enemySelected != null)
+                renderEnemySelected();
+        }
+        if(gameSpeed > 0){
             // Wave check if done
             if(inWave && wave.isDone()){
                 overlays.get(1).getButtons().get(0).enable();

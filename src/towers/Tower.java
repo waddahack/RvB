@@ -43,7 +43,7 @@ public abstract class Tower implements Shootable{
     protected boolean mouseEntered = false;
     protected Button focusButton;
     // STATS VARIABLES
-    public int damagesDone = 0, enemiesKilled = 0;
+    public int damagesDone = 0, enemiesKilled = 0, moneyGained = 0;
     
     public Tower(String type){
         textures = new ArrayList<>();
@@ -533,6 +533,7 @@ public abstract class Tower implements Shootable{
         if(e.getLife()-power <= 0){
             enemiesKilled += 1;
             damagesDone += e.getLife()-power; // Enlève le surplus de dégât (on ajoute forcément 0 ou moins)
+            moneyGained += e.getReward();
         } 
     }
     

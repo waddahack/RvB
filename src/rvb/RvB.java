@@ -256,6 +256,23 @@ public class RvB{
                     if(game != null && game.gameSpeed > 0 && game.raztech != null)
                         game.raztech.levelUp();
                 }
+                // Game speed
+                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+                    if(game != null)
+                        game.gameSpeed = 0;
+                }
+                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1)){
+                    if(game != null)
+                        game.gameSpeed = 1;
+                }
+                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)){
+                    if(game != null)
+                        game.gameSpeed = 2;
+                }
+                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD3)){
+                    if(game != null)
+                        game.gameSpeed = 4;
+                }
             }
             
             //System.out.println(Keyboard.getEventKey());
@@ -498,6 +515,11 @@ public class RvB{
             textures.put("flameTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower.png"))));
             textures.put("flameTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_base.png"))));
             textures.put("flameTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_turret.png"))));
+            // Buffs
+            textures.put("buffSlow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
+            textures.put("buffSlowLogo", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow_logo.png"))));
+            textures.put("buffUpgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
+            textures.put("buffUpgradeLogo", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade_logo.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));

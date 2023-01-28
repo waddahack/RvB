@@ -2,6 +2,8 @@ package towers;
 
 import ennemies.Enemy;
 import java.util.ArrayList;
+import java.util.HashMap;
+import managers.PopupManager;
 import rvb.RvB;
 import managers.SoundManager;
 import managers.TextManager;
@@ -20,8 +22,9 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 30;
+    public int xp = 0, maxXP = 50;
     private boolean right = true;
+    public HashMap<Buff, Integer> buffs;
     
     public Raztech() {
         super("raztech");
@@ -45,12 +48,18 @@ public class Raztech extends Tower{
         volume = SoundManager.Volume.LOW;
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("gun_bullet");
-        
+
         range = 4*RvB.unite;
         power = 2;
         shootRate = 2f;
         bulletSpeed = 20;
         growth = 4;
+        
+        upgrades.add(new Upgrade("Range", range, RvB.unite/2, "+", 0, 0, 0));
+        upgrades.add(new Upgrade("Power", power, 2, "+", 0, 0, 0));
+        upgrades.add(new Upgrade("Attack speed", shootRate, 0.2f, "+", 0, 0, 0));
+        
+        buffs = new HashMap<>();
     }
     
     @Override
@@ -65,6 +74,13 @@ public class Raztech extends Tower{
         o2.setBG(RvB.textures.get("board"), 0.6f);
         int imageSize = o2.getH()-(int)(5*ref);
         o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, RvB.textures.get("raztech"));
+        
+        // init upgrades position
+        int sep = (int) (200 * ref);
+        if(sep < 25) sep = 25;
+        for(int i = 0 ; i < upgrades.size() ; i++){
+            upgrades.get(i).initPosAndButton(o2.getW()/2 + i*sep, o2.getY() + o2.getH()/2, this);
+        }
         
         // button focus
         if(canRotate){
@@ -98,8 +114,10 @@ public class Raztech extends Tower{
         RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
         
         RvB.drawString(x+width/2, y+height/2, xp+"/"+maxXP, RvB.fonts.get("normalBlack"));
+
+        for(Upgrade up : upgrades)
+            up.render();
         
-        RvB.drawString(x+width+(int)(300*ref), y+height/2, "ICI ON NOTE LES STATS", RvB.fonts.get("normal"));
         
         if(canRotate){
             b = overlay.getButtons().get(0);
@@ -169,7 +187,7 @@ public class Raztech extends Tower{
     public void updateStats(Enemy e){
         super.updateStats(e);
         if(e.getLife()-power <= 0 && e.name != Text.ENEMY_BOSS.getText())
-            gainXP(e.getMaxLife());
+            gainXP(e.getMaxLife()/2);
     }
     
     public void gainXP(int amount){
@@ -182,11 +200,12 @@ public class Raztech extends Tower{
     public void levelUp(){
         xp -= maxXP;
         if(xp < 0) xp = 0;
-        maxXP = 100+maxXP*2;
+        maxXP = 50+maxXP*2;
         
-        range += RvB.unite/2;
-        shootRate += 0.2f;
-        power += 2;
+        range = (int) upgrades.get(0).setNewValue();
+        power = (int) upgrades.get(1).setNewValue();
+        shootRate = upgrades.get(2).setNewValue();
+        
         size += growth;
         
         lvl++;
@@ -198,5 +217,8 @@ public class Raztech extends Tower{
             game.getOverlays().get(0).getButtons().get(2).unlock();
         else if(lvl == 8)
             game.getOverlays().get(0).getButtons().get(3).unlock();
+        
+        SoundManager.Instance.playOnce(SoundManager.SOUND_LEVELUP);
+        PopupManager.Instance.rewardSelection();
     }
 }

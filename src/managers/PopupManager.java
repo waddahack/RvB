@@ -12,6 +12,7 @@ import static rvb.RvB.stateChanged;
 import ui.Button;
 import ui.Overlay;
 import static rvb.RvB.ref;
+import towers.Buff;
 
 
 public class PopupManager {
@@ -20,12 +21,14 @@ public class PopupManager {
     private static int width = (int) (800*ref), height = (int) (450*ref);
     private static int oldGameSpeed;
     private Overlay currentOverlay;
-    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty;
+    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty, rewardSelection;
     private ArrayList<String> lines;
     private ArrayList<String> buttonsText;
     private ArrayList<UnicodeFont> fonts;
     private static Random random;
     private String gameType;
+    private int top;
+    private Buff buff1, buff2, buff3;
 
     private PopupManager(){
         random = new Random();
@@ -143,6 +146,50 @@ public class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         enemiesUpgraded.addButton(b);
+        // REWARD SELECTION
+        rewardSelection = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
+        rewardSelection.display(false);
+        rewardSelection.setBG(RvB.textures.get("board"), 0.8f);
+        rewardSelection.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        buff1 = new Buff(game.buffsIDLeft.get(0));
+        buff2 = game.buffsIDLeft.size() > 1 ? new Buff(game.buffsIDLeft.get((int) Math.floor(1+Math.random()*game.buffsIDLeft.size()))) : null;
+        
+        buff3 = game.buffsIDLeft.size() > 1 ? new Buff(game.buffsIDLeft.get((int) Math.floor(1+Math.random()*game.buffsIDLeft.size()))) : null;
+        
+        b = new Button(rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (butWith*1.2), butHeight*6, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            currentOverlay = null;
+            rewardSelection.display(false);
+            game.gameSpeed = oldGameSpeed;
+            game.enableAllButtons();
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        rewardSelection.addButton(b);
+        if(buff2 != null){
+            b = new Button(rewardSelection.getW()/2, 3*rewardSelection.getH()/4, (int) (butWith*1.2), butHeight*6, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
+                stateChanged = true;
+                currentOverlay = null;
+                rewardSelection.display(false);
+                game.gameSpeed = oldGameSpeed;
+                game.enableAllButtons();
+                RvB.setCursor(RvB.Cursor.DEFAULT);
+            });
+            rewardSelection.addButton(b);
+        }
+        if(buff3 != null){
+            b = new Button(5*rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (butWith*1.2), butHeight*6, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
+                stateChanged = true;
+                currentOverlay = null;
+                rewardSelection.display(false);
+                game.gameSpeed = oldGameSpeed;
+                game.enableAllButtons();
+                RvB.setCursor(RvB.Cursor.DEFAULT);
+            });
+            rewardSelection.addButton(b);
+        }
     }
     
     public void update(){
@@ -152,7 +199,7 @@ public class PopupManager {
         currentOverlay.render();
         if(currentOverlay == null)
             return;
-        int top = height/4;
+        int top = this.top;
         for(int i = 0 ; i < lines.size() ; i++){
             if(i > 0)
                 top += fonts.get(i).getHeight(lines.get(i))+8;
@@ -176,6 +223,7 @@ public class PopupManager {
     
     public void popup(String[] infoLines, String butText){
         initPopup(popup);
+        top = height/4;
         for(int i = 0 ; i < infoLines.length ; i++)
             addText(infoLines[i], RvB.fonts.get("normalXL"));
         
@@ -184,6 +232,7 @@ public class PopupManager {
     
     public void chooseDifficulty(String gameType){
         initPopup(chooseDifficulty);
+        top = height/4;
         this.gameType = gameType;
         
         addText(Text.SELECT_DIFF.getText(), RvB.fonts.get("normalXL"));
@@ -198,6 +247,7 @@ public class PopupManager {
         if(currentOverlay == gameOver)
             return;
         initPopup(gameOver);
+        top = height/4;
         addText(Text.GAME_OVER.getLines(), RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalL"));
         addText(Text.WAVE.getText()+" "+game.waveNumber, RvB.fonts.get("normalXLB"));
@@ -209,7 +259,8 @@ public class PopupManager {
         oldGameSpeed = game.gameSpeed;
         game.gameSpeed = 0;
         initPopup(enemiesUpgraded);
-        
+        top = height/4;
+
         int r = random.nextInt(5);      
         addText(game.bossDefeated ? Text.BOSS_DEFEATED.getLines()[r] : Text.BOSS_NOT_DEFEATED.getLines()[r], RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalXL"));
@@ -219,6 +270,19 @@ public class PopupManager {
         
         r = random.nextInt(5); 
         buttonsText.add(game.bossDefeated ? Text.BOSS_DEFEATED_ANSWER.getLines()[r] : Text.BOSS_NOT_DEFEATED_ANSWER.getLines()[r]);
+    }
+    
+    public void rewardSelection(){
+        oldGameSpeed = game.gameSpeed;
+        game.gameSpeed = 0;
+        initPopup(rewardSelection);
+        top = height/8;
+        
+        addText(Text.LEVEL.getText() + game.raztech.lvl, RvB.fonts.get("normalXLB"));
+        addText("\n", RvB.fonts.get("normal"));
+        addText(Text.RAZTECH_LVLUP.getText(), RvB.fonts.get("normalL"));
+        addText("", RvB.fonts.get("normalL"));
+        addText(Text.SELECT_REWARD.getText(), RvB.fonts.get("normalL"));
     }
 
     private void addText(String text, UnicodeFont font){
