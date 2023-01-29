@@ -1,5 +1,6 @@
 package towers;
 
+import Buffs.Buff;
 import ennemies.Enemy;
 import java.util.ArrayList;
 import java.util.HashMap;

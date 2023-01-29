@@ -96,7 +96,7 @@ public class Overlay {
             RvB.drawFilledRectangle(x-w/2, y-h/2, w, h, null, 1, textures.get(i));
         }
     }
-   
+    
     public void addButton(Button b){
         b.setX(this.x + b.getX());
         b.setY(this.y + b.getY());

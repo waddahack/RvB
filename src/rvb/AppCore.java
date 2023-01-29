@@ -1,5 +1,6 @@
 package rvb;
 
+import Buffs.Buff;
 import managers.SoundManager;
 import ennemies.*;
 import java.awt.Graphics2D;
@@ -10,8 +11,10 @@ import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -94,7 +97,7 @@ public abstract class AppCore {
     public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
-    public ArrayList<String> buffsIDLeft;
+    public Stack<Buff> buffs;
     protected boolean gameOver;
     protected boolean inWave, dontPlace;
     public Enemy enemySelected = null;
@@ -119,9 +122,8 @@ public abstract class AppCore {
         enemies = new ArrayList<>();
         enemiesDead = new ArrayList<>();
         enemiesToAdd = new ArrayList<>();
-        buffsIDLeft = new ArrayList<>();
-        for(String id : Buff.BuffsID)
-            buffsIDLeft.add(id);
+        buffs = Buff.initBuffStack();
+        Collections.shuffle(buffs);
         gameOver = false;
         inWave = false;
         dontPlace = false;
