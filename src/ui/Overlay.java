@@ -155,6 +155,18 @@ public class Overlay {
     
     public ArrayList<Button> getButtons(){
         return buttons;
+    }
+    
+    public void clearButtons(){
+        buttons.clear();
+    } 
+    
+    public void clearImages(){
+        textures.clear();
+        texturesX.clear();
+        texturesY.clear();
+        texturesW.clear();
+        texturesH.clear();
     } 
 
     public boolean buttonClicked(int c){

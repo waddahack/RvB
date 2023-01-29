@@ -5,7 +5,7 @@ import managers.TextManager.Text;
 public class Slow extends Buff{
     
     public Slow(){
-        super("slow", Text.BUFF_SLOW, "Raztech désormais slow", 1);
+        super("slow", Text.BUFF_SLOW, Text.BUFF_SLOW_DESC, 1);
     }
     
     @Override

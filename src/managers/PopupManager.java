@@ -13,6 +13,7 @@ import ui.Button;
 import ui.Overlay;
 import static rvb.RvB.ref;
 import Buffs.Buff;
+import java.util.Collections;
 
 
 public class PopupManager {
@@ -169,14 +170,6 @@ public class PopupManager {
         }
         for(int i = 0 ; i < buttonsText.size() ; i++)
             currentOverlay.getButtons().get(i).drawText(0, 0, buttonsText.get(i), RvB.fonts.get("normalLB"));
-        if(currentOverlay == rewardSelection){
-            if(buff1 != null)
-                buff1.renderCard();
-            if(buff2 != null)
-                buff2.renderCard();
-            if(buff3 != null)
-                buff3.renderCard();
-        }
     }
     
     public void popup(String text, String butText){
@@ -246,6 +239,8 @@ public class PopupManager {
         oldGameSpeed = game.gameSpeed;
         game.gameSpeed = 0;
         initPopup(rewardSelection);
+        rewardSelection.clearButtons();
+        rewardSelection.clearImages();
         top = height/8;
         
         addText(Text.LEVEL.getText() + game.raztech.lvl, RvB.fonts.get("normalXLB"));
@@ -258,41 +253,69 @@ public class PopupManager {
         buff2 = game.buffs.empty() ? null : game.buffs.pop();
         buff3 = game.buffs.empty() ? null : game.buffs.pop();
         
+        Button b;
         if(buff1 != null){
+            b = new Button(rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
-                enemiesUpgraded.display(false);
+                rewardSelection.display(false);
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
+                
+                buff1.pick();
+                
+                if(buff2 != null) game.buffs.push(buff2);
+                if(buff3 != null) game.buffs.push(buff3);
+                Collections.shuffle(game.buffs);
                 if(buff1.isAnyLeft())
                     game.buffs.push(buff1);
-                if(buff2 != null) game.buffs.push(buff2);
-                if(buff3 != null) game.buffs.push(buff3);
+            });
+            rewardSelection.addButton(b);
+            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff1.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff1.logo);
         }
         if(buff2 != null){
+            b = new Button(rewardSelection.getW()/2, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
-                enemiesUpgraded.display(false);
+                rewardSelection.display(false);
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
+                
+                buff2.pick();
+                
                 if(buff2.isAnyLeft())
                     game.buffs.push(buff2);
-                if(buff1 != null) game.buffs.push(buff1);
                 if(buff3 != null) game.buffs.push(buff3);
+                Collections.shuffle(game.buffs);
+                if(buff1 != null) game.buffs.push(buff1);
+            });     
+            rewardSelection.addButton(b);
+            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff2.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff2.logo);
         }
         if(buff3 != null){
+            b = new Button(5*rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
-                enemiesUpgraded.display(false);
+                rewardSelection.display(false);
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
+                
+                buff3.pick();
+                
                 if(buff3.isAnyLeft())
                     game.buffs.push(buff3);
-                if(buff1 != null) game.buffs.push(buff1);
                 if(buff2 != null) game.buffs.push(buff2);
+                Collections.shuffle(game.buffs);
+                if(buff1 != null) game.buffs.push(buff1);
+            });
+            rewardSelection.addButton(b);
+            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff3.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff3.logo);
         }
     }
 

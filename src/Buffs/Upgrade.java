@@ -5,7 +5,7 @@ import managers.TextManager.Text;
 public class Upgrade extends Buff{
     
     public Upgrade(){
-        super("upgrade", Text.BUFF_UPGRADE, "Buff les stats de raztech", -1);
+        super("upgrade", Text.BUFF_UPGRADE, Text.BUFF_UPGRADE_DESC, -1);
     }
     
     @Override

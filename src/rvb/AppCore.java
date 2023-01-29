@@ -123,7 +123,6 @@ public abstract class AppCore {
         enemiesDead = new ArrayList<>();
         enemiesToAdd = new ArrayList<>();
         buffs = Buff.initBuffStack();
-        Collections.shuffle(buffs);
         gameOver = false;
         inWave = false;
         dontPlace = false;

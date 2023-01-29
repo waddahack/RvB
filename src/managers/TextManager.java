@@ -127,7 +127,13 @@ public class TextManager {
         BUFF_UPGRADE(
             new String[]{"Égoiste"},
             new String[]{"Selfish"}),
+        BUFF_UPGRADE_DESC(
+            new String[]{"Augmente la portée, la puissance et la vitesse d'attaque de Razteh."},
+            new String[]{"Upgrade Raztech's range, power and attack speed."}),
         BUFF_SLOW(
+            new String[]{"Ennuyeux"},
+            new String[]{"Annoying"}),
+        BUFF_SLOW_DESC(
             new String[]{"Ennuyeux"},
             new String[]{"Annoying"}),
         

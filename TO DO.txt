@@ -2,7 +2,7 @@ NEXT BIG UPDATE MUST HAVE :
 
 Faire RAZTECH puis faire le site avant de continuer
 Raztech : 
-- Ajout du choix du buff au lvl up (popup avec 3 choix)
+- Ajouter description (et nom ?) aux buffs en hover (ou pas)
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
 
 ROCKS :
