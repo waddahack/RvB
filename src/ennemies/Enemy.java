@@ -10,9 +10,11 @@ import towers.Bullet;
 import towers.Tower;
 import rvb.Shootable;
 import managers.SoundManager;
+import managers.TextManager.Text;
 import rvb.Tile;
 import rvb.RvB;
 import static rvb.RvB.game;
+import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.Overlay;
 
@@ -23,7 +25,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width, hitboxWidth;
     protected Texture sprite = null, brightSprite = null;
     protected long stopFor = -1;
-    public String name;
+    public Text name;
     protected SoundManager.Volume volume;
     protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;
@@ -262,15 +264,15 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
         // Lifebar
-        int width = (int) (290*RvB.ref), height = 16;
+        int width = (int) (290*ref), height = (int) (16*ref);
         int currentLife = (int) (evolutions.isEmpty() ? ((double)life/(double)maxLife)*width : ((double)evolutions.peek().life/(double)evolutions.peek().maxLife)*width);
         float[] bgColor = evolutions.isEmpty() ? RvB.colors.get("lightGreen") : evolutions.size() > 1 ? evolutions.get(evolutions.size()-2).lifeColor : RvB.colors.get("life");
         RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, bgColor, 1, null);
         RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, currentLife, height, evolutions.isEmpty() ? RvB.colors.get("life") : evolutions.peek().lifeColor, 1, null);
         RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
-        o.drawText(o.getW()/2, 12, name, RvB.fonts.get("normalL"));
-        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name)/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, 12, ""+maxLife, RvB.fonts.get("life"));
+        o.drawText(o.getW()/2, (int) (12*ref), name.getText(), RvB.fonts.get("normalL"));
+        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, (int)(12*ref), ""+maxLife, RvB.fonts.get("life"));
     }
     
     public void attack(){

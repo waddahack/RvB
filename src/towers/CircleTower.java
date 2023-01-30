@@ -21,7 +21,7 @@ public class CircleTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.TOWER_CIRCLE.getText();
+        name = Text.TOWER_CIRCLE;
         explode = false;
         follow = false;
         isMultipleShot = true;

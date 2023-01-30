@@ -159,7 +159,7 @@ public class PopupManager {
         if(currentOverlay == null)
             return;
         RvB.drawFilledRectangle(0, 0, RvB.windWidth, RvB.windHeight, null, 0.4f, RvB.textures.get("board"));
-        currentOverlay.render();
+        renderCurrentOverlay();
         if(currentOverlay == null)
             return;
         int top = this.top;
@@ -172,23 +172,62 @@ public class PopupManager {
             currentOverlay.getButtons().get(i).drawText(0, 0, buttonsText.get(i), RvB.fonts.get("normalLB"));
     }
     
+    private void renderCurrentOverlay(){
+        currentOverlay.render();
+        if(currentOverlay == rewardSelection){
+            Button b;
+            Buff buff;
+            for(int i = 0 ; i < 3 ; i++){
+                switch(i){
+                    default:
+                        buff = buff1;
+                        break;
+                    case 1:
+                        buff = buff2;
+                        break;
+                    case 2:
+                        buff = buff3;
+                        break;
+                }
+                if(buff == null)
+                    break;
+                b = rewardSelection.getButtons().get(i);
+                if(b.isHovered()){
+                    int betweenLines = 0;
+                    for(int j = 0 ; j < buff.description.getLines().length ; j++){
+                        rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-b.getH()/2+20*ref + betweenLines), buff.description.getLines()[j], RvB.fonts.get("normalS"));
+                        betweenLines += RvB.fonts.get("normalS").getFont().getSize()+1;
+                    }
+                }
+                else{
+                    rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-b.getH()/2+20*ref), buff.name.getText(), RvB.fonts.get("normalB"));
+                    rewardSelection.drawImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()+b.getH()/2-32*ref-20*ref), (int)(64*ref), (int)(64*ref), buff.logo);
+                } 
+            }
+        }
+    }
+    
     public void popup(String text, String butText){
-        popup(new String[]{text}, butText);
+        popup(new String[]{text}, null, butText);
     }
     
     public void popup(String text){
-        popup(new String[]{text}, "Ok");
+        popup(new String[]{text}, null, "Ok");
     }
     
     public void popup(String[] infoLines){
-        popup(infoLines, "Ok");
+        popup(infoLines, null, "Ok");
     }
     
     public void popup(String[] infoLines, String butText){
+        popup(infoLines, null, butText);
+    }
+    
+    public void popup(String[] infoLines, UnicodeFont[] fonts, String butText){
         initPopup(popup);
         top = height/4;
         for(int i = 0 ; i < infoLines.length ; i++)
-            addText(infoLines[i], RvB.fonts.get("normalXL"));
+            addText(infoLines[i], (fonts != null ? (i < fonts.length ? fonts[i] : fonts[fonts.length-1]) : RvB.fonts.get("normalXL")));
         
         buttonsText.add(butText);
     }
@@ -255,7 +294,7 @@ public class PopupManager {
         
         Button b;
         if(buff1 != null){
-            b = new Button(rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b = new Button(rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
@@ -266,17 +305,16 @@ public class PopupManager {
                 
                 buff1.pick();
                 
+                if(buff1.isAnyLeft())
+                    game.buffs.push(buff1);
                 if(buff2 != null) game.buffs.push(buff2);
                 if(buff3 != null) game.buffs.push(buff3);
                 Collections.shuffle(game.buffs);
-                if(buff1.isAnyLeft())
-                    game.buffs.push(buff1);
             });
             rewardSelection.addButton(b);
-            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff1.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff1.logo);
         }
         if(buff2 != null){
-            b = new Button(rewardSelection.getW()/2, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b = new Button(rewardSelection.getW()/2, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
@@ -289,15 +327,14 @@ public class PopupManager {
                 
                 if(buff2.isAnyLeft())
                     game.buffs.push(buff2);
+                if(buff1 != null) game.buffs.push(buff1);
                 if(buff3 != null) game.buffs.push(buff3);
                 Collections.shuffle(game.buffs);
-                if(buff1 != null) game.buffs.push(buff1);
             });     
             rewardSelection.addButton(b);
-            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff2.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff2.logo);
         }
         if(buff3 != null){
-            b = new Button(5*rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (100*ref), (int) (100*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b = new Button(5*rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
                 currentOverlay = null;
@@ -310,12 +347,11 @@ public class PopupManager {
                 
                 if(buff3.isAnyLeft())
                     game.buffs.push(buff3);
+                if(buff1 != null) game.buffs.push(buff1);
                 if(buff2 != null) game.buffs.push(buff2);
                 Collections.shuffle(game.buffs);
-                if(buff1 != null) game.buffs.push(buff1);
             });
             rewardSelection.addButton(b);
-            rewardSelection.addImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY() + buff3.logo.getHeight()/2), (int)(64*ref), (int)(64*ref), buff3.logo);
         }
     }
 

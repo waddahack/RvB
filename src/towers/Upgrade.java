@@ -1,6 +1,5 @@
 package towers;
 
-import java.util.function.Consumer;
 import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
@@ -16,7 +15,7 @@ public class Upgrade {
     public int maxClick;
     public int nbNumberToRound;
     private String addOrMultiplicate;
-    private float value, addOrMultiplicateValue, multiplicatePrice;
+    public float value, addOrMultiplicateValue, multiplicatePrice;
     private int x = 0, y = 0;
     public Button button;
     
@@ -140,8 +139,8 @@ public class Upgrade {
         return value;
     }
     
-    private void setValue(float v){
-        value = (float) (Math.ceil(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
+    public void setValue(float v){
+        value = (float) (Math.round(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
     }
     
     public float getIncreasedValue(){

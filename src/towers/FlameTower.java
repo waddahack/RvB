@@ -23,7 +23,7 @@ public class FlameTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.TOWER_FLAME.getText();
+        name = Text.TOWER_FLAME;
         explode = false;
         follow = false;
         isMultipleShot = true;

@@ -18,8 +18,8 @@ public class FlyingEnemy extends Enemy{
     
     public FlyingEnemy(){
         super();
-        name = Text.ENEMY_FLYING.getText();
-        reward = 36;
+        name = Text.ENEMY_FLYING;
+        reward = 75;
         power = 12;
         shootRate = 1;
         moveSpeed = 1.8f;

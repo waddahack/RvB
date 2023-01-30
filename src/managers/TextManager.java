@@ -1,5 +1,7 @@
 package managers;
 
+import rvb.RvB;
+
 public class TextManager {
     
     public enum Text{
@@ -16,6 +18,9 @@ public class TextManager {
         START_WAVE(
             new String[]{"C'est parti !"},
             new String[]{"Go !"}),
+        WAITING(
+            new String[]{"En attente..."},
+            new String[]{"Waiting..."}),
         GAME_OVER(
             new String[]{"Bazoo a été plus fort...", "Il a gagné une bataille, mais pas la guerre."},
             new String[]{"Bazoo have been stronger...", "He's won a battle, but not the war."}),
@@ -55,12 +60,15 @@ public class TextManager {
         SELECT_REWARD(
             new String[]{"Choisis une récompense."},
             new String[]{"Choose a reward."}),
+        NOTHING_LEFT(
+            new String[]{"Il n'y a plus de récompense..."},
+            new String[]{"There's no reward left..."}),
         
         
         // MENU
         ADVENTURE(
             new String[]{"    Aventure\n(indisponible)"},
-            new String[]{"   Adventure\n(inc... not soon)"}),
+            new String[]{"   Adventure\n(unavailable)"}),
         RANDOM_MAP(
             new String[]{"Combattre Bazoo"},
             new String[]{"Fight Bazoo"}),
@@ -125,17 +133,17 @@ public class TextManager {
         
         // BUFFS
         BUFF_UPGRADE(
-            new String[]{"Égoiste"},
-            new String[]{"Selfish"}),
+            new String[]{"Amélioration"},
+            new String[]{"Upgrade"}),
         BUFF_UPGRADE_DESC(
-            new String[]{"Augmente la portée, la puissance et la vitesse d'attaque de Razteh."},
-            new String[]{"Upgrade Raztech's range, power and attack speed."}),
+            new String[]{"Raztech :", " ", "Portée +"+RvB.unite/2, "Puissance +2", "Vitesse d'attaque +0.2"},
+            new String[]{"Raztech :", " ", "Range +"+RvB.unite/2, "Power +2", "Attack speed +0.2"}),
         BUFF_SLOW(
-            new String[]{"Ennuyeux"},
-            new String[]{"Annoying"}),
+            new String[]{"Pieds froids"},
+            new String[]{"Cold feet"}),
         BUFF_SLOW_DESC(
-            new String[]{"Ennuyeux"},
-            new String[]{"Annoying"}),
+            new String[]{"Les balles de Raztech", "ralentissent de +10%", "pendant 1 sec."},
+            new String[]{"Raztech's bullets", "slow by +10%", "for 1 sec."}),
         
         // POPUPS
         SELECT_DIFF(

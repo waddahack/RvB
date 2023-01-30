@@ -23,7 +23,7 @@ public class BasicTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.TOWER_BASIC.getText();
+        name = Text.TOWER_BASIC;
         explode = false;
         follow = false;
         isMultipleShot = false;

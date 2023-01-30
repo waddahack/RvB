@@ -10,8 +10,8 @@ public class FastEnemy extends Enemy{
     
     public FastEnemy(){
         super();
-        name = Text.ENEMY_FAST.getText();
-        reward = 6;
+        name = Text.ENEMY_FAST;
+        reward = 15;
         power = 4;
         shootRate = 1;
         moveSpeed = 4.4f;

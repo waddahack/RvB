@@ -10,8 +10,8 @@ public class StrongEnemy extends Enemy{
     
     public StrongEnemy(){
         super();
-        name = Text.ENEMY_STRONG.getText();
-        reward = 28;
+        name = Text.ENEMY_STRONG;
+        reward = 50;
         power = 10;
         shootRate = 1;
         moveSpeed = 2.6f;

@@ -12,8 +12,8 @@ public class TrickyEnemy extends Enemy{
     
     public TrickyEnemy(){
         super();
-        name = Text.ENEMY_TRICKY.getText();
-        reward = 12;
+        name = Text.ENEMY_TRICKY;
+        reward = 25;
         power = 6;
         shootRate = 1;
         moveSpeed = 3.1f;

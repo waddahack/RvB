@@ -11,8 +11,8 @@ public class BasicEnemy extends Enemy{
     
     public BasicEnemy(){
         super();
-        name = Text.ENEMY_BASIC.getText();
-        reward = 2;
+        name = Text.ENEMY_BASIC;
+        reward = 5;
         power = 2;
         shootRate = 1;
         moveSpeed = 3.5f;

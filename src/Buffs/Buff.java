@@ -25,9 +25,9 @@ public abstract class Buff {
     
     public static Stack<Buff> initBuffStack(){
         Stack<Buff> buffs = new Stack<>();
+        buffs.add(new Upgrade());
         buffs.add(new Slow());
         Collections.shuffle(buffs);
-        buffs.add(new Upgrade());
         return buffs;
     }
     

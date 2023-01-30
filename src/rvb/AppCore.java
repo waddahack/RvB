@@ -11,7 +11,6 @@ import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
@@ -99,7 +98,8 @@ public abstract class AppCore {
     public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
     protected boolean gameOver;
-    protected boolean inWave, dontPlace;
+    protected boolean dontPlace;
+    public boolean inWave;
     public Enemy enemySelected = null;
     public boolean ended = false;
     public Tower towerSelected;
@@ -139,20 +139,20 @@ public abstract class AppCore {
         waveNumber = 1;
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 325;
-            waveReward = 275;
+            money = 250;
+            waveReward = 80;
             waveBalanceMult = 0.9f;
         }
         else if(diff == Difficulty.HARD){
             life = 75;
-            money = 275;
-            waveReward = 225;
+            money = 150;
+            waveReward = 20;
             waveBalanceMult = 1.1f;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
-            money = 300;
-            waveReward = 250;
+            money = 200;
+            waveReward = 50;
             waveBalanceMult = 1f;
         }
     }
@@ -436,7 +436,7 @@ public abstract class AppCore {
     public void update(){
         clearArrays();
         
-        if(this == RvB.game && !inWave){
+        if(this == RvB.game && !inWave && !PopupManager.Instance.onPopup()){
             if(SoundManager.Instance.isReady())
                 overlays.get(1).getButtons().get(0).enable();
             else
@@ -544,8 +544,34 @@ public abstract class AppCore {
             }
         }
         // RACCOURCIS CLAVIER
-        if(Keyboard.isKeyDown(Keyboard.KEY_R) && gameSpeed > 0)
-            overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+        if(gameSpeed > 0){
+            if(Keyboard.isKeyDown(Keyboard.KEY_R) && (towerSelected == null || towerSelected.type != "raztech")){
+                if(towerSelected != null && towerSelected.isPlaced())
+                    selectTower(null);
+                overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+            } 
+            if(Keyboard.isKeyDown(Keyboard.KEY_1) && (towerSelected == null || towerSelected.type != "basicTower")){
+                if(towerSelected != null && towerSelected.isPlaced())
+                    selectTower(null);
+                overlays.get(0).getButtons().get(0).click();
+            }
+            if(Keyboard.isKeyDown(Keyboard.KEY_2) && (towerSelected == null || towerSelected.type != "circleTower")){
+                if(towerSelected != null && towerSelected.isPlaced())
+                    selectTower(null);
+                overlays.get(0).getButtons().get(1).click();
+            }
+            if(Keyboard.isKeyDown(Keyboard.KEY_3) && (towerSelected == null || towerSelected.type != "bigTower")){
+                if(towerSelected != null && towerSelected.isPlaced())
+                    selectTower(null);
+                overlays.get(0).getButtons().get(2).click();
+            }
+            if(Keyboard.isKeyDown(Keyboard.KEY_4) && (towerSelected == null || towerSelected.type != "flameTower")){
+                if(towerSelected != null && towerSelected.isPlaced())
+                    selectTower(null);
+                overlays.get(0).getButtons().get(3).click();
+            }
+        }
+        
     }
     
     protected void renderEnemySelected(){
@@ -623,7 +649,7 @@ public abstract class AppCore {
         b.setClickSound(SoundManager.SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
         Button thisBut = b;
         b.setFunction(__ -> {
-            if(!inWave && Mouse.getEventButtonState()){
+            if(!inWave){
                 thisBut.disable();
                 RvB.setCursor(Cursor.DEFAULT);
                 startWave();
@@ -707,13 +733,21 @@ public abstract class AppCore {
         
         t = money+"";
         o.drawText((int)(200*ref), o.getH()/2, t, RvB.fonts.get("money"));
-        o.drawImage((int)((210+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("coins"));
+        o.drawImage((int)((210+8.8*t.length())*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("coins"));
         
         t = life+"";
         o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
-        o.drawImage((int)((330+8.8*t.length())*ref)-(int)(16*ref), o.getH()/2-(int)(16*ref), (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
+        o.drawImage((int)((330+8.8*t.length())*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
         
         t = inWave ? Text.DEFENDING.getText() : Text.START_WAVE.getText();
+        if(inWave)
+            t = Text.DEFENDING.getText();
+        else{
+            if(!SoundManager.Instance.isReady())
+                t = Text.WAITING.getText();
+            else
+                t = Text.START_WAVE.getText();
+        }
         o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
             
         t = "x"+gameSpeed;
@@ -726,11 +760,11 @@ public abstract class AppCore {
     private void drawPrice(int priceP, Button b, Overlay o){
         if(money >= priceP){
             b.drawText(-(int)(12*ref), -b.getH()/2-(int)(10*ref), priceP+"", RvB.fonts.get("canBuy"));
-            o.drawImage(b.getX()+(int)(6*ref), b.getY()-o.getY()-b.getH()/2-(int)((10+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
+            o.drawImage(b.getX()+(int)((6+14)*ref), b.getY()-o.getY()-b.getH()/2-(int)(10*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"));
         } 
         else{
             b.drawText(-(int)(12*ref), -b.getH()/2-(int)(10*ref), priceP+"", RvB.fonts.get("cantBuy"));
-            o.drawImage(b.getX()+(int)(6*ref), b.getY()-o.getY()-b.getH()/2-(int)((10+14)*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
+            o.drawImage(b.getX()+(int)((6+14)*ref), b.getY()-o.getY()-b.getH()/2-(int)(10*ref), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"));
         } 
     }
     

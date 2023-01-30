@@ -84,6 +84,8 @@ public class Button {
     }
     
     public void click(){
+        if(locked || disabled)
+            return;
         nbClicks++;
         if(clickSound)
             SoundManager.Instance.playOnce(click);

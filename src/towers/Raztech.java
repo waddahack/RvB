@@ -10,6 +10,7 @@ import managers.SoundManager;
 import managers.TextManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.UnicodeFont;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
@@ -23,9 +24,10 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 50;
+    public int xp = 0, maxXP = 160;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
+    private float slowAmount = 0;
     
     public Raztech() {
         super("raztech");
@@ -41,7 +43,7 @@ public class Raztech extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.RAZTECH.getText();
+        name = Text.RAZTECH;
         explode = false;
         follow = false;
         isMultipleShot = false;
@@ -51,10 +53,10 @@ public class Raztech extends Tower{
         bulletSprite = RvB.textures.get("gun_bullet");
 
         range = 4*RvB.unite;
-        power = 2;
+        power = 4;
         shootRate = 2f;
         bulletSpeed = 20;
-        growth = 4;
+        growth = 6;
         
         upgrades.add(new Upgrade("Range", range, RvB.unite/2, "+", 0, 0, 0));
         upgrades.add(new Upgrade("Power", power, 2, "+", 0, 0, 0));
@@ -77,12 +79,15 @@ public class Raztech extends Tower{
         o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, RvB.textures.get("raztech"));
         
         // init upgrades position
-        int sep = (int) (200 * ref);
+        int sep = (int) (100 * ref);
         if(sep < 25) sep = 25;
         for(int i = 0 ; i < upgrades.size() ; i++){
-            upgrades.get(i).initPosAndButton(o2.getW()/2 + i*sep, o2.getY() + o2.getH()/2, this);
+            upgrades.get(i).initPosAndButton(o1.getW() + (int)(620*ref)+8 + i*sep, o2.getY()+o2.getH()/2, this); // +8 = 2*epaisseur border du rectangle
         }
         
+        // Buffs
+        o2.addImage(o2.getW()-(int) (760*ref), o2.getH()/2, (int)(34*ref), (int)(34*ref), RvB.textures.get("buff_slow"));
+
         // button focus
         if(canRotate){
             focusButton = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
@@ -101,7 +106,7 @@ public class Raztech extends Tower{
             o.render();
         
         overlay = overlays.get(0);
-        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name+" ("+Text.LVL.getText()+lvl+")", RvB.fonts.get("normalL"));
+        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name.getText()+" ("+Text.LVL.getText()+lvl+")", RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
         int width = (int) (500*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
@@ -119,6 +124,7 @@ public class Raztech extends Tower{
         for(Upgrade up : upgrades)
             up.render();
         
+        overlay.drawText(overlay.getW()-(int) (718*ref), overlay.getH()/2, (int)(slowAmount*100)+"%", RvB.fonts.get("normal"));
         
         if(canRotate){
             b = overlay.getButtons().get(0);
@@ -162,13 +168,14 @@ public class Raztech extends Tower{
         if(!game.raztech.isPlaced){
             initOverlay();
             game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
+            game.getOverlays().get(0).getButtons().get(0).unlock();
         }
         else{
             game.raztech.x = (game.raztech.x-unite/2)/unite;
             game.raztech.y = (game.raztech.y-unite/2)/unite;
             map.get((int) game.raztech.y).set((int) game.raztech.x, new Tile("grass"));
             game.towersDestroyed.add(this);
-            game.towerSelected = null;
+            game.selectTower(game.raztech);
             game.raztech.xp -= 0.2*game.raztech.maxXP;
         }   
         game.raztech.x = Math.floorDiv(Mouse.getX(), unite);
@@ -184,10 +191,14 @@ public class Raztech extends Tower{
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH2);
     }
     
+    public float getSlowAmount(){
+        return slowAmount;
+    }
+    
     @Override
     public void updateStats(Enemy e){
         super.updateStats(e);
-        if(e.getLife()-power <= 0 && e.name != Text.ENEMY_BOSS.getText())
+        if(e.getLife()-power <= 0 && e.name.getText() != Text.ENEMY_BOSS.getText())
             gainXP(e.getMaxLife()/2);
     }
     
@@ -201,7 +212,7 @@ public class Raztech extends Tower{
     public void levelUp(){
         xp -= maxXP;
         if(xp < 0) xp = 0;
-        maxXP = 50+maxXP*2;
+        maxXP = (int) (160*lvl+maxXP*1.5);
         
         range = (int) upgrades.get(0).setNewValue();
         power = (int) upgrades.get(1).setNewValue();
@@ -211,15 +222,26 @@ public class Raztech extends Tower{
         
         lvl++;
         if(lvl == 2)
-            game.getOverlays().get(0).getButtons().get(0).unlock();
-        else if(lvl == 4)
             game.getOverlays().get(0).getButtons().get(1).unlock();
-        else if(lvl == 6)
+        else if(lvl == 4)
             game.getOverlays().get(0).getButtons().get(2).unlock();
-        else if(lvl == 8)
+        else if(lvl == 6)
             game.getOverlays().get(0).getButtons().get(3).unlock();
         
         SoundManager.Instance.playOnce(SoundManager.SOUND_LEVELUP);
-        PopupManager.Instance.rewardSelection();
+        if(!game.buffs.empty())
+            PopupManager.Instance.rewardSelection();
+        else
+            PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl, "\n", Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normalL")}, "...");
+    }
+    
+    public void upgradeStats(){
+        range = (int) upgrades.get(0).setNewValue();
+        power = (int) upgrades.get(1).setNewValue();
+        shootRate = upgrades.get(2).setNewValue();
+    }
+    
+    public void addSlowAmount(float percentage){
+        slowAmount += percentage;
     }
 }

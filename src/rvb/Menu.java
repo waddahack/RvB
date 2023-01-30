@@ -135,7 +135,7 @@ public class Menu {
         for(Overlay o : overlays){
             o.render();
         }
-        overlays[0].drawImage(windWidth/4, (int)(100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
+        overlays[0].drawImage(windWidth/2, (int)(windWidth/10f + 100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
         start.drawText(0, 0, Text.ADVENTURE.getText(), fonts.get("normalL"));
         if(randomGame == null)
             random.drawText(0, 0, Text.RANDOM_MAP.getText(), fonts.get("normalL"));

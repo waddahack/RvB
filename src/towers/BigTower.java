@@ -35,7 +35,7 @@ public class BigTower extends Tower{
         hitboxWidth = width;
         size = width;
         totalMoneySpent = priceP;
-        name = Text.TOWER_BIG.getText();
+        name = Text.TOWER_BIG;
         explode = true;
         follow = false;
         isMultipleShot = false;

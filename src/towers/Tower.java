@@ -19,11 +19,15 @@ import static rvb.RvB.unite;
 import ui.*;
 
 public abstract class Tower implements Shootable{
+
+    public int price;
     
-    protected int price, range, power, bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus = 0;
+    public int range, power;
+    public float shootRate;
+    protected int  bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus = 0;
     protected double lastShoot = 0;
-    protected float shootRate, growth = 0;
-    protected String name;
+    protected float growth = 0;
+    protected Text name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected boolean isPlaced = false, follow = false, selected = true, isMultipleShot, canRotate, toBeRemoved, continuousSound = false, soundPlayed = false, explode = false;
     protected Enemy enemyAimed;
@@ -81,6 +85,8 @@ public abstract class Tower implements Shootable{
     }
     
     public void searchAndShoot(){
+        if(!game.inWave || game.gameSpeed <= 0)
+            return;
         ArrayList<Enemy> enemies = game.enemies;
         if(enemies != null && !enemies.isEmpty()){
             if(canRotate){
@@ -161,7 +167,7 @@ public abstract class Tower implements Shootable{
         float minDist = 10000000;
         for(int i = 0 ; i < enemies.size() ; i++)
             if(enemies.get(i).isSpawned() && enemies.get(i).isInRangeOf(this)){
-                if(closest == null || MyMath.distanceBetween(this, enemies.get(i)) < minDist){
+                if(closest == null || MyMath.distanceBetween(this, enemies.get(i)) <= minDist){
                     closest = enemies.get(i);
                     minDist = (float)MyMath.distanceBetween(this, enemies.get(i));
                 }
@@ -248,7 +254,7 @@ public abstract class Tower implements Shootable{
         o2.setBG(RvB.textures.get("board"), 0.6f);
         
         int sep = (int) (700 * ref);
-        sep -= 90*upgrades.size();
+        sep -= (int)(ref*90*upgrades.size());
         if(sep < 25)
             sep = 25;
         int imageSize = o2.getH()-(int)(5*ref);
@@ -273,7 +279,7 @@ public abstract class Tower implements Shootable{
             grass.setY(y);
             game.map.get(getIndexY()).set(getIndexX(), grass);
             if(game.towerSelected == this)
-                game.towerSelected = null;
+                game.selectTower(null);
             if(clip != null){
                 SoundManager.Instance.stopClip(clip);
                 SoundManager.Instance.clipToClose(clip);
@@ -299,7 +305,7 @@ public abstract class Tower implements Shootable{
             o.render();
         
         overlay = overlays.get(0);
-        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name, RvB.fonts.get("normalL"));
+        overlay.drawText(overlay.getW()/2, overlay.getH()/2, name.getText(), RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
         for(Upgrade up : upgrades)
@@ -434,7 +440,7 @@ public abstract class Tower implements Shootable{
     }
     
     public boolean canShoot(){
-        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && (angle >= newAngle-6 && angle <= newAngle+6 || enemyAimed == null));
+        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && (angle >= newAngle-6 && angle <= newAngle+6 || enemyAimed != null));
     }
     
     public void shoot(){
@@ -476,8 +482,12 @@ public abstract class Tower implements Shootable{
         return bulletSpeed;
     }
     
+    public ArrayList<Upgrade> getUpgrades(){
+        return upgrades;
+    }
+    
     public String getName(){
-        return name;
+        return name.getText();
     }
     
     public int getPrice(){
