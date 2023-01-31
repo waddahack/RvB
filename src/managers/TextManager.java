@@ -136,8 +136,8 @@ public class TextManager {
             new String[]{"Amélioration"},
             new String[]{"Upgrade"}),
         BUFF_UPGRADE_DESC(
-            new String[]{"Raztech :", " ", "Portée +"+RvB.unite/2, "Puissance +2", "Vitesse d'attaque +0.2"},
-            new String[]{"Raztech :", " ", "Range +"+RvB.unite/2, "Power +2", "Attack speed +0.2"}),
+            new String[]{"Raztech :", " ", "Portée +10%", "Puissance +20%", "Vitesse d'attaque +8%"},
+            new String[]{"Raztech :", " ", "Range +10%", "Power +20%", "Attack speed +8%"}),
         BUFF_SLOW(
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),

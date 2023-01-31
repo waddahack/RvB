@@ -2,7 +2,6 @@ package Buffs;
 
 import managers.TextManager.Text;
 import static rvb.RvB.game;
-import static rvb.RvB.unite;
 
 public class Upgrade extends Buff{
     
@@ -14,13 +13,13 @@ public class Upgrade extends Buff{
     public void pick(){
         super.pick();
         
-        game.raztech.range += unite/2;
+        game.raztech.range *= 1.1;
         game.raztech.getUpgrades().get(0).setValue(game.raztech.range);
         
-        game.raztech.power += 1;
+        game.raztech.power *= 1.2;
         game.raztech.getUpgrades().get(1).setValue(game.raztech.power);
         
-        game.raztech.shootRate += 0.1f;
+        game.raztech.shootRate *= 1.08f;
         game.raztech.getUpgrades().get(2).setValue(game.raztech.shootRate);
     }
 }
