@@ -48,8 +48,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             xBase = game.base.getX()+unite/2;
             yBase = game.base.getY()+unite/2;
         }
-        startTimeMove = System.currentTimeMillis();
-        startTimeSteps = System.currentTimeMillis();
+        startTimeMove = game.timeInGamePassed;
+        startTimeSteps = game.timeInGamePassed;
         SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
     }
     
@@ -71,7 +71,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             mouseEntered = false;
             RvB.setCursor(RvB.Cursor.DEFAULT);
         }
-        if(stopFor != -1 && (System.currentTimeMillis() - startTimeStopFor >= stopFor)){
+        if(stopFor != -1 && (game.timeInGamePassed - startTimeStopFor >= stopFor)){
             started = true;
             stopFor = -1;
         }
@@ -82,8 +82,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
                     stepEveryMilli = -1;
                     SoundManager.Instance.playLoop(clip);
                 }   
-                else if(stepEveryMilli > 0 && System.currentTimeMillis() - startTimeSteps >= stepEveryMilli/(double)game.gameSpeed){
-                    startTimeSteps = System.currentTimeMillis();
+                else if(stepEveryMilli > 0 && game.timeInGamePassed - startTimeSteps >= stepEveryMilli){
+                    startTimeSteps = game.timeInGamePassed;
                     SoundManager.Instance.playOnce(clip);
                 }
             }
@@ -106,7 +106,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
 
             Texture sprite = this.sprite;
             if(evolutions.isEmpty()){
-                if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+                if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
                     sprite = this.brightSprite;
                 else if(startTimeWaitFor != 0)
                     startTimeWaitFor = 0;
@@ -146,7 +146,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
                 x += movingBy;
                 break;
         }
-        startTimeMove = System.currentTimeMillis();
+        startTimeMove = game.timeInGamePassed;
     }
     
     public void setDirection(){
@@ -311,7 +311,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         else
             life -= attacker.getPower();
             
-        startTimeWaitFor = System.currentTimeMillis();
+        startTimeWaitFor = game.timeInGamePassed;
         if(life <= 0)
             die();  
     }
@@ -448,7 +448,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public void stopFor(int t){
         stopFor = t;
-        startTimeStopFor = System.currentTimeMillis();
+        startTimeStopFor = game.timeInGamePassed;
     }
     
     public boolean isAimed(){

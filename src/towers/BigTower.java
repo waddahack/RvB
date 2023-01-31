@@ -7,12 +7,12 @@ import javax.sound.sampled.Clip;
 import managers.SoundManager;
 import org.newdawn.slick.opengl.Texture;
 import managers.TextManager.Text;
+import static rvb.RvB.game;
 import static rvb.RvB.ref;
 
 public class BigTower extends Tower{
     
     public static int startPrice = 550;
-    public static int priceP = startPrice;
     private Clip explodeClip;
     
     private float explodeX, explodeY;
@@ -29,12 +29,12 @@ public class BigTower extends Tower{
         rotateIndex = 1;
         textureStatic = RvB.textures.get("bigTower");
         canRotate = true;
-        price = priceP;
+        price = RvB.game.bigTowerPrice;
         life = 100;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
-        totalMoneySpent = priceP;
+        totalMoneySpent = price;
         name = Text.TOWER_BIG;
         explode = true;
         follow = false;
@@ -64,12 +64,6 @@ public class BigTower extends Tower{
         growth = 20*ref/n;
     }
     
-    @Override
-    protected void raisePrice(){
-        priceP *= 1.1;
-        price = priceP;
-    }
-    
     public void bombExplode(float x, float y){
         SoundManager.Instance.playOnce(explodeClip);
         checkTime = 0;
@@ -83,7 +77,7 @@ public class BigTower extends Tower{
     public void update(){
         super.update();
         if(explodeX < 10000){
-            if(System.currentTimeMillis()-checkTime >= 30){
+            if(game.timeInGamePassed-checkTime >= 30){
                 count++;
                 flamesX.clear();
                 flamesY.clear();
@@ -91,7 +85,7 @@ public class BigTower extends Tower{
                     flamesX.add((int)((-1+rand.nextFloat()*2)*(explodeRadius-25)));
                     flamesY.add((int)((-1+rand.nextFloat()*2)*(explodeRadius-25)));
                 }
-                checkTime = System.currentTimeMillis();
+                checkTime = game.timeInGamePassed;
             }  
             for(int i = 0 ; i < nbFlames ; i++)
                 RvB.drawFilledRectangle(explodeX + flamesX.get(i), explodeY + flamesY.get(i), 50, 50, RvB.textures.get("flame"), 0, 1);

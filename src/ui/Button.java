@@ -83,9 +83,9 @@ public class Button {
         indexSwitch = 0;
     }
     
-    public void click(){
+    public boolean click(){
         if(locked || disabled)
-            return;
+            return false;
         nbClicks++;
         if(clickSound)
             SoundManager.Instance.playOnce(click);
@@ -95,6 +95,7 @@ public class Button {
             indexSwitch = indexSwitch == text.getLines().length-1 ? 0 : indexSwitch+1;
         if(clickFunction != null)
             clickFunction.accept(null);
+        return true;
     }
     
     public void setHidden(boolean b){
@@ -199,6 +200,7 @@ public class Button {
     
     public void lock(){
         locked = true;
+        disable();
     }
     
     public void unlock(){

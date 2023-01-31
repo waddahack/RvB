@@ -15,6 +15,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -83,6 +84,9 @@ public class RvB{
     public static Texture cursorTexture = null;
     public static int[] cursorPos = new int[2];
     private static Overlay debugTool;
+    private static ArrayList<String> consoleLines = new ArrayList<>();
+    private static int nbConsoleLines = 0, nbConsoleLinesMax = 10;
+    private static boolean cheatsActivated = true;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -214,7 +218,7 @@ public class RvB{
     
     private static void initDebugTool(){
         debugTool = new Overlay(windWidth-260, windHeight/6, 250, 4*windHeight/6);
-        debugTool.setRGBA(new float[]{70/255f, 70/255f, 70/255f}, 0.4f);
+        debugTool.setRGBA(new float[]{70/255f, 70/255f, 70/255f}, 0.5f);
         debugTool.display(false);
     }
     
@@ -222,10 +226,48 @@ public class RvB{
         if(!debugTool.isDisplayed())
             return;
         debugTool.render();
-        debugTool.setAnchor("topLeft");
+        // Memory
+        int memFree = (int) (Runtime.getRuntime().freeMemory()/1000000), memUsed = (int)(Runtime.getRuntime().totalMemory()/1000000), memAlloc = (int) (Runtime.getRuntime().totalMemory()/1000000 - memFree);
+        debugTool.drawText((int)(10*ref), (int)(10*ref), "Memory used : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(10*ref), memUsed+"MB", fonts.get("normalS"), "topRight");
+        debugTool.drawText((int)(10*ref), (int)(30*ref), "Allocated memory : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(30*ref), memAlloc+"MB", fonts.get("normalS"), "topRight");
+        debugTool.drawText((int)(10*ref), (int)(50*ref), "Memory free : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(50*ref), memFree+"MB", fonts.get("normalS"), "topRight");
         // FPS
-        debugTool.drawText(10, 10, "FPS : ", fonts.get("normalS"));
-        debugTool.drawText(60, 10, averageFPS+"", fonts.get("normalS"));
+        debugTool.drawText((int)(10*ref), (int)(70*ref), "FPS : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(70*ref), averageFPS+"", fonts.get("normalS"), "topRight");
+        // Cheats activated
+        debugTool.drawText((int)(10*ref), (int)(90*ref), "Cheats : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(90*ref), (cheatsActivated ? "on" : "off"), fonts.get("normalS"), "topRight");
+        // Say Hi!
+        debugTool.drawText((int)(10*ref), (int)(110*ref), "Say hi : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), "F1+H", fonts.get("normalS"), "topRight");
+        if(game != null){
+            int s = 150;
+            debugTool.drawText((int)(10*ref), (int)(s*ref), "Wave : ", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(s*ref), game.waveNumber+"", fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)(s+20*ref), "Nb towers : ", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Raztech lvl : ", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Time passed in game : ", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (int)(game.timeInGamePassed/1000)+"", fonts.get("normalS"), "topRight");
+        }
+        // CONSOLE
+        debugTool.drawText(debugTool.getW()/2, (int)(debugTool.getH()-20*ref-(nbConsoleLinesMax+1)*20*ref), "Console :", fonts.get("normalS"), "center");
+        if(nbConsoleLines > nbConsoleLinesMax)
+            debugTool.drawText((int)(10*ref), (int)(debugTool.getH()-20*ref-nbConsoleLinesMax*20*ref), "+"+(nbConsoleLines-nbConsoleLinesMax), fonts.get("normalS"), "topLeft");
+        for(int i = 0 ; i < consoleLines.size() ; i++)
+            debugTool.drawText((int)(10*ref), (int)(debugTool.getH()-20*ref-i*20*ref), consoleLines.get(consoleLines.size()-1-i), fonts.get("normalS"), "topLeft");
+    }
+    
+    public static void debug(String line){
+        consoleLines.add(line);
+        if(consoleLines.size() > nbConsoleLinesMax)
+            consoleLines.remove(0);
+        nbConsoleLines++;
+        System.out.println(line);
     }
     
     public static void renderMouse(){
@@ -236,7 +278,6 @@ public class RvB{
     public static void checkInput() {
         State s = state;
         if(Keyboard.next()){
-            
             // ESCAPE MENU
             if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0)){
                 switchStateTo(State.MENU);
@@ -244,42 +285,62 @@ public class RvB{
                     PopupManager.Instance.closeCurrentPopup();
             }
             
-            // DEBUG & CHEATS KEY BINDS
+            // COMMANDES
             if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
-                if(Keyboard.isKeyDown(Keyboard.KEY_M)){
-                    if(game != null)
-                        game.money += 10000;
-                }
-                else if(Keyboard.isKeyDown(Keyboard.KEY_D))
+                // Debug tool
+                if(Keyboard.isKeyDown(Keyboard.KEY_D))
                     debugTool.display(!debugTool.isDisplayed());
-                else if(Keyboard.isKeyDown(Keyboard.KEY_L)){
-                    if(game != null && game.gameSpeed > 0 && game.raztech != null)
-                        game.raztech.levelUp();
+                // Clear console
+                else if(Keyboard.isKeyDown(Keyboard.KEY_C)){
+                    consoleLines.clear();
+                    nbConsoleLines = 0;
                 }
-                // Game speed
-                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
-                    if(game != null)
-                        game.gameSpeed = 0;
-                }
-                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1)){
-                    if(game != null)
-                        game.gameSpeed = 1;
-                }
-                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)){
-                    if(game != null)
-                        game.gameSpeed = 2;
-                }
-                else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD3)){
-                    if(game != null)
-                        game.gameSpeed = 4;
+                // Say hi
+                else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
+                    debug("Hi !");
                 }
             }
+            
+            if(cheatsActivated)
+                checkCheatsInput();
             
             //System.out.println(Keyboard.getEventKey());
         }
         
         if(s != state)
             setCursor(Cursor.DEFAULT);
+    }
+    
+    private static void checkCheatsInput(){
+        if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
+            // Money
+            if(Keyboard.isKeyDown(Keyboard.KEY_M)){
+                if(game != null)
+                    game.money += 10000;
+            }
+            // Level up
+            else if(Keyboard.isKeyDown(Keyboard.KEY_L)){
+                if(game != null && game.gameSpeed > 0 && game.raztech != null)
+                    game.raztech.levelUp();
+            }
+            // Game speed
+            else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
+                if(game != null)
+                    game.gameSpeed = 0;
+            }
+            else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD1)){
+                if(game != null)
+                    game.gameSpeed = 1;
+            }
+            else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD2)){
+                if(game != null)
+                    game.gameSpeed = 2;
+            }
+            else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD3)){
+                if(game != null)
+                    game.gameSpeed = 4;
+            }
+        }
     }
     
     public static void newRandomMap(Difficulty difficulty){

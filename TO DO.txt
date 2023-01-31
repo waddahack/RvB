@@ -1,6 +1,9 @@
 NEXT BIG UPDATE MUST HAVE :
 
 Raztech : 
+- upgrade general mult par un %
+- trouver meilleur courbe de maxXP
+
 - Faire la fonctionnalité buff slow
 - Faire plein de buffs
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
@@ -9,7 +12,8 @@ Raztech :
 
 RELEASE 2.0
 
-Site ?
+- menu option
+- Site ?
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.

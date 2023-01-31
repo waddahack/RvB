@@ -140,7 +140,7 @@ public class Upgrade {
     }
     
     public void setValue(float v){
-        value = (float) (Math.round(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
+        value = (float) (Math.ceil(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
     }
     
     public float getIncreasedValue(){

@@ -92,13 +92,13 @@ public abstract class AppCore {
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
-    public ArrayList<Tower> towers, towersDestroyed;
+    private int oldGameSpeed = 0;
+    public ArrayList<Tower> towers, towersToBeDestroyed;
     public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
     protected boolean gameOver;
-    protected boolean dontPlace;
     public boolean inWave;
     public Enemy enemySelected = null;
     public boolean ended = false;
@@ -107,9 +107,12 @@ public abstract class AppCore {
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     public boolean bossDead = false, bossDefeated = false;
+    private boolean keyDown = false;
     private static Random random;
     protected int textureID = -10;
     private float waveBalanceMult;
+    public double timeInGamePassed;
+    public int basicTowerPrice, circleTowerPrice, flameTowerPrice, bigTowerPrice;
     
     public AppCore(){
         random = new Random();
@@ -118,20 +121,20 @@ public abstract class AppCore {
     protected void init(Difficulty diff){
         rocks = new ArrayList<>();
         towers = new ArrayList<>();
-        towersDestroyed = new ArrayList<>();
+        towersToBeDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesDead = new ArrayList<>();
         enemiesToAdd = new ArrayList<>();
         buffs = Buff.initBuffStack();
         gameOver = false;
         inWave = false;
-        dontPlace = false;
         towerSelected = null;
+        timeInGamePassed = 0;
         
-        BasicTower.priceP = BasicTower.startPrice;
-        CircleTower.priceP = CircleTower.startPrice;
-        FlameTower.priceP = FlameTower.startPrice;
-        BigTower.priceP = BigTower.startPrice;
+        basicTowerPrice = BasicTower.startPrice;
+        circleTowerPrice = CircleTower.startPrice;
+        flameTowerPrice = FlameTower.startPrice;
+        bigTowerPrice = BigTower.startPrice;
         Bazoo.bossLevel = 0;
         Enemy.bonusLife = 0;
         Enemy.bonusMS = 0;
@@ -434,6 +437,13 @@ public abstract class AppCore {
     }
     
     public void update(){
+        if(gameSpeed > 0 && RvB.state == RvB.State.GAME){
+            timeInGamePassed += RvB.deltaTime*gameSpeed;
+        }
+        
+        if(!PopupManager.Instance.onPopup())
+            checkInput();
+        
         clearArrays();
         
         if(this == RvB.game && !inWave && !PopupManager.Instance.onPopup()){
@@ -443,18 +453,10 @@ public abstract class AppCore {
                 overlays.get(1).getButtons().get(0).disable();
         }
         
-        if(!PopupManager.Instance.onPopup())
-            checkInput();
-        
         render();
         
-        for(int i = 0 ; i < towers.size() ; i++){
+        for(int i = 0 ; i < towers.size() ; i++)
             towers.get(i).update();
-            if(towers.get(i).toRemove()){
-                towers.remove(i);
-                i--;
-            }  
-        }
         
         if(inWave){
             if(gameSpeed > 0){
@@ -499,22 +501,18 @@ public abstract class AppCore {
     protected void checkInput(){
         // Towers placement
         for(Tower t : towers){
-            if(overlays.get(0).getButtons().get(0).isClicked(0))
-                dontPlace = true;
-            if(dontPlace && !Mouse.isButtonDown(0))
-                dontPlace = false;
-            if(!t.isPlaced() && Mouse.isButtonDown(0) && t.canBePlaced() && !dontPlace && !mouseDown){
+            if(!t.isPlaced() && Mouse.isButtonDown(0) && t.canBePlaced() && !mouseDown){
+                // place tower
                 t.place(map);
                 mouseDown = true;
                 RvB.setCursor(Cursor.DEFAULT);
             }
             else if(!t.isPlaced() && Mouse.isButtonDown(1)){
+                // destroy tower
                 selectTower(null);
-                if(t == raztech){
-                    towersDestroyed.add(raztech);
+                if(t == raztech)
                     raztech = null;
-                }
-                t.destroy();
+                
                 RvB.setCursor(Cursor.DEFAULT);
             }
             if(!mouseDown && t.isPlaced()){
@@ -544,34 +542,39 @@ public abstract class AppCore {
             }
         }
         // RACCOURCIS CLAVIER
-        if(gameSpeed > 0){
-            if(Keyboard.isKeyDown(Keyboard.KEY_R) && (towerSelected == null || towerSelected.type != "raztech")){
-                if(towerSelected != null && towerSelected.isPlaced())
-                    selectTower(null);
-                overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+        keyDown = Keyboard.getEventKeyState();
+        if(!PopupManager.Instance.onPopup() && !keyDown && !Keyboard.isKeyDown(Keyboard.KEY_F1)){
+            // PAUSE
+            if(Keyboard.isKeyDown(Keyboard.KEY_P) && inWave){
+                if(gameSpeed > 0){
+                    oldGameSpeed = gameSpeed;
+                    gameSpeed = 0;
+                }
+                else
+                    gameSpeed = oldGameSpeed;
             } 
-            if(Keyboard.isKeyDown(Keyboard.KEY_1) && (towerSelected == null || towerSelected.type != "basicTower")){
-                if(towerSelected != null && towerSelected.isPlaced())
-                    selectTower(null);
-                overlays.get(0).getButtons().get(0).click();
-            }
-            if(Keyboard.isKeyDown(Keyboard.KEY_2) && (towerSelected == null || towerSelected.type != "circleTower")){
-                if(towerSelected != null && towerSelected.isPlaced())
-                    selectTower(null);
-                overlays.get(0).getButtons().get(1).click();
-            }
-            if(Keyboard.isKeyDown(Keyboard.KEY_3) && (towerSelected == null || towerSelected.type != "bigTower")){
-                if(towerSelected != null && towerSelected.isPlaced())
-                    selectTower(null);
-                overlays.get(0).getButtons().get(2).click();
-            }
-            if(Keyboard.isKeyDown(Keyboard.KEY_4) && (towerSelected == null || towerSelected.type != "flameTower")){
-                if(towerSelected != null && towerSelected.isPlaced())
-                    selectTower(null);
-                overlays.get(0).getButtons().get(3).click();
+            // POPUP HELP
+            else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
+                RvB.debug("Popup help");
+            } 
+            if(gameSpeed > 0){
+                // START WAVE
+                if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !inWave){
+                    overlays.get(1).getButtons().get(0).click();
+                } 
+                // TOWERS
+                if(Keyboard.isKeyDown(Keyboard.KEY_R))
+                    overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+                else if(Keyboard.isKeyDown(Keyboard.KEY_1) && basicTowerPrice <= money)
+                    overlays.get(0).getButtons().get(0).click();
+                else if(Keyboard.isKeyDown(Keyboard.KEY_2) && circleTowerPrice <= money)
+                    overlays.get(0).getButtons().get(1).click();
+                else if(Keyboard.isKeyDown(Keyboard.KEY_3) && bigTowerPrice <= money)
+                    overlays.get(0).getButtons().get(2).click();
+                else if(Keyboard.isKeyDown(Keyboard.KEY_4) && flameTowerPrice <= money)
+                    overlays.get(0).getButtons().get(3).click();
             }
         }
-        
     }
     
     protected void renderEnemySelected(){
@@ -623,12 +626,12 @@ public abstract class AppCore {
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setItemFramed(true);
-            b.disable();
             b.lock();
             int index = i;
             b.setFunction(__ -> {
-                if(towerSelected == null)
-                    createTower(index);
+                if(towerSelected != null)
+                    selectTower(null);
+                createTower(index);
             });
             o.addButton(b);
         }
@@ -701,19 +704,19 @@ public abstract class AppCore {
             
             b = o.getButtons().get(0);
             if(!b.isLocked())
-                drawPrice(BasicTower.priceP, b, o);
+                drawPrice(basicTowerPrice, b, o);
             
             b = o.getButtons().get(1);
             if(!b.isLocked())
-                drawPrice(CircleTower.priceP, b, o);
+                drawPrice(circleTowerPrice, b, o);
             
             b = o.getButtons().get(2);
             if(!b.isLocked())
-                drawPrice(BigTower.priceP, b, o);
+                drawPrice(bigTowerPrice, b, o);
             
             b = o.getButtons().get(3);
             if(!b.isLocked())
-                drawPrice(FlameTower.priceP, b, o);
+                drawPrice(flameTowerPrice, b, o);
             
             if(raztech != null && raztech.isPlaced()){
                 int width = (int) (150*ref), height = (int) (14*ref), x = (int)(30*ref), y = o.getY()+2*o.getH()/3-height/2;
@@ -776,9 +779,9 @@ public abstract class AppCore {
         for(i = 0 ; i < enemiesToAdd.size() ; i++)
             enemies.add(0, enemiesToAdd.get(i));
         enemiesToAdd.clear();
-        for(i = 0 ; i < towersDestroyed.size() ; i++)
-            towers.remove(towersDestroyed.get(i));
-        towersDestroyed.clear();
+        for(i = 0 ; i < towersToBeDestroyed.size() ; i++)
+            towers.remove(towersToBeDestroyed.get(i));
+        towersToBeDestroyed.clear();
     }
 
     @SuppressWarnings("unchecked")
@@ -813,24 +816,27 @@ public abstract class AppCore {
     
     public void createTower(int id){
         if(towerSelected != null){
-            if(!towerSelected.isPlaced())
-                towerSelected.destroy();
             towerSelected.setSelected(false);
             towerSelected = null;
         }
         Tower tower = null;
+        int price = 0;
         switch(id){
             case 0 :
                 tower = new BasicTower();
+                price = basicTowerPrice;
                 break;
             case 1 :
                 tower = new CircleTower();
+                price = circleTowerPrice;
                 break;
             case 2 :
                 tower = new BigTower();
+                price = bigTowerPrice;
                 break;
             case 3 :
                 tower = new FlameTower();
+                price = flameTowerPrice;
                 break;
             case 4 :
                 if(raztech == null){
@@ -843,10 +849,27 @@ public abstract class AppCore {
                 } 
                 break;
         }
-        if(tower != null && tower.getPrice() <= money){
+        if(tower != null && price <= money){
             towers.add(tower);
-            towerSelected = tower;
+            towerSelected = towers.get(towers.size()-1);
             RvB.setCursor(Cursor.GRAB);
+        }
+    }
+    
+    public void raisePrice(Tower t){
+        switch(t.type){
+            case "basicTower":
+                basicTowerPrice *= 1.2;
+                break;
+            case "circleTower":
+                circleTowerPrice *= 1.08;
+                break;
+            case "bigTower":
+                bigTowerPrice *= 1.1;
+                break;
+            case "flameTower":
+                flameTowerPrice *= 1.1;
+                break;
         }
     }
     
@@ -881,8 +904,12 @@ public abstract class AppCore {
     }
     
     public void selectTower(Tower t){
-        if(towerSelected != null)
+        if(towerSelected != null){
+            if(!towerSelected.isPlaced())
+                towersToBeDestroyed.add(towerSelected);
             towerSelected.setSelected(false);
+        }
+            
         towerSelected = t;
         if(t != null)
             t.setSelected(true);

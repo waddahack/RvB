@@ -24,7 +24,7 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 160;
+    public int xp = 0, maxXP = 80;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
     private float slowAmount = 0;
@@ -56,11 +56,11 @@ public class Raztech extends Tower{
         power = 4;
         shootRate = 2f;
         bulletSpeed = 20;
-        growth = 6;
+        growth = 4*ref;
         
-        upgrades.add(new Upgrade("Range", range, RvB.unite/2, "+", 0, 0, 0));
-        upgrades.add(new Upgrade("Power", power, 2, "+", 0, 0, 0));
-        upgrades.add(new Upgrade("Attack speed", shootRate, 0.2f, "+", 0, 0, 0));
+        upgrades.add(new Upgrade("Range", range, RvB.unite/4, "+", 0, 0, 0));
+        upgrades.add(new Upgrade("Power", power, 1, "+", 0, 0, 0));
+        upgrades.add(new Upgrade("Attack speed", shootRate, 0.1f, "+", 0, 0, 0));
         
         buffs = new HashMap<>();
     }
@@ -135,7 +135,7 @@ public class Raztech extends Tower{
     @Override
     public void shoot(){
         enemiesTouched.clear();
-        lastShoot = System.currentTimeMillis();
+        lastShoot = RvB.game.timeInGamePassed;
         float x = (float)(this.x+size/2*Math.cos(Math.toRadians(angle)));
         float y = (float)(this.y+size/2*Math.sin(Math.toRadians(angle)));
         if(right){ 
@@ -174,7 +174,7 @@ public class Raztech extends Tower{
             game.raztech.x = (game.raztech.x-unite/2)/unite;
             game.raztech.y = (game.raztech.y-unite/2)/unite;
             map.get((int) game.raztech.y).set((int) game.raztech.x, new Tile("grass"));
-            game.towersDestroyed.add(this);
+            game.towersToBeDestroyed.add(this);
             game.selectTower(game.raztech);
             game.raztech.xp -= 0.2*game.raztech.maxXP;
         }   
@@ -212,7 +212,7 @@ public class Raztech extends Tower{
     public void levelUp(){
         xp -= maxXP;
         if(xp < 0) xp = 0;
-        maxXP = (int) (160*lvl+maxXP*1.5);
+        maxXP = (int) (maxXP*1.5);
         
         range = (int) upgrades.get(0).setNewValue();
         power = (int) upgrades.get(1).setNewValue();

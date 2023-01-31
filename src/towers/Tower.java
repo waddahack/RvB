@@ -29,7 +29,7 @@ public abstract class Tower implements Shootable{
     protected float growth = 0;
     protected Text name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
-    protected boolean isPlaced = false, follow = false, selected = true, isMultipleShot, canRotate, toBeRemoved, continuousSound = false, soundPlayed = false, explode = false;
+    protected boolean isPlaced = false, follow = false, selected = true, isMultipleShot, canRotate, continuousSound = false, soundPlayed = false, explode = false;
     protected Enemy enemyAimed;
     protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
     protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
@@ -284,7 +284,7 @@ public abstract class Tower implements Shootable{
                 SoundManager.Instance.stopClip(clip);
                 SoundManager.Instance.clipToClose(clip);
             }     
-            toBeRemoved = true;
+            game.towersToBeDestroyed.add(this);
         });
         o2.addButton(b);
         // button focus
@@ -342,7 +342,7 @@ public abstract class Tower implements Shootable{
         x = x*unite+unite/2;
         y = y*unite+unite/2;
         game.money -= price;
-        raisePrice();
+        game.raisePrice(this);
         isPlaced = true;
         SoundManager.Instance.playOnce(SoundManager.SOUND_BUILD);
     }
@@ -367,7 +367,7 @@ public abstract class Tower implements Shootable{
     }
     
     public void destroy(){
-        game.towersDestroyed.add(this);
+        game.towersToBeDestroyed.add(this);
     }
    
     public boolean isMouseIn(){
@@ -407,10 +407,6 @@ public abstract class Tower implements Shootable{
         return selected;
     }
     
-    public boolean toRemove(){
-        return toBeRemoved;
-    }
-    
     public int getWidth(){
         return width;
     }
@@ -440,12 +436,12 @@ public abstract class Tower implements Shootable{
     }
     
     public boolean canShoot(){
-        return (System.currentTimeMillis()-lastShoot >= 1000/(shootRate*game.gameSpeed) && (angle >= newAngle-6 && angle <= newAngle+6 || enemyAimed != null));
+        return (game.timeInGamePassed-lastShoot >= 1000/shootRate && (angle >= newAngle-6 && angle <= newAngle+6));
     }
     
     public void shoot(){
         enemiesTouched.clear();
-        lastShoot = System.currentTimeMillis();
+        lastShoot = game.timeInGamePassed;
         float x = (float)(this.x+size*Math.cos(Math.toRadians(angle))/2);
         float y = (float)(this.y+size*Math.sin(Math.toRadians(angle))/2);
         x = Math.abs(x) < 2 ? 0 : x;
@@ -560,9 +556,5 @@ public abstract class Tower implements Shootable{
     @Override
     public ArrayList<Bullet> getBulletsToRemove(){
         return bulletsToRemove;
-    }
-    
-    protected void raisePrice(){
-        
     }
 }

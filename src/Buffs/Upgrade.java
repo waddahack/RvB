@@ -17,10 +17,10 @@ public class Upgrade extends Buff{
         game.raztech.range += unite/2;
         game.raztech.getUpgrades().get(0).setValue(game.raztech.range);
         
-        game.raztech.power += 2;
+        game.raztech.power += 1;
         game.raztech.getUpgrades().get(1).setValue(game.raztech.power);
         
-        game.raztech.shootRate += 0.2f;
+        game.raztech.shootRate += 0.1f;
         game.raztech.getUpgrades().get(2).setValue(game.raztech.shootRate);
     }
 }

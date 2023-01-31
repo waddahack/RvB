@@ -8,19 +8,18 @@ import static rvb.RvB.ref;
 public class CircleTower extends Tower{
 
     public static int startPrice = 400;
-    public static int priceP = startPrice;
     
     public CircleTower(){
         super("circleTower");
         textureStatic = RvB.textures.get(("circleTower"));
         textures.add(textureStatic);
         canRotate = false;
-        price = priceP;
+        price = RvB.game.circleTowerPrice;
         life = 100;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
-        totalMoneySpent = priceP;
+        totalMoneySpent = price;
         name = Text.TOWER_CIRCLE;
         explode = false;
         follow = false;
@@ -44,16 +43,10 @@ public class CircleTower extends Tower{
     }
     
     @Override
-    protected void raisePrice(){
-        priceP *= 1.08;
-        price = priceP;
-    }
-    
-    @Override
     public void shoot(){
         super.shoot();
         
-        lastShoot = System.currentTimeMillis();
+        lastShoot = RvB.game.timeInGamePassed;
 
         bullets.clear();
         bullets.add(new Bullet(this, x-size/2, y, x-100, y, size/6, bulletSprite, true, 75));

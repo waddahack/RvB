@@ -8,7 +8,6 @@ import static rvb.RvB.ref;
 public class BasicTower extends Tower{
     
     public static int startPrice = 200;
-    public static int priceP = startPrice;
     
     public BasicTower() {
         super("basicTower");
@@ -17,12 +16,12 @@ public class BasicTower extends Tower{
         rotateIndex = 1;
         textureStatic = RvB.textures.get("basicTower");
         canRotate = true;
-        price = priceP;
+        price = RvB.game.basicTowerPrice;
         life = 100;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
-        totalMoneySpent = priceP;
+        totalMoneySpent = price;
         name = Text.TOWER_BASIC;
         explode = false;
         follow = false;
@@ -43,11 +42,5 @@ public class BasicTower extends Tower{
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
         growth = 20*ref/n;
-    }
-    
-    @Override
-    protected void raisePrice(){
-        priceP *= 1.2;
-        price = priceP;
     }
 }

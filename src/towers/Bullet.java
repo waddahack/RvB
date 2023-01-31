@@ -50,7 +50,7 @@ public class Bullet{
         this.goThrough = goThrough;
         this.cone = cone;
         this.waitFor = waitFor;
-        angle = (float) MyMath.angleDegreesBetween(x, y, this.xDest, this.yDest);
+        angle = (float) MyMath.angleDegreesBetween(shooter.getX(), shooter.getY(), this.xDest, this.yDest);
     }
     
     public void move(){
@@ -98,10 +98,10 @@ public class Bullet{
     
     public void update(){
         if(firstUpdate){
-            startTime = System.currentTimeMillis();
+            startTime = game.timeInGamePassed;
             firstUpdate = false;
         }
-        if(System.currentTimeMillis() - startTime >= waitFor){
+        if(game.timeInGamePassed - startTime >= waitFor){
             haveWaited = true;
         }
         if(haveWaited){

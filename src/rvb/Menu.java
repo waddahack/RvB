@@ -97,6 +97,7 @@ public class Menu {
                     overlays[i] = new Overlay(0, 0, windWidth, windHeight/3);
                     overlays[i].addButton(option);
                     overlays[i].addButton(exit);
+                    overlays[i].addImage(windWidth/2, (int)(windWidth/10f + 100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
                     break;
                 case 1:
                     overlays[i].addButton(start);
@@ -135,7 +136,6 @@ public class Menu {
         for(Overlay o : overlays){
             o.render();
         }
-        overlays[0].drawImage(windWidth/2, (int)(windWidth/10f + 100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
         start.drawText(0, 0, Text.ADVENTURE.getText(), fonts.get("normalL"));
         if(randomGame == null)
             random.drawText(0, 0, Text.RANDOM_MAP.getText(), fonts.get("normalL"));

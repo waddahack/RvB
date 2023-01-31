@@ -8,7 +8,6 @@ import static rvb.RvB.ref;
 public class FlameTower extends Tower{
 
     public static int startPrice = 800;
-    public static int priceP = startPrice;
     
     public FlameTower(){
         super("flameTower");
@@ -17,12 +16,12 @@ public class FlameTower extends Tower{
         rotateIndex = 1;
         textureStatic = RvB.textures.get(("flameTower"));
         canRotate = true;
-        price = priceP;
+        price = RvB.game.flameTowerPrice;
         life = 100;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
-        totalMoneySpent = priceP;
+        totalMoneySpent = price;
         name = Text.TOWER_FLAME;
         explode = false;
         follow = false;
@@ -46,16 +45,10 @@ public class FlameTower extends Tower{
     }
     
     @Override
-    protected void raisePrice(){
-        priceP *= 1.1;
-        price = priceP;
-    }
-    
-    @Override
     public void shoot(){
         super.shoot();
         
-        lastShoot = System.currentTimeMillis();
+        lastShoot = RvB.game.timeInGamePassed;
 
         bullets.remove(bullets.size()-1);
         int a = 75;

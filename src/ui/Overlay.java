@@ -179,9 +179,13 @@ public class Overlay {
     
     public void drawImage(int x, int y, int width, int height, Texture t){
         RvB.drawFilledRectangle(this.x+x-width/2, this.y+y-height/2, width, height, rgb, 1, t);
-    }
+    } 
     
     public void drawText(int x, int y, String text, UnicodeFont font) {
+        drawText(x, y, text, font, anchor);
+    }
+    
+    public void drawText(int x, int y, String text, UnicodeFont font, String anchor) {
         switch(anchor){
             case "topLeft":
                 RvB.drawString(this.x+x + font.getWidth(text)/2, this.y+y + font.getHeight(text)/2, text, font);
