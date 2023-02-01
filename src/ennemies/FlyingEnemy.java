@@ -20,11 +20,11 @@ public class FlyingEnemy extends Enemy{
         super();
         name = Text.ENEMY_FLYING;
         reward = 75;
-        power = 12;
-        shootRate = 1;
+        power = 12f;
+        shootRate = 1f;
         moveSpeed = 1.8f;
         range = 3*unite;
-        life = 120;
+        life = 120f;
         width = (int) (1.25*unite);
         hitboxWidth = width;
         eBalance = balance;

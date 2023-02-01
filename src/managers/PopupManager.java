@@ -14,6 +14,7 @@ import ui.Overlay;
 import static rvb.RvB.ref;
 import Buffs.Buff;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 
 public class PopupManager {
@@ -30,6 +31,7 @@ public class PopupManager {
     private String gameType;
     private int top;
     private Buff buff1, buff2, buff3;
+    private Consumer<Object> callback = null;
 
     private PopupManager(){
         random = new Random();
@@ -58,18 +60,10 @@ public class PopupManager {
         b = new Button(popup.getW()/2, 3*popup.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
-            currentOverlay = null;
-            popup.display(false);
-            if(menu != null)
-                menu.enableAllButtons();
-            if(game != null){
-                if(game.gameSpeed == 0)
-                    game.gameSpeed = oldGameSpeed;
-                game.enableAllButtons();
-            }
-            if(creation != null)
-                creation.enableAllButtons();
-             
+            closeCurrentPopup();
+            
+            if(callback != null)
+                callback.accept(null);
         });
         popup.addButton(b);
         //
@@ -81,8 +75,7 @@ public class PopupManager {
         b = new Button(chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
-            currentOverlay = null;
-            chooseDifficulty.display(false);
+            closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.EASY);
             else
@@ -93,8 +86,7 @@ public class PopupManager {
         b = new Button(2*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
-            currentOverlay = null;
-            chooseDifficulty.display(false);
+            closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.MEDIUM);
             else
@@ -105,8 +97,7 @@ public class PopupManager {
         b = new Button(3*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
-            currentOverlay = null;
-            chooseDifficulty.display(false);
+            closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.HARD);
             else
@@ -128,8 +119,7 @@ public class PopupManager {
             game.clearArrays();
             SoundManager.Instance.closeAllClips();
             RvB.switchStateTo(RvB.State.MENU);
-            currentOverlay = null;
-            gameOver.display(false);
+            closeCurrentPopup();
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         gameOver.addButton(b);
@@ -141,8 +131,7 @@ public class PopupManager {
         b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (butWith*1.2), butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
-            currentOverlay = null;
-            enemiesUpgraded.display(false);
+            closeCurrentPopup();
             game.gameSpeed = oldGameSpeed;
             game.enableAllButtons();
             RvB.setCursor(RvB.Cursor.DEFAULT);
@@ -165,7 +154,7 @@ public class PopupManager {
         int top = this.top;
         for(int i = 0 ; i < lines.size() ; i++){
             if(i > 0)
-                top += fonts.get(i).getHeight(lines.get(i))+8;
+                top += fonts.get(i).getHeight(lines.get(i))+8*ref;
             currentOverlay.drawText(currentOverlay.getW()/2, top, lines.get(i), fonts.get(i));
         }
         for(int i = 0 ; i < buttonsText.size() ; i++)
@@ -205,6 +194,10 @@ public class PopupManager {
                 } 
             }
         }
+    }
+    
+    public void setCallback(Consumer<Object> callback){
+        this.callback = callback;
     }
     
     public void popup(String text, String butText){
@@ -282,11 +275,11 @@ public class PopupManager {
         rewardSelection.clearImages();
         top = height/8;
         
-        addText(Text.LEVEL.getText() + game.raztech.lvl, RvB.fonts.get("normalXLB"));
+        addText(Text.LEVEL.getText() + game.raztech.lvl + " !", RvB.fonts.get("normalXLB"));
         addText("\n", RvB.fonts.get("normal"));
-        addText(Text.RAZTECH_LVLUP.getText(), RvB.fonts.get("normalL"));
-        addText("", RvB.fonts.get("normalL"));
-        addText(Text.SELECT_REWARD.getText(), RvB.fonts.get("normalL"));
+        addText(Text.RANGE.getText()+" +"+Math.round(game.raztech.getUpgrades().get(0).addOrMultiplicateValue), RvB.fonts.get("normal"));
+        addText(Text.POWER.getText()+" +"+Math.round(game.raztech.getUpgrades().get(1).addOrMultiplicateValue), RvB.fonts.get("normal"));
+        addText(Text.SHOOTRATE.getText()+" +"+game.raztech.getUpgrades().get(2).addOrMultiplicateValue, RvB.fonts.get("normal"));
         
         buff1 = game.buffs.empty() ? null : game.buffs.pop();
         buff2 = game.buffs.empty() ? null : game.buffs.pop();
@@ -297,8 +290,7 @@ public class PopupManager {
             b = new Button(rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
-                currentOverlay = null;
-                rewardSelection.display(false);
+                closeCurrentPopup();
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
@@ -317,8 +309,7 @@ public class PopupManager {
             b = new Button(rewardSelection.getW()/2, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
-                currentOverlay = null;
-                rewardSelection.display(false);
+                closeCurrentPopup();
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
@@ -337,8 +328,7 @@ public class PopupManager {
             b = new Button(5*rewardSelection.getW()/6, 3*rewardSelection.getH()/4, (int) (160*ref), (int) (160*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setFunction(__ -> {
                 stateChanged = true;
-                currentOverlay = null;
-                rewardSelection.display(false);
+                closeCurrentPopup();
                 game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
@@ -387,6 +377,15 @@ public class PopupManager {
             return;
         currentOverlay.display(false);
         currentOverlay = null;
+        if(menu != null)
+            menu.enableAllButtons();
+        if(game != null){
+            if(game.gameSpeed == 0)
+                game.gameSpeed = oldGameSpeed;
+            game.enableAllButtons();
+        }
+        if(creation != null)
+            creation.enableAllButtons();
     }
     
     public boolean onPopup(){

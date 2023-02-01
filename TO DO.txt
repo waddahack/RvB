@@ -1,8 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 
 Raztech : 
-- upgrade general mult par un % (attention, faire un bonus power, range, AS pour cummuler le % et * à la fin) et ajouter ce buff dans overlay
-
 - Faire la fonctionnalité buff slow
 - Faire plein de buffs
 

@@ -17,7 +17,7 @@ public class BasicTower extends Tower{
         textureStatic = RvB.textures.get("basicTower");
         canRotate = true;
         price = RvB.game.basicTowerPrice;
-        life = 100;
+        life = 100f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
@@ -31,13 +31,13 @@ public class BasicTower extends Tower{
         bulletSprite = RvB.textures.get("bullet");
         
         range = 3*RvB.unite;
-        power = 24;
+        power = 22f;
         shootRate = 0.5f;
         bulletSpeed = 20;
-        upgrades.add(new Upgrade("Range", range, 1.3f, "*", 120f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1.3f, "*", 120f, 1.4f, 3));
-        upgrades.add(new Upgrade("Attack speed", shootRate, 1.25f, "*", 150f, 1.5f, 2));
-        upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 120f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Power", power, 10f, "+", 120f, 1.4f, 3));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.25f, "*", 150f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

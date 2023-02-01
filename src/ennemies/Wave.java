@@ -40,7 +40,7 @@ public class Wave{
     }
     
     public void update(){
-        if(index == enemies.size())
+        if(index == enemies.size() || game.gameSpeed == 0)
             return;
         Enemy nextEnemy = enemies.get(index);
         Enemy previousEnemy = null;

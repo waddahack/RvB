@@ -23,11 +23,11 @@ public class Bazoo extends Enemy{
         level = lvl;
         name = Text.ENEMY_BOSS;
         reward = lvl*100;
-        power = 50;
-        shootRate = 1;
+        power = 50f;
+        shootRate = 1f;
         moveSpeed = 1.8f;
         range = 3*RvB.unite;
-        life = 700;
+        life = 700f;
         width = 3*RvB.unite;
         hitboxWidth = (int) (width*0.51);
         sprite = RvB.textures.get("bazoo");

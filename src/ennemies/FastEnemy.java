@@ -12,11 +12,11 @@ public class FastEnemy extends Enemy{
         super();
         name = Text.ENEMY_FAST;
         reward = 15;
-        power = 4;
-        shootRate = 1;
+        power = 4f;
+        shootRate = 1f;
         moveSpeed = 4.4f;
         range = 3*RvB.unite;
-        life = 42;
+        life = 42f;
         width = RvB.unite;
         hitboxWidth = width;
         eBalance = balance;

@@ -17,7 +17,7 @@ public class FlameTower extends Tower{
         textureStatic = RvB.textures.get(("flameTower"));
         canRotate = true;
         price = RvB.game.flameTowerPrice;
-        life = 100;
+        life = 100f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
@@ -33,11 +33,11 @@ public class FlameTower extends Tower{
         bulletSprite = RvB.textures.get("flame");
         
         range = (int) (1.4*RvB.unite);
-        power = 1;
+        power = 1f;
         shootRate = 30f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade("Range", range, 1.3f, "*", 180f, 1.5f, 2));
-        upgrades.add(new Upgrade("Power", power, 1f, "+", 600f, 1.6f, 2));
+        upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 180f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Power", power, 1f, "+", 600f, 1.6f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

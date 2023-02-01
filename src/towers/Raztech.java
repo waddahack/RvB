@@ -38,7 +38,7 @@ public class Raztech extends Tower{
             textureStatic = RvB.textures.get("place");
         canRotate = true;
         price = priceP;
-        life = 100;
+        life = 100f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
@@ -53,14 +53,14 @@ public class Raztech extends Tower{
         bulletSprite = RvB.textures.get("gun_bullet");
 
         range = 4*RvB.unite;
-        power = 4;
+        power = 4f;
         shootRate = 2f;
         bulletSpeed = 20;
         growth = 4*ref;
         
-        upgrades.add(new Upgrade("Range", range, RvB.unite/4, "+", 0, 0, 0));
-        upgrades.add(new Upgrade("Power", power, 1, "+", 0, 0, 0));
-        upgrades.add(new Upgrade("Attack speed", shootRate, 0.1f, "+", 0, 0, 0));
+        upgrades.add(new Upgrade(this, "Range", range, RvB.unite/4, "+", 0, 0, 0));
+        upgrades.add(new Upgrade(this, "Power", power, 1, "+", 0, 0, 0));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 0.1f, "+", 0, 0, 0));
         
         buffs = new HashMap<>();
     }
@@ -86,7 +86,8 @@ public class Raztech extends Tower{
         }
         
         // Buffs
-        o2.addImage(o2.getW()-(int) (760*ref), o2.getH()/2, (int)(34*ref), (int)(34*ref), RvB.textures.get("buff_slow"));
+        o2.addImage(o2.getW()-(int) (760*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_upgrade"));
+        o2.addImage(o2.getW()-(int) (650*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_slow"));
 
         // button focus
         if(canRotate){
@@ -124,7 +125,12 @@ public class Raztech extends Tower{
         for(Upgrade up : upgrades)
             up.render();
         
-        overlay.drawText(overlay.getW()-(int) (718*ref), overlay.getH()/2, (int)(slowAmount*100)+"%", RvB.fonts.get("normal"));
+        // buff upgrade
+        overlay.drawText(overlay.getW()-(int) (720*ref), (int)(overlay.getH()/2-18*ref), (int)(bonusRange*100)+"%", RvB.fonts.get("normalS"));
+        overlay.drawText(overlay.getW()-(int) (720*ref), overlay.getH()/2, (int)(bonusPower*100)+"%", RvB.fonts.get("normalS"));
+        overlay.drawText(overlay.getW()-(int) (720*ref), (int)(overlay.getH()/2+18*ref), (int)(bonusShootRate*100)+"%", RvB.fonts.get("normalS"));
+        // buff slow
+        overlay.drawText(overlay.getW()-(int) (610*ref), overlay.getH()/2, (int)(slowAmount*100)+"%", RvB.fonts.get("normal"));
         
         if(canRotate){
             b = overlay.getButtons().get(0);
@@ -199,7 +205,7 @@ public class Raztech extends Tower{
     public void updateStats(Enemy e){
         super.updateStats(e);
         if(e.getLife()-power <= 0 && e.name.getText() != Text.ENEMY_BOSS.getText())
-            gainXP(e.getMaxLife()/2);
+            gainXP((int)(e.getMaxLife()/2));
     }
     
     public void gainXP(int amount){
@@ -232,7 +238,7 @@ public class Raztech extends Tower{
         if(!game.buffs.empty())
             PopupManager.Instance.rewardSelection();
         else
-            PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl, "\n", Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normalL")}, "...");
+            PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl+" !", "\n", Text.RANGE.getText()+" +"+Math.round(upgrades.get(0).addOrMultiplicateValue), Text.POWER.getText()+" +"+Math.round(upgrades.get(1).addOrMultiplicateValue), Text.SHOOTRATE.getText()+" +"+upgrades.get(2).addOrMultiplicateValue, Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normalL")}, "...");
     }
     
     public void upgradeStats(){

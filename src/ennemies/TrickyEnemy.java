@@ -14,11 +14,11 @@ public class TrickyEnemy extends Enemy{
         super();
         name = Text.ENEMY_TRICKY;
         reward = 25;
-        power = 6;
-        shootRate = 1;
+        power = 6f;
+        shootRate = 1f;
         moveSpeed = 3.1f;
         range = 0;
-        life = 80;
+        life = 80f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         eBalance = balance;

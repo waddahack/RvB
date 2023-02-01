@@ -21,13 +21,14 @@ import ui.Overlay;
 public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public static double bonusLife = 0, bonusMS = 0;
+    public float bonusRange = 0, bonusPower = 0, bonusShootRate = 0;
     protected int eBalance;
-    protected int reward, power, shootRate, range, life, maxLife, indiceTuile = -1, width, hitboxWidth;
+    protected int reward, range, indiceTuile = -1, width, hitboxWidth;
     protected Texture sprite = null, brightSprite = null;
     protected long stopFor = -1;
     public Text name;
     protected SoundManager.Volume volume;
-    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed;
+    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed, power, shootRate, life, maxLife;
     protected double angle, newAngle, startTimeStopFor, startTimeMove;
     protected String dir;
     protected boolean isAimed = false, isMultipleShot, started = false;
@@ -61,7 +62,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     public void update(){
-        if(game.enemySelected == null && isClicked() && started)
+        if(game.enemySelected == null && isClicked(0) && started)
             game.setEnemySelected(this);
         if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.POINTER){
             mouseEntered = true;
@@ -235,7 +236,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return null;
     }
     
-    public int getMaxLife(){
+    public float getMaxLife(){
         return maxLife;
     }
     
@@ -252,8 +253,8 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return (MX >= x-width/2 && MX <= x+width/2 && MY >= y-width/2 && MY <= y+width/2);
     }
     
-    public boolean isClicked(){
-        return (isMouseIn() && Mouse.isButtonDown(0));
+    public boolean isClicked(int but){
+        return (isMouseIn() && Mouse.isButtonDown(but));
     }
     
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
@@ -272,7 +273,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
         o.drawText(o.getW()/2, (int) (12*ref), name.getText(), RvB.fonts.get("normalL"));
-        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, (int)(12*ref), ""+maxLife, RvB.fonts.get("life"));
+        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+Math.round(maxLife))/2+5, (int)(12*ref), ""+Math.round(maxLife), RvB.fonts.get("life"));
     }
     
     public void attack(){
@@ -286,6 +287,21 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         y = yBase;
     }
 
+    @Override
+    public int getRange(){
+        return Math.round(range*(1+bonusRange));
+    }
+    
+    @Override
+    public float getPower(){
+        return (float)(Math.round(power*(1+bonusPower)*10f)/10f);
+    }
+    
+    @Override
+    public float getShootRate(){
+        return (float)(Math.round(shootRate*(1+bonusShootRate)*10f)/10f);
+    }
+    
     @Override
     public void updateStats(Tower t){
         
@@ -310,7 +326,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         }
         else
             life -= attacker.getPower();
-            
+ 
         startTimeWaitFor = game.timeInGamePassed;
         if(life <= 0)
             die();  
@@ -328,8 +344,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         game.money += reward;
     }
     
-    public int getLife(){
+    public float getLife(){
         return life;
+    }
+    
+    public float getRoundedLife(){
+        return (float)(Math.round(life*10)/10f);
     }
     
     public int compareTo(Enemy e){
@@ -418,20 +438,12 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return null;
     }
     
-    public int getPower(){
-        return power;
-    }
-    
     public boolean hasStarted(){
         return started;
     }
     
     public boolean isSpawned(){
         return started;
-    }
-    
-    public int getRange(){
-        return range;
     }
     
     public boolean isMultipleShot(){

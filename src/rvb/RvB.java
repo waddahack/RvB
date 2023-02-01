@@ -75,7 +75,7 @@ public class RvB{
     public static double lastUpdate, lastUpdateFPS;
     public static double deltaTime;
     public static Menu menu;
-    public static Game game = null, adventureGame = null, randomGame = null, createdGame = null;
+    public static Game game = null, adventureGame = null, randomGame = null, createdGame = null, savedGame = null;
     public static Creation creation = null;
     public static Map<String, Texture> textures;
     public static Map<String, UnicodeFont> fonts;
@@ -85,8 +85,9 @@ public class RvB{
     public static int[] cursorPos = new int[2];
     private static Overlay debugTool;
     private static ArrayList<String> consoleLines = new ArrayList<>();
-    private static int nbConsoleLines = 0, nbConsoleLinesMax = 10;
-    private static boolean cheatsActivated = true;
+    private static String commandPrompt = "";
+    private static int nbConsoleLines = 0, nbConsoleLinesMax = 8;
+    private static boolean cheatsActivated = true, listeningKeyboard = false;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -196,9 +197,11 @@ public class RvB{
             case GAME:
                 game.update();
                 break;
+
             case CREATION:
                 creation.update();
                 break;
+
             case EXIT:
                 releaseTextures();
                 //releaseAudio();
@@ -217,7 +220,7 @@ public class RvB{
     }  
     
     private static void initDebugTool(){
-        debugTool = new Overlay(windWidth-260, windHeight/6, 250, 4*windHeight/6);
+        debugTool = new Overlay((int) (windWidth-260*ref), windHeight/6, (int) (250*ref), 4*windHeight/6);
         debugTool.setRGBA(new float[]{70/255f, 70/255f, 70/255f}, 0.5f);
         debugTool.display(false);
     }
@@ -228,31 +231,58 @@ public class RvB{
         debugTool.render();
         // Memory
         int memFree = (int) (Runtime.getRuntime().freeMemory()/1000000), memUsed = (int)(Runtime.getRuntime().totalMemory()/1000000), memAlloc = (int) (Runtime.getRuntime().totalMemory()/1000000 - memFree);
-        debugTool.drawText((int)(10*ref), (int)(10*ref), "Memory used : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(10*ref), "Memory used :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(10*ref), memUsed+"MB", fonts.get("normalS"), "topRight");
-        debugTool.drawText((int)(10*ref), (int)(30*ref), "Allocated memory : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(30*ref), "Allocated memory :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(30*ref), memAlloc+"MB", fonts.get("normalS"), "topRight");
-        debugTool.drawText((int)(10*ref), (int)(50*ref), "Memory free : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(50*ref), "Memory free :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(50*ref), memFree+"MB", fonts.get("normalS"), "topRight");
         // FPS
-        debugTool.drawText((int)(10*ref), (int)(70*ref), "FPS : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(70*ref), "FPS :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(70*ref), averageFPS+"", fonts.get("normalS"), "topRight");
         // Cheats activated
-        debugTool.drawText((int)(10*ref), (int)(90*ref), "Cheats : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(90*ref), "Cheats :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(90*ref), (cheatsActivated ? "on" : "off"), fonts.get("normalS"), "topRight");
         // Say Hi!
-        debugTool.drawText((int)(10*ref), (int)(110*ref), "Say hi : ", fonts.get("normalS"), "topLeft");
+        debugTool.drawText((int)(10*ref), (int)(110*ref), "Say hi :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), "F1+H", fonts.get("normalS"), "topRight");
         if(game != null){
             int s = 150;
-            debugTool.drawText((int)(10*ref), (int)(s*ref), "Wave : ", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(s*ref), game.waveNumber+"", fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)(s+20*ref), "Nb towers : ", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Raztech lvl : ", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Time passed in game : ", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (int)(game.timeInGamePassed/1000)+"", fonts.get("normalS"), "topRight");
+            debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Game", fonts.get("normalS"), "center");
+            debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Wave :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.waveNumber+"", fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Nb towers :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Raztech lvl :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Time passed in game :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), (int)(game.timeInGamePassed/1000)+"", fonts.get("normalS"), "topRight");
+            s += 120;
+            // Selected enemy
+            if(game.enemySelected != null){
+                debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected enemy", fonts.get("normalS"), "center");
+                debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Life :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.enemySelected.getRoundedLife()+"", fonts.get("normalS"), "topRight");
+                s += 60;
+            }
+            // Selected tower
+            if(game.towerSelected != null){
+                debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected tower", fonts.get("normalS"), "center");
+                debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Range :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towerSelected.getRange()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Damage :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towerSelected.getPower()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Attack speed :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), game.towerSelected.getShootRate()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Explodes :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.getExplode()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Explode radius :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.getExplodeRadius()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+120)*ref), "Follows :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+120)*ref), game.towerSelected.getFollow()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+140)*ref), "Multiple shot :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+140)*ref), game.towerSelected.isMultipleShot()+"", fonts.get("normalS"), "topRight");
+            }
         }
         // CONSOLE
         debugTool.drawText(debugTool.getW()/2, (int)(debugTool.getH()-20*ref-(nbConsoleLinesMax+1)*20*ref), "Console :", fonts.get("normalS"), "center");
@@ -262,12 +292,42 @@ public class RvB{
             debugTool.drawText((int)(10*ref), (int)(debugTool.getH()-20*ref-i*20*ref), consoleLines.get(consoleLines.size()-1-i), fonts.get("normalS"), "topLeft");
     }
     
+    public static void debug(boolean v){
+        debug(v+"");
+    }
+    
+    public static void debug(double v){
+        debug(v+"");
+    }
+    
+    public static void debug(int v){
+        debug(v+"");
+    }
+    
+    public static void debug(float v){
+        debug(v+"");
+    }
+    
     public static void debug(String line){
+        String l = "> "+line;
+        int index;
+        while(fonts.get("normalS").getWidth(l) >= debugTool.getW()-(int)(20*ref)){
+            index = l.length()-1;
+            while(fonts.get("normalS").getWidth(l.substring(0, index)) >= debugTool.getW()-(int)(20*ref))
+                index--;
+            addLine(l.substring(0, index));
+            l = "  "+l.substring(index);
+        }
+        addLine(l);
+        
+        System.out.println(line);
+    }
+    
+    private static void addLine(String line){
         consoleLines.add(line);
         if(consoleLines.size() > nbConsoleLinesMax)
             consoleLines.remove(0);
         nbConsoleLines++;
-        System.out.println(line);
     }
     
     public static void renderMouse(){
@@ -278,6 +338,29 @@ public class RvB{
     public static void checkInput() {
         State s = state;
         if(Keyboard.next()){
+            // LISTENING KEYBOARD FOR COMMAND PROMPT
+            if(listeningKeyboard && Keyboard.getEventKeyState()){
+                if(Keyboard.getEventKey() == Keyboard.KEY_ESCAPE){
+                    listeningKeyboard = false;
+                }
+                else if(Keyboard.getEventKey() == Keyboard.KEY_BACK){
+                    commandPrompt = commandPrompt.substring(0, commandPrompt.length()-1);
+                }
+                else if(Keyboard.getEventKey() == Keyboard.KEY_RETURN){
+                    PopupManager.Instance.closeCurrentPopup();
+                    if(commandPrompt.equals("MARINRUELEN")){
+                        cheatsActivated = !cheatsActivated;
+                        debug("Cheats "+(cheatsActivated?"on.":"off."));
+                    }
+                    else{
+                        debug("Wrong password.");
+                    }
+                    listeningKeyboard = false;
+                }
+                else
+                    commandPrompt += Keyboard.getKeyName(Keyboard.getEventKey());
+            }
+            
             // ESCAPE MENU
             if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0)){
                 switchStateTo(State.MENU);
@@ -287,8 +370,18 @@ public class RvB{
             
             // COMMANDES
             if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
+                // Prompt command
+                if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)){
+                    PopupManager.Instance.popup("Enter password", "Cancel");
+                    PopupManager.Instance.setCallback(__ -> {
+                        listeningKeyboard = false;
+                    });
+                    listeningKeyboard = true;
+                    commandPrompt = "";
+                }
+                    
                 // Debug tool
-                if(Keyboard.isKeyDown(Keyboard.KEY_D))
+                else if(Keyboard.isKeyDown(Keyboard.KEY_D))
                     debugTool.display(!debugTool.isDisplayed());
                 // Clear console
                 else if(Keyboard.isKeyDown(Keyboard.KEY_C)){
@@ -322,6 +415,11 @@ public class RvB{
             else if(Keyboard.isKeyDown(Keyboard.KEY_L)){
                 if(game != null && game.gameSpeed > 0 && game.raztech != null)
                     game.raztech.levelUp();
+            }
+            // Wave +1
+            else if(Keyboard.isKeyDown(Keyboard.KEY_W)){
+                if(game != null && !game.inWave)
+                    game.waveNumber++;
             }
             // Game speed
             else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){

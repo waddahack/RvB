@@ -6,7 +6,7 @@ import rvb.RvB;
 public class Evolution {
     
     private Texture texture, textureBright;
-    public int life, maxLife;
+    public float life, maxLife;
     private Evolution previousEvo;
     private Enemy owner;
     public float[] lifeColor;
@@ -39,7 +39,7 @@ public class Evolution {
         RvB.drawFilledRectangle(owner.x, owner.y, owner.width, owner.width, sprite, owner.angle, 1);
     }
     
-    public void attacked(int power){
+    public void attacked(float power){
         life -= power;
     }
 }

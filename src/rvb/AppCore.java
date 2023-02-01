@@ -459,11 +459,9 @@ public abstract class AppCore {
             towers.get(i).update();
         
         if(inWave){
-            if(gameSpeed > 0){
-                wave.update();
-                for(int i = enemies.size()-1 ; i >= 0 ; i--)
-                    enemies.get(i).update();
-            }
+            wave.update();
+            for(int i = enemies.size()-1 ; i >= 0 ; i--)
+                enemies.get(i).update();
             for(Enemy e : enemies)
                 e.render();
             if(enemySelected != null)
@@ -501,43 +499,33 @@ public abstract class AppCore {
     protected void checkInput(){
         // Towers placement
         for(Tower t : towers){
-            if(!t.isPlaced() && Mouse.isButtonDown(0) && t.canBePlaced() && !mouseDown){
+            if(t.isPlaced())
+                continue;
+            if(Mouse.isButtonDown(0) && t.canBePlaced() && !mouseDown){
                 // place tower
                 t.place(map);
                 mouseDown = true;
                 RvB.setCursor(Cursor.DEFAULT);
             }
-            else if(!t.isPlaced() && Mouse.isButtonDown(1)){
+            else if(Mouse.isButtonDown(1)){
                 // destroy tower
                 selectTower(null);
                 if(t == raztech)
                     raztech = null;
-                
                 RvB.setCursor(Cursor.DEFAULT);
             }
-            if(!mouseDown && t.isPlaced()){
-                if(t.isClicked(0) && towerSelected == null)
-                    selectTower(t);
-                else if(t.isClicked(0) && towerSelected != null && t == towerSelected && !overlays.get(0).isClicked(0))
-                    selectTower(null);
-                else if(t.isClicked(0) && towerSelected != null && towerSelected.isPlaced() && !overlays.get(0).isClicked(0))
-                    selectTower(t);
-            }
-            
-            
         }
         // Click check
         while(Mouse.next()){
             // Reinitializing if clicking nowhere
-            if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) && !mouseDown){
-                if(towerSelected != null && !towerSelected.isClicked(0) && !overlays.get(0).isClicked(0) && !overlays.get(1).isClicked(0)){
-                    selectTower(null);
-                }
-                if(enemySelected != null && !overlays.get(1).isClicked(0)){
-                    if(towerSelected == null && !overlays.get(0).isClicked(0))
+            if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) && !mouseDown){ //If left or right click
+                if(!overlays.get(1).isClicked(0) && !overlays.get(0).isClicked(0)){ //If game overlays aren't clicked
+                    if(towerSelected != null && !towerSelected.isClicked(0) && !anyEnemyClicked(0)){
+                        selectTower(null);
+                    }
+                    if(enemySelected != null && !enemySelected.isClicked(0) && !anyTowerClicked(0)){
                         setEnemySelected(null);
-                    else if(towerSelected != null && !towerSelected.isClicked(0) && !overlays.get(0).isClicked(0))
-                        setEnemySelected(null);
+                    }
                 }
             }
         }
@@ -575,6 +563,20 @@ public abstract class AppCore {
                     overlays.get(0).getButtons().get(3).click();
             }
         }
+    }
+    
+    public boolean anyTowerClicked(int but){
+        for(Tower t : towers)
+            if(t.isClicked(but))
+                return true;
+        return false;
+    }
+    
+    public boolean anyEnemyClicked(int but){
+        for(Enemy e : enemies)
+            if(e.isClicked(but))
+                return true;
+        return false;
     }
     
     protected void renderEnemySelected(){
@@ -638,8 +640,9 @@ public abstract class AppCore {
         b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setItemFramed(true);
         b.setFunction(__ -> {
-            if(towerSelected == null)
-                createTower(4);
+            if(towerSelected != null)
+                selectTower(null);
+            createTower(4);
         });
         o.addButton(b);
         overlays.add(o);
@@ -816,8 +819,7 @@ public abstract class AppCore {
     
     public void createTower(int id){
         if(towerSelected != null){
-            towerSelected.setSelected(false);
-            towerSelected = null;
+            selectTower(null);
         }
         Tower tower = null;
         int price = 0;
@@ -887,7 +889,7 @@ public abstract class AppCore {
         return indexY;
     }
     
-    public void getAttackedBy(int p){
+    public void getAttackedBy(float p){
         life -= p;
         if(life <= 0){
             gameOver = true;
@@ -907,12 +909,8 @@ public abstract class AppCore {
         if(towerSelected != null){
             if(!towerSelected.isPlaced())
                 towersToBeDestroyed.add(towerSelected);
-            towerSelected.setSelected(false);
-        }
-            
+        }  
         towerSelected = t;
-        if(t != null)
-            t.setSelected(true);
         mouseDown = true;
     }
     
@@ -927,7 +925,7 @@ public abstract class AppCore {
             for(Button b : o.getButtons())
                 b.enable();
     }
-    
+
     public void setEnemySelected(Enemy e) {
         if(e == null)
             overlays.get(2).display(false);

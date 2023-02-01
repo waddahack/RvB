@@ -13,14 +13,15 @@ public interface Shootable {
     public void attacked(Shootable attacker);
     public void updateStats(Enemy e);
     public void updateStats(Tower t);
-    public int getPower();
+    public int getRange();
+    public float getPower();
+    public float getShootRate();
+    public int getExplodeRadius();
+    public int getBulletSpeed();
     public int getHitboxWidth();
     public boolean isDead();
-    public int getExplodeRadius();
     public boolean getExplode();
     public boolean getFollow();
-    public int getBulletSpeed();
-    public int getRange();
     public boolean isMultipleShot();
     public ArrayList<Shootable> getEnemiesTouched();
 }

@@ -30,7 +30,7 @@ public class BigTower extends Tower{
         textureStatic = RvB.textures.get("bigTower");
         canRotate = true;
         price = RvB.game.bigTowerPrice;
-        life = 100;
+        life = 100f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         size = width;
@@ -48,15 +48,15 @@ public class BigTower extends Tower{
         bulletSizeBonus = 10;
         
         range = 7*RvB.unite/3;
-        power = 20;
+        power = 20f;
         shootRate = 0.2f;
         bulletSpeed = 8;
         explodeRadius = 4*RvB.unite/5;
-        upgrades.add(new Upgrade("Range", range, 1.2f, "*", 120f, 1.5f, 3));
-        upgrades.add(new Upgrade("Power", power, 1.5f, "*", 275f, 1.6f, 2));
-        upgrades.add(new Upgrade("Attack speed", shootRate, 1.3f, "*", 200f, 1.5f, 2));
-        upgrades.add(new Upgrade("Bullet speed", bulletSpeed, 10f, "+", 150f, 1.8f, 2));
-        upgrades.add(new Upgrade("Explode radius", explodeRadius, RvB.unite/4, "+", 180f, 1.8f, 3));
+        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.5f, 3));
+        upgrades.add(new Upgrade(this, "Power", power, 1.5f, "*", 275f, 1.6f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.3f, "*", 200f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 150f, 1.8f, 2));
+        upgrades.add(new Upgrade(this, "Explode radius", explodeRadius, RvB.unite/4, "+", 180f, 1.8f, 3));
         
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)

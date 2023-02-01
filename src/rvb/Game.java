@@ -67,7 +67,7 @@ public class Game extends AppCore{
         int i = 0, r;
         int[][] check;
         Tile up, down, left, right, accross, temp;
-        while(nbRoadLeft > 0 || path.get(i).getX()+1 <= nbTileX-1){ // Tant qu'il n'est pas à côté d'un bord
+        while(nbRoadLeft > 0 || path.get(i).getX()+1 <= nbTileX-1){ // Tant qu'il n'est pas à côté du bord droit
             neighbors.clear();
             up = new Tile(x, y-1);
             down = new Tile(x, y+1);
@@ -85,8 +85,8 @@ public class Game extends AppCore{
                 neighbors.add(left);
             if(x+1 <= nbTileX-1 && map.get(y).get(x+1) == null)
                 neighbors.add(right);
-            // remove les voisins qui nous fait entrer dans une boucle
-            // (on remove ceux qui vont dans le même sens quela tuile sur laquelle on s'est cogné, en checkant les 3 tuiles en face)
+            // remove les voisins qui nous font entrer dans une boucle
+            // (on remove ceux qui vont dans le même sens que la tuile sur laquelle on s'est cogné, en checkant les 3 tuiles en face)
             if(neighbors.size() > 1 && previous.getDirection() != null){
                 switch (previous.getDirection()) {
                     case "up":
@@ -165,7 +165,7 @@ public class Game extends AppCore{
             }
             
             if(neighbors.isEmpty()){
-                System.out.println("failure : path eating itself");
+                System.out.println("failure : path eating itself"); // Parce que quand la road se heurte au bord droit, on ne regarde pas la place qu'il y a en haut et en bas, tjrs en haut. Donc quand y'a pas bcp de place en haut ça se mord forcément
                 path.clear();
                 break;
             }

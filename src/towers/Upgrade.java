@@ -18,8 +18,10 @@ public class Upgrade {
     public float value, addOrMultiplicateValue, multiplicatePrice;
     private int x = 0, y = 0;
     public Button button;
+    private Tower tower;
     
-    public Upgrade(String name, float value, float addOrMultiplicateValue, String addOrMultiplicate, float price, float multiplicatePrice, int maxClick){
+    public Upgrade(Tower tower, String name, float value, float addOrMultiplicateValue, String addOrMultiplicate, float price, float multiplicatePrice, int maxClick){
+        this.tower = tower;
         this.name = name;
         switch(name){
             case "Range":
@@ -27,7 +29,7 @@ public class Upgrade {
                 icon = RvB.textures.get("rangeIcon");
                 break;
             case "Power":
-                nbNumberToRound = 0;
+                nbNumberToRound = 1;
                 icon = RvB.textures.get("powerIcon");
                 break;
             case "Attack speed":
@@ -62,7 +64,7 @@ public class Upgrade {
                     tower.range = (int) setNewValue();
                     break;
                 case "Power":
-                    tower.power = (int) setNewValue();
+                    tower.power = setNewValue();
                     break;
                 case "Attack speed":
                     tower.shootRate = setNewValue();
@@ -95,8 +97,8 @@ public class Upgrade {
         button.update();
         
         String up, nextUp, upPrice = (int)Math.floor(price)+"";
-        up = nbNumberToRound == 0 ? (int)getValue()+"" : getValue()+"";
-        nextUp = nbNumberToRound == 0 ? (int)getIncreasedValue()+"" : getIncreasedValue()+"";
+        up = nbNumberToRound == 0 ? (int)getValueWithBonus()+"" : getValueWithBonus()+"";
+        nextUp = nbNumberToRound == 0 ? (int)getIncreasedValueWithBonus()+"" : getIncreasedValueWithBonus()+"";
         
         if(!button.isHidden()){
             RvB.drawFilledRectangle(x-(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), icon, 0, 1);
@@ -135,20 +137,50 @@ public class Upgrade {
         return value;
     }
     
-    public float getValue(){
-        return value;
+    public float getValueWithBonus(){
+        switch(name){
+            case "Range":
+                return (int)(Math.round(value*(1+tower.bonusRange)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
+            case "Power":
+                return (float)(Math.round(value*(1+tower.bonusPower)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
+            case "Attack speed":
+                return (float)(Math.round(value*(1+tower.bonusShootRate)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
+            case "Bullet speed":
+                return (float)(Math.round(value*(1+tower.bonusBulletSpeed)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
+            case "Explode radius":
+                return (int)(Math.round(value*(1+tower.bonusExplodeRadius)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
+        }
+        return 0;
     }
     
     public void setValue(float v){
         value = (float) (Math.ceil(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
     }
     
-    public float getIncreasedValue(){
+    public float getIncreasedValueWithBonus(){
+        float bonus = 0;
+        switch(name){
+            case "Range":
+                bonus = tower.bonusRange;
+                break;
+            case "Power":
+                bonus = tower.bonusPower;
+                break;
+            case "Attack speed":
+                bonus = tower.bonusShootRate;
+                break;
+            case "Bullet speed":
+                bonus = tower.bonusBulletSpeed;
+                break;
+            case "Explode radius":
+                bonus = tower.bonusExplodeRadius;
+                break;
+        }
         switch(addOrMultiplicate){
             case "+":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*(value+addOrMultiplicateValue))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value+addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
             case "*":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value+value*addOrMultiplicateValue)-value))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
         };
         return 0;
     }

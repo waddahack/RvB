@@ -54,6 +54,15 @@ public class TextManager {
         LEVEL(
             new String[]{"Niveau "},
             new String[]{"Level "}),
+        POWER(
+            new String[]{"Dégât"},
+            new String[]{"Damage"}),
+        RANGE(
+            new String[]{"Portée"},
+            new String[]{"Range"}),
+        SHOOTRATE(
+            new String[]{"Vitesse d'attaque"},
+            new String[]{"Attack speed"}),
         RAZTECH_LVLUP(
             new String[]{"Raztech a gagné un niveau !"},
             new String[]{"Raztech has leveled up !"}),

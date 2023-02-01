@@ -13,11 +13,11 @@ public class BasicEnemy extends Enemy{
         super();
         name = Text.ENEMY_BASIC;
         reward = 5;
-        power = 2;
-        shootRate = 1;
+        power = 2f;
+        shootRate = 1f;
         moveSpeed = 3.5f;
         range = 3*RvB.unite;
-        life = 30;
+        life = 30f;
         width = 4*RvB.unite/5;
         hitboxWidth = width;
         sprite = RvB.textures.get("basicEnemy");

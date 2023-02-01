@@ -22,14 +22,15 @@ public abstract class Tower implements Shootable{
 
     public int price;
     
-    public int range, power;
-    public float shootRate;
-    protected int  bulletSpeed, life, width, hitboxWidth, totalMoneySpent, explodeRadius, bulletSizeBonus = 0;
+    protected int range, bulletSpeed, explodeRadius;
+    protected float shootRate, power;
+    public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0;
+    protected int width, hitboxWidth, totalMoneySpent, bulletSizeBonus = 0;
     protected double lastShoot = 0;
-    protected float growth = 0;
+    protected float x, y, life, growth = 0;
     protected Text name;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
-    protected boolean isPlaced = false, follow = false, selected = true, isMultipleShot, canRotate, continuousSound = false, soundPlayed = false, explode = false;
+    protected boolean isPlaced = false, follow = false, isMultipleShot, canRotate, continuousSound = false, soundPlayed = false, explode = false;
     protected Enemy enemyAimed;
     protected ArrayList<Bullet> bullets = new ArrayList<>(), bulletsToRemove = new ArrayList<>();
     protected ArrayList<Shootable> enemiesTouched = new ArrayList<>();
@@ -38,7 +39,6 @@ public abstract class Tower implements Shootable{
     protected Texture textureStatic, bulletSprite;
     protected Clip clip;
     protected Random random = new Random();
-    protected float x, y;
     protected int size = unite;
     protected int angle = 180, newAngle = 0;
     protected ArrayList<Texture> textures;
@@ -59,7 +59,10 @@ public abstract class Tower implements Shootable{
     }
     
     public void update(){
-        if(selected && (isPlaced || canBePlaced()))
+        if(game.towerSelected == null && isClicked(0))
+            game.selectTower(this);
+        
+        if(isSelected() && (isPlaced || canBePlaced()))
             renderDetails();
         
         if(!isPlaced)
@@ -218,7 +221,7 @@ public abstract class Tower implements Shootable{
         for(int i = 0 ; i < textures.size() ; i++){
             RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0, 1);
         }
-        if(selected)
+        if(isSelected())
             renderOverlay();
     }
     
@@ -237,10 +240,10 @@ public abstract class Tower implements Shootable{
             xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2;
             yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
         }
-        RvB.drawCircle(xPos, yPos, range, RvB.colors.get("blue"));
-        RvB.drawCircle(xPos, yPos, range-1, RvB.colors.get("grey"));
-        RvB.drawCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"));
-        RvB.drawFilledCircle(xPos, yPos, range-2, RvB.colors.get("grey_light"), 0.1f);
+        RvB.drawCircle(xPos, yPos, getRange(), RvB.colors.get("blue"));
+        RvB.drawCircle(xPos, yPos, getRange()-1, RvB.colors.get("grey"));
+        RvB.drawCircle(xPos, yPos, getRange()-2, RvB.colors.get("grey_light"));
+        RvB.drawFilledCircle(xPos, yPos, getRange()-2, RvB.colors.get("grey_light"), 0.1f);
     }
     
     public void initOverlay(){
@@ -399,12 +402,8 @@ public abstract class Tower implements Shootable{
         return y;
     }
     
-    public void setSelected(boolean b){
-        selected = b;
-    }
-    
     public boolean isSelected(){
-        return selected;
+        return game.towerSelected == this;
     }
     
     public int getWidth(){
@@ -422,7 +421,7 @@ public abstract class Tower implements Shootable{
     
     @Override
     public int getExplodeRadius(){
-        return explodeRadius;
+        return explode ? explodeRadius : 0;
     }
     
     @Override
@@ -436,7 +435,7 @@ public abstract class Tower implements Shootable{
     }
     
     public boolean canShoot(){
-        return (game.timeInGamePassed-lastShoot >= 1000/shootRate && (angle >= newAngle-6 && angle <= newAngle+6));
+        return (game.timeInGamePassed-lastShoot >= 1000/getShootRate() && (angle >= newAngle-6 && angle <= newAngle+6));
     }
     
     public void shoot(){
@@ -503,8 +502,18 @@ public abstract class Tower implements Shootable{
     }
     
     @Override
-    public int getPower(){
-        return power;
+    public int getRange(){
+        return Math.round(range*(1+bonusRange));
+    }
+    
+    @Override
+    public float getPower(){
+        return (float)(Math.round(power*(1+bonusPower)*10f)/10f);
+    }
+    
+    @Override
+    public float getShootRate(){
+        return (float)(Math.round(shootRate*(1+bonusShootRate)*10f)/10f);
     }
     
     @Override
@@ -512,17 +521,12 @@ public abstract class Tower implements Shootable{
         return isMultipleShot;
     }
     
-    public float getShootRate(){
-        return shootRate;
-    }
-    
-    public int getLife(){
+    public float getLife(){
         return life;
     }
     
-    @Override
-    public int getRange(){
-        return range;
+    public float getRoundedLife(){
+        return Math.round(life*10)/10;
     }
     
     @Override
