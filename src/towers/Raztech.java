@@ -27,7 +27,6 @@ public class Raztech extends Tower{
     public int xp = 0, maxXP = 80;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
-    private float slowAmount = 0;
     
     public Raztech() {
         super("raztech");
@@ -130,7 +129,7 @@ public class Raztech extends Tower{
         overlay.drawText(overlay.getW()-(int) (720*ref), overlay.getH()/2, (int)(bonusPower*100)+"%", RvB.fonts.get("normalS"));
         overlay.drawText(overlay.getW()-(int) (720*ref), (int)(overlay.getH()/2+18*ref), (int)(bonusShootRate*100)+"%", RvB.fonts.get("normalS"));
         // buff slow
-        overlay.drawText(overlay.getW()-(int) (610*ref), overlay.getH()/2, (int)(slowAmount*100)+"%", RvB.fonts.get("normal"));
+        overlay.drawText(overlay.getW()-(int) (610*ref), overlay.getH()/2, (int)(slow*100)+"%", RvB.fonts.get("normal"));
         
         if(canRotate){
             b = overlay.getButtons().get(0);
@@ -197,10 +196,6 @@ public class Raztech extends Tower{
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH2);
     }
     
-    public float getSlowAmount(){
-        return slowAmount;
-    }
-    
     @Override
     public void updateStats(Enemy e){
         super.updateStats(e);
@@ -245,9 +240,5 @@ public class Raztech extends Tower{
         range = (int) upgrades.get(0).setNewValue();
         power = (int) upgrades.get(1).setNewValue();
         shootRate = upgrades.get(2).setNewValue();
-    }
-    
-    public void addSlowAmount(float percentage){
-        slowAmount += percentage;
     }
 }

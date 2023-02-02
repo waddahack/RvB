@@ -10,13 +10,13 @@ public class Wave{
     
     private int index;
     private ArrayList<Enemy> enemies;
-    private double startTime;
-    private double waitBetweenType = 900,  waitBetween = 450;
+    private int startTime;
+    private int waitBetweenType = 900,  waitBetween = 450;
     
     public Wave(){
         enemies = new ArrayList<>();
         index = 0;
-        startTime = System.currentTimeMillis();
+        startTime = game.timeInGamePassed;
         waitBetweenType -= game.waveNumber*10;
         if(waitBetweenType < 250)
             waitBetweenType = 250;
@@ -46,11 +46,11 @@ public class Wave{
         Enemy previousEnemy = null;
         if(index > 0)
             previousEnemy = enemies.get(index-1);
-        double time = System.currentTimeMillis();
+        double time = game.timeInGamePassed;
         if((time - startTime >= waitBetweenType/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween/game.gameSpeed)){
             if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000/game.gameSpeed){
                 nextEnemy.setStarted(true);
-                startTime = System.currentTimeMillis();
+                startTime = game.timeInGamePassed;
                 index++;
             }
         }

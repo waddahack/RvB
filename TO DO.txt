@@ -1,7 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
 
 Raztech : 
-- Faire la fonctionnalité buff slow
 - Faire plein de buffs
 
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)

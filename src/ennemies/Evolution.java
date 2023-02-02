@@ -31,7 +31,7 @@ public class Evolution {
             previousEvo.render(false);
         Texture sprite = texture;
         if(lastOnPile){
-            if(owner.startTimeWaitFor != 0 && System.currentTimeMillis() - owner.startTimeWaitFor < owner.waitFor)
+            if(owner.startTimeWaitFor != 0 && RvB.game.timeInGamePassed - owner.startTimeWaitFor < owner.waitFor)
                 sprite = textureBright;
             else if(owner.startTimeWaitFor != 0)
                 owner.startTimeWaitFor = 0;

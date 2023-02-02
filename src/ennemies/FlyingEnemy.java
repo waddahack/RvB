@@ -59,7 +59,7 @@ public class FlyingEnemy extends Enemy{
         x += xDiffConst * (speed/hyp);
         y += yDiffConst * (speed/hyp);
         
-        startTimeMove = System.currentTimeMillis();
+        startTimeMove = game.timeInGamePassed;
     }
     
     @Override
@@ -68,7 +68,7 @@ public class FlyingEnemy extends Enemy{
             return;
         
         Texture sprite = this.baseSprite;
-        if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+        if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
             sprite = this.baseBrightSprite;
         else if(startTimeWaitFor != 0)
             startTimeWaitFor = 0;
@@ -76,7 +76,7 @@ public class FlyingEnemy extends Enemy{
         RvB.drawFilledRectangle(x, y, width, width, sprite, angle, 1);
         
         sprite = this.turningSprite;
-        if(startTimeWaitFor != 0 && System.currentTimeMillis() - startTimeWaitFor < waitFor)
+        if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
             sprite = this.turningBrightSprite;
         else if(startTimeWaitFor != 0)
             startTimeWaitFor = 0;

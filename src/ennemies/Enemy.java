@@ -23,18 +23,18 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     public static double bonusLife = 0, bonusMS = 0;
     public float bonusRange = 0, bonusPower = 0, bonusShootRate = 0;
     protected int eBalance;
-    protected int reward, range, indiceTuile = -1, width, hitboxWidth;
+    protected int reward, range, indiceTuile = -1, width, hitboxWidth, startTimeStopFor, startTimeMove, startTimeSlow;
+    protected int stepEveryMilli, oldstepEveryMilli, startTimeSteps;
     protected Texture sprite = null, brightSprite = null;
     protected long stopFor = -1;
     public Text name;
     protected SoundManager.Volume volume;
-    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed, power, shootRate, life, maxLife;
-    protected double angle, newAngle, startTimeStopFor, startTimeMove;
+    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed, oldMoveSpeed, power, shootRate, slow = 0, slowedBy = 0, life, maxLife;
+    protected double angle, newAngle;
     protected String dir;
     protected boolean isAimed = false, isMultipleShot, started = false;
-    protected double waitFor = 175, startTimeWaitFor = 0;
+    protected int waitFor = 175, startTimeWaitFor = 0;
     protected Clip clip;
-    protected double stepEveryMilli, startTimeSteps;
     protected double movingBy;
     private boolean mouseEntered = false;
     protected Stack<Evolution> evolutions = new Stack<>();
@@ -55,7 +55,9 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     protected void initBack(){
-        moveSpeed = (float) (moveSpeed + (moveSpeed*bonusMS/100));
+        moveSpeed += moveSpeed*bonusMS/100f;
+        oldMoveSpeed = moveSpeed;
+        oldstepEveryMilli = stepEveryMilli;
         life = (int)Math.round(life + (life*bonusLife/100));
         maxLife = life;
         SoundManager.Instance.setClipVolume(clip, volume);
@@ -131,8 +133,19 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
             else
                 setDirection();
         }
-
-        movingBy = ((moveSpeed*game.gameSpeed) * RvB.deltaTime / 50) * RvB.ref;
+        
+        if(slowedBy > 0 && moveSpeed == oldMoveSpeed){
+            moveSpeed *= (1-slowedBy);
+            stepEveryMilli *= (1+slowedBy);
+        }
+            
+        else if(game.timeInGamePassed - startTimeSlow >= 1000){
+            moveSpeed = oldMoveSpeed;
+            stepEveryMilli = oldstepEveryMilli;
+            slowedBy = 0;
+        }
+            
+        movingBy = (moveSpeed*game.gameSpeed * RvB.deltaTime/50) * RvB.ref;
         switch(dir){
             case "down" : 
                 y += movingBy;
@@ -308,6 +321,11 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     }
     
     @Override
+    public float getSlow(){
+        return slow;
+    }
+    
+    @Override
     public void updateStats(Enemy e){
         // Not supposed to happen
     }
@@ -327,9 +345,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         else
             life -= attacker.getPower();
  
+        startTimeSlow = game.timeInGamePassed;
+        slowedBy = attacker.getSlow();
+        
         startTimeWaitFor = game.timeInGamePassed;
         if(life <= 0)
-            die();  
+            die();
+        
     }
     
     public void die(){

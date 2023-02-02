@@ -111,7 +111,7 @@ public abstract class AppCore {
     private static Random random;
     protected int textureID = -10;
     private float waveBalanceMult;
-    public double timeInGamePassed;
+    public int timeInGamePassed;
     public int basicTowerPrice, circleTowerPrice, flameTowerPrice, bigTowerPrice;
     
     public AppCore(){

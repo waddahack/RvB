@@ -18,6 +18,7 @@ public interface Shootable {
     public float getShootRate();
     public int getExplodeRadius();
     public int getBulletSpeed();
+    public float getSlow();
     public int getHitboxWidth();
     public boolean isDead();
     public boolean getExplode();

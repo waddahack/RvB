@@ -22,8 +22,8 @@ public abstract class Tower implements Shootable{
 
     public int price;
     
-    protected int range, bulletSpeed, explodeRadius;
-    protected float shootRate, power;
+    protected int range = 0, bulletSpeed = 0, explodeRadius = 0;
+    protected float shootRate = 0, power = 0, slow = 0;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0;
     protected int width, hitboxWidth, totalMoneySpent, bulletSizeBonus = 0;
     protected double lastShoot = 0;
@@ -425,6 +425,15 @@ public abstract class Tower implements Shootable{
     }
     
     @Override
+    public float getSlow(){
+        return slow;
+    }
+    
+    public void addSlowAmount(float percentage){
+        slow += percentage;
+    }
+    
+    @Override
     public boolean getExplode(){
         return explode;
     }
@@ -539,10 +548,10 @@ public abstract class Tower implements Shootable{
     
     @Override
     public void updateStats(Enemy e){
-        damagesDone += power;
-        if(e.getLife()-power <= 0){
+        damagesDone += getPower();
+        if(e.getLife()-getPower() <= 0){
             enemiesKilled += 1;
-            damagesDone += e.getLife()-power; // Enlève le surplus de dégât (on ajoute forcément 0 ou moins)
+            damagesDone += e.getLife()-getPower(); // Enlève le surplus de dégât (on ajoute forcément 0 ou moins)
             moneyGained += e.getReward();
         } 
     }

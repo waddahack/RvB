@@ -263,7 +263,9 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected enemy", fonts.get("normalS"), "center");
                 debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Life :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.enemySelected.getRoundedLife()+"", fonts.get("normalS"), "topRight");
-                s += 60;
+                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Move speed :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), formatter.format(game.enemySelected.getMoveSpeed()), fonts.get("normalS"), "topRight");
+                s += 80;
             }
             // Selected tower
             if(game.towerSelected != null){
