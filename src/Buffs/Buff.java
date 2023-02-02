@@ -27,6 +27,7 @@ public abstract class Buff {
         Stack<Buff> buffs = new Stack<>();
         buffs.add(new Upgrade());
         buffs.add(new Slow());
+        buffs.add(new XP());
         Collections.shuffle(buffs);
         return buffs;
     }

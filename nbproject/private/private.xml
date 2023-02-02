@@ -14,6 +14,7 @@
         <group>
             <file>file:/F:/Programmation/RvB/src/managers/SoundManager.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/Menu.java</file>
+            <file>file:/F:/Programmation/RvB/src/ennemies/BasicEnemy.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/Game.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/Raztech.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/Bullet.java</file>
@@ -23,11 +24,12 @@
             <file>file:/F:/Programmation/RvB/src/rvb/AppCore.java</file>
             <file>file:/F:/Programmation/RvB/src/managers/PopupManager.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/Creation.java</file>
+            <file>file:/F:/Programmation/RvB/src/Buffs/Slow.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/Rock.java</file>
             <file>file:/F:/Programmation/RvB/src/towers/Upgrade.java</file>
-            <file>file:/F:/Programmation/RvB/src/Buffs/Upgrade.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/Shootable.java</file>
             <file>file:/F:/Programmation/RvB/src/rvb/RvB.java</file>
+            <file>file:/F:/Programmation/RvB/src/ennemies/Enemy.java</file>
         </group>
     </open-files>
 </project-private>

@@ -291,7 +291,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public void attack(){
         if(game.life > 0)
-            game.getAttackedBy(power);
+            game.getAttackedBy(getPower());
         die();
     }
     

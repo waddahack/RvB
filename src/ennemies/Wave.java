@@ -47,8 +47,8 @@ public class Wave{
         if(index > 0)
             previousEnemy = enemies.get(index-1);
         double time = game.timeInGamePassed;
-        if((time - startTime >= waitBetweenType/game.gameSpeed && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween/game.gameSpeed)){
-            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000/game.gameSpeed){
+        if((time - startTime >= waitBetweenType && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween)){
+            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000){
                 nextEnemy.setStarted(true);
                 startTime = game.timeInGamePassed;
                 index++;

@@ -153,6 +153,12 @@ public class TextManager {
         BUFF_SLOW_DESC(
             new String[]{"Les balles de Raztech", "ralentissent de +10%", "pendant 1 sec."},
             new String[]{"Raztech's bullets", "slow by +10%", "for 1 sec."}),
+        BUFF_XP(
+            new String[]{"Rune bleue"},
+            new String[]{"Blue rune"}),
+        BUFF_XP_DESC(
+            new String[]{"Raztech gagne", "+25% d'XP."},
+            new String[]{"Raztech gains", "+25% XP."}),
         
         // POPUPS
         SELECT_DIFF(

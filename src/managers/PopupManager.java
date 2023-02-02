@@ -182,9 +182,11 @@ public class PopupManager {
                     break;
                 b = rewardSelection.getButtons().get(i);
                 if(b.isHovered()){
+                    int nbLines = buff.description.getLines().length;
+                    int totalHeight = (RvB.fonts.get("normalS").getFont().getSize()+1)*nbLines; // betweenLines * nbLines
                     int betweenLines = 0;
-                    for(int j = 0 ; j < buff.description.getLines().length ; j++){
-                        rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-b.getH()/2+20*ref + betweenLines), buff.description.getLines()[j], RvB.fonts.get("normalS"));
+                    for(int j = 0 ; j < nbLines ; j++){
+                        rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-totalHeight/2 + betweenLines), buff.description.getLines()[j], RvB.fonts.get("normalS"));
                         betweenLines += RvB.fonts.get("normalS").getFont().getSize()+1;
                     }
                 }
