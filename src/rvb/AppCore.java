@@ -91,10 +91,10 @@ public abstract class AppCore {
     
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
-    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1;
+    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0, lvlBazoo = 0;
     private int oldGameSpeed = 0;
-    public ArrayList<Tower> towers, towersToBeDestroyed;
-    public ArrayList<Enemy> enemies, enemiesDead, enemiesToAdd;
+    public ArrayList<Shootable> towers, towersDestroyed;
+    public ArrayList<Shootable> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
@@ -121,7 +121,7 @@ public abstract class AppCore {
     protected void init(Difficulty diff){
         rocks = new ArrayList<>();
         towers = new ArrayList<>();
-        towersToBeDestroyed = new ArrayList<>();
+        towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
         enemiesDead = new ArrayList<>();
         enemiesToAdd = new ArrayList<>();
@@ -135,9 +135,6 @@ public abstract class AppCore {
         circleTowerPrice = CircleTower.startPrice;
         flameTowerPrice = FlameTower.startPrice;
         bigTowerPrice = BigTower.startPrice;
-        Bazoo.bossLevel = 0;
-        Enemy.bonusLife = 0;
-        Enemy.bonusMS = 0;
         
         waveNumber = 1;
         if(diff == Difficulty.EASY){
@@ -455,14 +452,14 @@ public abstract class AppCore {
         
         render();
         
-        for(int i = 0 ; i < towers.size() ; i++)
-            towers.get(i).update();
+        for(Shootable t : towers)
+            t.update();
         
         if(inWave){
             wave.update();
             for(int i = enemies.size()-1 ; i >= 0 ; i--)
                 enemies.get(i).update();
-            for(Enemy e : enemies)
+            for(Shootable e : enemies)
                 e.render();
             if(enemySelected != null)
                 renderEnemySelected();
@@ -478,8 +475,8 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    Enemy.bonusLife += 10;
-                    Enemy.bonusMS += 5;
+                    enemiesBonusLife += 10;
+                    enemiesBonusMS += 5;
                     PopupManager.Instance.enemiesUpgraded(new String[]{
                         "+10% "+Text.HP.getText(),
                         "+5% "+Text.MS.getText()
@@ -498,7 +495,8 @@ public abstract class AppCore {
     
     protected void checkInput(){
         // Towers placement
-        for(Tower t : towers){
+        for(Shootable tower : towers){
+            Tower t = (Tower) tower;
             if(t.isPlaced())
                 continue;
             if(Mouse.isButtonDown(0) && t.canBePlaced() && !mouseDown){
@@ -566,14 +564,14 @@ public abstract class AppCore {
     }
     
     public boolean anyTowerClicked(int but){
-        for(Tower t : towers)
+        for(Shootable t : towers)
             if(t.isClicked(but))
                 return true;
         return false;
     }
     
     public boolean anyEnemyClicked(int but){
-        for(Enemy e : enemies)
+        for(Shootable e : enemies)
             if(e.isClicked(but))
                 return true;
         return false;
@@ -782,9 +780,9 @@ public abstract class AppCore {
         for(i = 0 ; i < enemiesToAdd.size() ; i++)
             enemies.add(0, enemiesToAdd.get(i));
         enemiesToAdd.clear();
-        for(i = 0 ; i < towersToBeDestroyed.size() ; i++)
-            towers.remove(towersToBeDestroyed.get(i));
-        towersToBeDestroyed.clear();
+        for(i = 0 ; i < towersDestroyed.size() ; i++)
+            towers.remove(towersDestroyed.get(i));
+        towersDestroyed.clear();
     }
 
     @SuppressWarnings("unchecked")
@@ -812,8 +810,8 @@ public abstract class AppCore {
         }
         wave.shuffleEnemies();
         if(bossRound())
-            wave.addEnemy(new Bazoo(Bazoo.bossLevel));
-        enemies = (ArrayList<Enemy>)wave.getEnnemies().clone();
+            wave.addEnemy(new Bazoo(lvlBazoo++));
+        enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;
     }
     
@@ -853,7 +851,7 @@ public abstract class AppCore {
         }
         if(tower != null && price <= money){
             towers.add(tower);
-            towerSelected = towers.get(towers.size()-1);
+            towerSelected = (Tower) towers.get(towers.size()-1);
             RvB.setCursor(Cursor.GRAB);
         }
     }
@@ -908,7 +906,7 @@ public abstract class AppCore {
     public void selectTower(Tower t){
         if(towerSelected != null){
             if(!towerSelected.isPlaced())
-                towersToBeDestroyed.add(towerSelected);
+                towersDestroyed.add(towerSelected);
         }  
         towerSelected = t;
         mouseDown = true;
@@ -941,10 +939,6 @@ public abstract class AppCore {
     public void addEnemy(Enemy e){
         enemiesToAdd.add(0, e);
         wave.addEnemy(e);
-    }
-    
-    public ArrayList<Enemy> getEnnemiesDead(){
-        return enemiesDead;
     }
     
     public int getLife(){

@@ -86,7 +86,7 @@ public class RvB{
     private static Overlay debugTool;
     private static ArrayList<String> consoleLines = new ArrayList<>();
     private static String commandPrompt = "";
-    private static int nbConsoleLines = 0, nbConsoleLinesMax = 8;
+    private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
     private static boolean cheatsActivated = true, listeningKeyboard = false;
     
     public static void main(String[] args){
@@ -115,6 +115,7 @@ public class RvB{
             unite -= 1;
         windWidth = unite*nbTileX;
         windHeight = unite*nbTileY;
+        
         ref = unite/60f;
         
         init();
@@ -270,20 +271,16 @@ public class RvB{
             // Selected tower
             if(game.towerSelected != null){
                 debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected tower", fonts.get("normalS"), "center");
-                debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Range :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towerSelected.getRange()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Damage :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towerSelected.getPower()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Attack speed :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), game.towerSelected.getShootRate()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Explodes :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.getExplode()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Explode radius :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.getExplodeRadius()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+120)*ref), "Follows :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+120)*ref), game.towerSelected.getFollow()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+140)*ref), "Multiple shot :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+140)*ref), game.towerSelected.isMultipleShot()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Life :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towerSelected.life+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Follows :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towerSelected.getFollow()+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Enemy killed :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), game.towerSelected.enemiesKilled+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Damages done :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.damagesDone+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Money gained :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.moneyGained+"", fonts.get("normalS"), "topRight");
             }
         }
         // CONSOLE
@@ -679,6 +676,7 @@ public class RvB{
             // Buffs
             textures.put("buff_slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
             textures.put("buff_upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
+            textures.put("buff_os", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_os.png"))));
             textures.put("buff_xp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_xp.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));

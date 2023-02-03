@@ -1,16 +1,10 @@
 package ennemies;
 
-import Utils.MyMath;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.sound.sampled.Clip;
-import org.lwjgl.input.Mouse;
-import org.newdawn.slick.opengl.Texture;
-import towers.Bullet;
-import towers.Tower;
 import rvb.Shootable;
 import managers.SoundManager;
-import managers.TextManager.Text;
 import rvb.Tile;
 import rvb.RvB;
 import static rvb.RvB.game;
@@ -18,29 +12,23 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.Overlay;
 
-public abstract class Enemy implements Shootable, Comparable<Enemy>{
+public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
-    public static double bonusLife = 0, bonusMS = 0;
-    public float bonusRange = 0, bonusPower = 0, bonusShootRate = 0;
+    public float bonusMS = 0;
     protected int eBalance;
-    protected int reward, range, indiceTuile = -1, width, hitboxWidth, startTimeStopFor, startTimeMove, startTimeSlow;
+    protected int indiceTuile = -1, startTimeStopFor, startTimeMove, startTimeSlow;
     protected int stepEveryMilli, oldstepEveryMilli, startTimeSteps;
-    protected Texture sprite = null, brightSprite = null;
-    protected long stopFor = -1;
-    public Text name;
-    protected SoundManager.Volume volume;
-    protected float x, y, xBase, yBase, minSpawnSpeed = 0.5f, moveSpeed, oldMoveSpeed, power, shootRate, slow = 0, slowedBy = 0, life, maxLife;
-    protected double angle, newAngle;
+    protected float xBase, yBase, moveSpeed, oldMoveSpeed, slowedBy = 0;
     protected String dir;
-    protected boolean isAimed = false, isMultipleShot, started = false;
-    protected int waitFor = 175, startTimeWaitFor = 0;
-    protected Clip clip;
+    protected long stopFor = -1;
     protected double movingBy;
-    private boolean mouseEntered = false;
     protected Stack<Evolution> evolutions = new Stack<>();
-    private static Clip armorBreak = SoundManager.Instance.getClip("armor_break");
+    protected static Clip armorBreak = SoundManager.Instance.getClip("armor_break");
+    protected Clip clipWalk;
+    protected SoundManager.Volume volumeWalk = SoundManager.Volume.SEMI_LOW;
     
     public Enemy(){
+        super();
         if(game.spawn != null){
             x = game.spawn.getX()+unite/2;
             y = game.spawn.getY()+unite/2;
@@ -52,17 +40,20 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         startTimeMove = game.timeInGamePassed;
         startTimeSteps = game.timeInGamePassed;
         SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
+        canShoot = false;
+        focusIndex = 4;
     }
     
+    @Override
     protected void initBack(){
+        super.initBack();
         moveSpeed += moveSpeed*bonusMS/100f;
         oldMoveSpeed = moveSpeed;
         oldstepEveryMilli = stepEveryMilli;
-        life = (int)Math.round(life + (life*bonusLife/100));
-        maxLife = life;
-        SoundManager.Instance.setClipVolume(clip, volume);
+        SoundManager.Instance.setClipVolume(clipWalk, volumeWalk);
     }
     
+    @Override
     public void update(){
         if(game.enemySelected == null && isClicked(0) && started)
             game.setEnemySelected(this);
@@ -80,46 +71,40 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         }
         if(started){
             move();
-            if(clip != null){
+            if(clipWalk != null){
                 if(stepEveryMilli == 0){
                     stepEveryMilli = -1;
-                    SoundManager.Instance.playLoop(clip);
+                    SoundManager.Instance.playLoop(clipWalk);
                 }   
                 else if(stepEveryMilli > 0 && game.timeInGamePassed - startTimeSteps >= stepEveryMilli){
                     startTimeSteps = game.timeInGamePassed;
-                    SoundManager.Instance.playOnce(clip);
+                    SoundManager.Instance.playOnce(clipWalk);
                 }
             }
+            super.update();
         }
     }
     
+    @Override
     public void render(){
         if(!started && stopFor == -1)
             return;
-        if(sprite != null){
+        if(rotateIndex < 0 || enemyAimed == null || enemyAimed.isDead()){
             double t = 0.03*moveSpeed*game.gameSpeed;
             if(t < 0.1) t = 0.1;
 
             if(Math.abs(angle - newAngle) <= 5)
                 t = 1;
-            
-            angle = (1-t)*angle + t*newAngle;
 
-            angle = Math.round(angle);
+            angle = (int) Math.round((1-t)*angle + t*newAngle);
+        }   
 
-            Texture sprite = this.sprite;
-            if(evolutions.isEmpty()){
-                if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
-                    sprite = this.brightSprite;
-                else if(startTimeWaitFor != 0)
-                    startTimeWaitFor = 0;
-            }
-
-            RvB.drawFilledRectangle(x, y, width, width, sprite, angle, 1);
-            
-            if(!evolutions.isEmpty())
-                evolutions.peek().render();
-        }  
+        if(!evolutions.isEmpty()){
+            evolutions.peek().render(); 
+            RvB.drawFilledRectangle(x, y, size, size, textures.get(0), angle, 1);
+        } 
+        else
+            super.render();
     }
     
     protected void move(){
@@ -129,7 +114,7 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
                 game.path.get(indiceTuile-1).stepped();
             setPositionInCenterOfTile();
             if(isInBase())
-                attack();
+                commit();
             else
                 setDirection();
         }
@@ -245,38 +230,13 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         return (indiceTuile == game.path.size()-1);
     }
     
-    public ArrayList<Shootable> getEnemiesTouched(){
-        return null;
-    }
-    
-    public float getMaxLife(){
-        return maxLife;
-    }
-    
-    public boolean isInRangeOf(Tower t){
-        double angle, cosinus, sinus;
-        angle = MyMath.angleBetween(this, (Shootable) t);
-        cosinus = Math.floor(Math.cos(angle)*1000)/1000;
-        sinus = Math.floor(Math.sin(angle)*1000)/1000;
-        return (x <= t.getX()+((t.getRange())*Math.abs(cosinus))+moveSpeed && x >= t.getX()-((t.getRange())*Math.abs(cosinus))-moveSpeed && y <= t.getY()+((t.getRange())*Math.abs(sinus))+moveSpeed && y >= t.getY()-((t.getRange())*Math.abs(sinus))-moveSpeed);
-    }
-    
-    protected boolean isMouseIn(){
-        int MX = Mouse.getX(), MY = RvB.windHeight-Mouse.getY();
-        return (MX >= x-width/2 && MX <= x+width/2 && MY >= y-width/2 && MY <= y+width/2);
-    }
-    
-    public boolean isClicked(int but){
-        return (isMouseIn() && Mouse.isButtonDown(but));
-    }
-    
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
     public void renderInfo(){
         Overlay o = game.getOverlays().get(2);
         o.render();
         // Sprites
-        RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
-        RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, sprite);
+        RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, textureStatic);
+        RvB.drawFilledRectangle(o.getX()+o.getW()-o.getH()-20, o.getY(), o.getH(), o.getH(), null, 1, textureStatic);
         // Lifebar
         int width = (int) (290*ref), height = (int) (16*ref);
         int currentLife = (int) (evolutions.isEmpty() ? ((double)life/(double)maxLife)*width : ((double)evolutions.peek().life/(double)evolutions.peek().maxLife)*width);
@@ -289,89 +249,47 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+Math.round(maxLife))/2+5, (int)(12*ref), ""+Math.round(maxLife), RvB.fonts.get("life"));
     }
     
-    public void attack(){
+    @Override
+    public void die(){
+        super.die();
+        game.enemiesDead.add(this);
+        if(game.enemySelected == this)
+            game.enemySelected = null;
+        game.money += reward;
+        if(clipWalk != null){
+            clipWalk.stop();
+            SoundManager.Instance.clipToClose(clipWalk);
+        }
+    }
+    
+    public void commit(){
         if(game.life > 0)
             game.getAttackedBy(getPower());
         die();
+    }
+    
+    public double getMoveSpeed(){
+        return moveSpeed;
+    }
+    
+    public void addBonusMS(int amount){
+        bonusMS += amount;
+        moveSpeed += moveSpeed*bonusMS/100f;
+        oldMoveSpeed = moveSpeed;
     }
     
     public void putInBase(){
         x = xBase;
         y = yBase;
     }
-
-    @Override
-    public int getRange(){
-        return Math.round(range*(1+bonusRange));
-    }
     
-    @Override
-    public float getPower(){
-        return (float)(Math.round(power*(1+bonusPower)*10f)/10f);
-    }
-    
-    @Override
-    public float getShootRate(){
-        return (float)(Math.round(shootRate*(1+bonusShootRate)*10f)/10f);
-    }
-    
-    @Override
-    public void updateStats(Tower t){
-        
-    }
-    
-    @Override
-    public float getSlow(){
-        return slow;
-    }
-    
-    @Override
-    public void updateStats(Enemy e){
-        // Not supposed to happen
-    }
-    
-    @Override
-    public void attacked(Shootable attacker){
-        if(!started)
-            return;
-        attacker.updateStats(this);
-        if(!evolutions.isEmpty()){
-            evolutions.peek().attacked(attacker.getPower());
-            if(evolutions.peek().life <= 0){
-                evolutions.pop();
-                SoundManager.Instance.playOnce(armorBreak);
-            }
-        }
-        else
-            life -= attacker.getPower();
- 
+    public void beSlowedBy(float slow){
         startTimeSlow = game.timeInGamePassed;
-        slowedBy = attacker.getSlow();
-        
-        startTimeWaitFor = game.timeInGamePassed;
-        if(life <= 0)
-            die();
-        
+        slowedBy = slow;
     }
     
-    public void die(){
-        life = 0;
-        game.getEnnemiesDead().add(this);
-        if(game.enemySelected == this)
-            game.enemySelected = null;
-        if(clip != null){
-            clip.stop();
-            SoundManager.Instance.clipToClose(clip);
-        } 
-        game.money += reward;
-    }
-    
-    public float getLife(){
-        return life;
-    }
-    
-    public float getRoundedLife(){
-        return (float)(Math.round(life*10)/10f);
+    public void setStarted(boolean b){
+        started = b;
     }
     
     public int compareTo(Enemy e){
@@ -382,94 +300,18 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
         else
             return 1;
     }
-    
-    public boolean isDead(){
-        return (life <= 0);
-    }
-    
-    public void setStarted(boolean b){
-        started = b;
+
+    @Override
+    public ArrayList<Shootable> getEnemies(){
+        return game.towers;
     }
     
     public int getIndiceTuile(){
         return indiceTuile;
     }
     
-    public double getMoveSpeed(){
-        return moveSpeed;
-    }
-    
-    public float getX(){
-        return x;
-    }
-    
-    public float getY(){
-        return y;
-    }
-    
-    public void setX(float x){
-        this.x = x;
-    }
-    
-    public void setY(float y){
-        this.y = y;
-    }
-    
-    public int getWidth(){
-        return width;
-    }
-    
-    @Override
-    public int getHitboxWidth(){
-        return hitboxWidth;
-    }
-    
-    public int getExplodeRadius(){
-        return 0;
-    }
-    
-    public boolean getExplode(){
-        return false;
-    }
-    
-    public boolean getFollow(){
-        return false;
-    }
-    
-    public int getBulletSpeed(){
-        return 1;
-    }
-    
-    public int getReward(){
-        return reward;
-    }
-    
-    public Clip getClip(){
-        return clip;
-    }
-    
     public double getStepEveryMilli(){
         return stepEveryMilli;
-    }
-    
-    public ArrayList<Bullet> getBullets(){
-        return null;
-    }
-    
-    public ArrayList<Bullet> getBulletsToRemove(){
-        return null;
-    }
-    
-    public boolean hasStarted(){
-        return started;
-    }
-    
-    public boolean isSpawned(){
-        return started;
-    }
-    
-    public boolean isMultipleShot(){
-        return isMultipleShot;
     }
     
     public void setIndiceTuile(int i){
@@ -487,9 +329,5 @@ public abstract class Enemy implements Shootable, Comparable<Enemy>{
     
     public boolean isAimed(){
         return isAimed;
-    }
-    
-    public void setIsAimed(boolean b){
-        isAimed = b;
     }
 }

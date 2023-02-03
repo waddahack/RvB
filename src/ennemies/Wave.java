@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import rvb.Shootable;
 
 
 public class Wave{
     
     private int index;
-    private ArrayList<Enemy> enemies;
+    private ArrayList<Shootable> enemies;
     private int startTime;
     private int waitBetweenType = 900,  waitBetween = 450;
     
@@ -28,10 +29,12 @@ public class Wave{
     }
     
     public void addEnemy(Enemy e){
+        e.addBonusLife(game.enemiesBonusLife);
+        e.addBonusMS(game.enemiesBonusMS);
         enemies.add(e);
     }
     
-    public ArrayList<Enemy> getEnnemies(){
+    public ArrayList<Shootable> getEnnemies(){
         return enemies;
     }
     
@@ -42,8 +45,8 @@ public class Wave{
     public void update(){
         if(index == enemies.size() || game.gameSpeed == 0)
             return;
-        Enemy nextEnemy = enemies.get(index);
-        Enemy previousEnemy = null;
+        Shootable nextEnemy = enemies.get(index);
+        Shootable previousEnemy = null;
         if(index > 0)
             previousEnemy = enemies.get(index-1);
         double time = game.timeInGamePassed;
@@ -57,7 +60,7 @@ public class Wave{
     }
     
     public boolean isDone(){
-        for(Enemy e : enemies)
+        for(Shootable e : enemies)
             if(!e.isDead())
                 return false;
         return true;

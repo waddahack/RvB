@@ -11,7 +11,6 @@ import ui.Overlay;
 
 public class Bazoo extends Enemy{
     
-    public static int bossLevel = 0;
     private int level;
     private static Clip
             entrance = SoundManager.Instance.getClip("boss_wave"),
@@ -20,6 +19,17 @@ public class Bazoo extends Enemy{
     
     public Bazoo(int lvl){
         super();
+        textures.add(RvB.textures.get("bazoo"));
+        texturesBright.add(RvB.textures.get("bazooBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("bazoo");
+        // Ce qu'il faut rajouter si on veut qu'un ennemie attaque
+        // + problème d'angle de enemy + faire une autre variable commitPower
+        /*canShoot = true;
+        bulletSprite = RvB.textures.get("bullet");
+        clip = SoundManager.Instance.getClip("cannon");
+        SoundManager.Instance.setClipVolume(clip, volume);
+        bulletSpeed = 20;*/
         level = lvl;
         name = Text.ENEMY_BOSS;
         reward = lvl*100;
@@ -28,12 +38,10 @@ public class Bazoo extends Enemy{
         moveSpeed = 1.8f;
         range = 3*RvB.unite;
         life = 700f;
-        width = 3*RvB.unite;
-        hitboxWidth = (int) (width*0.51);
-        sprite = RvB.textures.get("bazoo");
-        brightSprite = RvB.textures.get("bazooBright");
-        volume = SoundManager.Volume.SEMI_HIGH;
-        clip = SoundManager.Instance.getClip("boss_walking");
+        size = 3*RvB.unite;
+        hitboxWidth = (int) (size*0.51);
+        volumeWalk = SoundManager.Volume.SEMI_HIGH;
+        clipWalk = SoundManager.Instance.getClip("boss_walking");
         SoundManager.Instance.setClipVolume(entrance, SoundManager.Volume.HIGH);
         SoundManager.Instance.setClipVolume(defeated, SoundManager.Volume.SEMI_HIGH);
         SoundManager.Instance.setClipVolume(laugh, SoundManager.Volume.SEMI_HIGH);
@@ -65,6 +73,32 @@ public class Bazoo extends Enemy{
     }
     
     @Override
+    public float takeDamage(float power){
+        if(!started)
+            return 0;
+
+        float damageDone = power;
+        if(!evolutions.isEmpty()){
+            evolutions.peek().attacked(power);
+            if(evolutions.peek().life <= 0){
+                damageDone += evolutions.peek().life;
+                evolutions.pop();
+                SoundManager.Instance.playOnce(armorBreak);
+            }
+        }
+        else
+            life -= power;
+        
+        startTimeWaitFor = game.timeInGamePassed;
+        if(life <= 0){
+            damageDone += life;
+            die();
+        }    
+        
+        return damageDone;
+    }
+    
+    @Override
     public void die(){
         if(life > 0){
             SoundManager.Instance.playOnce(laugh);
@@ -75,7 +109,6 @@ public class Bazoo extends Enemy{
             game.bossDefeated = true;
         }
         game.bossDead = true;
-        bossLevel++;
         super.die();
     }
 
@@ -87,6 +120,7 @@ public class Bazoo extends Enemy{
     }
     
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
+    @Override
     public void renderInfo(){
         Overlay o = game.getOverlays().get(2);
         o.render();
@@ -102,6 +136,6 @@ public class Bazoo extends Enemy{
         RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
         // Name & life max
         o.drawText(o.getW()/2, (int) (12*ref), name.getText(), RvB.fonts.get("normalL"));
-        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, (int) (12*ref), ""+maxLife, RvB.fonts.get("life"));
+        o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, (int) (12*ref), ""+Math.round(maxLife), RvB.fonts.get("life"));
     }
 }

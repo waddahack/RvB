@@ -12,6 +12,10 @@ public class TrickyEnemy extends Enemy{
     
     public TrickyEnemy(){
         super();
+        textures.add(RvB.textures.get("trickyEnemy"));
+        texturesBright.add(RvB.textures.get("trickyEnemyBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("trickyEnemy");
         name = Text.ENEMY_TRICKY;
         reward = 25;
         power = 6f;
@@ -19,13 +23,11 @@ public class TrickyEnemy extends Enemy{
         moveSpeed = 3.1f;
         range = 0;
         life = 80f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         eBalance = balance;
-        sprite = RvB.textures.get("trickyEnemy");
-        brightSprite = RvB.textures.get("trickyEnemyBright");
-        volume = SoundManager.Volume.VERY_LOW;
-        clip = SoundManager.Instance.getClip("group_walking");
+        volumeWalk = SoundManager.Volume.VERY_LOW;
+        clipWalk = SoundManager.Instance.getClip("group_walking");
         stepEveryMilli = 800;
         
         initBack();

@@ -15,17 +15,13 @@ public class BasicTower extends Tower{
         textures.add(RvB.textures.get("basicTowerTurret"));
         rotateIndex = 1;
         textureStatic = RvB.textures.get("basicTower");
-        canRotate = true;
         price = RvB.game.basicTowerPrice;
         life = 100f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        size = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         totalMoneySpent = price;
         name = Text.TOWER_BASIC;
-        explode = false;
         follow = false;
-        isMultipleShot = false;
         clip = SoundManager.Instance.getClip("cannon");
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("bullet");
@@ -42,5 +38,7 @@ public class BasicTower extends Tower{
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
         growth = 20*ref/n;
+        
+        initBack();
     }
 }

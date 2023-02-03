@@ -10,6 +10,10 @@ public class StrongEnemy extends Enemy{
     
     public StrongEnemy(){
         super();
+        textures.add(RvB.textures.get("strongEnemy"));
+        texturesBright.add(RvB.textures.get("strongEnemyBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("strongEnemy");
         name = Text.ENEMY_STRONG;
         reward = 50;
         power = 10f;
@@ -17,13 +21,11 @@ public class StrongEnemy extends Enemy{
         moveSpeed = 2.6f;
         range = 3*RvB.unite;
         life = 280f;
-        width = RvB.unite;
-        hitboxWidth = width;
+        size = RvB.unite;
+        hitboxWidth = size;
         eBalance = balance;
-        sprite = RvB.textures.get("strongEnemy");
-        brightSprite = RvB.textures.get("strongEnemyBright");
-        clip = SoundManager.Instance.getClip("tank");
-        volume = SoundManager.Volume.SEMI_LOW;
+        clipWalk = SoundManager.Instance.getClip("tank");
+        volumeWalk = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
         
         initBack();

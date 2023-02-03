@@ -28,12 +28,14 @@ public abstract class Buff {
         buffs.add(new Upgrade());
         buffs.add(new Slow());
         buffs.add(new XP());
+        buffs.add(new OS());
         Collections.shuffle(buffs);
         return buffs;
     }
     
     public void pick(){
         nbPick++;
+        RvB.debug("buff "+id);
     }
     
     public boolean isAnyLeft(){

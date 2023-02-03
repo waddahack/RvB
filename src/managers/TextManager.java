@@ -145,8 +145,8 @@ public class TextManager {
             new String[]{"Amélioration"},
             new String[]{"Upgrade"}),
         BUFF_UPGRADE_DESC(
-            new String[]{"Raztech :", " ", "Portée +10%", "Puissance +20%", "Vitesse d'attaque +8%"},
-            new String[]{"Raztech :", " ", "Range +10%", "Power +20%", "Attack speed +8%"}),
+            new String[]{"Raztech :", " ", "Portée +8%", "Puissance +10%", "Vitesse d'attaque +8%"},
+            new String[]{"Raztech :", " ", "Range +8%", "Power +10%", "Attack speed +8%"}),
         BUFF_SLOW(
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),
@@ -157,8 +157,14 @@ public class TextManager {
             new String[]{"Rune bleue"},
             new String[]{"Blue rune"}),
         BUFF_XP_DESC(
-            new String[]{"Raztech gagne", "+25% d'XP."},
-            new String[]{"Raztech gains", "+25% XP."}),
+            new String[]{"Raztech gagne", "+20% d'XP."},
+            new String[]{"Raztech gains", "+20% XP."}),
+        BUFF_OS(
+            new String[]{"Crâne & os"},
+            new String[]{"Skull & bones"}),
+        BUFF_OS_DESC(
+            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'exécuter l'ennemie.", "(hors Bazoo)"},
+            new String[]{"Raztech's bullets", "have +1% chance to", "execute the ennemie.", "(except Bazoo)"}),
         
         // POPUPS
         SELECT_DIFF(

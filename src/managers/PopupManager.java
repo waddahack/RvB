@@ -192,7 +192,7 @@ public class PopupManager {
                 }
                 else{
                     rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-b.getH()/2+20*ref), buff.name.getText(), RvB.fonts.get("normalB"));
-                    rewardSelection.drawImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()+b.getH()/2-32*ref-20*ref), (int)(64*ref), (int)(64*ref), buff.logo);
+                    rewardSelection.drawImage(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()+b.getH()/2-48*ref-20*ref), (int)(96*ref), (int)(96*ref), buff.logo);
                 } 
             }
         }

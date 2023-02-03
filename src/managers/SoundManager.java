@@ -13,6 +13,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import towers.Tower;
 import static rvb.RvB.game;
+import rvb.Shootable;
 
 public class SoundManager
 { 
@@ -145,19 +146,23 @@ public class SoundManager
     }
     
     public void pauseAll(){
-        for(Enemy e : game.enemies)
+        for(Shootable enemy : game.enemies){
+            Enemy e = (Enemy) enemy;
             if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
                 e.getClip().stop();
-        for(Tower t : game.towers)
+        }
+        for(Shootable t : game.towers)
             if(t.isSoundContinuous() && t.getClip() != null)
                 t.getClip().stop();
     }
     
     public void unpauseAll(){
-        for(Enemy e : game.enemies)
+        for(Shootable enemy : game.enemies){
+            Enemy e = (Enemy) enemy;
             if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
                 e.getClip().loop(Clip.LOOP_CONTINUOUSLY);
-        for(Tower t : game.towers)
+        }  
+        for(Shootable t : game.towers)
             if(t.isSoundContinuous() && t.getClip() != null && t.getEnemyAimed() != null)
                 t.getClip().loop(Clip.LOOP_CONTINUOUSLY);
     }

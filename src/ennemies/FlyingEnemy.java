@@ -2,7 +2,6 @@ package ennemies;
 
 import Utils.MyMath;
 import managers.SoundManager;
-import org.newdawn.slick.opengl.Texture;
 import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
@@ -13,11 +12,17 @@ public class FlyingEnemy extends Enemy{
     public static int balance = 100;
     
     private double xDiffConst, yDiffConst, hyp, tileEveryPixel;
-    private static Texture turningSprite, turningBrightSprite, baseSprite, baseBrightSprite;
     private int turningSpriteAngle = 0;
     
     public FlyingEnemy(){
         super();
+        textures.add(RvB.textures.get("flyingEnemyBase"));
+        textures.add(RvB.textures.get("flyingEnemyProp"));
+        texturesBright.add(RvB.textures.get("flyingEnemyBaseBright"));
+        texturesBright.add(RvB.textures.get("flyingEnemyPropBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("flyingEnemy");
+        
         name = Text.ENEMY_FLYING;
         reward = 75;
         power = 12f;
@@ -25,22 +30,18 @@ public class FlyingEnemy extends Enemy{
         moveSpeed = 1.8f;
         range = 3*unite;
         life = 120f;
-        width = (int) (1.25*unite);
-        hitboxWidth = width;
+        size = (int) (1.25*unite);
+        hitboxWidth = size;
         eBalance = balance;
-        sprite = RvB.textures.get("flyingEnemy");
-        baseSprite = RvB.textures.get("flyingEnemyBase");
-        baseBrightSprite = RvB.textures.get("flyingEnemyBaseBright");
-        turningSprite = RvB.textures.get("flyingEnemyProp");
-        turningBrightSprite = RvB.textures.get("flyingEnemyPropBright");
-        clip = SoundManager.Instance.getClip("helicopter");
-        volume = SoundManager.Volume.SEMI_LOW;
+
+        clipWalk = SoundManager.Instance.getClip("helicopter");
+        volumeWalk = SoundManager.Volume.SEMI_LOW;
         stepEveryMilli = 0;
         xDiffConst = (game.base.getRealX()-game.spawn.getRealX());
         yDiffConst = (game.base.getRealY()-game.spawn.getRealY());
         hyp = MyMath.distanceBetween(game.spawn, game.base);
         tileEveryPixel = (hyp/(game.path.size()-1));
-        newAngle = 90+(float) MyMath.angleDegreesBetween(game.spawn, game.base);
+        newAngle = (int) Math.round((90+(float) MyMath.angleDegreesBetween(game.spawn, game.base)));
         angle = newAngle;
         
         initBack();
@@ -51,7 +52,7 @@ public class FlyingEnemy extends Enemy{
         indiceTuile = (int) (game.path.size()-1 - Math.floor(MyMath.distanceBetween(this, game.base)/tileEveryPixel));
 
         if(isInBase())
-            attack();
+            commit();
 
         double speed = ((moveSpeed*game.gameSpeed) * RvB.deltaTime / 50) * RvB.ref;
         speed *= (hyp/700);
@@ -67,21 +68,15 @@ public class FlyingEnemy extends Enemy{
         if(!started && stopFor == -1)
             return;
         
-        Texture sprite = this.baseSprite;
-        if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
-            sprite = this.baseBrightSprite;
-        else if(startTimeWaitFor != 0)
+        if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor){
+            for(int i = 0 ; i < textures.size() ; i++)
+                RvB.drawFilledRectangle(x, y, size, size, texturesBright.get(i), i == rotateIndex ? angle : turningSpriteAngle, 1);
+        }
+        else{
             startTimeWaitFor = 0;
-        
-        RvB.drawFilledRectangle(x, y, width, width, sprite, angle, 1);
-        
-        sprite = this.turningSprite;
-        if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor)
-            sprite = this.turningBrightSprite;
-        else if(startTimeWaitFor != 0)
-            startTimeWaitFor = 0;
-        
+            for(int i = 0 ; i < textures.size() ; i++)
+                RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : turningSpriteAngle, 1);
+        }
         turningSpriteAngle += 2*game.gameSpeed;
-        RvB.drawFilledRectangle(x, y, width, width, sprite, turningSpriteAngle, 1);
     }
 }

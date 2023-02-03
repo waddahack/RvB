@@ -1,7 +1,6 @@
 package towers;
 
 import Utils.MyMath;
-import ennemies.Enemy;
 import java.util.ArrayList;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
@@ -12,10 +11,11 @@ public class Bullet{
     
     private int speed;
     private Shootable aim, shooter;
-    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone, explode;
+    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone;
     private float x, y, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
+    private ArrayList<Shootable> enemies; 
     
     public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower - big tower
         build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, false, 0);
@@ -34,8 +34,8 @@ public class Bullet{
         this.x = xStart;
         this.y = yStart;
         this.radius = radius;
+        enemies = shooter.getEnemies();
         speed = shooter.getBulletSpeed();
-        explode = shooter.getExplode();
         follow = shooter.getFollow();
         this.aim = aim;
         if(aim == null){
@@ -81,16 +81,8 @@ public class Bullet{
             
         if(!aimAlreadyTouched && touched){
             shooter.getEnemiesTouched().add(aim);
-            aim.attacked(shooter);
-            if(explode){
-                BigTower bt = (BigTower)shooter;
-                bt.bombExplode(aim.getX(), aim.getY());
-                for(int i = 0 ; i < game.enemies.size() ; i++){
-                    Enemy e = game.enemies.get(i);
-                    if(MyMath.distanceBetween(aim, e) <= shooter.getExplodeRadius() && e != aim)
-                        e.attacked(shooter);
-                }
-            }
+            shooter.attack(aim);
+                
             if(!goThrough)
                 shooter.getBulletsToRemove().add(this);
         }
@@ -148,11 +140,7 @@ public class Bullet{
     private boolean hasTouched(double angle){
         double cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle));
         if(!follow){
-            ArrayList<Enemy> ennemies = game.enemies;
-            Enemy e;
-            int i;
-            for(i = 0 ; i < ennemies.size() ; i++){
-                e = ennemies.get(i);
+            for(Shootable e : enemies){
                 if(!e.hasStarted() || (shooter.isMultipleShot() && aimAlreadyTouched))
                     continue;
                 angle = MyMath.angleDegreesBetween(x, y, e.getX(), e.getY());

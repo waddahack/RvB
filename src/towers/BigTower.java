@@ -9,6 +9,8 @@ import org.newdawn.slick.opengl.Texture;
 import managers.TextManager.Text;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import rvb.Shootable;
+import Utils.MyMath;
 
 public class BigTower extends Tower{
     
@@ -28,17 +30,13 @@ public class BigTower extends Tower{
         textures.add(RvB.textures.get("bigTowerTurret"));
         rotateIndex = 1;
         textureStatic = RvB.textures.get("bigTower");
-        canRotate = true;
         price = RvB.game.bigTowerPrice;
         life = 100f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        size = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         totalMoneySpent = price;
         name = Text.TOWER_BIG;
-        explode = true;
         follow = false;
-        isMultipleShot = false;
         volume = SoundManager.Volume.MEDIUM;
         clip = SoundManager.Instance.getClip("fatCannon");
         SoundManager.Instance.setClipVolume(clip, volume);
@@ -62,6 +60,8 @@ public class BigTower extends Tower{
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
         growth = 20*ref/n;
+        
+        initBack();
     }
     
     public void bombExplode(float x, float y){
@@ -71,6 +71,18 @@ public class BigTower extends Tower{
         explodeX = x;
         explodeY = y;
         nbFlames = 10*explodeRadius/50;
+    }
+    
+    @Override
+    public void attack(Shootable enemy){
+        super.attack(enemy);
+        
+        bombExplode(enemy.getX(), enemy.getY());
+        
+        for(Shootable e : game.enemies){
+            if(MyMath.distanceBetween(enemy, e) <= explodeRadius && e != enemy)
+                super.attack(enemy);
+        }
     }
     
     @Override

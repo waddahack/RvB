@@ -12,8 +12,8 @@ public class Upgrade extends Buff{
     @Override
     public void pick(){
         super.pick();
-        game.raztech.bonusRange += 0.1f;
-        game.raztech.bonusPower += 0.2f;
+        game.raztech.bonusRange += 0.08f;
+        game.raztech.bonusPower += 0.1f;
         game.raztech.bonusShootRate += 0.08f;
     }
 }

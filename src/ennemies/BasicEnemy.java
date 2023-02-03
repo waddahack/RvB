@@ -11,6 +11,10 @@ public class BasicEnemy extends Enemy{
     
     public BasicEnemy(){
         super();
+        textures.add(RvB.textures.get("basicEnemy"));
+        texturesBright.add(RvB.textures.get("basicEnemyBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("basicEnemy");
         name = Text.ENEMY_BASIC;
         reward = 5;
         power = 2f;
@@ -18,12 +22,10 @@ public class BasicEnemy extends Enemy{
         moveSpeed = 3.5f;
         range = 3*RvB.unite;
         life = 30f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        sprite = RvB.textures.get("basicEnemy");
-        brightSprite = RvB.textures.get("basicEnemyBright");
-        volume = SoundManager.Volume.VERY_LOW;
-        clip = SoundManager.Instance.getClip("walking");
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
+        volumeWalk = SoundManager.Volume.VERY_LOW;
+        clipWalk = SoundManager.Instance.getClip("walking");
         stepEveryMilli = 700;
         eBalance = balance;
         

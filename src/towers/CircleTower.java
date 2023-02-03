@@ -13,17 +13,15 @@ public class CircleTower extends Tower{
         super("circleTower");
         textureStatic = RvB.textures.get(("circleTower"));
         textures.add(textureStatic);
-        canRotate = false;
         price = RvB.game.circleTowerPrice;
         life = 100f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        size = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         totalMoneySpent = price;
         name = Text.TOWER_CIRCLE;
-        explode = false;
         follow = false;
         isMultipleShot = true;
+        focusIndex = -1;
         clip = SoundManager.Instance.getClip("multicannon");
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("bullet");
@@ -40,14 +38,24 @@ public class CircleTower extends Tower{
             n += upgrades.get(i).maxClick;
         growth = 20*ref/n;
 
+        initBack();
     }
     
     @Override
     public void shoot(){
-        super.shoot();
-        
+        enemiesTouched.clear();
         lastShoot = RvB.game.timeInGamePassed;
-
+        if(clip != null){
+            if(continuousSound){
+                if(!soundPlayed){
+                    SoundManager.Instance.playLoop(clip);
+                    soundPlayed = true;
+                }
+            }
+            else
+                SoundManager.Instance.playOnce(clip);
+        }
+        
         bullets.clear();
         bullets.add(new Bullet(this, x-size/2, y, x-100, y, size/6, bulletSprite, true, 75));
         bullets.add(new Bullet(this, x-size/2, y-size/2, x-100, y-100, size/6, bulletSprite, true, 0));

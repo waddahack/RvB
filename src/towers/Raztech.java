@@ -14,6 +14,7 @@ import org.newdawn.slick.UnicodeFont;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
+import rvb.Shootable;
 import rvb.Tile;
 import ui.Button;
 import ui.Overlay;
@@ -24,8 +25,8 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 80;
-    private float bonusXP = 0;
+    public int xp = 0, maxXP = 30;
+    private float bonusXP = 0, chanceToKill = 0;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
     
@@ -36,17 +37,13 @@ public class Raztech extends Tower{
         textureStatic = RvB.textures.get("raztech");
         if(game.raztech != null)
             textureStatic = RvB.textures.get("place");
-        canRotate = true;
         price = priceP;
         life = 100f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        size = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         totalMoneySpent = priceP;
         name = Text.RAZTECH;
-        explode = false;
         follow = false;
-        isMultipleShot = false;
         clip = SoundManager.Instance.getClip("gun");
         volume = SoundManager.Volume.LOW;
         SoundManager.Instance.setClipVolume(clip, volume);
@@ -63,6 +60,8 @@ public class Raztech extends Tower{
         upgrades.add(new Upgrade(this, "Attack speed", shootRate, 0.1f, "+", 0, 0, 0));
         
         buffs = new HashMap<>();
+        
+        initBack();
     }
     
     @Override
@@ -88,12 +87,16 @@ public class Raztech extends Tower{
         // Buffs
         o2.addImage(o2.getW()-(int) (760*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_upgrade"));
         o2.addImage(o2.getW()-(int) (680*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_slow"));
-        o2.addImage(o2.getW()-(int) (600*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_xp"));
+        o2.addImage(o2.getW()-(int) (600*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_os"));
+        o2.addImage(o2.getW()-(int) (520*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_xp"));
 
         // button focus
-        if(canRotate){
+        if(rotateIndex >= 0){
             focusButton = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
             focusButton.setSwitch();
+            focusButton.setFunction(__ -> {
+                focusIndex = focusButton.indexSwitch;
+            });
             o2.addButton(focusButton);
         }
         overlays.add(o2);
@@ -133,9 +136,11 @@ public class Raztech extends Tower{
         // buff slow
         overlay.drawText(overlay.getW()-(int) (660*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(slow*100)+"%", RvB.fonts.get("normal"), "topLeft");
         // buff xp
-        overlay.drawText(overlay.getW()-(int) (580*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(bonusXP*100)+"%", RvB.fonts.get("normal"), "topLeft");
+        overlay.drawText(overlay.getW()-(int) (580*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(chanceToKill*100)+"%", RvB.fonts.get("normal"), "topLeft");        
+        // buff xp
+        overlay.drawText(overlay.getW()-(int) (500*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(bonusXP*100)+"%", RvB.fonts.get("normal"), "topLeft");
         
-        if(canRotate){
+        if(rotateIndex >= 0){
             b = overlay.getButtons().get(0);
             overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
         }
@@ -183,7 +188,7 @@ public class Raztech extends Tower{
             game.raztech.x = (game.raztech.x-unite/2)/unite;
             game.raztech.y = (game.raztech.y-unite/2)/unite;
             map.get((int) game.raztech.y).set((int) game.raztech.x, new Tile("grass"));
-            game.towersToBeDestroyed.add(this);
+            game.towersDestroyed.add(this);
             game.selectTower(game.raztech);
             game.raztech.xp -= 0.2*game.raztech.maxXP;
         }   
@@ -193,6 +198,7 @@ public class Raztech extends Tower{
         game.raztech.x = game.raztech.x*unite+unite/2;
         game.raztech.y = game.raztech.y*unite+unite/2;
         game.raztech.isPlaced = true;
+        game.raztech.started = true;
         
         if(Math.random() < 0.5)
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
@@ -201,14 +207,21 @@ public class Raztech extends Tower{
     }
     
     @Override
-    public void updateStats(Enemy e){
-        super.updateStats(e);
-        if(e.getLife()-getPower() <= 0 && e.name.getText() != Text.ENEMY_BOSS.getText())
-            gainXP((int)(e.getMaxLife()/2));
+    public void attack(Shootable enemy){ 
+        if(!enemy.hasStarted())
+            return;
+        Enemy e = (Enemy) enemy;
+        damagesDone += e.takeDamage(getPower());
+        e.beSlowedBy(slow);
+        if(e.isDead()){
+            enemiesKilled += 1;
+            moneyGained += e.getReward();
+            if(e.name.getText() != Text.ENEMY_BOSS.getText())
+                gainXP(e.getReward());
+        }
     }
     
     public void gainXP(int amount){
-        RvB.debug(amount);
         xp += Math.round(amount+amount*bonusXP);
         if(xp >= maxXP){
             levelUp();
@@ -218,7 +231,7 @@ public class Raztech extends Tower{
     public void levelUp(){
         xp -= maxXP;
         if(xp < 0) xp = 0;
-        maxXP = (int) (maxXP*1.5);
+        maxXP = (int) (maxXP*1.6);
         
         range = (int) upgrades.get(0).setNewValue();
         power = (int) upgrades.get(1).setNewValue();
@@ -249,5 +262,9 @@ public class Raztech extends Tower{
     
     public void addBonusXP(float amount){
         bonusXP += amount;
+    }
+    
+    public void addChanceToKill(float amount){
+        chanceToKill += amount;
     }
 }

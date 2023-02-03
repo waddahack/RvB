@@ -10,6 +10,10 @@ public class FastEnemy extends Enemy{
     
     public FastEnemy(){
         super();
+        textures.add(RvB.textures.get("fastEnemy"));
+        texturesBright.add(RvB.textures.get("fastEnemyBright"));
+        rotateIndex = 0;
+        textureStatic = RvB.textures.get("fastEnemy");
         name = Text.ENEMY_FAST;
         reward = 15;
         power = 4f;
@@ -17,13 +21,11 @@ public class FastEnemy extends Enemy{
         moveSpeed = 4.4f;
         range = 3*RvB.unite;
         life = 42f;
-        width = RvB.unite;
-        hitboxWidth = width;
+        size = RvB.unite;
+        hitboxWidth = size;
         eBalance = balance;
-        sprite = RvB.textures.get("fastEnemy");
-        brightSprite = RvB.textures.get("fastEnemyBright");
-        volume = SoundManager.Volume.VERY_LOW;
-        clip = SoundManager.Instance.getClip("quad");
+        volumeWalk = SoundManager.Volume.VERY_LOW;
+        clipWalk = SoundManager.Instance.getClip("quad");
         stepEveryMilli = 0;
         
         initBack();

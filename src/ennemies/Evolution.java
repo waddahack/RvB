@@ -36,7 +36,7 @@ public class Evolution {
             else if(owner.startTimeWaitFor != 0)
                 owner.startTimeWaitFor = 0;
         }
-        RvB.drawFilledRectangle(owner.x, owner.y, owner.width, owner.width, sprite, owner.angle, 1);
+        RvB.drawFilledRectangle(owner.x, owner.y, owner.size, owner.size, sprite, owner.angle, 1);
     }
     
     public void attacked(float power){

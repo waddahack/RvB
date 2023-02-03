@@ -15,17 +15,13 @@ public class FlameTower extends Tower{
         textures.add(RvB.textures.get("flameTowerTurret"));
         rotateIndex = 1;
         textureStatic = RvB.textures.get(("flameTower"));
-        canRotate = true;
         price = RvB.game.flameTowerPrice;
         life = 100f;
-        width = 4*RvB.unite/5;
-        hitboxWidth = width;
-        size = width;
+        size = 4*RvB.unite/5;
+        hitboxWidth = size;
         totalMoneySpent = price;
         name = Text.TOWER_FLAME;
-        explode = false;
         follow = false;
-        isMultipleShot = true;
         clip = SoundManager.Instance.getClip("flamethrower");
         volume = SoundManager.Volume.SEMI_HIGH;
         SoundManager.Instance.setClipVolume(clip, volume);
@@ -42,6 +38,8 @@ public class FlameTower extends Tower{
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
         growth = 20*ref/n;
+        
+        initBack();
     }
     
     @Override
