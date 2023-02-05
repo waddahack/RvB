@@ -13,6 +13,5 @@ public class OS extends Buff{
     public void pick(){
         super.pick();
         RvB.game.raztech.addChanceToKill(0.01f);
-        // A FAIRE LE FONCTIONNEMENT
     }
 }

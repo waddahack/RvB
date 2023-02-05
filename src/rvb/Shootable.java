@@ -24,7 +24,6 @@ public abstract class Shootable {
     protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth, focusIndex, newAngle = 0;
     protected ArrayList<Texture> textures, texturesBright;
     protected Shootable enemyAimed;
-    protected ArrayList<Shootable> enemiesTouched;
     // CARACHTERISTIQUES PUBLIQUES
     public float x, y;
     public int angle = 180, waitFor = 175, startTimeWaitFor = 0;
@@ -40,7 +39,6 @@ public abstract class Shootable {
         texturesBright = new ArrayList<>();
         bullets = new ArrayList<>();
         bulletsToRemove = new ArrayList<>();
-        enemiesTouched = new ArrayList<>();
     }
 
     protected void initBack(){
@@ -56,7 +54,7 @@ public abstract class Shootable {
         searchAndShoot(getEnemies());
         updateBullets();
 
-        if(soundPlayed && enemyAimed == null){
+        if(soundPlayed && (enemyAimed == null || enemyAimed.isDead())){
             SoundManager.Instance.stopClip(clip);
             soundPlayed = false;
         }   
@@ -414,10 +412,6 @@ public abstract class Shootable {
         return enemyAimed;
     }
     
-    public ArrayList<Shootable> getEnemiesTouched(){
-        return enemiesTouched;
-    }
-    
     public ArrayList<Shootable> getEnemies(){
         return null;
     }
@@ -431,7 +425,6 @@ public abstract class Shootable {
     }
     
     public void shoot(){
-        enemiesTouched.clear();
         lastShoot = game.timeInGamePassed;
         float x = (float)(this.x+size*Math.cos(Math.toRadians(angle))/2);
         float y = (float)(this.y+size*Math.sin(Math.toRadians(angle))/2);

@@ -43,7 +43,6 @@ public class CircleTower extends Tower{
     
     @Override
     public void shoot(){
-        enemiesTouched.clear();
         lastShoot = RvB.game.timeInGamePassed;
         if(clip != null){
             if(continuousSound){

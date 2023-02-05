@@ -11,11 +11,12 @@ public class Bullet{
     
     private int speed;
     private Shootable aim, shooter;
-    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, aimAlreadyTouched, cone;
+    private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, cone;
     private float x, y, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
     private ArrayList<Shootable> enemies; 
+    private ArrayList<Shootable> enemiesTouched;
     
     public Bullet(Shootable shooter, float xStart, float yStart, Shootable aim, float radius, Texture sprite, boolean goThrough){ // basic tower - big tower
         build(shooter, xStart, yStart, aim, 0, 0, radius, sprite, goThrough, false, 0);
@@ -35,6 +36,7 @@ public class Bullet{
         this.y = yStart;
         this.radius = radius;
         enemies = shooter.getEnemies();
+        enemiesTouched = new ArrayList<>();
         speed = shooter.getBulletSpeed();
         follow = shooter.getFollow();
         this.aim = aim;
@@ -57,11 +59,9 @@ public class Bullet{
         double speed = (this.speed*game.gameSpeed * RvB.deltaTime / 50) * RvB.ref;
         double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest);
-        boolean touched = hasTouched(angle), inRange = isInRange();
-        aimAlreadyTouched = false;
-        if(shooter.isMultipleShot() && aim != null && shooter.getEnemiesTouched().contains(aim))
-            aimAlreadyTouched = true;
-        if((!touched || aimAlreadyTouched) && inRange){
+        Shootable enemyTouched = hasTouched(angle);
+        boolean inRange = isInRange();
+        if((enemyTouched == null || goThrough) && inRange){
             if(follow){
                 xDiff = aim.getX()-x;
                 yDiff = aim.getY()-y;
@@ -79,9 +79,9 @@ public class Bullet{
         if(!inRange)
             shooter.getBulletsToRemove().add(this);
             
-        if(!aimAlreadyTouched && touched){
-            shooter.getEnemiesTouched().add(aim);
-            shooter.attack(aim);
+        if(enemyTouched != null){
+            enemiesTouched.add(enemyTouched);
+            shooter.attack(enemyTouched);
                 
             if(!goThrough)
                 shooter.getBulletsToRemove().add(this);
@@ -137,24 +137,23 @@ public class Bullet{
         return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef+RvB.unite/2 && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef+RvB.unite/2);
     }
     
-    private boolean hasTouched(double angle){
+    private Shootable hasTouched(double angle){
         double cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle));
         if(!follow){
             for(Shootable e : enemies){
-                if(!e.hasStarted() || (shooter.isMultipleShot() && aimAlreadyTouched))
+                if(!e.hasStarted() || enemiesTouched.contains(e))
                     continue;
                 angle = MyMath.angleDegreesBetween(x, y, e.getX(), e.getY());
                 cosinus = Math.abs(Math.cos(angle));
                 sinus = Math.abs(Math.sin(angle));
-                if(aimTouched(e, cosinus, sinus)){
-                    aim = e;
-                    return true;
-                }
+                if(aimTouched(e, cosinus, sinus))
+                    return e;
             }       
-            return false;
+            return null;
         }
-        else
-            return aimTouched(aim, cosinus, sinus);
+        else if(aimTouched(aim, cosinus, sinus))
+            return aim;
+        return null;
     }
     
     private boolean aimTouched(Shootable aim, double cosinus, double sinus){

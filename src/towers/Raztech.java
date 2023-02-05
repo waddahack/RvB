@@ -148,7 +148,6 @@ public class Raztech extends Tower{
     
     @Override
     public void shoot(){
-        enemiesTouched.clear();
         lastShoot = RvB.game.timeInGamePassed;
         float x = (float)(this.x+size/2*Math.cos(Math.toRadians(angle)));
         float y = (float)(this.y+size/2*Math.sin(Math.toRadians(angle)));
@@ -211,7 +210,10 @@ public class Raztech extends Tower{
         if(!enemy.hasStarted())
             return;
         Enemy e = (Enemy) enemy;
-        damagesDone += e.takeDamage(getPower());
+        if(Math.random() <= chanceToKill)
+            damagesDone += e.takeDamage(e.getLife());
+        else
+            damagesDone += e.takeDamage(getPower());
         e.beSlowedBy(slow);
         if(e.isDead()){
             enemiesKilled += 1;

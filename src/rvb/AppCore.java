@@ -757,7 +757,7 @@ public abstract class AppCore {
         t = "x"+gameSpeed;
         o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
         //
-        if(enemySelected != null)
+        if(enemySelected != null && !enemySelected.isDead())
             enemySelected.renderInfo();
     }
     

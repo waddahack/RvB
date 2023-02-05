@@ -111,27 +111,13 @@ public class Game extends AppCore{
                     if(toCheck[0] < 0 || toCheck[0] > nbTileX-1 || toCheck[1] < 1 || toCheck[1] > nbTileY-2){ //Si c'est un bord
                         if(toCheck[0] != x && toCheck[1] != y) // Si ce n'est pas la tuile d'en face
                             continue;
-                        if(toCheck[0] < 0)
-                            dir = "left";
-                        else if(toCheck[0] > nbTileX-1)
-                            dir = "right";
-                        else if(toCheck[1] < 1)
-                            dir = "up";
-                        else
-                            dir = "down";
-                        
                         neighbors.clear();
-                        switch(dir){
-                            case "right":
-                                neighbors.add(up); // Risque de se mordre la queue si en haut il y a plus bcp de place
-                                break;
-                            case "left":
-                                neighbors.add(path.get(0).getY() > y ? down : up);
-                                break;
-                            default:
-                                neighbors.add(right);
-                                break;
-                        }
+                        if(toCheck[0] < 0)
+                            neighbors.add(path.get(0).getY() > y ? down : up);
+                        else if(toCheck[0] > nbTileX-1)
+                            neighbors.add(up); // Risque de se mordre la queue si en haut il y a plus bcp de place
+                        else
+                            neighbors.add(right);
                         break;
                     }    
                     // Quand on se heurte à une route
@@ -157,7 +143,7 @@ public class Game extends AppCore{
                                 neighbors.remove(right);
                                 break;
                         }
-                        if(neighbors.contains(accross) && (dir == "left" && toCheck[0] > x || dir == "right" && toCheck[0] < x))
+                        if(neighbors.contains(accross) && (dir == "left" && toCheck[0] > x || dir == "right" && toCheck[0] < x || dir == "up" && toCheck[1] > y || dir == "down" && toCheck[1] < y))
                             neighbors.remove(accross);
                         break;
                     }
@@ -165,7 +151,7 @@ public class Game extends AppCore{
             }
             
             if(neighbors.isEmpty()){
-                System.out.println("failure : path eating itself"); // Parce que quand la road se heurte au bord droit, on ne regarde pas la place qu'il y a en haut et en bas, tjrs en haut. Donc quand y'a pas bcp de place en haut ça se mord forcément
+                System.out.println("failure : path eating itself");// Parce que quand la road se heurte au bord droit, on ne regarde pas la place qu'il y a en haut et en bas, tjrs en haut. Donc quand y'a pas bcp de place en haut ça se mord forcément
                 path.clear();
                 break;
             }

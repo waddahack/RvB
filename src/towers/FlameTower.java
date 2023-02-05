@@ -20,6 +20,7 @@ public class FlameTower extends Tower{
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         totalMoneySpent = price;
+        isMultipleShot = true;
         name = Text.TOWER_FLAME;
         follow = false;
         clip = SoundManager.Instance.getClip("flamethrower");
@@ -44,11 +45,18 @@ public class FlameTower extends Tower{
     
     @Override
     public void shoot(){
-        super.shoot();
-        
         lastShoot = RvB.game.timeInGamePassed;
+        if(clip != null){
+            if(continuousSound){
+                if(!soundPlayed){
+                    SoundManager.Instance.playLoop(clip);
+                    soundPlayed = true;
+                }
+            }
+            else
+                SoundManager.Instance.playOnce(clip);
+        }
 
-        bullets.remove(bullets.size()-1);
         int a = 75;
         int addX = (int) Math.abs(Math.tan(a/2)*(enemyAimed.getY()-y));
         int addY = (int) Math.abs(Math.tan(a/2)*(enemyAimed.getX()-x));
