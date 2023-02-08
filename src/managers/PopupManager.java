@@ -21,7 +21,6 @@ public class PopupManager {
     public static PopupManager Instance;
     
     private static int width = (int) (800*ref), height = (int) (450*ref);
-    private static int oldGameSpeed;
     private Overlay currentOverlay;
     private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty, rewardSelection;
     private ArrayList<String> lines;
@@ -132,7 +131,6 @@ public class PopupManager {
         b.setFunction(__ -> {
             stateChanged = true;
             closeCurrentPopup();
-            game.gameSpeed = oldGameSpeed;
             game.enableAllButtons();
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
@@ -253,8 +251,6 @@ public class PopupManager {
     }
     
     public void enemiesUpgraded(String[] infoLines){
-        oldGameSpeed = game.gameSpeed;
-        game.gameSpeed = 0;
         initPopup(enemiesUpgraded);
         top = height/4;
 
@@ -270,8 +266,6 @@ public class PopupManager {
     }
     
     public void rewardSelection(){
-        oldGameSpeed = game.gameSpeed;
-        game.gameSpeed = 0;
         initPopup(rewardSelection);
         rewardSelection.clearButtons();
         rewardSelection.clearImages();
@@ -282,6 +276,17 @@ public class PopupManager {
         addText(Text.RANGE.getText()+" +"+Math.round(game.raztech.getUpgrades().get(0).addOrMultiplicateValue), RvB.fonts.get("normal"));
         addText(Text.POWER.getText()+" +"+Math.round(game.raztech.getUpgrades().get(1).addOrMultiplicateValue), RvB.fonts.get("normal"));
         addText(Text.SHOOTRATE.getText()+" +"+game.raztech.getUpgrades().get(2).addOrMultiplicateValue, RvB.fonts.get("normal"));
+        switch(game.raztech.lvl){
+            case 2:
+                addText(Text.TOWER_UNLOCKED.getText(), RvB.fonts.get("normal"));
+                break;
+            case 4:
+                addText(Text.TOWER_UNLOCKED.getText(), RvB.fonts.get("normal"));
+                break;
+            case 6:
+                addText(Text.TOWER_UNLOCKED.getText(), RvB.fonts.get("normal"));
+                break;
+        }
         
         buff1 = game.buffs.empty() ? null : game.buffs.pop();
         buff2 = game.buffs.empty() ? null : game.buffs.pop();
@@ -293,7 +298,6 @@ public class PopupManager {
             b.setFunction(__ -> {
                 stateChanged = true;
                 closeCurrentPopup();
-                game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
                 
@@ -312,7 +316,6 @@ public class PopupManager {
             b.setFunction(__ -> {
                 stateChanged = true;
                 closeCurrentPopup();
-                game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
                 
@@ -331,7 +334,6 @@ public class PopupManager {
             b.setFunction(__ -> {
                 stateChanged = true;
                 closeCurrentPopup();
-                game.gameSpeed = oldGameSpeed;
                 game.enableAllButtons();
                 RvB.setCursor(RvB.Cursor.DEFAULT);
                 
@@ -367,11 +369,14 @@ public class PopupManager {
         currentOverlay.display(true);
         if(menu != null)
             menu.disableAllButtons();
-        if(game != null)
+        if(game != null){
+            game.pause();
             game.disableAllButtons();
+        }   
         if(creation != null)
             creation.disableAllButtons();
         RvB.setCursor(RvB.Cursor.DEFAULT);
+        
     }   
     
     public void closeCurrentPopup(){
@@ -382,8 +387,7 @@ public class PopupManager {
         if(menu != null)
             menu.enableAllButtons();
         if(game != null){
-            if(game.gameSpeed == 0)
-                game.gameSpeed = oldGameSpeed;
+            game.unpause();
             game.enableAllButtons();
         }
         if(creation != null)

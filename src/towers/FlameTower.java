@@ -41,6 +41,7 @@ public class FlameTower extends Tower{
         growth = 20*ref/n;
         
         initBack();
+        initOverlay();
     }
     
     @Override

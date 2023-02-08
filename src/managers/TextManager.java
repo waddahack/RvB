@@ -72,12 +72,15 @@ public class TextManager {
         NOTHING_LEFT(
             new String[]{"Il n'y a plus de récompense..."},
             new String[]{"There's no reward left..."}),
+        TOWER_UNLOCKED(
+            new String[]{"Nouvelle tourelle débloquée"},
+            new String[]{"New tower unlocked"}),
         
         
         // MENU
         ADVENTURE(
-            new String[]{"    Aventure\n(indisponible)"},
-            new String[]{"   Adventure\n(unavailable)"}),
+            new String[]{"Aventure"},
+            new String[]{"Adventure"}),
         RANDOM_MAP(
             new String[]{"Combattre Bazoo"},
             new String[]{"Fight Bazoo"}),
@@ -133,6 +136,12 @@ public class TextManager {
         TOWER_FLAME(
             new String[]{"Flametech"},
             new String[]{"Flametech"}),
+        TOWER_RANGE(
+            new String[]{"Tour de portée"},
+            new String[]{"Range tower"}),
+        TOWER_POWER(
+            new String[]{"Tour de puissance"},
+            new String[]{"Power tower"}),
         FOCUS_SWITCH(
             new String[]{"Premier", "Dernier", "Plus fort", "Plus faible", "Plus proche"},
             new String[]{"First", "Last", "Strongest", "Weakest", "Closest"}),
@@ -160,11 +169,17 @@ public class TextManager {
             new String[]{"Raztech gagne", "+20% d'XP."},
             new String[]{"Raztech gains", "+20% XP."}),
         BUFF_OS(
-            new String[]{"Crâne & os"},
-            new String[]{"Skull & bones"}),
+            new String[]{"Vieux crâne"},
+            new String[]{"Old skull"}),
         BUFF_OS_DESC(
-            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'exécuter l'ennemie.", "(hors Bazoo)"},
-            new String[]{"Raztech's bullets", "have +1% chance to", "execute the ennemie.", "(except Bazoo)"}),
+            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 2000%", "dégât de base."},
+            new String[]{"Raztech's bullets", "have +1% chance to", "deal 2000%", "base damage."}),
+        BUFF_RANGE_TOWER_DESC(
+            new String[]{"Donne +10% de portée", "aux tourelles proches."},
+            new String[]{"Give +10% range", "to near towers."}),
+        BUFF_POWER_TOWER_DESC(
+            new String[]{"Donne +10% de dégât", "aux tourelles proches."},
+            new String[]{"Give +10% damage", "to near towers."}),
         
         // POPUPS
         SELECT_DIFF(

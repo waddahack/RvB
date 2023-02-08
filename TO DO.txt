@@ -1,6 +1,7 @@
 NEXT BIG UPDATE MUST HAVE :
-Raztech : 
+- bug son quand inwave et pause
 
+Raztech : 
 - Faire plein de buffs
 
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)

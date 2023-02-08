@@ -26,9 +26,9 @@ public class Menu {
             switchStateTo(State.EXIT);
         });
         
-        start = new Button(windWidth/2, windHeight/6, width, height, null, colors.get("green_dark"));
-        start.disable();
-        start.setBG(textures.get("disabled"));
+        start = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        start.lock();
+        start.setText(Text.ADVENTURE, fonts.get("normalL"));
         start.setFunction(__ -> {
             if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
                 adventureGame = new Game("1", Difficulty.MEDIUM);
@@ -38,6 +38,7 @@ public class Menu {
         });
         
         random = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        random.setText(Text.RANDOM_MAP, fonts.get("normalL"));
         random.setFunction(__ -> {
             if(randomGame == null){
                 PopupManager.Instance.chooseDifficulty("random");
@@ -49,12 +50,14 @@ public class Menu {
             }
         });
         regenerate = new Button(random.getX(), random.getY()+random.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
+        regenerate.setText(Text.REGENERATE, fonts.get("normal"));
         regenerate.setFunction(__ -> {
             PopupManager.Instance.chooseDifficulty("random");
             // Then it does newRandomMap(difficulty)
         });
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        create.setText(Text.CREATE_MAP, fonts.get("normalL"));
         create.setFunction(__ -> {
             if(createEmptyMap()){
                 if(createdGame == null){
@@ -71,6 +74,7 @@ public class Menu {
             }
         });
         modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
+        modify.setText(Text.MODIFY, fonts.get("normal"));
         modify.setFunction(__ -> {
             creation = new Creation();
             switchStateTo(State.CREATION);
@@ -135,19 +139,6 @@ public class Menu {
         drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, textures.get("grass"));
         for(Overlay o : overlays){
             o.render();
-        }
-        start.drawText(0, 0, Text.ADVENTURE.getText(), fonts.get("normalL"));
-        if(randomGame == null)
-            random.drawText(0, 0, Text.RANDOM_MAP.getText(), fonts.get("normalL"));
-        else{
-            random.drawText(0, 0, Text.CONTINUE.getText(), fonts.get("normalL"));
-            regenerate.drawText(0, 0, Text.REGENERATE.getText(), fonts.get("normal"));
-        }  
-        if(createdGame == null)
-            create.drawText(0, 0, Text.CREATE_MAP.getText(), fonts.get("normalL"));
-        else{
-            create.drawText(0, 0, Text.CONTINUE.getText(), fonts.get("normalL"));
-            modify.drawText(0, 0, Text.MODIFY.getText(), fonts.get("normal"));
         }
     }
     

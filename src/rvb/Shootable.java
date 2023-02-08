@@ -48,6 +48,16 @@ public abstract class Shootable {
     }
     
     public void update(){
+        // Mouse hover
+        if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
+            RvB.setCursor(RvB.Cursor.POINTER);
+            mouseEntered = true;
+        }
+        else if(!isMouseIn() && mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+            mouseEntered = false;
+        } 
+        
         if(!canShoot)
             return;
         
@@ -58,15 +68,6 @@ public abstract class Shootable {
             SoundManager.Instance.stopClip(clip);
             soundPlayed = false;
         }   
-        // Mouse hover
-        if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
-            RvB.setCursor(RvB.Cursor.POINTER);
-            mouseEntered = true;
-        }
-        else if(!isMouseIn() && mouseEntered && RvB.cursor != RvB.Cursor.GRAB){
-            RvB.setCursor(RvB.Cursor.DEFAULT);
-            mouseEntered = false;
-        } 
     }
     
     public void render(){

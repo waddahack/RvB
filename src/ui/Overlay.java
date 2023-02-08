@@ -199,6 +199,18 @@ public class Overlay {
             case "bottomRight":
                 RvB.drawString(this.x+x - font.getWidth(text)/2, this.y+y - font.getHeight(text)/2, text, font);
                 break;
+            case "midLeft":
+                RvB.drawString(this.x+x + font.getWidth(text)/2, this.y+y, text, font);
+                break;
+            case "midRight":
+                RvB.drawString(this.x+x - font.getWidth(text)/2, this.y+y, text, font);
+                break;
+            case "topMid":
+                RvB.drawString(this.x+x, this.y+y + font.getHeight(text)/2, text, font);
+                break;
+            case "bottomMid":
+                RvB.drawString(this.x+x, this.y+y - font.getHeight(text)/2, text, font);
+                break;
             case "center":
                 RvB.drawString(this.x+x, this.y+y, text, font);
                 break;

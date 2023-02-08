@@ -92,6 +92,7 @@ public abstract class AppCore {
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
     public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0, lvlBazoo = 0;
+    public int oldRaztechXpos = -1, oldRaztechYpos = -1;
     private int oldGameSpeed = 0;
     public ArrayList<Shootable> towers, towersDestroyed;
     public ArrayList<Shootable> enemies, enemiesDead, enemiesToAdd;
@@ -495,28 +496,32 @@ public abstract class AppCore {
     
     protected void checkInput(){
         // Towers placement
-        for(Shootable tower : towers){
-            Tower t = (Tower) tower;
-            if(t.isPlaced())
-                continue;
-            if(Mouse.isButtonDown(0) && t.canBePlaced() && !mouseDown){
+        if(towerSelected != null && !towerSelected.isPlaced()){
+            if(Mouse.isButtonDown(0) && towerSelected.canBePlaced() && !mouseDown){
                 // place tower
-                t.place(map);
+                towerSelected.place(map);
                 mouseDown = true;
                 RvB.setCursor(Cursor.DEFAULT);
             }
-            else if(Mouse.isButtonDown(1)){
+            else if(Mouse.isButtonDown(1) && !towerSelected.isForBuff()){
+                if(towerSelected == raztech){
+                    if(oldRaztechXpos > 0){
+                        raztech.x = oldRaztechXpos;
+                        raztech.y = oldRaztechYpos;
+                        raztech.setIsPlaced(true);
+                    }
+                    else
+                        raztech = null;
+                }
                 // destroy tower
                 selectTower(null);
-                if(t == raztech)
-                    raztech = null;
                 RvB.setCursor(Cursor.DEFAULT);
             }
         }
         // Click check
         while(Mouse.next()){
-            // Reinitializing if clicking nowhere
-            if((Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) && !mouseDown){ //If left or right click
+            // Reinitializing if left clicking nowhere
+            if(Mouse.isButtonDown(0) && !mouseDown){ //If left or right click
                 if(!overlays.get(1).isClicked(0) && !overlays.get(0).isClicked(0)){ //If game overlays aren't clicked
                     if(towerSelected != null && !towerSelected.isClicked(0) && !anyEnemyClicked(0)){
                         selectTower(null);
@@ -532,12 +537,10 @@ public abstract class AppCore {
         if(!PopupManager.Instance.onPopup() && !keyDown && !Keyboard.isKeyDown(Keyboard.KEY_F1)){
             // PAUSE
             if(Keyboard.isKeyDown(Keyboard.KEY_P) && inWave){
-                if(gameSpeed > 0){
-                    oldGameSpeed = gameSpeed;
-                    gameSpeed = 0;
-                }
+                if(gameSpeed > 0)
+                    pause();
                 else
-                    gameSpeed = oldGameSpeed;
+                    unpause();
             } 
             // POPUP HELP
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
@@ -626,7 +629,8 @@ public abstract class AppCore {
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setItemFramed(true);
-            b.lock();
+            if(i > 0)
+                b.lock();
             int index = i;
             b.setFunction(__ -> {
                 if(towerSelected != null)
@@ -699,7 +703,7 @@ public abstract class AppCore {
         Button b;
         
         //// Overlay selection tours
-        if(towerSelected == null || !towerSelected.isPlaced()){
+        if(towerSelected == null){
             o = overlays.get(0);
             o.render();     
             
@@ -719,7 +723,7 @@ public abstract class AppCore {
             if(!b.isLocked())
                 drawPrice(flameTowerPrice, b, o);
             
-            if(raztech != null && raztech.isPlaced()){
+            if(raztech != null){
                 int width = (int) (150*ref), height = (int) (14*ref), x = (int)(30*ref), y = o.getY()+2*o.getH()/3-height/2;
                 int xpWidth = (int) ((float)(raztech.xp)/(float)(raztech.maxXP) * width);
                 if(xpWidth < 0) xpWidth = 0;
@@ -840,18 +844,28 @@ public abstract class AppCore {
                 break;
             case 4 :
                 if(raztech == null){
-                   raztech = new Raztech();
-                   tower = raztech; 
+                   tower = new Raztech(); 
                 }
                 else{
-                    tower = new Raztech();
-                    tower.setRange(raztech.getRange());
+                    raztech.setIsPlaced(false);
+                    map.get((oldRaztechYpos-unite/2)/unite).set((oldRaztechXpos-unite/2)/unite, new Tile("grass"));
+                    tower = raztech;
                 } 
                 break;
+            case 101 :
+                tower = new PowerTower();
+                break;
+            case 102 :
+                tower = new RangeTower();
+                break;
+            /*case 103 :
+                tower = new ShootRateTower();
+                break;*/
         }
-        if(tower != null && price <= money){
-            towers.add(tower);
-            towerSelected = (Tower) towers.get(towers.size()-1);
+        if(tower != null && (price <= money || id > 100)){
+            if(!towers.contains(tower))
+                towers.add(0, tower);
+            towerSelected = tower;
             RvB.setCursor(Cursor.GRAB);
         }
     }
@@ -895,6 +909,21 @@ public abstract class AppCore {
         } 
     }
 
+    public void pause(){
+        if(inWave){
+            oldGameSpeed = gameSpeed;
+            gameSpeed = 0;
+            SoundManager.Instance.pauseAll();
+        }
+    }
+    
+    public void unpause(){
+        if(inWave){
+            gameSpeed = oldGameSpeed;
+            SoundManager.Instance.unpauseAll();
+        }
+    }
+    
     public static boolean bossRound(){
         return game.waveNumber%6 == 0;
     }
@@ -904,10 +933,6 @@ public abstract class AppCore {
     }
     
     public void selectTower(Tower t){
-        if(towerSelected != null){
-            if(!towerSelected.isPlaced())
-                towersDestroyed.add(towerSelected);
-        }  
         towerSelected = t;
         mouseDown = true;
     }

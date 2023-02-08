@@ -281,6 +281,12 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.damagesDone+"", fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Money gained :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.moneyGained+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+120)*ref), "Bonus range :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+120)*ref), game.towerSelected.bonusRange+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+140)*ref), "Bonus power :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+140)*ref), game.towerSelected.bonusPower+"", fonts.get("normalS"), "topRight");
+                debugTool.drawText((int)(10*ref), (int)((s+160)*ref), "Bonus attack speed :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+160)*ref), game.towerSelected.bonusShootRate+"", fonts.get("normalS"), "topRight");
             }
         }
         // CONSOLE
@@ -486,11 +492,11 @@ public class RvB{
         if(s == State.MENU){
             menu.enableAllButtons();
             if(game != null)
-                SoundManager.Instance.pauseAll();
+                game.pause();
         }  
         else if(s == State.GAME){
             game.enableAllButtons();
-            SoundManager.Instance.unpauseAll();
+            game.unpause();
         }
         else if(s == State.CREATION)
             creation.enableAllButtons();
@@ -644,7 +650,6 @@ public class RvB{
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
             textures.put("lock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/lock.png"))));
-            textures.put("place", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place.png"))));
             textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place_raztech.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));
             textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
@@ -673,6 +678,9 @@ public class RvB{
             textures.put("flameTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower.png"))));
             textures.put("flameTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_base.png"))));
             textures.put("flameTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_turret.png"))));
+            
+            textures.put("powerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower.png"))));
+            textures.put("rangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower.png"))));
             // Buffs
             textures.put("buff_slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
             textures.put("buff_upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));

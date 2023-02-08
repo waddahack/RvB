@@ -12,6 +12,7 @@ import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.*;
+import Utils.MyMath;
 
 public abstract class Tower extends Shootable{
 
@@ -19,7 +20,7 @@ public abstract class Tower extends Shootable{
     
     protected int hitboxWidth, totalMoneySpent;
     protected float growth = 0;
-    protected boolean isPlaced = false;
+    protected boolean isPlaced = false, forBuff = false;
     protected ArrayList<Overlay> overlays;
     protected ArrayList<Upgrade> upgrades;
     public String type;
@@ -40,22 +41,18 @@ public abstract class Tower extends Shootable{
         if(game.towerSelected == null && isClicked(0))
             game.selectTower(this);
         
-        if(isSelected() && (isPlaced || canBePlaced()))
-            renderDetails();
+        if(isSelected()){
+            if(isPlaced || canBePlaced())
+                renderDetails();
+            renderOverlay();
+        }  
         
         if(!isPlaced)
             renderPrevisu();
         else{
             super.update();
-            render();
+            super.render();
         }
-    }
-    
-    @Override
-    public void render(){
-        super.render();
-        if(isSelected())
-            renderOverlay();
     }
     
     private void renderPrevisu(){
@@ -70,8 +67,8 @@ public abstract class Tower extends Shootable{
     public void renderDetails(){
         int xPos = (int)x, yPos = (int)y;
         if(!isPlaced){
-            xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2;
-            yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
+            xPos = Math.floorDiv(xPos, unite)*unite+unite/2;
+            yPos = Math.floorDiv(yPos, unite)*unite+unite/2;
         }
         RvB.drawCircle(xPos, yPos, getRange(), RvB.colors.get("blue"));
         RvB.drawCircle(xPos, yPos, getRange()-1, RvB.colors.get("grey"));
@@ -108,6 +105,8 @@ public abstract class Tower extends Shootable{
         b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setClickSound(SoundManager.Instance.getClip("sell"), SoundManager.Volume.MEDIUM);
         b.setFunction(__ -> {
+            if(!isPlaced)
+                return;
             game.money += (int)(totalMoneySpent/2);
             Tile grass = new Tile(RvB.textures.get("grass"), "grass");
             grass.setRotateIndex(0);
@@ -150,6 +149,7 @@ public abstract class Tower extends Shootable{
         for(Upgrade up : upgrades)
             up.render();
         String price;
+        
         b = overlay.getButtons().get(0);
         if(b.isHovered()){
             price = "+ "+(int)(totalMoneySpent/2);
@@ -164,7 +164,6 @@ public abstract class Tower extends Shootable{
     }
     
     public void place(ArrayList<ArrayList<Tile>> map){
-        initOverlay();
         x = Math.floorDiv(Mouse.getX(), unite);
         y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
         map.get((int) y).set((int) x, null);
@@ -196,12 +195,36 @@ public abstract class Tower extends Shootable{
     }
     
     @Override
+    public boolean isInRangeOf(Shootable s){
+        double angle, cosinus, sinus;
+        if(isPlaced){
+            angle = MyMath.angleBetween(this, (Shootable) s);
+            cosinus = Math.floor(Math.cos(angle)*1000)/1000;
+            sinus = Math.floor(Math.sin(angle)*1000)/1000;
+            return (x <= s.getX()+((s.getRange())*Math.abs(cosinus)) && x >= s.getX()-((s.getRange())*Math.abs(cosinus)) && y <= s.getY()+((s.getRange())*Math.abs(sinus)) && y >= s.getY()-((s.getRange())*Math.abs(sinus)));
+        }
+        float x = Math.floorDiv((int)this.x, unite)*unite+unite/2, y = Math.floorDiv((int)this.y, unite)*unite+unite/2;
+        angle = MyMath.angleBetween(x, y, s.getX(), s.getY());
+        cosinus = Math.floor(Math.cos(angle)*1000)/1000;
+        sinus = Math.floor(Math.sin(angle)*1000)/1000;
+        return (x <= s.getX()+((s.getRange())*Math.abs(cosinus)) && x >= s.getX()-((s.getRange())*Math.abs(cosinus)) && y <= s.getY()+((s.getRange())*Math.abs(sinus)) && y >= s.getY()-((s.getRange())*Math.abs(sinus)));
+    }
+    
+    @Override
     public ArrayList<Shootable> getEnemies(){
         return game.enemies;
     }
     
+    public boolean isForBuff(){
+        return forBuff;
+    }
+    
     public boolean isPlaced(){
         return isPlaced;
+    }
+    
+    public void setIsPlaced(boolean b){
+        isPlaced = b;
     }
     
     public ArrayList<Upgrade> getUpgrades(){

@@ -35,8 +35,6 @@ public class Raztech extends Tower{
         textures.add(RvB.textures.get("raztech"));
         rotateIndex = 0;
         textureStatic = RvB.textures.get("raztech");
-        if(game.raztech != null)
-            textureStatic = RvB.textures.get("place");
         price = priceP;
         life = 100f;
         size = 4*RvB.unite/5;
@@ -62,6 +60,7 @@ public class Raztech extends Tower{
         buffs = new HashMap<>();
         
         initBack();
+        initOverlay();
     }
     
     @Override
@@ -178,26 +177,25 @@ public class Raztech extends Tower{
     
     @Override
     public void place(ArrayList<ArrayList<Tile>> map){
-        if(!game.raztech.isPlaced){
-            initOverlay();
+        if(game.raztech == null){
             game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
             game.getOverlays().get(0).getButtons().get(0).unlock();
+            game.raztech = this;
+            game.towers.remove(this);
+            game.towers.add(this);
         }
         else{
-            game.raztech.x = (game.raztech.x-unite/2)/unite;
-            game.raztech.y = (game.raztech.y-unite/2)/unite;
-            map.get((int) game.raztech.y).set((int) game.raztech.x, new Tile("grass"));
-            game.towersDestroyed.add(this);
-            game.selectTower(game.raztech);
-            game.raztech.xp -= 0.2*game.raztech.maxXP;
+            xp -= 0.2*maxXP;
         }   
-        game.raztech.x = Math.floorDiv(Mouse.getX(), unite);
-        game.raztech.y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
-        map.get((int) game.raztech.y).set((int) game.raztech.x, null);
-        game.raztech.x = game.raztech.x*unite+unite/2;
-        game.raztech.y = game.raztech.y*unite+unite/2;
-        game.raztech.isPlaced = true;
-        game.raztech.started = true;
+        x = Math.floorDiv(Mouse.getX(), unite);
+        y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
+        map.get((int) y).set((int) x, null);
+        x = x*unite+unite/2;
+        y = y*unite+unite/2;
+        game.oldRaztechXpos = (int) x;
+        game.oldRaztechYpos = (int) y;
+        isPlaced = true;
+        started = true;
         
         if(Math.random() < 0.5)
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
@@ -211,7 +209,7 @@ public class Raztech extends Tower{
             return;
         Enemy e = (Enemy) enemy;
         if(Math.random() <= chanceToKill)
-            damagesDone += e.takeDamage(e.getLife());
+            damagesDone += e.takeDamage(getPower()*20);
         else
             damagesDone += e.takeDamage(getPower());
         e.beSlowedBy(slow);

@@ -29,6 +29,8 @@ public abstract class Buff {
         buffs.add(new Slow());
         buffs.add(new XP());
         buffs.add(new OS());
+        buffs.add(new GetPowerTower());
+        buffs.add(new GetRangeTower());
         Collections.shuffle(buffs);
         return buffs;
     }

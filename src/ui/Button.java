@@ -132,14 +132,10 @@ public class Button {
         if(rgb != null)
             RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, rgb, 1f, null);
         if(bg != null){
-            float a = locked ? 0.5f : 1f;
             if(itemFramed)
-                RvB.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, a, bg);
+                RvB.drawFilledRectangle((x-width/2+(int)(5*ref)), (y-height/2+(int)(5*ref)), width-(int)(10*ref), height-(int)(10*ref), null, 1f, bg);
             else
-                RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, a, bg);
-        }
-        if(locked){
-            RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, RvB.textures.get("lock"));
+                RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, null, 1f, bg);
         }
         // hover
         if((isMouseIn() || selected) && borderRgb != null && !disabled)
@@ -147,6 +143,12 @@ public class Button {
         // text
         if(text != null && font != null)
             RvB.drawString(x, y, indexSwitch >= 0 ? text.getLines()[indexSwitch] : text.getText(), font);
+        // lock
+        if(locked){
+            RvB.drawFilledRectangle((x-width/2), (y-height/2), width, height, (rgb != null ? rgb : RvB.colors.get("green_semidark")), 0.5f, null);
+            int size = (int) Math.min(width-width%ref, height-(height%ref));
+            RvB.drawFilledRectangle((x-size/2), (y-size/2), size, size, null, 1f, RvB.textures.get("lock"));
+        }
     }
     
     public void drawText(String text, UnicodeFont font){
@@ -246,8 +248,9 @@ public class Button {
         this.y = y;
     }
     
-    public void setText(Text text){
+    public void setText(Text text, UnicodeFont font){
         this.text = text;
+        this.font = font;
     }
     
     public Text getText(){

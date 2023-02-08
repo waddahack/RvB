@@ -62,6 +62,7 @@ public class BigTower extends Tower{
         growth = 20*ref/n;
         
         initBack();
+        initOverlay();
     }
     
     public void bombExplode(float x, float y){

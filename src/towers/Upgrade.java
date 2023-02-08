@@ -94,7 +94,8 @@ public class Upgrade {
         }    
         else if(game.money >= price)
             button.enable();
-        button.update();
+        if(tower.isPlaced)
+            button.update();
         
         String up, nextUp, upPrice = (int)Math.floor(price)+"";
         up = nbNumberToRound == 0 ? (int)getValueWithBonus()+"" : getValueWithBonus()+"";

@@ -40,5 +40,6 @@ public class BasicTower extends Tower{
         growth = 20*ref/n;
         
         initBack();
+        initOverlay();
     }
 }

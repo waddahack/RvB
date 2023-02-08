@@ -11,7 +11,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioInputStream; 
 import javax.sound.sampled.Clip;  
 import javax.sound.sampled.FloatControl;
-import towers.Tower;
 import static rvb.RvB.game;
 import rvb.Shootable;
 
@@ -49,7 +48,7 @@ public class SoundManager
         SOUND_RAZTECH2 = getClip("raztech_laugh2");
         setClipVolume(SOUND_RAZTECH2, SoundManager.Volume.SEMI_HIGH);
         SOUND_LEVELUP = getClip("level_up");
-        setClipVolume(SOUND_LEVELUP, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_LEVELUP, SoundManager.Volume.MEDIUM);
     }
 
     public static void initialize(){
@@ -148,7 +147,9 @@ public class SoundManager
     public void pauseAll(){
         for(Shootable enemy : game.enemies){
             Enemy e = (Enemy) enemy;
-            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
+            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClipWalk() != null)
+                e.getClipWalk().stop();
+            if(e.isSoundContinuous() && e.getClip() != null)
                 e.getClip().stop();
         }
         for(Shootable t : game.towers)
@@ -159,6 +160,8 @@ public class SoundManager
     public void unpauseAll(){
         for(Shootable enemy : game.enemies){
             Enemy e = (Enemy) enemy;
+            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClipWalk() != null)
+                e.getClipWalk().loop(Clip.LOOP_CONTINUOUSLY);
             if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
                 e.getClip().loop(Clip.LOOP_CONTINUOUSLY);
         }  

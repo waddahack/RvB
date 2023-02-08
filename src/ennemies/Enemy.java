@@ -288,10 +288,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         slowedBy = slow;
     }
     
-    public void setStarted(boolean b){
-        started = b;
-    }
-    
+    @Override
     public int compareTo(Enemy e){
         if(eBalance == e.eBalance)
             return 0;
@@ -301,6 +298,10 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
             return 1;
     }
 
+    public Clip getClipWalk(){
+        return clipWalk;
+    }
+    
     @Override
     public ArrayList<Shootable> getEnemies(){
         return game.towers;
