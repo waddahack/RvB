@@ -504,16 +504,20 @@ public abstract class AppCore {
                 RvB.setCursor(Cursor.DEFAULT);
             }
             else if(Mouse.isButtonDown(1) && !towerSelected.isForBuff()){
+                boolean remove = true;
                 if(towerSelected == raztech){
                     if(oldRaztechXpos > 0){
                         raztech.x = oldRaztechXpos;
                         raztech.y = oldRaztechYpos;
                         raztech.setIsPlaced(true);
+                        remove = false;
                     }
                     else
                         raztech = null;
                 }
                 // destroy tower
+                if(remove)
+                    towers.remove(towerSelected);
                 selectTower(null);
                 RvB.setCursor(Cursor.DEFAULT);
             }
@@ -858,9 +862,9 @@ public abstract class AppCore {
             case 102 :
                 tower = new RangeTower();
                 break;
-            /*case 103 :
+            case 103 :
                 tower = new ShootRateTower();
-                break;*/
+                break;
         }
         if(tower != null && (price <= money || id > 100)){
             if(!towers.contains(tower))

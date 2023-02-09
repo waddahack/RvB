@@ -31,6 +31,7 @@ public abstract class Buff {
         buffs.add(new OS());
         buffs.add(new GetPowerTower());
         buffs.add(new GetRangeTower());
+        buffs.add(new GetShootRateTower());
         Collections.shuffle(buffs);
         return buffs;
     }

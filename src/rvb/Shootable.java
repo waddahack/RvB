@@ -422,7 +422,7 @@ public abstract class Shootable {
     }
     
     public boolean canShoot(){
-        return canShoot && (game.timeInGamePassed-lastShoot >= 1000/getShootRate() && ((angle >= newAngle-6 && angle <= newAngle+6) || rotateIndex < 0));
+        return canShoot && (game.timeInGamePassed-lastShoot >= 1000/getShootRate() && (angle >= newAngle-6 && angle <= newAngle+6));
     }
     
     public void shoot(){

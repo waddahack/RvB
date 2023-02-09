@@ -58,7 +58,8 @@ public abstract class Tower extends Shootable{
     private void renderPrevisu(){
         if(canBePlaced()){
             float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite;
-            RvB.drawFilledRectangle(xPos+unite/2, yPos+unite/2, size, size, textureStatic, angle, 0.5f);
+            for(int i = 0 ; i < textures.size() ; i++)
+                RvB.drawFilledRectangle(xPos+unite/2, yPos+unite/2, size, size, textures.get(i), i == rotateIndex ? angle : 0, 0.5f);
         }
         x = Mouse.getX();
         y = RvB.windHeight-Mouse.getY();

@@ -142,6 +142,9 @@ public class TextManager {
         TOWER_POWER(
             new String[]{"Tour de puissance"},
             new String[]{"Power tower"}),
+        TOWER_SHOOTRATE(
+            new String[]{"Tour de vitesse"},
+            new String[]{"Speed tower"}),
         FOCUS_SWITCH(
             new String[]{"Premier", "Dernier", "Plus fort", "Plus faible", "Plus proche"},
             new String[]{"First", "Last", "Strongest", "Weakest", "Closest"}),
@@ -175,11 +178,14 @@ public class TextManager {
             new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 2000%", "dégât de base."},
             new String[]{"Raztech's bullets", "have +1% chance to", "deal 2000%", "base damage."}),
         BUFF_RANGE_TOWER_DESC(
-            new String[]{"Donne +10% de portée", "aux tourelles proches."},
-            new String[]{"Give +10% range", "to near towers."}),
+            new String[]{"Donne +15% de portée", "aux tourelles proches."},
+            new String[]{"Give +15% range", "to near towers."}),
         BUFF_POWER_TOWER_DESC(
             new String[]{"Donne +10% de dégât", "aux tourelles proches."},
             new String[]{"Give +10% damage", "to near towers."}),
+        BUFF_SHOOTRATE_TOWER_DESC(
+            new String[]{"Donne +10%", "de vitesse d'attaque", "aux tourelles proches."},
+            new String[]{"Give +10%", "attack speed", "to near towers."}),
         
         // POPUPS
         SELECT_DIFF(

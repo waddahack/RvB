@@ -8,26 +8,26 @@ import static rvb.RvB.ref;
 import rvb.Shootable;
 import ui.Overlay;
 
-public class RangeTower extends Tower{
+public class ShootRateTower extends Tower{
     
     private ArrayList<Tower> towers;
     
-    public RangeTower() {
-        super("rangeTower");
-        textures.add(RvB.textures.get("rangeTowerBase"));
-        textures.add(RvB.textures.get("rangeTowerBalls"));
+    public ShootRateTower() {
+        super("shootrateTower");
+        textures.add(RvB.textures.get("shootrateTowerBase"));
+        textures.add(RvB.textures.get("shootrateTowerBullet"));
         rotateIndex = 1;
-        textureStatic = RvB.textures.get("rangeTower");
+        textureStatic = RvB.textures.get("shootrateTower");
         canShoot = false;
         life = 100f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         totalMoneySpent = price;
-        name = Text.TOWER_RANGE;
+        name = Text.TOWER_SHOOTRATE;
         forBuff = true;
         
         towers = new ArrayList<>();
-        power = 0.15f;
+        power = 0.1f;
         range = 3*RvB.unite;
         growth = 6f*ref;
         
@@ -40,11 +40,11 @@ public class RangeTower extends Tower{
         super.update();
         for(Shootable t : game.towers){
             if(t.isInRangeOf(this) && !towers.contains(t) && t != this){
-                t.bonusRange += power;
+                t.bonusShootRate += power;
                 towers.add((Tower)t);
             }
             else if(!t.isInRangeOf(this) && towers.contains(t)){
-                t.bonusRange -= power;
+                t.bonusShootRate -= power;
                 towers.remove((Tower)t);
             }
         }
@@ -63,7 +63,7 @@ public class RangeTower extends Tower{
         int imageSize = o2.getH()-(int)(5*ref);
         o2.setBG(RvB.textures.get("board"), 0.6f);
         o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
-        o2.addImage(o2.getW()/2, o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("rangeIcon"));
+        o2.addImage(o2.getW()/2, o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("attackSpeedIcon"));
         overlays.add(o2);
     }
     

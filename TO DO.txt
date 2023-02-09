@@ -1,8 +1,6 @@
 NEXT BIG UPDATE MUST HAVE :
-- bug son quand inwave et pause
-
 Raztech : 
-- Faire plein de buffs
+- Faire buffs : add gold, add life, upgrade R/P/AS towers
 
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
 

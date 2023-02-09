@@ -14,18 +14,20 @@ public class PowerTower extends Tower{
     
     public PowerTower() {
         super("powerTower");
-        textures.add(RvB.textures.get("powerTower"));
+        textures.add(RvB.textures.get("powerTowerBase"));
+        textures.add(RvB.textures.get("powerTowerElec"));
+        rotateIndex = 1;
         textureStatic = RvB.textures.get("powerTower");
         canShoot = false;
         life = 100f;
-        size = 4*RvB.unite/5;
+        size = 9*RvB.unite/10;
         hitboxWidth = size;
         totalMoneySpent = price;
         name = Text.TOWER_POWER;
         forBuff = true;
         
         towers = new ArrayList<>();
-        power = 0.5f;
+        power = 0.1f;
         range = 3*RvB.unite;
         growth = 6f*ref;
         
@@ -46,6 +48,7 @@ public class PowerTower extends Tower{
                 towers.remove((Tower)t);
             }
         }
+        angle += game.gameSpeed*RvB.deltaTime/8;
     }
     
     @Override

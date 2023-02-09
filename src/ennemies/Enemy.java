@@ -72,8 +72,10 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         if(started){
             move();
             if(clipWalk != null){
+                //if(game.enemySelected == this) RvB.debug(stepEveryMilli);
                 if(stepEveryMilli == 0){
                     stepEveryMilli = -1;
+                    //if(game.enemySelected == this) RvB.debug(stepEveryMilli);
                     SoundManager.Instance.playLoop(clipWalk);
                 }   
                 else if(stepEveryMilli > 0 && game.timeInGamePassed - startTimeSteps >= stepEveryMilli){
@@ -124,7 +126,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
             stepEveryMilli *= (1+slowedBy);
         }
             
-        else if(game.timeInGamePassed - startTimeSlow >= 1000){
+        else if(slowedBy != 0 && game.timeInGamePassed - startTimeSlow >= 1000){
             moveSpeed = oldMoveSpeed;
             stepEveryMilli = oldstepEveryMilli;
             slowedBy = 0;
