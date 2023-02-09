@@ -180,11 +180,11 @@ public class PopupManager {
                     break;
                 b = rewardSelection.getButtons().get(i);
                 if(b.isHovered()){
-                    int nbLines = buff.description.getLines().length;
+                    int nbLines = buff.getDescription().length;
                     int totalHeight = (RvB.fonts.get("normalS").getFont().getSize()+1)*nbLines; // betweenLines * nbLines
                     int betweenLines = 0;
                     for(int j = 0 ; j < nbLines ; j++){
-                        rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-totalHeight/2 + betweenLines), buff.description.getLines()[j], RvB.fonts.get("normalS"));
+                        rewardSelection.drawText(b.getX()-rewardSelection.getX(), (int) (b.getY()-rewardSelection.getY()-totalHeight/2 + betweenLines), buff.getDescription()[j], RvB.fonts.get("normalS"));
                         betweenLines += RvB.fonts.get("normalS").getFont().getSize()+1;
                     }
                 }

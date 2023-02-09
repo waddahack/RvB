@@ -1,15 +1,13 @@
 NEXT BIG UPDATE MUST HAVE :
 Raztech : 
-- Faire buffs : add gold, add life, upgrade R/P/AS towers
-
 - Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
-
-- TAB pour voir les stats des tourelles ?
-- Ajouter raztech qui tire sur bazoo sur image menu ?
+- balance
 
 RELEASE 2.0
 
 - menu option
+- TAB pour voir les stats des tourelles ?
+- Ajouter raztech qui tire sur bazoo sur image menu ?
 - Site ?
 
 ROCKS :

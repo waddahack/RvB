@@ -10,7 +10,7 @@ import ui.Overlay;
 
 public class ShootRateTower extends Tower{
     
-    private ArrayList<Tower> towers;
+    public ArrayList<Tower> towers;
     
     public ShootRateTower() {
         super("shootrateTower");

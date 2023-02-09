@@ -10,7 +10,7 @@ import ui.Overlay;
 
 public class PowerTower extends Tower{
     
-    private ArrayList<Tower> towers;
+    public ArrayList<Tower> towers;
     
     public PowerTower() {
         super("powerTower");

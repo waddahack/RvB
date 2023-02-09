@@ -274,9 +274,9 @@ public class RvB{
                 debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Life :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.towerSelected.life+"", fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Range/Power/AS :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towerSelected.range+" / "+game.towerSelected.power+" / "+game.towerSelected.shootRate, fonts.get("normalS"), "topRight");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), formatter.format(game.towerSelected.range)+" / "+formatter.format(game.towerSelected.power)+" / "+formatter.format(game.towerSelected.shootRate), fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Bonus R/P/AS :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), game.towerSelected.bonusRange+" / "+game.towerSelected.bonusPower+" / "+game.towerSelected.bonusShootRate, fonts.get("normalS"), "topRight");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), formatter.format(game.towerSelected.bonusRange)+" / "+formatter.format(game.towerSelected.bonusPower)+" / "+formatter.format(game.towerSelected.bonusShootRate), fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Follows :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.getFollow()+"", fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Enemy killed :", fonts.get("normalS"), "topLeft");
@@ -695,6 +695,9 @@ public class RvB{
             textures.put("buff_upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
             textures.put("buff_os", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_os.png"))));
             textures.put("buff_xp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_xp.png"))));
+            textures.put("buff_upPowerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upPowerTower.png"))));
+            textures.put("buff_upRangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upRangeTower.png"))));
+            textures.put("buff_upShootRateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upShootRateTower.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));

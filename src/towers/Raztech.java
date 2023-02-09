@@ -25,7 +25,7 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 30;
+    public int xp = 0, maxXP = 10;
     private float bonusXP = 0, chanceToKill = 0;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;

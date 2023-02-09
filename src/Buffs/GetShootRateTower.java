@@ -13,6 +13,7 @@ public class GetShootRateTower extends Buff{
     @Override
     public void pick(){
         super.pick();
+        RvB.game.buffs.add(new UpShootRateTower());
         RvB.game.createTower(103);
     }
 }

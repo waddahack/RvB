@@ -141,19 +141,19 @@ public abstract class AppCore {
         if(diff == Difficulty.EASY){
             life = 125;
             money = 250;
-            waveReward = 80;
+            waveReward = 150;
             waveBalanceMult = 0.9f;
         }
         else if(diff == Difficulty.HARD){
             life = 75;
             money = 150;
-            waveReward = 20;
+            waveReward = 100;
             waveBalanceMult = 1.1f;
         }
         else{ //if(diff == Difficulty.MEDIUM)
             life = 100;
             money = 200;
-            waveReward = 50;
+            waveReward = 125;
             waveBalanceMult = 1f;
         }
     }
@@ -798,9 +798,9 @@ public abstract class AppCore {
         UEnemy[] uEnemies = UEnemy.values();
         int waveBalance = (waveNumber*waveNumber + waveNumber)/2;
         if(waveNumber >= uEnemies[uEnemies.length-1].enterAt + 1)
-            waveBalance *= 15;
+            waveBalance *= 18;
         else
-            waveBalance *= 10;
+            waveBalance *= 12;
         if(waveNumber >= uEnemies[1].enterAt)
             waveBalance *= waveBalanceMult;
         waveBalance = (int) (bossRound() ? waveBalance*0.6 : waveBalance);

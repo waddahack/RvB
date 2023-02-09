@@ -12,7 +12,7 @@ public abstract class Buff {
     public Text name;
     public Texture logo;
     public int nbPick, nbMaxPick;
-    public Text description;
+    private Text description;
             
     public Buff(String id, Text name, Text description, int nbMaxPick){
         this.id = id;
@@ -39,6 +39,10 @@ public abstract class Buff {
     public void pick(){
         nbPick++;
         RvB.debug("buff "+id);
+    }
+    
+    public String[] getDescription(){
+        return description.getLines();
     }
     
     public boolean isAnyLeft(){

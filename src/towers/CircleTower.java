@@ -26,6 +26,7 @@ public class CircleTower extends Tower{
         isMultipleShot = true;
         focusIndex = -1;
         clip = SoundManager.Instance.getClip("multicannon");
+        volume = SoundManager.Volume.LOW;
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("bullet");
         
@@ -48,7 +49,7 @@ public class CircleTower extends Tower{
     @Override
     public void update(){
         super.update();
-        angle += game.gameSpeed*RvB.deltaTime/8;
+        angle += game.gameSpeed*RvB.deltaTime/20;
     }
     
     @Override

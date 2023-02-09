@@ -51,6 +51,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         oldMoveSpeed = moveSpeed;
         oldstepEveryMilli = stepEveryMilli;
         SoundManager.Instance.setClipVolume(clipWalk, volumeWalk);
+        reward /= 2;
     }
     
     @Override

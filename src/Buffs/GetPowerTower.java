@@ -13,6 +13,7 @@ public class GetPowerTower extends Buff{
     @Override
     public void pick(){
         super.pick();
+        RvB.game.buffs.add(new UpPowerTower());
         RvB.game.createTower(101);
     }
 }

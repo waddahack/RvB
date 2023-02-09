@@ -13,6 +13,7 @@ public class GetRangeTower extends Buff{
     @Override
     public void pick(){
         super.pick();
+        RvB.game.buffs.add(new UpRangeTower());
         RvB.game.createTower(102);
     }
 }

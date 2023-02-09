@@ -179,13 +179,31 @@ public class TextManager {
             new String[]{"Raztech's bullets", "have +1% chance to", "deal 2000%", "base damage."}),
         BUFF_RANGE_TOWER_DESC(
             new String[]{"Donne +15% de portée", "aux tourelles proches."},
-            new String[]{"Give +15% range", "to near towers."}),
+            new String[]{"Gives +15% range", "to near towers."}),
         BUFF_POWER_TOWER_DESC(
             new String[]{"Donne +10% de dégât", "aux tourelles proches."},
-            new String[]{"Give +10% damage", "to near towers."}),
+            new String[]{"Gives +10% damage", "to near towers."}),
         BUFF_SHOOTRATE_TOWER_DESC(
             new String[]{"Donne +10%", "de vitesse d'attaque", "aux tourelles proches."},
-            new String[]{"Give +10%", "attack speed", "to near towers."}),
+            new String[]{"Gives +10%", "attack speed", "to near towers."}),
+        BUFF_UP_POWER_TOWER(
+            new String[]{"Électricité"},
+            new String[]{"Electricity"}),
+        BUFF_UP_POWER_TOWER_DESC(
+            new String[]{"La tour de puissance", "donne +10% de dégât."},
+            new String[]{"The power tower", "gives +10% damage."}),
+        BUFF_UP_RANGE_TOWER(
+            new String[]{"Oeil flottant"},
+            new String[]{"Floating eye"}),
+        BUFF_UP_RANGE_TOWER_DESC(
+            new String[]{"La tour de portée", "donne +15% de portée."},
+            new String[]{"The range tower", "gives +15% range."}),
+        BUFF_UP_SHOOTRATE_TOWER(
+            new String[]{"Balle polie"},
+            new String[]{"Polished bullet"}),
+        BUFF_UP_SHOOTRATE_TOWER_DESC(
+            new String[]{"La tour de vitesse", "donne +10% de", "vitesse d'attaque."},
+            new String[]{"The speed tower", "gives +10%", "attack speed."}),
         
         // POPUPS
         SELECT_DIFF(

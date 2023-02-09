@@ -21,12 +21,13 @@ public abstract class Shootable {
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected Texture textureStatic, bulletSprite;
     protected Random random = new Random();
-    protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth, focusIndex, newAngle = 0;
+    protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth, focusIndex;
+    protected float newAngle = 0;
     protected ArrayList<Texture> textures, texturesBright;
     protected Shootable enemyAimed;
     // CARACHTERISTIQUES PUBLIQUES
-    public float x, y;
-    public int angle = 180, waitFor = 175, startTimeWaitFor = 0;
+    public float x, y, angle = 180;
+    public int waitFor = 175, startTimeWaitFor = 0;
     public Text name;
     public int range = 0, bulletSpeed = 0, size = unite, explodeRadius;
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
@@ -73,12 +74,12 @@ public abstract class Shootable {
     public void render(){
         if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor){
             for(int i = 0 ; i < texturesBright.size() ; i++)
-                RvB.drawFilledRectangle(x, y, size, size, texturesBright.get(i), i == rotateIndex ? angle : 0, 1);
+                RvB.drawFilledRectangle(x, y, size, size, texturesBright.get(i), i == rotateIndex ? (int)angle : 0, 1);
         }
         else{
             startTimeWaitFor = 0;
             for(int i = 0 ; i < textures.size() ; i++)
-                RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : 0, 1);
+                RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 1);
         }
     }
     
