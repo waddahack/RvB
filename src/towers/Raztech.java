@@ -25,7 +25,7 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 10;
+    public int xp = 0, maxXP = 8;
     private float bonusXP = 0, chanceToKill = 0;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
@@ -47,14 +47,14 @@ public class Raztech extends Tower{
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSprite = RvB.textures.get("gun_bullet");
 
-        range = 4*RvB.unite;
+        range = 3*RvB.unite;
         power = 4f;
         shootRate = 2f;
         bulletSpeed = 20;
         growth = 3*ref;
         
         upgrades.add(new Upgrade(this, "Range", range, RvB.unite/4, "+", 0, 0, 0));
-        upgrades.add(new Upgrade(this, "Power", power, 1, "+", 0, 0, 0));
+        upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 0, 0, 0));
         upgrades.add(new Upgrade(this, "Attack speed", shootRate, 0.1f, "+", 0, 0, 0));
         
         buffs = new HashMap<>();

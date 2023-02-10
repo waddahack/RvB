@@ -16,12 +16,12 @@ public class BasicEnemy extends Enemy{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("basicEnemy");
         name = Text.ENEMY_BASIC;
-        reward = 5;
+        reward = 2;
         power = 2f;
         shootRate = 1f;
         moveSpeed = 3.5f;
         range = 3*RvB.unite;
-        life = 30f;
+        life = 34f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         volumeWalk = SoundManager.Volume.VERY_LOW;

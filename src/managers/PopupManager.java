@@ -22,7 +22,7 @@ public class PopupManager {
     
     private static int width = (int) (800*ref), height = (int) (450*ref);
     private Overlay currentOverlay;
-    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty, rewardSelection;
+    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help;
     private ArrayList<String> lines;
     private ArrayList<String> buttonsText;
     private ArrayList<UnicodeFont> fonts;
@@ -140,6 +140,19 @@ public class PopupManager {
         rewardSelection.display(false);
         rewardSelection.setBG(RvB.textures.get("board"), 0.8f);
         rewardSelection.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        // HELP
+        help = new Overlay(RvB.windWidth/2-width, RvB.windHeight/2-height, width*2, height*2);
+        help.display(false);
+        help.setBG(RvB.textures.get("board"), 0.8f);
+        help.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        b = new Button(11*help.getW()/12, 19*help.getH()/20, (int) (butWith*1.2), butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            closeCurrentPopup();
+            game.enableAllButtons();
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        help.addButton(b);
     }
     
     public void update(){
@@ -242,6 +255,9 @@ public class PopupManager {
         if(currentOverlay == gameOver)
             return;
         initPopup(gameOver);
+        if(game != null){
+            game.unpause();
+        } 
         top = height/4;
         addText(Text.GAME_OVER.getLines(), RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalL"));
@@ -274,7 +290,7 @@ public class PopupManager {
         addText(Text.LEVEL.getText() + game.raztech.lvl + " !", RvB.fonts.get("normalXLB"));
         addText("\n", RvB.fonts.get("normal"));
         addText(Text.RANGE.getText()+" +"+Math.round(game.raztech.getUpgrades().get(0).addOrMultiplicateValue), RvB.fonts.get("normal"));
-        addText(Text.POWER.getText()+" +"+Math.round(game.raztech.getUpgrades().get(1).addOrMultiplicateValue), RvB.fonts.get("normal"));
+        addText(Text.POWER.getText()+" +"+game.raztech.getUpgrades().get(1).addOrMultiplicateValue, RvB.fonts.get("normal"));
         addText(Text.SHOOTRATE.getText()+" +"+game.raztech.getUpgrades().get(2).addOrMultiplicateValue, RvB.fonts.get("normal"));
         switch(game.raztech.lvl){
             case 2:
@@ -347,6 +363,27 @@ public class PopupManager {
             });
             rewardSelection.addButton(b);
         }
+    }
+    
+    public void help(){
+        if(currentOverlay == help)
+            return;
+        initPopup(help);
+        top = height/8;
+        
+        addText(Text.HOW_TO_PLAY.getText(), RvB.fonts.get("normalXLB"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.GUIDE.getLines(), RvB.fonts.get("normalL"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.INFO.getText(), RvB.fonts.get("normalXLB"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.INFO_GUIDE.getLines(), RvB.fonts.get("normalL"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.SHORTCUTS.getText(), RvB.fonts.get("normalXLB"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.SHORTCUTS_GUIDE.getLines(), RvB.fonts.get("normalL"));
+        
+        buttonsText.add(Text.CLOSE.getText());
     }
 
     private void addText(String text, UnicodeFont font){

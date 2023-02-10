@@ -155,7 +155,7 @@ public class Upgrade {
     }
     
     public void setValue(float v){
-        value = (float) (Math.ceil(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
+        value = (float) (Math.round(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
     }
     
     public float getIncreasedValueWithBonus(){
@@ -179,9 +179,9 @@ public class Upgrade {
         }
         switch(addOrMultiplicate){
             case "+":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value+addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.round(Math.pow(10, nbNumberToRound)*((value+addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
             case "*":
-                return (float) (Math.ceil(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.round(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
         };
         return 0;
     }

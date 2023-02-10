@@ -75,6 +75,9 @@ public class TextManager {
         TOWER_UNLOCKED(
             new String[]{"Nouvelle tourelle débloquée"},
             new String[]{"New tower unlocked"}),
+        CLOSE(
+            new String[]{"Fermer"},
+            new String[]{"Close"}),
         
         
         // MENU
@@ -232,7 +235,25 @@ public class TextManager {
             new String[]{"Still standing !", "Where're you ?", "I'm waiting...", "Not afraid !", "Looser !"}),
         BOSS_NOT_DEFEATED_ANSWER(
             new String[]{"Noooon !", "Toujours vivant !", "Ouch !", "Attention à toi", "Grrrrr..."},
-            new String[]{"Noooo !", "Still alive !", "Ouch !", "Watch yourself", "Grrrrr..."});
+            new String[]{"Noooo !", "Still alive !", "Ouch !", "Watch yourself", "Grrrrr..."}),
+        HOW_TO_PLAY(
+            new String[]{"Comment jouer"},
+            new String[]{"How to play"}),
+        GUIDE(
+            new String[]{"Vague par vague, vous allez être submergé d'ennemies.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ça sera utile pour acheter des tourelles pour défendre votre terrain !"},
+            new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "The game ends whenever your health hits 0.", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
+        INFO(
+            new String[]{"Informations"},
+            new String[]{"Informations"}),
+        INFO_GUIDE(
+            new String[]{"Déplacer Raztech coûte 20% de l'XP de son prochain niveau.", "Vous pouvez sélectionner des ennemies et des tourelles. Clickez n'importe où pour désélectionner.", "Vous pouvez annuler la construction d'une nouvelle tour avec clique droit."},
+            new String[]{"Moving Raztech costs 20% of his next level's XP.", "You can select enemies and towers. Click anywhere else to unselect.", "You can cancel a new tower construction by right clicking."}),
+        SHORTCUTS(
+            new String[]{"Raccourcis"},
+            new String[]{"Shortcuts"}),
+        SHORTCUTS_GUIDE(
+            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la prochaine vague", "P : Pause/Reprendre", "V : Changer la vitesse", "H : Ouvre cette fenêtre", "F1+D : Fenêtre debug", "Échap. : Menu"},
+            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start next wave", "P : Pause/Unpause", "V : Change the speed", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
         private String[] FR_text, ENG_text;
         

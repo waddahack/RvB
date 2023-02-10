@@ -24,12 +24,12 @@ public class FlyingEnemy extends Enemy{
         textureStatic = RvB.textures.get("flyingEnemy");
         
         name = Text.ENEMY_FLYING;
-        reward = 75;
+        reward = 36;
         power = 12f;
         shootRate = 1f;
         moveSpeed = 1.8f;
         range = 3*unite;
-        life = 120f;
+        life = 132f;
         size = (int) (1.25*unite);
         hitboxWidth = size;
         eBalance = balance;

@@ -476,11 +476,11 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    enemiesBonusLife += 10;
-                    enemiesBonusMS += 5;
+                    enemiesBonusLife += 15;
+                    enemiesBonusMS += 6;
                     PopupManager.Instance.enemiesUpgraded(new String[]{
-                        "+10% "+Text.HP.getText(),
-                        "+5% "+Text.MS.getText()
+                        "+15% "+Text.HP.getText(),
+                        "+6% "+Text.MS.getText()
                     });
                     bossDead = false;
                     bossDefeated = false;
@@ -546,9 +546,13 @@ public abstract class AppCore {
                 else
                     unpause();
             } 
+            // Change speed
+            else if(Keyboard.isKeyDown(Keyboard.KEY_V) && gameSpeed > 0){
+                overlays.get(1).getButtons().get(overlays.get(1).getButtons().size()-2).click();
+            } 
             // POPUP HELP
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
-                RvB.debug("Popup help");
+                PopupManager.Instance.help();
             } 
             if(gameSpeed > 0){
                 // START WAVE
@@ -798,12 +802,12 @@ public abstract class AppCore {
         UEnemy[] uEnemies = UEnemy.values();
         int waveBalance = (waveNumber*waveNumber + waveNumber)/2;
         if(waveNumber >= uEnemies[uEnemies.length-1].enterAt + 1)
-            waveBalance *= 18;
+            waveBalance *= 20;
         else
-            waveBalance *= 12;
+            waveBalance *= 14;
         if(waveNumber >= uEnemies[1].enterAt)
             waveBalance *= waveBalanceMult;
-        waveBalance = (int) (bossRound() ? waveBalance*0.6 : waveBalance);
+        waveBalance = (int) (bossRound() ? waveBalance*0.8 : waveBalance);
         wave = new Wave();
         int min, max;
         while(waveBalance >= uEnemies[0].balance){
@@ -918,6 +922,7 @@ public abstract class AppCore {
             oldGameSpeed = gameSpeed;
             gameSpeed = 0;
             SoundManager.Instance.pauseAll();
+            disableAllButtons();
         }
     }
     
@@ -925,6 +930,7 @@ public abstract class AppCore {
         if(inWave){
             gameSpeed = oldGameSpeed;
             SoundManager.Instance.unpauseAll();
+            enableAllButtons();
         }
     }
     

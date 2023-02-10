@@ -32,12 +32,12 @@ public class Bazoo extends Enemy{
         bulletSpeed = 20;*/
         level = lvl;
         name = Text.ENEMY_BOSS;
-        reward = lvl*100;
+        reward = lvl*50;
         power = 50f;
         shootRate = 1f;
         moveSpeed = 1.8f;
         range = 3*RvB.unite;
-        life = 700f;
+        life = 800f;
         size = 3*RvB.unite;
         hitboxWidth = (int) (size*0.51);
         volumeWalk = SoundManager.Volume.SEMI_HIGH;
