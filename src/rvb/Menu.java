@@ -38,7 +38,6 @@ public class Menu {
         });
         
         random = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
-        random.setText(Text.RANDOM_MAP, fonts.get("normalL"));
         random.setFunction(__ -> {
             if(randomGame == null){
                 PopupManager.Instance.chooseDifficulty("random");
@@ -57,7 +56,6 @@ public class Menu {
         });
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
-        create.setText(Text.CREATE_MAP, fonts.get("normalL"));
         create.setFunction(__ -> {
             if(createEmptyMap()){
                 if(createdGame == null){
@@ -140,6 +138,14 @@ public class Menu {
         for(Overlay o : overlays){
             o.render();
         }
+        if(regenerate.isHidden())
+            random.drawText(Text.RANDOM_MAP.getText(), fonts.get("normalL"));
+        else
+            random.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
+        if(modify.isHidden())
+            create.drawText(Text.CREATE_MAP.getText(), fonts.get("normalL"));
+        else
+            create.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
     }
     
     public void disableAllButtons(){
