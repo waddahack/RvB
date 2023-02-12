@@ -1,9 +1,4 @@
 NEXT BIG UPDATE MUST HAVE :
-Raztech : 
-- Popup help (KEY_H) qui explique des subtilités (genre le coût de déplacer raztech, raccourcis etc...)
-- balance
-
-RELEASE 2.0
 
 - menu option
 - TAB pour voir les stats des tourelles ?

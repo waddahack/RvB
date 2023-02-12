@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.sound.sampled.Clip;
 import managers.SoundManager;
-import org.newdawn.slick.opengl.Texture;
 import managers.TextManager.Text;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import rvb.Shootable;
 import Utils.MyMath;
+import org.newdawn.slick.opengl.Texture;
 
 public class BigTower extends Tower{
     
