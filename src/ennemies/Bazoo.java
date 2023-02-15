@@ -35,7 +35,7 @@ public class Bazoo extends Enemy{
         reward = lvl*50;
         power = 50f;
         shootRate = 1f;
-        moveSpeed = 1.8f;
+        moveSpeed = 2f;
         range = 3*RvB.unite;
         life = 800f;
         size = 3*RvB.unite;

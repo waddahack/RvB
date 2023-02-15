@@ -1,4 +1,4 @@
-NEXT BIG UPDATE MUST HAVE :
+- faire pop bazoo au milieu de la vague (réduire le coef bosswave)
 
 - menu option
 - TAB pour voir les stats des tourelles ?

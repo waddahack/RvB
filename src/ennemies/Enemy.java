@@ -102,8 +102,8 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         }   
 
         if(!evolutions.isEmpty()){
-            evolutions.peek().render(); 
             RvB.drawFilledRectangle(x, y, size, size, textures.get(0), angle, 1);
+            evolutions.peek().render(); 
         } 
         else
             super.render();

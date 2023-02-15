@@ -31,7 +31,7 @@ public class CircleTower extends Tower{
         bulletSprite = RvB.textures.get("bullet");
         
         range = (int) (1.2*RvB.unite);
-        power = 14f;
+        power = 12f;
         shootRate = 0.7f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 100f, 1.5f, 2));

@@ -786,12 +786,12 @@ public abstract class AppCore {
     
     public void clearArrays(){
         int i;
-        for(i = 0 ; i < enemiesDead.size() ; i++)
-            enemies.remove(enemiesDead.get(i));
-        enemiesDead.clear();
         for(i = 0 ; i < enemiesToAdd.size() ; i++)
             enemies.add(0, enemiesToAdd.get(i));
         enemiesToAdd.clear();
+        for(i = 0 ; i < enemiesDead.size() ; i++)
+            enemies.remove(enemiesDead.get(i));
+        enemiesDead.clear();
         for(i = 0 ; i < towersDestroyed.size() ; i++)
             towers.remove(towersDestroyed.get(i));
         towersDestroyed.clear();
