@@ -1,4 +1,4 @@
-# Towser
+# RvB
 
 ## Setup Netbeans :
 
@@ -16,6 +16,4 @@
 C'est un petit jeu réalisé en partant de presque rien (d'une librairie).
 Je voulais essayer de créer un jeu "from scratch".
 Le jeu est un Tower Defense, des ennemies parcours un chemin pour attaquer votre base. Survivez le plus de round possible.
-Pour le moment, le jeu ne contient que 2 tourelles et 4 types d'ennemies. Le principe du jeu étant codé et
-fonctionnel je ne me suis pas (encore) acharné à créer plein de types de tourelle et d'ennemie, mais c'est
-dans l'idée assez rapide. J'ai mis en place le fait que les ennemies pourront (une fois codé) attaquer les tours.
+8 tourelles différentes et 6 type d'ennemie différent !
