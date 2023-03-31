@@ -87,7 +87,7 @@ public class RvB{
     private static ArrayList<String> consoleLines = new ArrayList<>();
     private static String commandPrompt = "";
     private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
-    private static boolean cheatsActivated = false, listeningKeyboard = false;
+    private static boolean cheatsActivated = true, listeningKeyboard = false;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());

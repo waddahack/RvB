@@ -163,16 +163,7 @@ public class Raztech extends Tower{
         y = Math.abs(y) < 2 ? 0 : y;
         Bullet bullet = new Bullet(this, x, y, enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
         bullets.add(bullet);
-        if(clip != null){
-            if(continuousSound){
-                if(!soundPlayed){
-                    SoundManager.Instance.playLoop(clip);
-                    soundPlayed = true;
-                }
-            }
-            else
-                SoundManager.Instance.playOnce(clip);
-        }
+        SoundManager.Instance.playOnce(clip);
     }
     
     @Override

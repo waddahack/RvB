@@ -1,7 +1,5 @@
 package managers;
 
-import rvb.RvB;
-
 public class TextManager {
     
     public enum Text{
@@ -166,8 +164,8 @@ public class TextManager {
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),
         BUFF_SLOW_DESC(
-            new String[]{"Les balles de Raztech", "ralentissent de +10%", "pendant 1 sec."},
-            new String[]{"Raztech's bullets", "slow by +10%", "for 1 sec."}),
+            new String[]{"Les balles de Raztech", "ralentissent les", "ennemies de +10%", "pendant 1 sec."},
+            new String[]{"Raztech's bullets", "slow enemies by +10%", "for 1 sec."}),
         BUFF_XP(
             new String[]{"Rune bleue"},
             new String[]{"Blue rune"}),
@@ -181,14 +179,14 @@ public class TextManager {
             new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 2000%", "dégât de base."},
             new String[]{"Raztech's bullets", "have +1% chance to", "deal 2000%", "base damage."}),
         BUFF_RANGE_TOWER_DESC(
-            new String[]{"Donne +15% de portée", "aux tourelles proches."},
-            new String[]{"Gives +15% range", "to near towers."}),
+            new String[]{"Nouvelle tour :", " ", "Donne +15% de portée", "aux tourelles proches."},
+            new String[]{"New tower :", " ", "Gives +15% range", "to near towers."}),
         BUFF_POWER_TOWER_DESC(
-            new String[]{"Donne +10% de dégât", "aux tourelles proches."},
-            new String[]{"Gives +10% damage", "to near towers."}),
+            new String[]{"Nouvelle tour :", " ", "Donne +10% de dégât", "aux tourelles proches."},
+            new String[]{"New tower :", " ", "Gives +10% damage", "to near towers."}),
         BUFF_SHOOTRATE_TOWER_DESC(
-            new String[]{"Donne +10%", "de vitesse d'attaque", "aux tourelles proches."},
-            new String[]{"Gives +10%", "attack speed", "to near towers."}),
+            new String[]{"Nouvelle tour :", " ", "Donne +10%", "de vitesse d'attaque", "aux tourelles proches."},
+            new String[]{"New tower :", " ", "Gives +10%", "attack speed", "to near towers."}),
         BUFF_UP_POWER_TOWER(
             new String[]{"Électricité"},
             new String[]{"Electricity"}),

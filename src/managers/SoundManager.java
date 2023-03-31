@@ -11,7 +11,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.AudioInputStream; 
 import javax.sound.sampled.Clip;  
 import javax.sound.sampled.FloatControl;
-import rvb.RvB;
 import static rvb.RvB.game;
 import rvb.Shootable;
 
@@ -118,9 +117,9 @@ public class SoundManager
         }
         else{
             clip.stop();
+            clip.setMicrosecondPosition(0);
             clipsToPlayNextFrame.add(clip);
         }
-        
     }
     
     public void playLoop(Clip clip){

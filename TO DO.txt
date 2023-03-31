@@ -1,4 +1,7 @@
+#BALANCE#
 - faire pop bazoo au milieu de la vague (réduire le coef bosswave)
+- voir memo téléphone
+##
 
 - menu option
 - TAB pour voir les stats des tourelles ?

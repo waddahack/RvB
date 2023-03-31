@@ -15,6 +15,7 @@ import static rvb.RvB.ref;
 import Buffs.Buff;
 import java.util.Collections;
 import java.util.function.Consumer;
+import rvb.RvB.State;
 
 
 public class PopupManager {
@@ -255,7 +256,7 @@ public class PopupManager {
         if(currentOverlay == gameOver)
             return;
         initPopup(gameOver);
-        if(game != null){
+        if(RvB.state == State.GAME){
             game.unpause();
         } 
         top = height/4;
@@ -404,13 +405,13 @@ public class PopupManager {
         fonts.clear();
         currentOverlay = overlay;
         currentOverlay.display(true);
-        if(menu != null)
+        if(RvB.state == State.MENU)
             menu.disableAllButtons();
-        if(game != null){
+        if(RvB.state == State.GAME){
             game.pause();
             game.disableAllButtons();
         }   
-        if(creation != null)
+        if(RvB.state == State.CREATION)
             creation.disableAllButtons();
         RvB.setCursor(RvB.Cursor.DEFAULT);
         
@@ -421,13 +422,13 @@ public class PopupManager {
             return;
         currentOverlay.display(false);
         currentOverlay = null;
-        if(menu != null)
+        if(RvB.state == State.MENU)
             menu.enableAllButtons();
-        if(game != null){
+        if(RvB.state == State.GAME){
             game.unpause();
             game.enableAllButtons();
         }
-        if(creation != null)
+        if(RvB.state == State.CREATION)
             creation.enableAllButtons();
     }
     
