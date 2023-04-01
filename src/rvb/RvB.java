@@ -122,7 +122,7 @@ public class RvB{
         
         while(!Display.isCloseRequested()){
             lastUpdate = System.currentTimeMillis();
-            
+
             update();
             mouseDown = (Mouse.isButtonDown(0) || Mouse.isButtonDown(1));
             stateChanged = false;
@@ -221,7 +221,7 @@ public class RvB{
     }  
     
     private static void initDebugTool(){
-        debugTool = new Overlay((int) (windWidth-260*ref), windHeight/6, (int) (250*ref), 4*windHeight/6);
+        debugTool = new Overlay((int) (windWidth-290*ref), windHeight/6, (int) (280*ref), 4*windHeight/6);
         debugTool.setRGBA(new float[]{70/255f, 70/255f, 70/255f}, 0.5f);
         debugTool.display(false);
     }
@@ -290,9 +290,15 @@ public class RvB{
         // CONSOLE
         debugTool.drawText(debugTool.getW()/2, (int)(debugTool.getH()-20*ref-(nbConsoleLinesMax+1)*20*ref), "Console :", fonts.get("normalS"), "center");
         if(nbConsoleLines > nbConsoleLinesMax)
-            debugTool.drawText((int)(10*ref), (int)(debugTool.getH()-20*ref-nbConsoleLinesMax*20*ref), "+"+(nbConsoleLines-nbConsoleLinesMax), fonts.get("normalS"), "topLeft");
-        for(int i = 0 ; i < consoleLines.size() ; i++)
-            debugTool.drawText((int)(10*ref), (int)(debugTool.getH()-20*ref-i*20*ref), consoleLines.get(consoleLines.size()-1-i), fonts.get("normalS"), "topLeft");
+            debugTool.drawText((int)(30*ref), (int)(debugTool.getH()-20*ref-nbConsoleLinesMax*20*ref), "+"+(nbConsoleLines-nbConsoleLinesMax), fonts.get("normalS"), "topLeft");
+        String[] sep;
+        for(int i = 0 ; i < consoleLines.size() ; i++){
+            sep = consoleLines.get(consoleLines.size()-1-i).split(" > ");
+            if(sep.length > 1)
+                debugTool.drawText((int)(30*ref), (int)(debugTool.getH()-20*ref-i*20*ref), sep[0], fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(30*ref), (int)(debugTool.getH()-20*ref-i*20*ref), " > "+sep[sep.length-1], fonts.get("normalS"), "topLeft");
+        }
+            
     }
     
     public static void debug(boolean v){
@@ -312,7 +318,31 @@ public class RvB{
     }
     
     public static void debug(String line){
-        String l = "> "+line;
+        String l;
+        if(nbConsoleLines > 0){
+            int i = 1;
+            String[] sep = consoleLines.get(consoleLines.size()-i).split(" > ");
+            while(sep.length == 1)
+                sep = consoleLines.get(consoleLines.size()-(++i)).split(" > ");
+            if(line.indexOf(sep[1]) != -1){
+                for(int j = 0 ; j < i ; j++){
+                    consoleLines.remove(consoleLines.size()-1);
+                    nbConsoleLines--;
+                }
+                int n = Integer.parseInt(sep[0])+1;
+                if(n > 999) n = 999;
+                l = n+" > "+line;
+                addToConsole(l);
+                return;
+            }
+        }
+        l = "1 > "+line;
+        addToConsole(l);
+        
+        System.out.println(line);
+    }
+    
+    private static void addToConsole(String l){
         int index;
         while(fonts.get("normalS").getWidth(l) >= debugTool.getW()-(int)(20*ref)){
             index = l.length()-1;
@@ -322,8 +352,6 @@ public class RvB{
             l = "  "+l.substring(index);
         }
         addLine(l);
-        
-        System.out.println(line);
     }
     
     private static void addLine(String line){

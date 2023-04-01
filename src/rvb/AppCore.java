@@ -917,8 +917,12 @@ public abstract class AppCore {
         } 
     }
 
+    public boolean onPause(){
+        return gameSpeed == 0;
+    }
+    
     public void pause(){
-        if(inWave){
+        if(inWave && !onPause()){
             oldGameSpeed = gameSpeed;
             gameSpeed = 0;
             SoundManager.Instance.pauseAll();
@@ -927,7 +931,7 @@ public abstract class AppCore {
     }
     
     public void unpause(){
-        if(inWave){
+        if(inWave && onPause()){
             gameSpeed = oldGameSpeed;
             SoundManager.Instance.unpauseAll();
             enableAllButtons();
