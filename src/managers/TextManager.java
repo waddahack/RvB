@@ -22,6 +22,9 @@ public class TextManager {
         GAME_OVER(
             new String[]{"Bazoo a été plus fort...", "Il a gagné une bataille, mais pas la guerre."},
             new String[]{"Bazoo have been stronger...", "He's won a battle, but not the war."}),
+        GAME_WIN(
+            new String[]{"Vous avez gagné !", " ", "Bazoo s'incline et reparre vers ses terres bredouille !"},
+            new String[]{"You win !", " ", "Bazoo bows and leave back to his lands empty-handed !"}),
         WAVE(
             new String[]{"Vague"},
             new String[]{"Wave"}),

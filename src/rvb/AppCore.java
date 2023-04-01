@@ -21,6 +21,7 @@ import managers.PopupManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
 import rvb.RvB.Difficulty;
@@ -91,7 +92,7 @@ public abstract class AppCore {
     
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
-    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0, lvlBazoo = 0;
+    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
     public int oldRaztechXpos = -1, oldRaztechYpos = -1;
     private int oldGameSpeed = 0;
     public ArrayList<Shootable> towers, towersDestroyed;
@@ -109,6 +110,7 @@ public abstract class AppCore {
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     public boolean bossDead = false, bossDefeated = false;
+    private static int bossEvery = 6;
     private boolean keyDown = false;
     private static Random random;
     protected int textureID = -10;
@@ -470,10 +472,10 @@ public abstract class AppCore {
                 enemies.get(i).update();
             for(Shootable e : enemies){
                 Enemy en = (Enemy) e;
-                if(!en.isBoss)
+                if(en != bazoo)
                     en.render();
             }
-            if(bossRound())
+            if(bossRound() && bazoo != null)
                 bazoo.render();
             if(enemySelected != null)
                 renderEnemySelected();
@@ -489,14 +491,20 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    enemiesBonusLife += 15;
-                    enemiesBonusMS += 6;
-                    PopupManager.Instance.enemiesUpgraded(new String[]{
-                        "+15% "+Text.HP.getText(),
-                        "+6% "+Text.MS.getText()
-                    });
-                    bossDead = false;
-                    bossDefeated = false;
+                    System.out.println(waveNumber);
+                    if(waveNumber > 24){
+                        gameWin();
+                    }
+                    else{
+                        enemiesBonusLife += 15;
+                        enemiesBonusMS += 6;
+                        PopupManager.Instance.enemiesUpgraded(new String[]{
+                            "+15% "+Text.HP.getText(),
+                            "+6% "+Text.MS.getText()
+                        });
+                        bossDead = false;
+                        bossDefeated = false;
+                    }
                 }
             }
         }
@@ -835,11 +843,9 @@ public abstract class AppCore {
         }
         wave.shuffleEnemies();
         if(bossRound()){
-            bazoo = new Bazoo(lvlBazoo++);
-            wave.addEnemy(bazoo, wave.getEnnemies().size()/2);
+            bazoo = new Bazoo(waveNumber/bossEvery);
+            wave.addEnemy(bazoo, 2*wave.getEnnemies().size()/3);
         }
-        else
-            bazoo = null;
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;
     }
@@ -956,9 +962,18 @@ public abstract class AppCore {
     }
     
     public static boolean bossRound(){
-        return game.waveNumber%6 == 0;
+        return game.waveNumber%bossEvery == 0;
     }
     
+    protected static void gameWin(){
+        PopupManager.Instance.popup(Text.GAME_WIN.getLines(), new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normalL"), RvB.fonts.get("normalL")}, "Woohoo !");
+        PopupManager.Instance.setCallback(__ -> {
+            game.ended = true;
+            game.clearArrays();
+            SoundManager.Instance.closeAllClips();
+            PopupManager.Instance.closeCurrentPopup();
+        });
+    }
     protected static void gameOver(){
         PopupManager.Instance.gameOver();
     }

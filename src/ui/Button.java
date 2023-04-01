@@ -87,6 +87,7 @@ public class Button {
         if(locked || disabled)
             return false;
         nbClicks++;
+        RvB.mouseDown = true;
         if(clickSound)
             SoundManager.Instance.playOnce(click);
         if(nbClicks == nbClicksMax)

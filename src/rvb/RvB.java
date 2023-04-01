@@ -452,6 +452,15 @@ public class RvB{
                 if(game != null && !game.inWave)
                     game.waveNumber++;
             }
+            // Kill all enemies
+            else if(Keyboard.isKeyDown(Keyboard.KEY_K)){
+                if(game != null && game.inWave){
+                    for(Shootable e : game.enemies){
+                        e.life = 0;
+                        e.die();
+                    }
+                }
+            }
             // Game speed
             else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
                 if(game != null)

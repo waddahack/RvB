@@ -11,7 +11,7 @@ import ui.Overlay;
 
 public class Bazoo extends Enemy{
     
-    private int level;
+    public int level;
     private static Clip
             entrance = SoundManager.Instance.getClip("boss_wave"),
             defeated = SoundManager.Instance.getClip("boss_defeated"),
@@ -31,7 +31,6 @@ public class Bazoo extends Enemy{
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSpeed = 20;*/
         level = lvl;
-        isBoss = true;
         name = Text.ENEMY_BOSS;
         reward = lvl*50;
         power = 50f;
@@ -109,6 +108,7 @@ public class Bazoo extends Enemy{
             SoundManager.Instance.playOnce(defeated);
             game.bossDefeated = true;
         }
+        game.bazoo = null;
         game.bossDead = true;
         super.die();
     }

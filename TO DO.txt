@@ -1,5 +1,5 @@
 #BALANCE#
-- Mettre une fin (bazoo lvl max defeated)
+- Finir de mettre une fin : dire qu'il peut continuer
 - explosion en rond
 - popup icones et noms
 - popup info difficultés

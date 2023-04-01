@@ -35,7 +35,7 @@ public class TrickyEnemy extends Enemy{
     
     @Override
     public void die(){
-        if(!isInBase() && !game.ended){
+        if(!isInBase() && !game.ended && hasStarted()){
             newAngle = (int)Math.round(angle/90) * 90;
             angle = newAngle;
             for(int i = 0 ; i < 3 ; i++){
