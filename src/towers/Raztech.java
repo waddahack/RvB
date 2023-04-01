@@ -90,14 +90,12 @@ public class Raztech extends Tower{
         o2.addImage(o2.getW()-(int) (520*ref), o2.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("buff_xp"));
 
         // button focus
-        if(rotateIndex >= 0){
-            focusButton = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
-            focusButton.setSwitch();
-            focusButton.setFunction(__ -> {
-                focusIndex = focusButton.indexSwitch;
-            });
-            o2.addButton(focusButton);
-        }
+        focusButton = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+        focusButton.setSwitch();
+        focusButton.setFunction(__ -> {
+            focusIndex = focusButton.indexSwitch;
+        });
+        o2.addButton(focusButton);
         overlays.add(o2);
     }
     
@@ -139,10 +137,8 @@ public class Raztech extends Tower{
         // buff xp
         overlay.drawText(overlay.getW()-(int) (500*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(bonusXP*100)+"%", RvB.fonts.get("normal"), "topLeft");
         
-        if(rotateIndex >= 0){
-            b = overlay.getButtons().get(0);
-            overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
-        }
+        b = overlay.getButtons().get(0);
+        overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
     }
     
     @Override
@@ -200,7 +196,7 @@ public class Raztech extends Tower{
             return;
         Enemy e = (Enemy) enemy;
         if(Math.random() <= chanceToKill)
-            damagesDone += e.takeDamage(getPower()*20);
+            damagesDone += e.takeDamage(getPower()*16);
         else
             damagesDone += e.takeDamage(getPower());
         e.beSlowedBy(slow);

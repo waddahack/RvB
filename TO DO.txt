@@ -1,12 +1,13 @@
 #BALANCE#
-- faire pop bazoo au milieu de la vague (réduire le coef bosswave)
+- Mettre une fin (bazoo lvl max defeated)
+- explosion en rond
+- popup icones et noms
+- popup info difficultés
+- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?)
 - voir memo téléphone
 ##
 
-- menu option
-- TAB pour voir les stats des tourelles ?
-- Ajouter raztech qui tire sur bazoo sur image menu ?
-- Site ?
+
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.
@@ -14,19 +15,23 @@ ROCKS :
 	- pouvoir ajouter des rocks en creatif
 
 
+#SI JAMAIS#
+- menu option
 - refaire système mouse et keyboard input : dans la boucle rvb mettre dans une array
 les input pressé, puis check avec la liste, pour use une seule fois .next()
 - debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)
 - animations : peut-on draw qu'une partie d'une texture ?
+##
 
-- explosion en rond
-- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?)
-
-IDEAS:
-
-- Mode survie ou la gagne (mode gagne à faire)
-- Mode 1 vie
+#IDEES#
+- Achievments : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup 
+- Sur téléphone android
+- Faire une sauvegarde auto & manuelle
+- Mode endless
 - Mode aventure (ne pas faire de fichier)
 - Télécharger la map générée random
+- TAB pour voir les stats des tourelles
+- Site
+##
 
 

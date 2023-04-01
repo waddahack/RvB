@@ -15,6 +15,7 @@ public class CircleTower extends Tower{
         textures.add(RvB.textures.get("circleTowerBase"));
         textures.add(RvB.textures.get("circleTowerTurret"));
         rotateIndex = 1;
+        canFocus = false;
         textureStatic = RvB.textures.get("circleTower");
         price = RvB.game.circleTowerPrice;
         life = 100f;

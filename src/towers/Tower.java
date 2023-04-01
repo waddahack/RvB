@@ -20,7 +20,7 @@ public abstract class Tower extends Shootable{
     
     protected int hitboxWidth, totalMoneySpent;
     public float growth = 0;
-    protected boolean isPlaced = false, forBuff = false;
+    protected boolean isPlaced = false, forBuff = false, canFocus = true;
     protected ArrayList<Overlay> overlays;
     protected ArrayList<Upgrade> upgrades;
     public String type;
@@ -124,7 +124,7 @@ public abstract class Tower extends Shootable{
         });
         o2.addButton(b);
         // button focus
-        if(rotateIndex >= 0){
+        if(canFocus){
             b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
             b.setSwitch();
             focusButton = b;
@@ -158,7 +158,7 @@ public abstract class Tower extends Shootable{
         }
         else
             b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
-        if(rotateIndex >= 0){
+        if(canFocus){
             b = overlay.getButtons().get(1);
             overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
         }

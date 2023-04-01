@@ -29,9 +29,13 @@ public class Wave{
     }
     
     public void addEnemy(Enemy e){
+        addEnemy(e, enemies.size());
+    }
+    
+    public void addEnemy(Enemy e, int index){
         e.addBonusLife(game.enemiesBonusLife);
         e.addBonusMS(game.enemiesBonusMS);
-        enemies.add(e);
+        enemies.add(index, e);
     }
     
     public ArrayList<Shootable> getEnnemies(){
@@ -51,11 +55,9 @@ public class Wave{
             previousEnemy = enemies.get(index-1);
         double time = game.timeInGamePassed;
         if((time - startTime >= waitBetweenType && index < enemies.size()) || previousEnemy == null || (!previousEnemy.name.equals(nextEnemy.name) && time - startTime >= waitBetween)){
-            if(!nextEnemy.name.equals("Bazoo") || time - startTime >= 2000){
-                nextEnemy.setStarted(true);
-                startTime = game.timeInGamePassed;
-                index++;
-            }
+            nextEnemy.setStarted(true);
+            startTime = game.timeInGamePassed;
+            index++;
         }
     }
     

@@ -32,7 +32,7 @@ public class BasicTower extends Tower{
         bulletSpeed = 20;
         upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 120f, 1.5f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 10f, "+", 120f, 1.4f, 3));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.25f, "*", 150f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.25f, "*", 100f, 1.5f, 3));
         upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)

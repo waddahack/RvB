@@ -105,6 +105,7 @@ public abstract class AppCore {
     public boolean ended = false;
     public Tower towerSelected;
     public Raztech raztech = null;
+    public Bazoo bazoo = null;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
     public boolean bossDead = false, bossDefeated = false;
@@ -140,22 +141,29 @@ public abstract class AppCore {
         waveNumber = 1;
         if(diff == Difficulty.EASY){
             life = 125;
-            money = 250;
-            waveReward = 150;
+            money = 225;
+            waveReward = 220;
             waveBalanceMult = 0.9f;
+        }
+        else if(diff == Difficulty.MEDIUM){
+            life = 100;
+            money = 200;
+            waveReward = 200;
+            waveBalanceMult = 1f;
         }
         else if(diff == Difficulty.HARD){
             life = 75;
-            money = 150;
-            waveReward = 100;
+            money = 175;
+            waveReward = 180;
             waveBalanceMult = 1.1f;
         }
-        else{ //if(diff == Difficulty.MEDIUM)
-            life = 100;
-            money = 200;
-            waveReward = 125;
-            waveBalanceMult = 1f;
+        else if(diff == Difficulty.HARDCORE){
+            life = 1;
+            money = 175;
+            waveReward = 180;
+            waveBalanceMult = 1.1f;
         }
+        
     }
     
     protected void initMap(String lvlName){
@@ -460,8 +468,13 @@ public abstract class AppCore {
             wave.update();
             for(int i = enemies.size()-1 ; i >= 0 ; i--)
                 enemies.get(i).update();
-            for(Shootable e : enemies)
-                e.render();
+            for(Shootable e : enemies){
+                Enemy en = (Enemy) e;
+                if(!en.isBoss)
+                    en.render();
+            }
+            if(bossRound())
+                bazoo.render();
             if(enemySelected != null)
                 renderEnemySelected();
         }
@@ -807,7 +820,7 @@ public abstract class AppCore {
             waveBalance *= 14;
         if(waveNumber >= uEnemies[1].enterAt)
             waveBalance *= waveBalanceMult;
-        waveBalance = (int) (bossRound() ? waveBalance*0.8 : waveBalance);
+        waveBalance = (int) (bossRound() ? waveBalance*0.7 : waveBalance);
         wave = new Wave();
         int min, max;
         while(waveBalance >= uEnemies[0].balance){
@@ -821,8 +834,12 @@ public abstract class AppCore {
             }
         }
         wave.shuffleEnemies();
-        if(bossRound())
-            wave.addEnemy(new Bazoo(lvlBazoo++));
+        if(bossRound()){
+            bazoo = new Bazoo(lvlBazoo++);
+            wave.addEnemy(bazoo, wave.getEnnemies().size()/2);
+        }
+        else
+            bazoo = null;
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;
     }
@@ -947,6 +964,8 @@ public abstract class AppCore {
     }
     
     public void selectTower(Tower t){
+        if(t == null && towers.contains(towerSelected) && !towerSelected.isPlaced())
+            towers.remove(towerSelected);
         towerSelected = t;
         mouseDown = true;
     }

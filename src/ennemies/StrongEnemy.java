@@ -15,7 +15,7 @@ public class StrongEnemy extends Enemy{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("strongEnemy");
         name = Text.ENEMY_STRONG;
-        reward = 25;
+        reward = 8;
         power = 10f;
         shootRate = 1f;
         moveSpeed = 2.6f;

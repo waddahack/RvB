@@ -24,7 +24,7 @@ public class FlyingEnemy extends Enemy{
         textureStatic = RvB.textures.get("flyingEnemy");
         
         name = Text.ENEMY_FLYING;
-        reward = 36;
+        reward = 10;
         power = 12f;
         shootRate = 1f;
         moveSpeed = 1.8f;

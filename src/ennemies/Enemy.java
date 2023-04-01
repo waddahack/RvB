@@ -15,6 +15,7 @@ import ui.Overlay;
 public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     public float bonusMS = 0;
+    public boolean isBoss = false;
     protected int eBalance;
     protected int indiceTuile = -1, startTimeStopFor, startTimeMove, startTimeSlow;
     protected int stepEveryMilli, oldstepEveryMilli, startTimeSteps;

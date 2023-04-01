@@ -15,7 +15,7 @@ public class FastEnemy extends Enemy{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("fastEnemy");
         name = Text.ENEMY_FAST;
-        reward = 7;
+        reward = 4;
         power = 4f;
         shootRate = 1f;
         moveSpeed = 4.4f;

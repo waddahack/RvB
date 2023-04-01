@@ -72,7 +72,7 @@ public class PopupManager {
         chooseDifficulty.display(false);
         chooseDifficulty.setBG(RvB.textures.get("board"), 0.8f);
         chooseDifficulty.setBorder(RvB.colors.get("green_dark"), 4, 1);
-        b = new Button(chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(chooseDifficulty.getW()/2, 4*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
             closeCurrentPopup();
@@ -83,7 +83,7 @@ public class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         chooseDifficulty.addButton(b);
-        b = new Button(2*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(chooseDifficulty.getW()/2, 5*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
             closeCurrentPopup();
@@ -94,7 +94,7 @@ public class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         chooseDifficulty.addButton(b);
-        b = new Button(3*chooseDifficulty.getW()/4, 3*chooseDifficulty.getH()/4, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(chooseDifficulty.getW()/2, 6*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
             closeCurrentPopup();
@@ -102,6 +102,17 @@ public class PopupManager {
                 RvB.newRandomMap(RvB.Difficulty.HARD);
             else
                 RvB.newCreatedMap(RvB.Difficulty.HARD);
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        chooseDifficulty.addButton(b);
+        b = new Button(chooseDifficulty.getW()/2, 7*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            closeCurrentPopup();
+            if(gameType.equals("random"))
+                RvB.newRandomMap(RvB.Difficulty.HARDCORE);
+            else
+                RvB.newCreatedMap(RvB.Difficulty.HARDCORE);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         chooseDifficulty.addButton(b);
@@ -250,6 +261,7 @@ public class PopupManager {
         buttonsText.add(Text.EASY.getText());
         buttonsText.add(Text.NORMAL.getText());
         buttonsText.add(Text.HARD.getText());
+        buttonsText.add(Text.HARDCORE.getText());
     }
     
     public void gameOver(){

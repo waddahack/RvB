@@ -31,6 +31,7 @@ public class Bazoo extends Enemy{
         SoundManager.Instance.setClipVolume(clip, volume);
         bulletSpeed = 20;*/
         level = lvl;
+        isBoss = true;
         name = Text.ENEMY_BOSS;
         reward = lvl*50;
         power = 50f;

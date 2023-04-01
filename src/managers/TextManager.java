@@ -176,8 +176,8 @@ public class TextManager {
             new String[]{"Vieux crâne"},
             new String[]{"Old skull"}),
         BUFF_OS_DESC(
-            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 2000%", "dégât de base."},
-            new String[]{"Raztech's bullets", "have +1% chance to", "deal 2000%", "base damage."}),
+            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 1600%", "dégât de base."},
+            new String[]{"Raztech's bullets", "have +1% chance to", "deal 1600%", "base damage."}),
         BUFF_RANGE_TOWER_DESC(
             new String[]{"Nouvelle tour :", " ", "Donne +15% de portée", "aux tourelles proches."},
             new String[]{"New tower :", " ", "Gives +15% range", "to near towers."}),
@@ -222,6 +222,9 @@ public class TextManager {
         HARD(
             new String[]{"Difficile"},
             new String[]{"Hard"}),
+        HARDCORE(
+            new String[]{"Hardcore"},
+            new String[]{"Hardcore"}),
         BOSS_DEFEATED(
             new String[]{"Je reviendrai plus fort !", "Tu ne devrais pas plaisanter avec moi vermine !", "Ce n'est qu'une question de temps...", "Je vais libérer ma vrai puissance !", "Plus je souffre, plus je deviens puissant !"},
             new String[]{"I will be back much stronger !", "You should not mess with me filthy bug !", "It is just a matter of time...", "I will unleash my true power !", "The more I suffer, the more powerful I get !"}),

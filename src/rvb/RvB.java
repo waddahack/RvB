@@ -46,7 +46,7 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(1), MEDIUM(2), HARD(3);
+        EASY(1), MEDIUM(2), HARD(3), HARDCORE(3); // value atm used only for turns probability
         public int value;
         
         Difficulty(int value){
