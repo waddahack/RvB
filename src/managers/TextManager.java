@@ -1,6 +1,6 @@
 package managers;
 
-public class TextManager {
+public final class TextManager {
     
     public enum Text{
         // RANDOM TEXT
@@ -23,8 +23,8 @@ public class TextManager {
             new String[]{"Bazoo a été plus fort...", "Il a gagné une bataille, mais pas la guerre."},
             new String[]{"Bazoo have been stronger...", "He's won a battle, but not the war."}),
         GAME_WIN(
-            new String[]{"Vous avez gagné !", " ", "Bazoo s'incline et reparre vers ses terres bredouille !"},
-            new String[]{"You win !", " ", "Bazoo bows and leave back to his lands empty-handed !"}),
+            new String[]{"Vous avez gagné !", "Bazoo s'incline et reparre vers ses terres bredouille !"},
+            new String[]{"You win !", "Bazoo bows and leave back to his lands empty-handed !"}),
         WAVE(
             new String[]{"Vague"},
             new String[]{"Wave"}),
@@ -194,20 +194,20 @@ public class TextManager {
             new String[]{"Électricité"},
             new String[]{"Electricity"}),
         BUFF_UP_POWER_TOWER_DESC(
-            new String[]{"La tour de puissance", "donne +10% de dégât."},
-            new String[]{"The power tower", "gives +10% damage."}),
+            new String[]{"La tour de puissance", "donne +5% de dégât."},
+            new String[]{"The power tower", "gives +5% damage."}),
         BUFF_UP_RANGE_TOWER(
             new String[]{"Oeil flottant"},
             new String[]{"Floating eye"}),
         BUFF_UP_RANGE_TOWER_DESC(
-            new String[]{"La tour de portée", "donne +15% de portée."},
-            new String[]{"The range tower", "gives +15% range."}),
+            new String[]{"La tour de portée", "donne +5% de portée."},
+            new String[]{"The range tower", "gives +5% range."}),
         BUFF_UP_SHOOTRATE_TOWER(
             new String[]{"Balle polie"},
             new String[]{"Polished bullet"}),
         BUFF_UP_SHOOTRATE_TOWER_DESC(
-            new String[]{"La tour de vitesse", "donne +10% de", "vitesse d'attaque."},
-            new String[]{"The speed tower", "gives +10%", "attack speed."}),
+            new String[]{"La tour de vitesse", "donne +5% de", "vitesse d'attaque."},
+            new String[]{"The speed tower", "gives +5%", "attack speed."}),
         
         // POPUPS
         SELECT_DIFF(
@@ -259,7 +259,7 @@ public class TextManager {
             new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la prochaine vague", "P : Pause/Reprendre", "V : Changer la vitesse", "H : Ouvre cette fenêtre", "F1+D : Fenêtre debug", "Échap. : Menu"},
             new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start next wave", "P : Pause/Unpause", "V : Change the speed", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
-        private String[] FR_text, ENG_text;
+        private final String[] FR_text, ENG_text;
         
         private Text(String[] FR_text, String[] ENG_text){
             this.FR_text = FR_text;

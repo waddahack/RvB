@@ -1,9 +1,7 @@
 #BALANCE#
-- Finir de mettre une fin : dire qu'il peut continuer
-- explosion en rond
 - popup icones et noms
 - popup info difficultés
-- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?)
+- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
 - voir memo téléphone
 ##
 
@@ -24,8 +22,9 @@ les input pressé, puis check avec la liste, pour use une seule fois .next()
 ##
 
 #IDEES#
-- Achievments : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup 
+- Achievments : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre
 - Sur téléphone android
+- mettre lib et assets dans le .jar
 - Faire une sauvegarde auto & manuelle
 - Mode endless
 - Mode aventure (ne pas faire de fichier)
@@ -33,5 +32,3 @@ les input pressé, puis check avec la liste, pour use une seule fois .next()
 - TAB pour voir les stats des tourelles
 - Site
 ##
-
-

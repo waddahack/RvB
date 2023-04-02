@@ -50,6 +50,12 @@ public class Wave{
         if(index == enemies.size() || game.gameSpeed == 0)
             return;
         Shootable nextEnemy = enemies.get(index);
+        while(nextEnemy.hasStarted() && index < enemies.size()-1)
+            nextEnemy = enemies.get(++index);
+        if(nextEnemy.hasStarted()){
+            index++;
+            return;
+        }
         Shootable previousEnemy = null;
         if(index > 0)
             previousEnemy = enemies.get(index-1);

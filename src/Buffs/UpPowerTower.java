@@ -15,7 +15,7 @@ public class UpPowerTower extends Buff{
     @Override
     public void pick(){
         super.pick();
-        float value = 0.1f;
+        float value = 0.05f;
         PowerTower pt = null;
         for(Shootable t : game.towers){
             if(t.name == Text.TOWER_POWER){

@@ -12,6 +12,6 @@ public class Slow extends Buff{
     @Override
     public void pick(){
         super.pick();
-        game.raztech.addSlowAmount(0.1f);
+        game.raztech.addSlowAmount(0.15f);
     }
 }

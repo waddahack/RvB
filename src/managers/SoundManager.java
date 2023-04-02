@@ -14,7 +14,7 @@ import javax.sound.sampled.FloatControl;
 import static rvb.RvB.game;
 import rvb.Shootable;
 
-public class SoundManager
+public final class SoundManager
 { 
     public static SoundManager Instance;
 
@@ -28,27 +28,32 @@ public class SoundManager
         }
     }
     
-    private ArrayList<Clip> clipsToClose, clipsToPlayNextFrame;
-    private Map<String, Clip> ambianceClips;
+    private final ArrayList<Clip> clipsToClose;
+    private final ArrayList<Clip> clipsToPlayNextFrame;
+    private final Map<String, Clip> ambianceClips;
     private boolean ready = true;
-    public static Clip SOUND_BUILD, SOUND_WAVE, SOUND_RAZTECH1, SOUND_RAZTECH2, SOUND_LEVELUP;
+    public static Clip SOUND_BUILD, SOUND_WAVE, SOUND_RAZTECH1, SOUND_RAZTECH2, SOUND_LEVELUP, SOUND_GAME_WIN, SOUND_GAME_OVER;
     
     private SoundManager(){ 
-        clipsToClose = new ArrayList<Clip>();
-        clipsToPlayNextFrame = new ArrayList<Clip>();
-        ambianceClips = new HashMap<String, Clip>();
-        addAmbianceSound("war", SoundManager.Volume.SEMI_LOW);
+        clipsToClose = new ArrayList<>();
+        clipsToPlayNextFrame = new ArrayList<>();
+        ambianceClips = new HashMap<>();
+        addAmbianceSound("war", Volume.SEMI_LOW);
         
         SOUND_BUILD = getClip("build");
-        setClipVolume(SOUND_BUILD, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_BUILD, Volume.SEMI_HIGH);
         SOUND_WAVE = getClip("click_wave");
-        setClipVolume(SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
+        setClipVolume(SOUND_WAVE, Volume.VERY_HIGH);
         SOUND_RAZTECH1 = getClip("raztech_laugh1");
-        setClipVolume(SOUND_RAZTECH1, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_RAZTECH1, Volume.SEMI_HIGH);
         SOUND_RAZTECH2 = getClip("raztech_laugh2");
-        setClipVolume(SOUND_RAZTECH2, SoundManager.Volume.SEMI_HIGH);
+        setClipVolume(SOUND_RAZTECH2, Volume.SEMI_HIGH);
         SOUND_LEVELUP = getClip("level_up");
-        setClipVolume(SOUND_LEVELUP, SoundManager.Volume.MEDIUM);
+        setClipVolume(SOUND_LEVELUP, Volume.MEDIUM);
+        SOUND_GAME_WIN = getClip("game_win");
+        setClipVolume(SOUND_GAME_WIN, Volume.HIGH);
+        SOUND_GAME_OVER = getClip("game_over");
+        setClipVolume(SOUND_GAME_OVER, Volume.HIGH);
     }
 
     public static void initialize(){

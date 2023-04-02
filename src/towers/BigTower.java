@@ -46,7 +46,7 @@ public class BigTower extends Tower{
         bulletSizeBonus = 10;
         
         range = 7*RvB.unite/3;
-        power = 20f;
+        power = 16f;
         shootRate = 0.3f;
         bulletSpeed = 8;
         explodeRadius = 4*RvB.unite/5;
@@ -76,13 +76,11 @@ public class BigTower extends Tower{
     
     @Override
     public void attack(Shootable enemy){
-        super.attack(enemy);
-        
         bombExplode(enemy.getX(), enemy.getY());
         
         for(Shootable e : game.enemies){
-            if(MyMath.distanceBetween(enemy, e) <= explodeRadius && e != enemy)
-                super.attack(enemy);
+            if(MyMath.distanceBetween(enemy, e) <= explodeRadius)
+                super.attack(e);
         }
     }
     
@@ -94,15 +92,18 @@ public class BigTower extends Tower{
                 count++;
                 flamesX.clear();
                 flamesY.clear();
+                float r, theta;
                 for(int i = 0 ; i < nbFlames ; i++){
-                    flamesX.add((int)((-1+rand.nextFloat()*2)*(explodeRadius-25)));
-                    flamesY.add((int)((-1+rand.nextFloat()*2)*(explodeRadius-25)));
+                    r = (float) ((explodeRadius-25) * Math.sqrt(rand.nextFloat()));
+                    theta = (float) (rand.nextFloat() * 2 * Math.PI);
+                    flamesX.add((int)(explodeX + r * Math.cos(theta)));
+                    flamesY.add((int)(explodeY + r * Math.sin(theta)));
                 }
                 checkTime = game.timeInGamePassed;
             }  
             for(int i = 0 ; i < nbFlames ; i++)
-                RvB.drawFilledRectangle(explodeX + flamesX.get(i), explodeY + flamesY.get(i), 50, 50, RvB.textures.get("flame"), 0, 1);
-            if(count > 8)
+                RvB.drawFilledRectangle(flamesX.get(i), flamesY.get(i), 50, 50, RvB.textures.get("flame"), 0, 1);
+            if(count > 12)
                 explodeX = 10000;
         }
     }

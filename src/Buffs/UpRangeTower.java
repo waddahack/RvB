@@ -15,7 +15,7 @@ public class UpRangeTower extends Buff{
     @Override
     public void pick(){
         super.pick();
-        float value = 0.15f;
+        float value = 0.05f;
         RangeTower rt = null;
         for(Shootable t : game.towers){
             if(t.name == Text.TOWER_RANGE){

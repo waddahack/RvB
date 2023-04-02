@@ -18,15 +18,15 @@ import java.util.function.Consumer;
 import rvb.RvB.State;
 
 
-public class PopupManager {
+public final class PopupManager {
     public static PopupManager Instance;
     
-    private static int width = (int) (800*ref), height = (int) (450*ref);
+    private static final int width = (int) (800*ref), height = (int) (450*ref);
     private Overlay currentOverlay;
-    private Overlay gameOver, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help;
-    private ArrayList<String> lines;
-    private ArrayList<String> buttonsText;
-    private ArrayList<UnicodeFont> fonts;
+    private Overlay gameOver, gameWin, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help;
+    private final ArrayList<String> lines;
+    private final ArrayList<String> buttonsText;
+    private final ArrayList<UnicodeFont> fonts;
     private static Random random;
     private String gameType;
     private int top;
@@ -134,6 +134,22 @@ public class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         gameOver.addButton(b);
+        // GAME WIN
+        gameWin = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
+        gameWin.display(false);
+        gameWin.setBG(RvB.textures.get("board"), 0.8f);
+        gameWin.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        b = new Button(gameWin.getW()/2, 3*gameWin.getH()/4, (int) (250*ref), (int)(50*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            stateChanged = true;
+            game.ended = true;
+            game.clearArrays();
+            SoundManager.Instance.closeAllClips();
+            RvB.switchStateTo(RvB.State.MENU);
+            closeCurrentPopup();
+            RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        gameWin.addButton(b);
         // ENEMIES UPGRADED
         enemiesUpgraded = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
         enemiesUpgraded.display(false);
@@ -267,6 +283,8 @@ public class PopupManager {
     public void gameOver(){
         if(currentOverlay == gameOver)
             return;
+        if(!game.ended)
+            SoundManager.Instance.playOnce(SoundManager.SOUND_GAME_OVER);
         initPopup(gameOver);
         if(RvB.state == State.GAME){
             game.unpause();
@@ -275,6 +293,23 @@ public class PopupManager {
         addText(Text.GAME_OVER.getLines(), RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalL"));
         addText(Text.WAVE.getText()+" "+game.waveNumber, RvB.fonts.get("normalXLB"));
+        
+        buttonsText.add(Text.MENU.getText());
+    }
+    
+    public void gameWin(){
+        if(currentOverlay == gameWin)
+            return;
+        if(!game.ended)
+            SoundManager.Instance.playOnce(SoundManager.SOUND_GAME_WIN);
+        initPopup(gameWin);
+        if(RvB.state == State.GAME){
+            game.unpause();
+        } 
+        top = height/4;
+        addText(Text.GAME_WIN.getLines()[0], RvB.fonts.get("normalXLB"));
+        addText("\n", RvB.fonts.get("normalL"));
+        addText(Text.GAME_WIN.getLines()[1], RvB.fonts.get("normalL"));
         
         buttonsText.add(Text.MENU.getText());
     }

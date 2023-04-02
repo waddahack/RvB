@@ -25,7 +25,7 @@ public class Raztech extends Tower{
     public static int priceP = startPrice;
     
     public int lvl = 1;
-    public int xp = 0, maxXP = 8;
+    public int xp = 0, maxXP = 10;
     private float bonusXP = 0, chanceToKill = 0;
     private boolean right = true;
     public HashMap<Buff, Integer> buffs;
@@ -49,7 +49,7 @@ public class Raztech extends Tower{
 
         range = 3*RvB.unite;
         power = 4f;
-        shootRate = 2f;
+        shootRate = 1.8f;
         bulletSpeed = 20;
         growth = 3*ref;
         
@@ -203,7 +203,7 @@ public class Raztech extends Tower{
         if(e.isDead()){
             enemiesKilled += 1;
             moneyGained += e.getReward();
-            if(e.name.getText() != Text.ENEMY_BOSS.getText())
+            if(e != game.bazoo)
                 gainXP(e.getReward());
         }
     }

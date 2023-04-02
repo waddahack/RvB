@@ -15,7 +15,7 @@ import org.lwjgl.input.Mouse;
 
 public abstract class Shootable {
     
-    protected boolean canShoot = true, started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false;
+    protected boolean canShoot = true, started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false, dead = false;
     protected ArrayList<Bullet> bullets, bulletsToRemove;
     protected Clip clip;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
@@ -361,11 +361,14 @@ public abstract class Shootable {
     }
     
     public void die(){
+        if(dead)
+            return;
         life = 0;
         if(clip != null){
             clip.stop();
             SoundManager.Instance.clipToClose(clip);
         } 
+        dead = true;
     }
     
     public void addBonusLife(int amount){

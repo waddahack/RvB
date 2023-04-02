@@ -21,7 +21,6 @@ import managers.PopupManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
 import rvb.RvB.Difficulty;
@@ -39,11 +38,11 @@ public abstract class AppCore {
 
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
-        BASIC(0, BasicEnemy.balance, 1, 8),
-        FAST(1, FastEnemy.balance, 4, 10),
-        TRICKY(2, TrickyEnemy.balance, 6, 10),
-        FLYING(3, FlyingEnemy.balance, 13, 5),
-        STRONG(4, StrongEnemy.balance, 9, 15);
+        //BASIC(0, BasicEnemy.balance, 1, 8),
+        //FAST(1, FastEnemy.balance, 4, 10),
+        TRICKY(2, TrickyEnemy.balance, 1, 10);
+        //FLYING(3, FlyingEnemy.balance, 13, 5),
+        //STRONG(4, StrongEnemy.balance, 9, 15);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -100,7 +99,7 @@ public abstract class AppCore {
     public ArrayList<Tile> path;
     public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
-    protected boolean gameOver;
+    protected boolean gameOver, gameWin;
     public boolean inWave;
     public Enemy enemySelected = null;
     public boolean ended = false;
@@ -131,6 +130,7 @@ public abstract class AppCore {
         enemiesToAdd = new ArrayList<>();
         buffs = Buff.initBuffStack();
         gameOver = false;
+        gameWin = false;
         inWave = false;
         towerSelected = null;
         timeInGamePassed = 0;
@@ -491,9 +491,8 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    System.out.println(waveNumber);
-                    if(waveNumber > 24){
-                        gameWin();
+                    if(waveNumber > 30){
+                        gameWin = true;
                     }
                     else{
                         enemiesBonusLife += 15;
@@ -513,6 +512,8 @@ public abstract class AppCore {
         
         if(gameOver)
             gameOver();
+        else if(gameWin)
+            gameWin();
     }
     
     protected void checkInput(){
@@ -575,23 +576,21 @@ public abstract class AppCore {
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
                 PopupManager.Instance.help();
             } 
-            if(gameSpeed > 0){
-                // START WAVE
-                if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !inWave){
-                    overlays.get(1).getButtons().get(0).click();
-                } 
-                // TOWERS
-                if(Keyboard.isKeyDown(Keyboard.KEY_R))
-                    overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
-                else if(Keyboard.isKeyDown(Keyboard.KEY_1) && basicTowerPrice <= money)
-                    overlays.get(0).getButtons().get(0).click();
-                else if(Keyboard.isKeyDown(Keyboard.KEY_2) && circleTowerPrice <= money)
-                    overlays.get(0).getButtons().get(1).click();
-                else if(Keyboard.isKeyDown(Keyboard.KEY_3) && bigTowerPrice <= money)
-                    overlays.get(0).getButtons().get(2).click();
-                else if(Keyboard.isKeyDown(Keyboard.KEY_4) && flameTowerPrice <= money)
-                    overlays.get(0).getButtons().get(3).click();
-            }
+            // START WAVE
+            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !inWave){
+                overlays.get(1).getButtons().get(0).click();
+            } 
+            // TOWERS
+            if(Keyboard.isKeyDown(Keyboard.KEY_R))
+                overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+            else if(Keyboard.isKeyDown(Keyboard.KEY_1) && basicTowerPrice <= money)
+                overlays.get(0).getButtons().get(0).click();
+            else if(Keyboard.isKeyDown(Keyboard.KEY_2) && circleTowerPrice <= money)
+                overlays.get(0).getButtons().get(1).click();
+            else if(Keyboard.isKeyDown(Keyboard.KEY_3) && bigTowerPrice <= money)
+                overlays.get(0).getButtons().get(2).click();
+            else if(Keyboard.isKeyDown(Keyboard.KEY_4) && flameTowerPrice <= money)
+                overlays.get(0).getButtons().get(3).click();
         }
     }
     
@@ -826,7 +825,7 @@ public abstract class AppCore {
             waveBalance *= 20;
         else
             waveBalance *= 14;
-        if(waveNumber >= uEnemies[1].enterAt)
+        if(waveNumber >= 3)
             waveBalance *= waveBalanceMult;
         waveBalance = (int) (bossRound() ? waveBalance*0.7 : waveBalance);
         wave = new Wave();
@@ -843,7 +842,7 @@ public abstract class AppCore {
         }
         wave.shuffleEnemies();
         if(bossRound()){
-            bazoo = new Bazoo(waveNumber/bossEvery);
+            bazoo = new Bazoo((waveNumber/bossEvery)-1);
             wave.addEnemy(bazoo, 2*wave.getEnnemies().size()/3);
         }
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
@@ -949,7 +948,6 @@ public abstract class AppCore {
             oldGameSpeed = gameSpeed;
             gameSpeed = 0;
             SoundManager.Instance.pauseAll();
-            disableAllButtons();
         }
     }
     
@@ -957,7 +955,6 @@ public abstract class AppCore {
         if(inWave && onPause()){
             gameSpeed = oldGameSpeed;
             SoundManager.Instance.unpauseAll();
-            enableAllButtons();
         }
     }
     
@@ -966,13 +963,7 @@ public abstract class AppCore {
     }
     
     protected static void gameWin(){
-        PopupManager.Instance.popup(Text.GAME_WIN.getLines(), new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normalL"), RvB.fonts.get("normalL")}, "Woohoo !");
-        PopupManager.Instance.setCallback(__ -> {
-            game.ended = true;
-            game.clearArrays();
-            SoundManager.Instance.closeAllClips();
-            PopupManager.Instance.closeCurrentPopup();
-        });
+        PopupManager.Instance.gameWin();
     }
     protected static void gameOver(){
         PopupManager.Instance.gameOver();

@@ -256,9 +256,11 @@ public class RvB{
             debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
             debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Raztech lvl :", fonts.get("normalS"), "topLeft");
             debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Time passed in game :", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), (int)(game.timeInGamePassed/1000)+"", fonts.get("normalS"), "topRight");
-            s += 120;
+            debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Nb enemies :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), ""+game.enemies.size(), fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Time passed in game :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), (int)(game.timeInGamePassed/1000)+"", fonts.get("normalS"), "topRight");
+            s += 140;
             // Selected enemy
             if(game.enemySelected != null){
                 debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected enemy", fonts.get("normalS"), "center");
