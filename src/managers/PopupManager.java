@@ -52,6 +52,7 @@ public final class PopupManager {
         Overlay o;
         int butWith = (int) (180*ref);
         int butHeight = (int)(ref*36);
+        int tempX, tempY;
         // POPUP AFFICHAGE
         popup = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
         popup.display(false);
@@ -72,6 +73,8 @@ public final class PopupManager {
         chooseDifficulty.display(false);
         chooseDifficulty.setBG(RvB.textures.get("board"), 0.8f);
         chooseDifficulty.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        tempX = chooseDifficulty.getX()+chooseDifficulty.getW()/6;
+        tempY = chooseDifficulty.getY()+chooseDifficulty.getH()/2;
         b = new Button(chooseDifficulty.getW()/2, 4*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
             stateChanged = true;
@@ -81,6 +84,18 @@ public final class PopupManager {
             else
                 RvB.newCreatedMap(RvB.Difficulty.EASY);
             RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        b.setOnHoverFunction(__ -> {
+            RvB.drawFilledRectangle(tempX, tempY-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("125")/2, tempY, "125", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("225")/2, tempY+(int)(32*ref), "225", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+2*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coinsAdd"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("220")/2, tempY+2*(int)(32*ref), "220", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("90%")/2, tempY+3*(int)(32*ref), "90%", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.LONG.getText())/2, tempY+4*(int)(32*ref), Text.LONG.getText(), RvB.fonts.get("normal"));
         });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 5*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -93,6 +108,18 @@ public final class PopupManager {
                 RvB.newCreatedMap(RvB.Difficulty.MEDIUM);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
+        b.setOnHoverFunction(__ -> {
+            RvB.drawFilledRectangle(tempX, tempY-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("100")/2, tempY, "100", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("200")/2, tempY+(int)(32*ref), "200", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+2*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coinsAdd"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("200")/2, tempY+2*(int)(32*ref), "200", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("100%")/2, tempY+3*(int)(32*ref), "100%", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.NORMAL.getText())/2, tempY+4*(int)(32*ref), Text.NORMAL.getText(), RvB.fonts.get("normal"));
+        });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 6*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
@@ -104,6 +131,18 @@ public final class PopupManager {
                 RvB.newCreatedMap(RvB.Difficulty.HARD);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
+        b.setOnHoverFunction(__ -> {
+            RvB.drawFilledRectangle(tempX, tempY-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("75")/2, tempY, "75", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("175")/2, tempY+(int)(32*ref), "175", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+2*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coinsAdd"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("180")/2, tempY+2*(int)(32*ref), "180", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("110%")/2, tempY+3*(int)(32*ref), "110%", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.SHORT.getText())/2, tempY+4*(int)(32*ref), Text.SHORT.getText(), RvB.fonts.get("normal"));
+        });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 7*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
@@ -114,6 +153,18 @@ public final class PopupManager {
             else
                 RvB.newCreatedMap(RvB.Difficulty.HARDCORE);
             RvB.setCursor(RvB.Cursor.DEFAULT);
+        });
+        b.setOnHoverFunction(__ -> {
+            RvB.drawFilledRectangle(tempX, tempY-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("heart"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("1")/2, tempY, "1", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coins"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("175")/2, tempY+(int)(32*ref), "175", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+2*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("coinsAdd"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("180")/2, tempY+2*(int)(32*ref), "180", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("110%")/2, tempY+3*(int)(32*ref), "110%", RvB.fonts.get("normal"));
+            RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
+            RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.SHORT.getText())/2, tempY+4*(int)(32*ref), Text.SHORT.getText(), RvB.fonts.get("normal"));
         });
         chooseDifficulty.addButton(b);
         // GAME OVER

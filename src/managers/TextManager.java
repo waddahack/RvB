@@ -79,6 +79,12 @@ public final class TextManager {
         CLOSE(
             new String[]{"Fermer"},
             new String[]{"Close"}),
+        SHORT(
+            new String[]{"Court"},
+            new String[]{"Short"}),
+        LONG(
+            new String[]{"Long"},
+            new String[]{"Long"}),
         
         
         // MENU

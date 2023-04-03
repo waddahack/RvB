@@ -28,7 +28,7 @@ public class Button {
     private boolean clickSound = true;
     private boolean selected = false;
     public int indexSwitch = -1;
-    private Consumer<Object> clickFunction;
+    private Consumer<Object> clickFunction = null, onHoverFunction = null;
     
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
@@ -79,6 +79,10 @@ public class Button {
         clickFunction = function;
     }
     
+    public void setOnHoverFunction(Consumer<Object> function){
+        onHoverFunction = function;
+    }
+    
     public void setSwitch(){
         indexSwitch = 0;
     }
@@ -120,6 +124,8 @@ public class Button {
             }
             if(isClicked(0))
                 click();
+            if(isMouseIn() && onHoverFunction != null)
+                onHoverFunction.accept(null);
         }
             
         render();

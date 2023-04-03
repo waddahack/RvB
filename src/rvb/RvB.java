@@ -687,7 +687,6 @@ public class RvB{
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
             textures.put("lock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/lock.png"))));
-            textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/place_raztech.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));
             textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
             textures.put("exitIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/exit_icon.png"))));
@@ -697,10 +696,13 @@ public class RvB{
             textures.put("bulletSpeedIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/bullet_speed_icon.png"))));   
             textures.put("explodeRadiusIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/explode_radius_icon.png")))); 
             textures.put("coins", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins.png"))));
+            textures.put("coinsAdd", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins_add.png"))));
             textures.put("coinsCantBuy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins_cantBuy.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
+            textures.put("enemyRate", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_rate.png"))));
             // Towers
             textures.put("raztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/raztech.png"))));
+            textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/place_raztech.png"))));
             
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));

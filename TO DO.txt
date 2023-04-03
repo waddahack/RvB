@@ -23,7 +23,6 @@ les input pressé, puis check avec la liste, pour use une seule fois .next()
 
 #IDEES#
 - Achievments : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre
-- Sur téléphone android
 - mettre lib et assets dans le .jar
 - Faire une sauvegarde auto & manuelle
 - Mode endless
