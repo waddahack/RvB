@@ -1,6 +1,5 @@
 #BALANCE#
 - popup icones et noms
-- popup info difficultés
 - bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
 - voir memo téléphone
 ##

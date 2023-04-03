@@ -38,11 +38,11 @@ public abstract class AppCore {
 
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
-        //BASIC(0, BasicEnemy.balance, 1, 8),
-        //FAST(1, FastEnemy.balance, 4, 10),
-        TRICKY(2, TrickyEnemy.balance, 1, 10);
-        //FLYING(3, FlyingEnemy.balance, 13, 5),
-        //STRONG(4, StrongEnemy.balance, 9, 15);
+        BASIC(0, BasicEnemy.balance, 1, 8),
+        FAST(1, FastEnemy.balance, 4, 10),
+        TRICKY(2, TrickyEnemy.balance, 6, 10),
+        FLYING(3, FlyingEnemy.balance, 13, 5),
+        STRONG(4, StrongEnemy.balance, 9, 15);
         
         public final int balance, id, enterAt, nbMax;
         
