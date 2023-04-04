@@ -196,7 +196,7 @@ public class Raztech extends Tower{
             return;
         Enemy e = (Enemy) enemy;
         if(Math.random() <= chanceToKill)
-            damagesDone += e.takeDamage(getPower()*16);
+            damagesDone += e.takeDamage(getPower()*18);
         else
             damagesDone += e.takeDamage(getPower());
         e.beSlowedBy(slow);

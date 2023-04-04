@@ -90,7 +90,7 @@ public class Menu {
             FR.setSelected(false);
             TextManager.Instance.setLanguage("ENG");
         });
-        ENG.setSelected(true);
+        FR.setSelected(true);
         
         for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);

@@ -1,10 +1,12 @@
 package towers;
 
+import Utils.MyMath;
 import java.util.ArrayList;
 import rvb.RvB;
 import managers.TextManager.Text;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import static rvb.RvB.unite;
 import rvb.Shootable;
 import ui.Overlay;
 
@@ -38,17 +40,33 @@ public class ShootRateTower extends Tower{
     @Override
     public void update(){
         super.update();
-        for(Shootable t : game.towers){
-            if(t.isInRangeOf(this) && !towers.contains(t) && t != this){
-                t.bonusShootRate += power;
-                towers.add((Tower)t);
-            }
-            else if(!t.isInRangeOf(this) && towers.contains(t)){
-                t.bonusShootRate -= power;
-                towers.remove((Tower)t);
+        if(game.towerSelected != null && !game.towerSelected.isPlaced()){
+            for(Shootable t : game.towers){
+                if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range && !towers.contains(t) && t != this){
+                    Tower to = (Tower) t;
+                    to.bonusShootRate += power;
+                    to.underShootRateTower = true;
+                    to.updateBoosts(false, false, selected);
+                    towers.add(to);
+                }
+                else if(!(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range) && towers.contains(t)){
+                    Tower to = (Tower) t;
+                    to.bonusShootRate -= power;
+                    to.underShootRateTower = false;
+                    to.updateBoosts(false, false, selected);
+                    towers.remove((Tower)t);
+                }
             }
         }
+        
         angle += game.gameSpeed*RvB.deltaTime/8;
+    }
+    
+    @Override
+    public void setSelected(boolean selected){
+        super.setSelected(selected);
+        for(Tower t : towers)
+            t.updateBoosts(false, false, selected);
     }
     
     @Override

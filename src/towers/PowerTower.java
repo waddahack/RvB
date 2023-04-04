@@ -1,10 +1,12 @@
 package towers;
 
+import Utils.MyMath;
 import java.util.ArrayList;
 import rvb.RvB;
 import managers.TextManager.Text;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import static rvb.RvB.unite;
 import rvb.Shootable;
 import ui.Overlay;
 
@@ -37,18 +39,35 @@ public class PowerTower extends Tower{
     
     @Override
     public void update(){
+        // Attention, lorsqu'une tourelle sous boost de this est vendu, une instance est gardée dans this.towers
         super.update();
-        for(Shootable t : game.towers){
-            if(t.isInRangeOf(this) && !towers.contains(t) && t != this){
-                t.bonusPower += power;
-                towers.add((Tower)t);
-            }
-            else if(!t.isInRangeOf(this) && towers.contains(t)){
-                t.bonusPower -= power;
-                towers.remove((Tower)t);
+        if(game.towerSelected != null && !game.towerSelected.isPlaced()){
+            for(Shootable t : game.towers){
+                if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range && !towers.contains(t) && t != this){
+                    Tower to = (Tower) t;
+                    to.bonusPower += power;
+                    to.underPowerTower = true;
+                    to.updateBoosts(selected, false, false);
+                    towers.add(to);
+                }
+                else if(!(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range) && towers.contains(t)){
+                    Tower to = (Tower) t;
+                    to.bonusPower -= power;
+                    to.underPowerTower = false;
+                    to.updateBoosts(selected, false, false);
+                    towers.remove(to);
+                }
             }
         }
+      
         angle += game.gameSpeed*RvB.deltaTime/8;
+    }
+    
+    @Override
+    public void setSelected(boolean selected){
+        super.setSelected(selected);
+        for(Tower t : towers)
+            t.updateBoosts(selected, false, false);
     }
     
     @Override

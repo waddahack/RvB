@@ -51,10 +51,10 @@ public class Bazoo extends Enemy{
         if(level > 0){
             Evolution evo1 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo1"), RvB.textures.get("bazooEvo1Bright"), RvB.colors.get("life1"), null);
             Evolution evo2 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo2"), RvB.textures.get("bazooEvo2Bright"), RvB.colors.get("life2"), evo1);
-            Evolution evo3 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo3"), RvB.textures.get("bazooEvo3Bright"), RvB.colors.get("life3"), evo2);
-            Evolution evo4 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo4"), RvB.textures.get("bazooEvo4Bright"), RvB.colors.get("life4"), evo3);
-            Evolution evo5 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
-            Evolution evo6 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
+            Evolution evo3 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo3"), RvB.textures.get("bazooEvo3Bright"), RvB.colors.get("life3"), evo2);
+            Evolution evo4 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo4"), RvB.textures.get("bazooEvo4Bright"), RvB.colors.get("life4"), evo3);
+            Evolution evo5 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
+            Evolution evo6 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
             
             evolutions.add(evo1);
             if(level >= 2)

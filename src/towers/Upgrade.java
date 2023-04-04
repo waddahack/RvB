@@ -81,6 +81,9 @@ public class Upgrade {
             tower.totalMoneySpent += price;
             increasePrice();
         });
+        button.setOnHoverFunction(__ -> {
+            RvB.drawString(x, y-(int)(9*ref), nbNumberToRound == 0 ? (int)getIncreasedValueWithBonus()+"" : getIncreasedValueWithBonus()+"", RvB.fonts.get("bonus"));
+        });
         if(maxClick <= 0)
             button.setHidden(true);
         button.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
@@ -97,15 +100,12 @@ public class Upgrade {
         if(tower.isPlaced)
             button.update();
         
-        String up, nextUp, upPrice = (int)Math.floor(price)+"";
+        String up, upPrice = (int)Math.floor(price)+"";
         up = nbNumberToRound == 0 ? (int)getValueWithBonus()+"" : getValueWithBonus()+"";
-        nextUp = nbNumberToRound == 0 ? (int)getIncreasedValueWithBonus()+"" : getIncreasedValueWithBonus()+"";
         
         if(!button.isHidden()){
             RvB.drawFilledRectangle(x-(int)(40*ref), y-(int)(9*ref), (int)(32*ref), (int)(32*ref), icon, 0, 1);
-            if(button.isHovered())
-                RvB.drawString(x, y-(int)(9*ref), nextUp, RvB.fonts.get("bonus"));
-            else   
+            if(!button.isHovered()) 
                 RvB.drawString(x, y-(int)(9*ref), up, RvB.fonts.get("normal"));
             if(game.money >= (int)Math.floor(price)){
                 RvB.drawString(x-(int)(10*ref), y+(int)(18*ref), upPrice, RvB.fonts.get("canBuy"));

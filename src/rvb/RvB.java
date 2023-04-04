@@ -723,14 +723,17 @@ public class RvB{
             textures.put("powerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower.png"))));
             textures.put("powerTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower_base.png"))));
             textures.put("powerTowerElec", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower_elec.png"))));
+            textures.put("powerUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_up.png"))));
             
             textures.put("rangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower.png"))));
             textures.put("rangeTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower_base.png"))));
             textures.put("rangeTowerBalls", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower_balls.png"))));
+            textures.put("rangeUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_up.png"))));
             
             textures.put("shootrateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower.png"))));
             textures.put("shootrateTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower_base.png"))));
             textures.put("shootrateTowerBullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower_bullet.png"))));
+            textures.put("shootRateUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/attackSpeed_up.png"))));
             // Buffs
             textures.put("buff_slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
             textures.put("buff_upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));

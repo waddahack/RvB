@@ -1,4 +1,6 @@
 #BALANCE#
+- towers powerup : faire en sorte que le drawFilledRectangle dans update soit au dessus de toutes les towers
+- PowerTower -> update : y'a un commentaire pointant un problème
 - popup icones et noms
 - bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
 - voir memo téléphone

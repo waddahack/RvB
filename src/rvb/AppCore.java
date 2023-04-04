@@ -895,7 +895,7 @@ public abstract class AppCore {
         if(tower != null && (price <= money || id > 100)){
             if(!towers.contains(tower))
                 towers.add(0, tower);
-            towerSelected = tower;
+            selectTower(tower);
             RvB.setCursor(Cursor.GRAB);
         }
     }
@@ -972,6 +972,10 @@ public abstract class AppCore {
     public void selectTower(Tower t){
         if(t == null && towers.contains(towerSelected) && !towerSelected.isPlaced())
             towers.remove(towerSelected);
+        if(t != null)
+            t.setSelected(true);
+        else if(towerSelected != null)
+            towerSelected.setSelected(false);
         towerSelected = t;
         mouseDown = true;
     }
@@ -989,10 +993,15 @@ public abstract class AppCore {
     }
 
     public void setEnemySelected(Enemy e) {
-        if(e == null)
+        if(e == null){
             overlays.get(2).display(false);
-        else
+            if(enemySelected != null)
+                enemySelected.setSelected(false);
+        }  
+        else{
             overlays.get(2).display(true);
+            e.setSelected(true);
+        } 
         enemySelected = e;
     }
     

@@ -49,12 +49,12 @@ public class BigTower extends Tower{
         power = 16f;
         shootRate = 0.3f;
         bulletSpeed = 8;
-        explodeRadius = 4*RvB.unite/5;
+        explodeRadius = RvB.unite;
         upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.5f, 3));
         upgrades.add(new Upgrade(this, "Power", power, 1.5f, "*", 275f, 1.6f, 2));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.4f, "*", 150f, 1.5f, 3));
-        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 150f, 1.8f, 2));
-        upgrades.add(new Upgrade(this, "Explode radius", explodeRadius, RvB.unite/4, "+", 180f, 1.8f, 3));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.4f, "*", 180f, 1.5f, 3));
+        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 100f, 1.8f, 2));
+        upgrades.add(new Upgrade(this, "Explode radius", explodeRadius, RvB.unite/2, "+", 200f, 1.5f, 2));
         
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
@@ -71,7 +71,7 @@ public class BigTower extends Tower{
         count = 0;
         explodeX = x;
         explodeY = y;
-        nbFlames = 10*explodeRadius/50;
+        nbFlames = 2*explodeRadius/5;
     }
     
     @Override

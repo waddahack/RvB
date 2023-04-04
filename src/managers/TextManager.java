@@ -173,8 +173,8 @@ public final class TextManager {
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),
         BUFF_SLOW_DESC(
-            new String[]{"Les balles de Raztech", "ralentissent les", "ennemies de +10%", "pendant 1 sec."},
-            new String[]{"Raztech's bullets", "slow enemies by +10%", "for 1 sec."}),
+            new String[]{"Les balles de Raztech", "ralentissent les", "ennemies de +15%", "pendant 1 sec."},
+            new String[]{"Raztech's bullets", "slow enemies by +15%", "for 1 sec."}),
         BUFF_XP(
             new String[]{"Rune bleue"},
             new String[]{"Blue rune"}),
@@ -185,8 +185,8 @@ public final class TextManager {
             new String[]{"Vieux crâne"},
             new String[]{"Old skull"}),
         BUFF_OS_DESC(
-            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 1600%", "dégât de base."},
-            new String[]{"Raztech's bullets", "have +1% chance to", "deal 1600%", "base damage."}),
+            new String[]{"Les balles de Raztech", "ont +1% de chance", "d'infliger 1800%", "dégât de base."},
+            new String[]{"Raztech's bullets", "have +1% chance to", "deal 1800%", "base damage."}),
         BUFF_RANGE_TOWER_DESC(
             new String[]{"Nouvelle tour :", " ", "Donne +15% de portée", "aux tourelles proches."},
             new String[]{"New tower :", " ", "Gives +15% range", "to near towers."}),
@@ -250,7 +250,7 @@ public final class TextManager {
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),
         GUIDE(
-            new String[]{"Vague par vague, vous allez être submergé d'ennemies.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ça sera utile pour acheter des tourelles pour défendre votre terrain !"},
+            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ça sera utile pour acheter des tourelles pour défendre votre terrain !"},
             new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "The game ends whenever your health hits 0.", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
         INFO(
             new String[]{"Informations"},
@@ -290,7 +290,7 @@ public final class TextManager {
     private static String currentLanguage;
     
     public TextManager(){
-        currentLanguage = "ENG";
+        currentLanguage = "FR";
     }
 
     public static void initialize(){

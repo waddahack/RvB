@@ -255,8 +255,8 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     public void die(){
         super.die();
         game.enemiesDead.add(this);
-        if(game.enemySelected == this)
-            game.enemySelected = null;
+        if(selected)
+            game.setEnemySelected(null);
         game.money += reward;
         if(clipWalk != null){
             clipWalk.stop();

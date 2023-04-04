@@ -21,6 +21,7 @@ public abstract class Tower extends Shootable{
     protected int hitboxWidth, totalMoneySpent;
     public float growth = 0;
     protected boolean isPlaced = false, forBuff = false, canFocus = true;
+    public boolean underPowerTower = false, underRangeTower = false, underShootRateTower = false;
     protected ArrayList<Overlay> overlays;
     protected ArrayList<Upgrade> upgrades;
     public String type;
@@ -47,19 +48,23 @@ public abstract class Tower extends Shootable{
             renderOverlay();
         }  
         
-        if(!isPlaced)
+        if(!isPlaced){
+            updateBoosts(false, false, false);
             renderPrevisu();
+        }
         else{
             super.update();
             super.render();
         }
     }
     
-    private void renderPrevisu(){
+    protected void renderPrevisu(){
         if(canBePlaced()){
-            float xPos = Math.floorDiv(Mouse.getX(), unite)*unite, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite;
+            float xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
             for(int i = 0 ; i < textures.size() ; i++)
-                RvB.drawFilledRectangle(xPos+unite/2, yPos+unite/2, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 0.5f);
+                RvB.drawFilledRectangle(xPos, yPos, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 0.5f);
+            for(int i = 0 ; i < texturesAdditive.size() ; i++)
+                RvB.drawFilledRectangle(xPos-3*unite/10, yPos-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
         }
         x = Mouse.getX();
         y = RvB.windHeight-Mouse.getY();
@@ -71,10 +76,10 @@ public abstract class Tower extends Shootable{
             xPos = Math.floorDiv(xPos, unite)*unite+unite/2;
             yPos = Math.floorDiv(yPos, unite)*unite+unite/2;
         }
-        RvB.drawCircle(xPos, yPos, getRange(), RvB.colors.get("blue"));
-        RvB.drawCircle(xPos, yPos, getRange()-1, RvB.colors.get("grey"));
-        RvB.drawCircle(xPos, yPos, getRange()-2, RvB.colors.get("grey_light"));
-        RvB.drawFilledCircle(xPos, yPos, getRange()-2, RvB.colors.get("grey_light"), 0.1f);
+        RvB.drawCircle(xPos, yPos, getPreRange(), RvB.colors.get("blue"));
+        RvB.drawCircle(xPos, yPos, getPreRange()-1, RvB.colors.get("grey"));
+        RvB.drawCircle(xPos, yPos, getPreRange()-2, RvB.colors.get("grey_light"));
+        RvB.drawFilledCircle(xPos, yPos, getPreRange()-2, RvB.colors.get("grey_light"), 0.1f);
     }
     
     public void initOverlay(){
@@ -214,6 +219,37 @@ public abstract class Tower extends Shootable{
     @Override
     public ArrayList<Shootable> getEnemies(){
         return game.enemies;
+    }
+    
+    public void updateBoosts(boolean powerTowerSelected, boolean rangeTowerSelected, boolean ASTowerSelected){
+        if((selected || powerTowerSelected) && underPowerTower && !texturesAdditive.contains(RvB.textures.get("powerUp")))
+            texturesAdditive.add(RvB.textures.get("powerUp"));
+        else if(!((selected || powerTowerSelected) && underPowerTower) && texturesAdditive.contains(RvB.textures.get("powerUp")))
+            texturesAdditive.remove(RvB.textures.get("powerUp"));
+        if((selected || rangeTowerSelected) && underRangeTower && !texturesAdditive.contains(RvB.textures.get("rangeUp")))
+            texturesAdditive.add(RvB.textures.get("rangeUp"));
+        else if(!((selected || rangeTowerSelected) && underRangeTower) && texturesAdditive.contains(RvB.textures.get("rangeUp")))
+            texturesAdditive.remove(RvB.textures.get("rangeUp"));
+        if((selected || ASTowerSelected) && underShootRateTower && !texturesAdditive.contains(RvB.textures.get("shootRateUp")))
+            texturesAdditive.add(RvB.textures.get("shootRateUp"));
+        else if(!((selected || ASTowerSelected) && underShootRateTower) && texturesAdditive.contains(RvB.textures.get("shootRateUp")))
+            texturesAdditive.remove(RvB.textures.get("shootRateUp"));
+    }
+    
+    @Override
+    public void setSelected(boolean selected){
+        super.setSelected(selected);
+        updateBoosts(false, false, false);
+    }
+    
+    public int getPreRange(){
+        int i = 0;
+        Upgrade up = upgrades.get(i);
+        while(up.name != "Range" && i < upgrades.size()-1)
+            up = upgrades.get(++i);
+        if(up.name != "Range" || !up.button.isHovered())
+            return getRange();
+        return (int) up.getIncreasedValueWithBonus();
     }
     
     public boolean isForBuff(){

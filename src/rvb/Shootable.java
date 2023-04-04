@@ -15,15 +15,15 @@ import org.lwjgl.input.Mouse;
 
 public abstract class Shootable {
     
-    protected boolean canShoot = true, started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false, dead = false;
+    protected boolean canShoot = true, started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false, dead = false, selected = false;
     protected ArrayList<Bullet> bullets, bulletsToRemove;
+    protected ArrayList<Texture> textures, texturesBright, texturesAdditive;
     protected Clip clip;
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected Texture textureStatic, bulletSprite;
     protected Random random = new Random();
     protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth, focusIndex;
     protected float newAngle = 0;
-    protected ArrayList<Texture> textures, texturesBright;
     protected Shootable enemyAimed;
     // CARACHTERISTIQUES PUBLIQUES
     public float x, y, angle = 180;
@@ -38,6 +38,7 @@ public abstract class Shootable {
     public Shootable(){
         textures = new ArrayList<>();
         texturesBright = new ArrayList<>();
+        texturesAdditive = new ArrayList<>();
         bullets = new ArrayList<>();
         bulletsToRemove = new ArrayList<>();
     }
@@ -81,6 +82,8 @@ public abstract class Shootable {
             for(int i = 0 ; i < textures.size() ; i++)
                 RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 1);
         }
+        for(int i = 0 ; i < texturesAdditive.size() ; i++)
+            RvB.drawFilledRectangle(x-3*unite/10, y-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
     }
     
     public ArrayList<Bullet> getBullets(){
@@ -377,12 +380,16 @@ public abstract class Shootable {
         maxLife = life;
     }
     
+    public void setSelected(boolean selected){
+        this.selected = selected;
+    }
+    
     public boolean isSoundContinuous(){
         return continuousSound;
     }
     
     public boolean isSelected(){
-        return game.towerSelected == this;
+        return selected;
     }
     
     public int getSize(){
