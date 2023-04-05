@@ -1,33 +1,41 @@
-#BALANCE#
-- PowerTower -> update : y'a un commentaire pointant un problème
-- popup icones et noms
-- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
-- voir memo téléphone
+#A FAIRE#
+- Tuto embbeded database java -> https://www.youtube.com/watch?v=7FTG-AQvu2g&list=PLR2yPNIFMlL8e7NP-tsZ-XDfniK0XRS09&index=6
+- Achievments/progression : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre -> DB
+- changer mdp cheats + débloquer cheats enlève la progression de la game
+- popup icones et noms, ou tuto faudra bien un jour -> DB
 ##
 
-
+#NEXT#
+- Faire une sauvegarde auto & manuelle -> DB
+- Rocks !
+- Mode aventure
+##
 
 ROCKS :
 	- readfile la texture de la rock est tuile verte, puis après createMapTexture, la texture est rock et on render rocks.
 	comme ça les rocks se trouvent dans les data de la map
 	- pouvoir ajouter des rocks en creatif
 
+#IDEES#
+- animations : peut-on draw qu'une partie d'une texture ?
+- mettre lib et assets dans le .jar
+- Mode endless
+- TAB pour voir les stats des tourelles
+##
 
 #SI JAMAIS#
 - menu option
 - refaire système mouse et keyboard input : dans la boucle rvb mettre dans une array
 les input pressé, puis check avec la liste, pour use une seule fois .next()
 - debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)
-- animations : peut-on draw qu'une partie d'une texture ?
 ##
 
-#IDEES#
-- Achievments : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre
-- mettre lib et assets dans le .jar
-- Faire une sauvegarde auto & manuelle
-- Mode endless
-- Mode aventure (ne pas faire de fichier)
-- Télécharger la map générée random
-- TAB pour voir les stats des tourelles
-- Site
+#AUTRES BIG PROJET#
+- Site RvB
+- Jeu RTS PvE
+##
+
+#PROBLEMS#
+- PowerTower -> update : y'a un commentaire pointant un problème
+- bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
 ##

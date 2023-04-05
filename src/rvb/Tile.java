@@ -51,6 +51,13 @@ public class Tile {
         setY(y);
     }
     
+    public Tile(Texture text, String t, float x, float y){
+        texture = text;
+        type = t;
+        setX(x);
+        setY(y);
+    }
+    
     public void render(){
         RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle, 1);
     }

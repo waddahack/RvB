@@ -91,7 +91,6 @@ public class Button {
         if(locked || disabled)
             return false;
         nbClicks++;
-        RvB.mouseDown = true;
         if(clickSound)
             SoundManager.Instance.playOnce(click);
         if(nbClicks == nbClicksMax)
@@ -100,6 +99,7 @@ public class Button {
             indexSwitch = indexSwitch == text.getLines().length-1 ? 0 : indexSwitch+1;
         if(clickFunction != null)
             clickFunction.accept(null);
+        RvB.mouseDown = true;
         return true;
     }
     

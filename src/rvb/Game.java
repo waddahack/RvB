@@ -56,8 +56,9 @@ public class Game extends AppCore{
         // spawn random sur le bord gauche
         x = 0;
         y = 1+rand.nextInt(nbTileY-2);
-        road = new Tile(x, y);
-        road.previousRoad = new Tile(x-1, y);
+        road = new Tile(RvB.textures.get("roadStraight"), "road", x*RvB.unite, y*RvB.unite);
+        road.setRotateIndex(0);
+        road.previousRoad = new Tile((x-1)*RvB.unite, y*RvB.unite);
         oppositeX = nbTileX-1-x;
         oppositeY = nbTileY-1-y;
         map.get(y).set(x, road);
@@ -67,7 +68,7 @@ public class Game extends AppCore{
         int i = 0, r;
         int[][] check;
         Tile up, down, left, right, accross, temp;
-        while(nbRoadLeft > 0 || path.get(i).getX()+1 <= nbTileX-1){ // Tant qu'il n'est pas à côté du bord droit
+        while(nbRoadLeft > 0 || path.get(i).getIndexX()+1 <= nbTileX-1){ // Tant qu'il n'est pas à côté du bord droit
             neighbors.clear();
             up = new Tile(x, y-1);
             down = new Tile(x, y+1);
@@ -198,7 +199,8 @@ public class Game extends AppCore{
             }
 
             // Ajout de la route
-            road = new Tile(x, y);
+            road = new Tile(RvB.textures.get("roadStraight"), "road", x*RvB.unite, y*RvB.unite);
+            road.setRotateIndex(0);
             road.setPreviousRoad(path.get(i));
             path.get(i).setNextRoad(road);
 

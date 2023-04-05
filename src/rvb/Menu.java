@@ -10,7 +10,7 @@ import ui.Overlay;
 
 public class Menu {
     
-    private Button start, random, regenerate, create, modify, option, exit, FR, ENG;
+    private Button start, play, regenerate, create, option, exit, FR, ENG;
     private Overlay[] overlays = new Overlay[5];
     
     public Menu(){
@@ -37,45 +37,29 @@ public class Menu {
             switchStateTo(State.GAME);
         });
         
-        random = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
-        random.setFunction(__ -> {
-            if(randomGame == null){
-                PopupManager.Instance.chooseDifficulty("random");
-                // Then it does newRandomMap(difficulty)
-            }
-            else{
-                game = randomGame;
+        play = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        play.setFunction(__ -> {
+            if(game == null)
+                PopupManager.Instance.chooseMap();
+            else
                 switchStateTo(State.GAME);
-            }
         });
-        regenerate = new Button(random.getX(), random.getY()+random.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
-        regenerate.setText(Text.REGENERATE, fonts.get("normal"));
+        regenerate = new Button(play.getX(), play.getY()+play.getH()/2+(int)(30*ref), (int)(160*ref), (int)(32*ref), colors.get("green"), colors.get("green_semidark"));
+        regenerate.setText(Text.NEW_GAME, fonts.get("normal"));
         regenerate.setFunction(__ -> {
-            PopupManager.Instance.chooseDifficulty("random");
-            // Then it does newRandomMap(difficulty)
+            PopupManager.Instance.chooseMap();
         });
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
         create.setFunction(__ -> {
-            if(createEmptyMap()){
-                if(createdGame == null){
+            if(createLevelCreatedFile()){
+                if(creation == null)
                     creation = new Creation();
-                    switchStateTo(State.CREATION);
-                }
-                else{
-                    game = createdGame;
-                    switchStateTo(State.GAME);
-                }
+                switchStateTo(State.CREATION);
             }
             else{
                 PopupManager.Instance.popup(Text.MISSING_FILE_LEVELS.getLines());
             }
-        });
-        modify = new Button(create.getX(), create.getY()+create.getH()/2+(int)(30*ref), (int)(120*ref), (int)(28*ref), colors.get("green"), colors.get("green_semidark"));
-        modify.setText(Text.MODIFY, fonts.get("normal"));
-        modify.setFunction(__ -> {
-            creation = new Creation();
-            switchStateTo(State.CREATION);
         });
         
         FR = new Button(unite, 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("FR"), null, colors.get("green_semidark"));
@@ -105,12 +89,11 @@ public class Menu {
                     overlays[i].addButton(start);
                     break;
                 case 2:
-                    overlays[i].addButton(random);
+                    overlays[i].addButton(play);
                     overlays[i].addButton(regenerate);
                     break;
                 case 3:
                     overlays[i].addButton(create);
-                    overlays[i].addButton(modify);
                     break;
                 case 4:
                     overlays[4] = new Overlay(0, windHeight-FR.getH(), windWidth, FR.getH());
@@ -123,14 +106,10 @@ public class Menu {
     
     public void update(){
         render();
-        if(randomGame == null)
+        if(game == null)
             regenerate.setHidden(true);
         else
             regenerate.setHidden(false);
-        if(createdGame == null)
-            modify.setHidden(true);
-        else
-            modify.setHidden(false);
     }
     
     private void render(){
@@ -139,13 +118,10 @@ public class Menu {
             o.render();
         }
         if(regenerate.isHidden())
-            random.drawText(Text.RANDOM_MAP.getText(), fonts.get("normalL"));
+            play.drawText(Text.FIGHT.getText(), fonts.get("normalL"));
         else
-            random.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
-        if(modify.isHidden())
-            create.drawText(Text.CREATE_MAP.getText(), fonts.get("normalL"));
-        else
-            create.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
+            play.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
+        create.drawText(Text.CREATION.getText(), fonts.get("normalL"));
     }
     
     public void disableAllButtons(){
@@ -166,7 +142,7 @@ public class Menu {
     }
     
     public Button getRandom(){
-        return random;
+        return play;
     }
     
     public Button getCreate(){

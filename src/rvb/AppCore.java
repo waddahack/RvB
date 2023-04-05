@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -21,6 +22,7 @@ import managers.PopupManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
 import rvb.RvB.Difficulty;
@@ -169,7 +171,8 @@ public abstract class AppCore {
     }
     
     protected void initMap(String lvlName){
-        readFile("assets/levels/level_"+lvlName+".txt");
+        path = readFile("levels/level_"+lvlName+".txt");
+        fillMap(path);
         fixRoadNeighbors();
         fixRoadSprites();
         try {
@@ -181,49 +184,9 @@ public abstract class AppCore {
     }
     
     protected void initMap(ArrayList<Tile> path){
-        map = new ArrayList<>();
-        this.path = new ArrayList<>();
-        if(path.isEmpty()){
-            this.path = path;
+        if(path.isEmpty())
             return;
-        }
-        ArrayList<Tile> row;
-        Texture t;
-        Tile tile;
-        int n;
-        for(int i = 0 ; i < RvB.nbTileY ; i++){
-            row = new ArrayList<>();
-            for(int j = 0 ; j < RvB.nbTileX ; j++){
-                n = random.nextInt(100)+1;
-                if(n > 93)
-                    t = RvB.textures.get("bigPlant1");
-                else if(n > 86)
-                    t = RvB.textures.get("bigPlant2");
-                else
-                    t = RvB.textures.get("grass");
-                n = 0;
-                if(t != RvB.textures.get("grass"))
-                    n = (int)Math.round(random.nextInt(361)/90)*90;  
-                tile = new Tile(t, "grass");
-                if(i == 0 || i == RvB.nbTileY-1)
-                    tile.type = "null";
-                tile.setAngle(n);
-                tile.setRotateIndex(0);
-                tile.setX(j*unite);
-                tile.setY(i*unite);
-
-                row.add(tile);
-            }
-            map.add(row);
-        }
-        for(Tile road : path){
-            tile = new Tile(RvB.textures.get("roadStraight"), "road");
-            tile.setRotateIndex(0);
-            tile.setX(road.getX()*unite);
-            tile.setY(road.getY()*unite);
-            this.path.add(tile);
-            map.get((int) road.getY()).set((int) road.getX(), tile);
-        }
+        fillMap(path);
         fixRoadNeighbors();
         fixRoadSprites();
         try {
@@ -234,76 +197,79 @@ public abstract class AppCore {
         //addRocks();
     }
     
-    protected void readFile(String filePath){
+    protected void fillMap(ArrayList<Tile> p){
+        path = p;
         map = new ArrayList<>();
+        // Fill map of null
+        for(int i = 0 ; i < RvB.nbTileY ; i++){
+            map.add(new ArrayList<>());
+            for(int j = 0 ; j < RvB.nbTileX ; j++){
+                map.get(i).add(null);
+            }
+        }
+        // Add path tiles to map
+        for(int i = 0 ; i < path.size() ; i++)
+            map.get(path.get(i).getIndexY()).set(path.get(i).getIndexX(), path.get(i));
+            
+        // Replace null left by grass
+        int n;
+        Texture t;
+        Tile tile;
+        for(int i = 0 ; i < RvB.nbTileY ; i++){
+            for(int j = 0 ; j < RvB.nbTileX ; j++){
+                if(map.get(i).get(j) == null){
+                    n = random.nextInt(100)+1;
+                    if(n > 93)
+                        t = RvB.textures.get("bigPlant1");
+                    else if(n > 86)
+                        t = RvB.textures.get("bigPlant2");
+                    else
+                        t = RvB.textures.get("grass");
+                    n = 0;
+                    if(t != RvB.textures.get("grass"))
+                        n = Math.round(random.nextInt(361)/90)*90;  
+                    tile = new Tile(t, "grass");
+                    tile.setAngle(n);
+                    tile.setRotateIndex(0);
+                    tile.setX(j*unite);
+                    tile.setY(i*unite);
+                    map.get(i).set(j, tile);
+                }
+            }
+        }
+    }
+    
+    protected ArrayList<Tile> readFile(String filePath){
+        map = new ArrayList<>();
+        for(int i = 0 ; i < RvB.nbTileY ; i++){
+            map.add(new ArrayList<>());
+            for(int j = 0 ; j < RvB.nbTileX ; j++)
+                map.get(i).add(null);
+        }
         path = new ArrayList<>();
         try{
             File file = new File(filePath);
             Scanner myReader = new Scanner(file);
-            ArrayList<Tile> row = new ArrayList<>();
-            int i = 0, j = 0, n;
-            Texture t;
             String data;
-            Tile tile = null;
-            boolean readPath = false;
+            Tile tile;
+            int indexX, indexY;
             while(myReader.hasNext()){
                 data = myReader.next();
-                if(readPath){
-                    String[] indexes = data.split("/");
-                    int indexX = Integer.parseInt(indexes[0]);
-                    int indexY = Integer.parseInt(indexes[1]);
-                    path.add(map.get(indexY).get(indexX));
-                }
-                else{
-                    switch(data){
-                        case ".":
-                            n = random.nextInt(100)+1;
-                            if(n > 93)
-                                t = RvB.textures.get("bigPlant1");
-                            else if(n > 86)
-                                t = RvB.textures.get("bigPlant2");
-                            else
-                                t = RvB.textures.get("grass");
-                            n = 0;
-                            if(t != RvB.textures.get("grass"))
-                                n = Math.round(random.nextInt(361)/90)*90;  
-                            tile = new Tile(t, "grass");
-                            tile.setAngle(n);
-                            tile.setRotateIndex(0);
-                            break;
-                        case "0":
-                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
-                            tile.setRotateIndex(0);
-                            break;
-                        case "S":
-                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
-                            tile.setRotateIndex(0);
-                            break;
-                        case "B":
-                            tile = new Tile(RvB.textures.get("roadStraight"), "road");
-                            tile.setRotateIndex(0);
-                            break;
-                        case "PATH:":
-                            readPath = true;
-                            break;
-                        default:
-                            tile = new Tile(new float[]{0f, 0f, 0f}, "void");
-                            break;
-                    }
-                    if(readPath)
-                        continue;
-                    tile.setX(j*unite);
-                    tile.setY(i*unite);
-                    row.add(tile);
-
-                    if(row.size() == RvB.nbTileX){
-                        map.add(row);
-                        row = new ArrayList<>();
-                        j = 0;
-                        i++;
-                    }
-                    else
-                        j++;
+                String[] indexes = data.split("/");
+                tile = new Tile(RvB.textures.get("roadStraight"), "road");
+                tile.setRotateIndex(0);
+                try{
+                    indexX = Integer.parseInt(indexes[0]);
+                    indexY = Integer.parseInt(indexes[1]);
+                    tile.setX(indexX*unite);
+                    tile.setY(indexY*unite);
+                    path.add(tile);
+                    map.get(indexY).set(indexX, tile);
+                }catch(Exception e){
+                    PopupManager.Instance.popup(Text.ERROR.getText());
+                    myReader.close();
+                    path.clear();
+                    break;
                 }
             }
             myReader.close();
@@ -312,6 +278,7 @@ public abstract class AppCore {
             System.out.println("File : "+filePath+" doesn't exist.");
             e.printStackTrace();
         }
+        return path;
     }
     
     protected void fixRoadNeighbors(){
@@ -386,7 +353,7 @@ public abstract class AppCore {
         }
     }
     
-    private void createMapTexture() throws Exception {
+    protected void createMapTexture() throws Exception {
         BufferedImage mapImage = new BufferedImage(windWidth, windHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapImage.createGraphics();
         
@@ -421,6 +388,35 @@ public abstract class AppCore {
         }
 
         textureID = RvB.loadTexture(mapImage);
+    }
+    
+    protected String saveLevel(String name, boolean overwrite){
+        String fileName = "";
+        try{
+            // Path
+            String pathCoords = "";
+            for(Tile road : path){
+                pathCoords += road.getIndexX()+"/";
+                pathCoords += road.getIndexY()+" ";
+            }
+            // Write in file
+            File file = new File("levels/level_"+name+".txt");
+            fileName = "level_"+name;
+            if(!file.createNewFile() && !overwrite){
+                int i = 1;
+                do{
+                    file = new File("levels/level_"+name+" ("+(i++)+").txt");
+                }while(!file.createNewFile());
+                fileName = "level_"+name+" ("+i+")";
+            }
+            PrintWriter writer = new PrintWriter(file);
+            writer.print(pathCoords);
+            writer.close();
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+        return fileName;
     }
     
     public void addRocks(){
@@ -683,12 +679,26 @@ public abstract class AppCore {
         // Wave button
         b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setClickSound(SoundManager.SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
-        Button thisBut = b;
+        Button waveBut = b;
         b.setFunction(__ -> {
             if(!inWave){
-                thisBut.disable();
+                waveBut.disable();
                 RvB.setCursor(Cursor.DEFAULT);
                 startWave();
+            }
+        });
+        o.addButton(b);
+        // Download button
+        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setBG(RvB.textures.get("download"));
+        Button dlBut = b;
+        b.setFunction(__ -> {
+            String name = saveLevel("downloaded", false);
+            if(name.isEmpty())
+                PopupManager.Instance.popup(Text.ERROR.getText());
+            else{
+                dlBut.lock();
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", "levels/"+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
             }
         });
         o.addButton(b);
@@ -787,7 +797,7 @@ public abstract class AppCore {
         o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
             
         t = "x"+gameSpeed;
-        o.getButtons().get(1).drawText(0, 0, t, RvB.fonts.get("normalB"));
+        o.getButtons().get(2).drawText(0, 0, t, RvB.fonts.get("normalB"));
         //
         if(enemySelected != null && !enemySelected.isDead())
             enemySelected.renderInfo();

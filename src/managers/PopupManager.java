@@ -23,7 +23,7 @@ public final class PopupManager {
     
     private static final int width = (int) (800*ref), height = (int) (450*ref);
     private Overlay currentOverlay;
-    private Overlay gameOver, gameWin, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help;
+    private Overlay gameOver, gameWin, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help, chooseMap;
     private final ArrayList<String> lines;
     private final ArrayList<String> buttonsText;
     private final ArrayList<UnicodeFont> fonts;
@@ -68,6 +68,26 @@ public final class PopupManager {
         });
         popup.addButton(b);
         //
+        // CHOOSE MAP
+        chooseMap = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
+        chooseMap.display(false);
+        chooseMap.setBG(RvB.textures.get("board"), 0.8f);
+        chooseMap.setBorder(RvB.colors.get("green_dark"), 4, 1);
+        b = new Button(chooseMap.getW()/2, 6*chooseMap.getH()/10, (int)(butWith*1.2), (int)(butHeight*1.2), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            chooseDifficulty("random");
+            // Then it does newRandomMap()
+        });
+        chooseMap.addButton(b);
+        b = new Button(chooseMap.getW()/2, 8*chooseMap.getH()/10, (int)(butWith*1.2), (int)(butHeight*1.2), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setFunction(__ -> {
+            String lvlName = RvB.selectMap();
+            if(!lvlName.isEmpty())
+                chooseDifficulty(lvlName);
+                // Then it does newLoadedMap()
+        });
+        chooseMap.addButton(b);
+        //
         // CHOOSE DIFFICULTY
         chooseDifficulty = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
         chooseDifficulty.display(false);
@@ -81,8 +101,10 @@ public final class PopupManager {
             closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.EASY);
-            else
+            else if(gameType.equals("created"))
                 RvB.newCreatedMap(RvB.Difficulty.EASY);
+            else
+                RvB.newLoadedMap(gameType, RvB.Difficulty.EASY);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         b.setOnHoverFunction(__ -> {
@@ -94,6 +116,8 @@ public final class PopupManager {
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("220")/2, tempY+2*(int)(32*ref), "220", RvB.fonts.get("normal"));
             RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("90%")/2, tempY+3*(int)(32*ref), "90%", RvB.fonts.get("normal"));
+            if(!gameType.equals("random"))
+                return;
             RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.LONG.getText())/2, tempY+4*(int)(32*ref), Text.LONG.getText(), RvB.fonts.get("normal"));
         });
@@ -117,6 +141,8 @@ public final class PopupManager {
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("200")/2, tempY+2*(int)(32*ref), "200", RvB.fonts.get("normal"));
             RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("100%")/2, tempY+3*(int)(32*ref), "100%", RvB.fonts.get("normal"));
+            if(!gameType.equals("random"))
+                return;
             RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.NORMAL.getText())/2, tempY+4*(int)(32*ref), Text.NORMAL.getText(), RvB.fonts.get("normal"));
         });
@@ -140,6 +166,8 @@ public final class PopupManager {
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("180")/2, tempY+2*(int)(32*ref), "180", RvB.fonts.get("normal"));
             RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("110%")/2, tempY+3*(int)(32*ref), "110%", RvB.fonts.get("normal"));
+            if(!gameType.equals("random"))
+                return;
             RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.SHORT.getText())/2, tempY+4*(int)(32*ref), Text.SHORT.getText(), RvB.fonts.get("normal"));
         });
@@ -163,6 +191,8 @@ public final class PopupManager {
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("180")/2, tempY+2*(int)(32*ref), "180", RvB.fonts.get("normal"));
             RvB.drawFilledRectangle(tempX, tempY+3*(int)(32*ref)-(int)(16*ref), (int)(32*ref), (int)(32*ref), null, 1, RvB.textures.get("enemyRate"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth("110%")/2, tempY+3*(int)(32*ref), "110%", RvB.fonts.get("normal"));
+            if(!gameType.equals("random"))
+                return;
             RvB.drawFilledRectangle(tempX+(int)(2*ref), tempY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
             RvB.drawString(tempX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(Text.SHORT.getText())/2, tempY+4*(int)(32*ref), Text.SHORT.getText(), RvB.fonts.get("normal"));
         });
@@ -329,6 +359,17 @@ public final class PopupManager {
         buttonsText.add(Text.NORMAL.getText());
         buttonsText.add(Text.HARD.getText());
         buttonsText.add(Text.HARDCORE.getText());
+    }
+    
+    public void chooseMap(){
+        initPopup(chooseMap);
+        top = height/4;
+        
+        addText(Text.SELECT_MODE.getText(), RvB.fonts.get("normalXL"));
+        addText("("+Text.CANCEL.getText()+")", RvB.fonts.get("normalL"));
+        
+        buttonsText.add(Text.RANDOM_MAP.getText());
+        buttonsText.add(Text.LOAD_MAP.getText());
     }
     
     public void gameOver(){

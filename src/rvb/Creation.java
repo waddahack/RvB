@@ -1,10 +1,9 @@
 package rvb;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import managers.PopupManager;
+import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.State;
@@ -25,6 +24,11 @@ public class Creation extends AppCore{
         init(RvB.Difficulty.MEDIUM);
         initOverlays();   
         initMap("created");
+    }
+    
+    @Override
+    protected void initMap(String name){
+        super.initMap(name);
         
         roads = new ArrayList<>();
         if(!path.isEmpty()){
@@ -52,12 +56,13 @@ public class Creation extends AppCore{
         o = new Overlay(0, 0, RvB.windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         // Play button
-        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (180*ref), (int) (38*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (260*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setText(Text.SAVE_PLAY, RvB.fonts.get("normalXL"));
         b.setFunction(__ -> {
             if(Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
                 String[] error = calculatePath();
                 if(error == null){
-                    saveLevel();
+                    saveLevel("created", true);
                     PopupManager.Instance.chooseDifficulty("created");
                 }
                 else{
@@ -74,6 +79,27 @@ public class Creation extends AppCore{
                 RvB.state = State.MENU;
         });
         o.addButton(b);
+        // Clear button
+        b = new Button((int) (RvB.windWidth/2-300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setText(Text.CLEAR, RvB.fonts.get("normal"));
+        b.setFunction(__ -> {
+            for(int i = 0 ; i < roads.size() ; i++){
+                replaceWithGrass(roads.get(i).getIndexX(), roads.get(i).getIndexY());
+                i--;
+            }
+            path.clear();
+            roads.clear();
+        });
+        o.addButton(b);
+        // Load button
+        b = new Button((int)(RvB.windWidth/2+300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setText(Text.LOAD, RvB.fonts.get("normal"));
+        b.setFunction(__ -> {
+            String lvlName = RvB.selectMap();
+            if(!lvlName.isEmpty())
+                initMap(lvlName);
+        });
+        o.addButton(b);
         overlays.add(o);
         
         o = new Overlay(0, (int) (windHeight-60*ref), RvB.windWidth, (int) (60*ref));
@@ -88,7 +114,6 @@ public class Creation extends AppCore{
         //// Overlay du haut
         o = overlays.get(0);
         o.render();
-        o.getButtons().get(0).drawText(0, 0, "Save & Play", RvB.fonts.get("normalL"));
         //
         //// Overlay du bas
         o = overlays.get(1);
@@ -115,38 +140,42 @@ public class Creation extends AppCore{
                 roads.add(road);
             }
             else if(Mouse.isButtonDown(1) && !map.get(indexY).get(indexX).type.equals("grass") && !stateChanged){ // Puts grass
-                Texture t;
-                int n = rand.nextInt(100)+1;
-                if(n > 93)
-                    t = RvB.textures.get("bigPlant1");
-                else if(n > 86)
-                    t = RvB.textures.get("bigPlant2");
-                else
-                    t = RvB.textures.get("grass");
-                n = 0;
-                if(t != RvB.textures.get("grass"))
-                    n = (int)Math.round(rand.nextInt(361)/90)*90;  
-                Tile grass = new Tile(t, "grass");
-                grass.setAngle(n);
-                grass.setRotateIndex(0);
-                grass.setX(indexX*unite);
-                grass.setY(indexY*unite);
-                Tile oldRoad = map.get(indexY).get(indexX);
-                if(oldRoad == spawn)
-                    spawn = null;
-                map.get(indexY).set(indexX, grass);
-                // Remove old road & look for potential connect for its neighbors
-                if(oldRoad.nextRoad != null){
-                    oldRoad.nextRoad.setPreviousRoad(null);
-                    searchAndConnect(oldRoad.nextRoad);
-                }
-                if(oldRoad.previousRoad != null){
-                    oldRoad.previousRoad.setNextRoad(null);
-                    searchAndConnect(oldRoad.previousRoad);
-                }
-                roads.remove(oldRoad);
+                replaceWithGrass(indexX, indexY);
             }
         }
+    }
+    
+    private void replaceWithGrass(int indexX, int indexY){
+        Texture t;
+        int n = rand.nextInt(100)+1;
+        if(n > 93)
+            t = RvB.textures.get("bigPlant1");
+        else if(n > 86)
+            t = RvB.textures.get("bigPlant2");
+        else
+            t = RvB.textures.get("grass");
+        n = 0;
+        if(t != RvB.textures.get("grass"))
+            n = (int)Math.round(rand.nextInt(361)/90)*90;  
+        Tile grass = new Tile(t, "grass");
+        grass.setAngle(n);
+        grass.setRotateIndex(0);
+        grass.setX(indexX*unite);
+        grass.setY(indexY*unite);
+        Tile oldRoad = map.get(indexY).get(indexX);
+        if(oldRoad == spawn)
+            spawn = null;
+        map.get(indexY).set(indexX, grass);
+        // Remove old road & look for potential connect for its neighbors
+        if(oldRoad.nextRoad != null){
+            oldRoad.nextRoad.setPreviousRoad(null);
+            searchAndConnect(oldRoad.nextRoad);
+        }
+        if(oldRoad.previousRoad != null){
+            oldRoad.previousRoad.setNextRoad(null);
+            searchAndConnect(oldRoad.previousRoad);
+        }
+        roads.remove(oldRoad);
     }
     
     private String[] calculatePath(){
@@ -157,19 +186,19 @@ public class Creation extends AppCore{
         base = null;
         for(Tile road : roads){
             if(road.arrowAngle == -1)
-                return new String[]{"Path not valid.", "It has to begin, and end, from the left or right side.", "It cannot have extra roads."};
+                return Text.PATH_NOT_VALID.getLines();
             if(road.previousRoad != null && road.previousRoad.type == "nothing"){
                 if(spawn == null)
                     spawn = road;
                 else
-                    return new String[]{"There can't be more than one path !"};
+                    return Text.PATH_NOT_ALONE.getLines();
             } 
 
             if(road.nextRoad != null && road.nextRoad.type == "nothing")
                 base = road;
         }
         if(spawn == null || base == null)
-            return new String[]{"Can't be a loop !"};
+            return Text.PATH_NOT_LOOP.getLines();
         Tile road = spawn;
         int n = 0;
         while(road != null){
@@ -177,48 +206,13 @@ public class Creation extends AppCore{
             n++;
         }
         if(n < roads.size())
-            return new String[]{"It cannot have extra roads."};
+            return Text.PATH_NOT_ALONE.getLines();
         road = spawn;
         while(road.type != "nothing"){
             path.add(road);
             road = road.nextRoad;
         }
         return null;
-    }
-    
-    private void saveLevel(){
-        try{
-            // Level
-            String level = "";
-            for(ArrayList<Tile> row : map){
-                for(Tile tile : row){
-                    if(tile == spawn)
-                        level += "S";
-                    else if(tile == base)
-                        level += "B";
-                    else if(tile.type == "road")
-                        level += "0";
-                    else
-                        level += ".";
-                    level += " ";
-                }
-                level += "\n";
-            }
-            // Path
-            String pathCoords = "";
-            for(Tile road : path){
-                pathCoords += road.getIndexX()+"/";
-                pathCoords += road.getIndexY()+" ";
-            }
-            // Write in file
-            File file = new File("assets/levels/level_created.txt");
-            PrintWriter writer = new PrintWriter(file);
-            writer.print(level+"\nPATH: "+pathCoords);
-            writer.close();
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
     }
     
     private void searchAndConnect(Tile tile){

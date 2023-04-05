@@ -4,6 +4,9 @@ public final class TextManager {
     
     public enum Text{
         // RANDOM TEXT
+        ERROR(
+            new String[]{"Erreur"},
+            new String[]{"Error"}),
         MS(
             new String[]{"vitesse de déplacement"},
             new String[]{"move speed"}),
@@ -85,24 +88,51 @@ public final class TextManager {
         LONG(
             new String[]{"Long"},
             new String[]{"Long"}),
+        MAP_DOWNLOADED(
+            new String[]{"Map téléchargée !"},
+            new String[]{"Map downloaded !"}),
+        SAVE_PLAY(
+            new String[]{"Sauver & jouer"},
+            new String[]{"Save & play"}),  
+        CLEAR(
+            new String[]{"Nettoyer"},
+            new String[]{"Clear"}),
+        LOAD(
+            new String[]{"Charger"},
+            new String[]{"Load"}),
+        PATH_NOT_VALID(
+            new String[]{"Chemin invalide.", "Il doit commencer et finir", "depuis le côté gauche ou droite.", "Il ne peut pas y avoir plusieurs chemins."},
+            new String[]{"Path not valid.", "It has to begin and end from the left or right side.", "It cannot have extra roads."}),
+        PATH_NOT_ALONE(
+            new String[]{"Il ne peut pas y avoir plus d'un chemin !"},
+            new String[]{"There can't be more than one path !"}),
+        PATH_NOT_LOOP(
+            new String[]{"Ça ne peut pas être une boucle !"},
+            new String[]{"It can't be a loop !"}),
         
         
         // MENU
         ADVENTURE(
             new String[]{"Aventure"},
             new String[]{"Adventure"}),
-        RANDOM_MAP(
+        FIGHT(
             new String[]{"Combattre Bazoo"},
             new String[]{"Fight Bazoo"}),
-        CREATE_MAP(
-            new String[]{"Créer une map"},
-            new String[]{"Create a map"}),
+        RANDOM_MAP(
+            new String[]{"Map aléatoire"},
+            new String[]{"Random map"}),
+        LOAD_MAP(
+            new String[]{"Charger une map"},
+            new String[]{"Load a map"}),
+        CREATION(
+            new String[]{"Création"},
+            new String[]{"Creation"}),
         CONTINUE(
             new String[]{"Continuer"},
             new String[]{"Continue"}),
-        REGENERATE(
-            new String[]{"Regénérer"},
-            new String[]{"Regenerate"}),
+        NEW_GAME(
+            new String[]{"Nouvelle partie"},
+            new String[]{"New game"}),
         MODIFY(
             new String[]{"Modifier"},
             new String[]{"Modify"}),
@@ -219,6 +249,9 @@ public final class TextManager {
         SELECT_DIFF(
             new String[]{"Choisis une difficulté"},
             new String[]{"Select a difficulty"}),
+        SELECT_MODE(
+            new String[]{"Choisis un mode"},
+            new String[]{"Select a mode"}),
         CANCEL(
             new String[]{"Échape pour annuler"},
             new String[]{"Escape to cancel"}),
@@ -250,7 +283,7 @@ public final class TextManager {
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),
         GUIDE(
-            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ça sera utile pour acheter des tourelles pour défendre votre terrain !"},
+            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ce sera utile pour acheter des tourelles pour défendre votre terrain !"},
             new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "The game ends whenever your health hits 0.", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
         INFO(
             new String[]{"Informations"},

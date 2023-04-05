@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Math.cos;
@@ -20,8 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import managers.TextManager;
 import managers.PopupManager;
+import managers.TextManager.Text;
 import static org.lwjgl.BufferUtils.createByteBuffer;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -75,7 +79,7 @@ public class RvB{
     public static double lastUpdate, lastUpdateFPS;
     public static double deltaTime;
     public static Menu menu;
-    public static Game game = null, adventureGame = null, randomGame = null, createdGame = null, savedGame = null;
+    public static Game game = null, adventureGame = null;
     public static Creation creation = null;
     public static Map<String, Texture> textures;
     public static Map<String, UnicodeFont> fonts;
@@ -94,7 +98,7 @@ public class RvB{
         try{
             Display.setLocation(0, 0);
             Display.setFullscreen(true);
-            //Display.setDisplayMode(new DisplayMode(windWidth, windHeight));
+            Display.setInitialBackground(112f/255f, 153/255f, 50/255f);
             Display.setResizable(false);
             Display.setTitle("RvB");
             Display.setIcon(new ByteBuffer[] {
@@ -396,9 +400,10 @@ public class RvB{
             
             // ESCAPE MENU
             if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0)){
-                switchStateTo(State.MENU);
                 if(PopupManager.Instance.onPopup())
                     PopupManager.Instance.closeCurrentPopup();
+                else
+                    switchStateTo(State.MENU);
             }
             
             // COMMANDES
@@ -484,42 +489,83 @@ public class RvB{
     }
     
     public static void newRandomMap(Difficulty difficulty){
-        randomGame = new Game(difficulty);
+        game = new Game(difficulty);
         
-        if(randomGame.path.size() == 0){
-            randomGame = null;
+        if(game.path.size() == 0){
+            game = null;
             return;
         }
-        game = randomGame;
         switchStateTo(State.GAME);
     }
     
     public static void newCreatedMap(Difficulty difficulty){
-        createdGame = new Game("created", difficulty);
-        game = createdGame;
+        game = new Game("created", difficulty);
         switchStateTo(State.GAME);
     }
     
-    public static boolean createEmptyMap(){
+    public static void newLoadedMap(String name, Difficulty difficulty){
+        game = new Game(name, difficulty);
+        if(game.path.size() == 0){
+            game = null;
+            PopupManager.Instance.popup(Text.ERROR.getText());
+            return;
+        }
+        switchStateTo(State.GAME);
+        debug("Map loaded : "+name);
+    }
+    
+    public static boolean createLevelCreatedFile(){
         try{
-            File file = new File("assets/levels/level_created.txt");
-            if(file.createNewFile()){
-                FileWriter myWriter = new FileWriter(file, false);
-                String emptyMap = "";
-                for(int i = 0 ; i < nbTileY ; i++){
-                    for(int j = 0 ; j < nbTileX ; j++)
-                        emptyMap += ". ";
-                    emptyMap += "\n";
-                }
-                myWriter.write(emptyMap);
-                myWriter.close();
-            }
+            File file = new File("levels/level_created.txt");
+            file.createNewFile();
             return true;
         }
         catch(Exception e){
             System.out.println(e);
             return false;
         }
+    }
+    
+    public static String selectMap(){
+        String name = "";
+        boolean success = false;
+        try {
+            Display.setFullscreen(false);
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            success = true;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LWJGLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
+        }
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+        chooser.setFileFilter(filter);
+        chooser.setCurrentDirectory(new File("levels/"));
+        int returnVal = chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            name = file.getName().substring(6, file.getName().length()-4);
+        }
+        success = false;
+        try {
+            Display.setFullscreen(true);
+            success = true;
+        } catch (LWJGLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
+        }
+
+        return name;
     }
     
     public static void switchStateTo(State s){
@@ -659,7 +705,6 @@ public class RvB{
             textures.put("cursorPointer", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_pointer.png"))));
             textures.put("cursorGrab", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cursor_grab.png"))));
             // Backgrounds
-            textures.put("disabled", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/disabled.png"))));
             textures.put("board", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/board.png"))));
             textures.put("darkBoard", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/dark_board.png"))));
             textures.put("title", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/title.png"))));
@@ -686,6 +731,7 @@ public class RvB{
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
             textures.put("arrow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow.png"))));
             textures.put("arrowBack", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_back.png"))));
+            textures.put("download", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/download.png"))));
             textures.put("lock", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/lock.png"))));
             textures.put("plus", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/plus.png"))));
             textures.put("optionIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/option_icon.png"))));
