@@ -170,8 +170,8 @@ public abstract class AppCore {
         
     }
     
-    protected void initMap(String lvlName){
-        path = readFile("levels/level_"+lvlName+".txt");
+    protected void initMap(String filePath){
+        path = readFile(filePath);
         fillMap(path);
         fixRoadNeighbors();
         fixRoadSprites();
@@ -390,7 +390,7 @@ public abstract class AppCore {
         textureID = RvB.loadTexture(mapImage);
     }
     
-    protected String saveLevel(String name, boolean overwrite){
+    protected String saveLevel(String name, String dir, boolean overwrite){
         String fileName = "";
         try{
             // Path
@@ -400,12 +400,12 @@ public abstract class AppCore {
                 pathCoords += road.getIndexY()+" ";
             }
             // Write in file
-            File file = new File("levels/level_"+name+".txt");
+            File file = new File(dir+"level_"+name+".txt");
             fileName = "level_"+name;
             if(!file.createNewFile() && !overwrite){
-                int i = 1;
+                int i = 0;
                 do{
-                    file = new File("levels/level_"+name+" ("+(i++)+").txt");
+                    file = new File(dir+"level_"+name+" ("+(++i)+").txt");
                 }while(!file.createNewFile());
                 fileName = "level_"+name+" ("+i+")";
             }
@@ -693,7 +693,7 @@ public abstract class AppCore {
         b.setBG(RvB.textures.get("download"));
         Button dlBut = b;
         b.setFunction(__ -> {
-            String name = saveLevel("downloaded", false);
+            String name = saveLevel("downloaded", "levels/", false);
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{

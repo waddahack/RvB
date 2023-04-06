@@ -36,6 +36,7 @@ les input pressé, puis check avec la liste, pour use une seule fois .next()
 ##
 
 #PROBLEMS#
+- Creation : mettre une base, puis faire le chemin. La base n'a pas d'arrow donc erreur
 - PowerTower -> update : y'a un commentaire pointant un problème
 - bug sprite qui tourne (Commence en plein milieu ? A pas le temps de finir ?) /!\ A vérifier si ça y est encore /!\
 ##

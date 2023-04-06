@@ -5,6 +5,7 @@ import java.util.Random;
 import managers.PopupManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.State;
 import static rvb.RvB.mouseDown;
@@ -23,7 +24,7 @@ public class Creation extends AppCore{
     public Creation(){
         init(RvB.Difficulty.MEDIUM);
         initOverlays();   
-        initMap("created");
+        initMap("assets/temp/level_created.txt");
     }
     
     @Override
@@ -56,13 +57,13 @@ public class Creation extends AppCore{
         o = new Overlay(0, 0, RvB.windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         // Play button
-        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (260*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setText(Text.SAVE_PLAY, RvB.fonts.get("normalXL"));
+        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (240*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setText(Text.PLAY, RvB.fonts.get("normalXL"));
         b.setFunction(__ -> {
             if(Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
                 String[] error = calculatePath();
                 if(error == null){
-                    saveLevel("created", true);
+                    saveLevel("created", "assets/temp/", true);
                     PopupManager.Instance.chooseDifficulty("created");
                 }
                 else{
@@ -101,10 +102,71 @@ public class Creation extends AppCore{
         });
         o.addButton(b);
         overlays.add(o);
+        // Download button
+        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b.setBG(RvB.textures.get("download"));
+        b.setFunction(__ -> {
+            String[] error = calculatePath();
+            String name;
+            if(error == null)
+                name = saveLevel("created", "levels/", false);
+            else{
+                path = (ArrayList<Tile>) roads.clone();
+                name = saveLevel("created_unfinished", "levels/", false);
+            }
+            if(name.isEmpty())
+                PopupManager.Instance.popup(Text.ERROR.getText());
+            else{
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", "levels/"+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
+            }
+        });
+        o.addButton(b);
         
         o = new Overlay(0, (int) (windHeight-60*ref), RvB.windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o);
+    }
+    
+    private String[] calculatePath(){
+        if(roads.size() == 0)
+            return new String[]{"???"};
+        path.clear();
+        spawn = null;
+        base = null;
+        for(Tile road : roads){
+            if(road.arrowAngle == -1)
+                return Text.PATH_NOT_VALID.getLines();
+            if(road.previousRoad != null && road.previousRoad.type == "nothing"){
+                if(spawn == null)
+                    spawn = road;
+                else
+                    return Text.PATH_NOT_ALONE.getLines();
+            } 
+
+            if(road.nextRoad != null && road.nextRoad.type == "nothing")
+                base = road;
+        }
+        if(spawn == null || base == null){
+            if(spawn == null && base == null)
+                return Text.PATH_NOT_LOOP.getLines();
+            else
+                return Text.PATH_NOT_VALID.getLines();
+        }
+            
+        Tile road = spawn;
+        int n = 0;
+        while(road != null){
+            road = road.nextRoad;
+            n++;
+        }
+        if(n < roads.size())
+            return Text.PATH_NOT_ALONE.getLines();
+        road = spawn;
+        while(road.type != "nothing"){
+            path.add(road);
+            road = road.nextRoad;
+        }
+        return null;
     }
     
     @Override
@@ -176,43 +238,6 @@ public class Creation extends AppCore{
             searchAndConnect(oldRoad.previousRoad);
         }
         roads.remove(oldRoad);
-    }
-    
-    private String[] calculatePath(){
-        if(roads.size() == 0)
-            return new String[]{"???"};
-        path.clear();
-        spawn = null;
-        base = null;
-        for(Tile road : roads){
-            if(road.arrowAngle == -1)
-                return Text.PATH_NOT_VALID.getLines();
-            if(road.previousRoad != null && road.previousRoad.type == "nothing"){
-                if(spawn == null)
-                    spawn = road;
-                else
-                    return Text.PATH_NOT_ALONE.getLines();
-            } 
-
-            if(road.nextRoad != null && road.nextRoad.type == "nothing")
-                base = road;
-        }
-        if(spawn == null || base == null)
-            return Text.PATH_NOT_LOOP.getLines();
-        Tile road = spawn;
-        int n = 0;
-        while(road != null){
-            road = road.nextRoad;
-            n++;
-        }
-        if(n < roads.size())
-            return Text.PATH_NOT_ALONE.getLines();
-        road = spawn;
-        while(road.type != "nothing"){
-            path.add(road);
-            road = road.nextRoad;
-        }
-        return null;
     }
     
     private void searchAndConnect(Tile tile){

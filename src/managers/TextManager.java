@@ -91,9 +91,9 @@ public final class TextManager {
         MAP_DOWNLOADED(
             new String[]{"Map téléchargée !"},
             new String[]{"Map downloaded !"}),
-        SAVE_PLAY(
-            new String[]{"Sauver & jouer"},
-            new String[]{"Save & play"}),  
+        PLAY(
+            new String[]{"Jouer"},
+            new String[]{"Play"}),  
         CLEAR(
             new String[]{"Nettoyer"},
             new String[]{"Clear"}),

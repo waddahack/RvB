@@ -10,10 +10,15 @@ import static rvb.RvB.nbTileY;
 
 public class Game extends AppCore{
     
-    public Game(String lvlName, Difficulty diff){
+    public Game(String lvlPath, Difficulty diff){
         init(diff);
         initOverlays();
-        initMap(lvlName);
+        initMap(lvlPath);
+        String error = calculatePath();
+        if(error != null){
+            path.clear();
+            PopupManager.Instance.popup(error);
+        }
     }
     
     public Game(Difficulty diff){
@@ -211,5 +216,43 @@ public class Game extends AppCore{
         }
 
         return path;
+    }
+    
+    private String calculatePath(){
+        String error = Text.PATH_NOT_VALID.getText();
+        if(path.size() == 0)
+            return error;
+        ArrayList<Tile> roads = (ArrayList<Tile>) path.clone();
+        spawn = null;
+        base = null;
+        for(Tile road : roads){
+            if(road.arrowAngle == -1)
+                return error;
+            if(road.previousRoad != null && road.previousRoad.type == "nothing"){
+                if(spawn == null){
+                    if(!(road.getIndexX() == 0 || road.getIndexX() == nbTileX))
+                        return error;
+                    spawn = road;
+                }
+                else
+                    return error;
+            } 
+            if(road.nextRoad != null && road.nextRoad.type == "nothing"){
+                if(!(road.getIndexX() == 0 || road.getIndexX() == nbTileX-1))
+                    return error;
+                base = road;
+            } 
+        }
+        if(spawn == null || base == null)
+            return error;
+        Tile road = spawn;
+        int n = 0;
+        while(road != null){
+            road = road.nextRoad;
+            n++;
+        }
+        if(n < roads.size())
+            return error;
+        return null;
     }
 }

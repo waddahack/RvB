@@ -499,24 +499,25 @@ public class RvB{
     }
     
     public static void newCreatedMap(Difficulty difficulty){
-        game = new Game("created", difficulty);
+        game = new Game("assets/temp/level_created.txt", difficulty);
         switchStateTo(State.GAME);
     }
     
-    public static void newLoadedMap(String name, Difficulty difficulty){
-        game = new Game(name, difficulty);
+    public static void newLoadedMap(String path, Difficulty difficulty){
+        game = new Game(path, difficulty);
         if(game.path.size() == 0){
             game = null;
-            PopupManager.Instance.popup(Text.ERROR.getText());
+            if(!PopupManager.Instance.onPopup())
+                PopupManager.Instance.popup(Text.ERROR.getText());
             return;
         }
         switchStateTo(State.GAME);
-        debug("Map loaded : "+name);
+        debug("Map loaded : "+path);
     }
     
     public static boolean createLevelCreatedFile(){
         try{
-            File file = new File("levels/level_created.txt");
+            File file = new File("assets/temp/level_created.txt");
             file.createNewFile();
             return true;
         }
@@ -527,7 +528,7 @@ public class RvB{
     }
     
     public static String selectMap(){
-        String name = "";
+        String filePath = "";
         boolean success = false;
         try {
             Display.setFullscreen(false);
@@ -552,8 +553,7 @@ public class RvB{
         chooser.setCurrentDirectory(new File("levels/"));
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            name = file.getName().substring(6, file.getName().length()-4);
+            filePath = chooser.getSelectedFile().getPath();
         }
         success = false;
         try {
@@ -565,7 +565,7 @@ public class RvB{
             if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
         }
 
-        return name;
+        return filePath;
     }
     
     public static void switchStateTo(State s){

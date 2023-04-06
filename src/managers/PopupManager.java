@@ -81,9 +81,9 @@ public final class PopupManager {
         chooseMap.addButton(b);
         b = new Button(chooseMap.getW()/2, 8*chooseMap.getH()/10, (int)(butWith*1.2), (int)(butHeight*1.2), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setFunction(__ -> {
-            String lvlName = RvB.selectMap();
-            if(!lvlName.isEmpty())
-                chooseDifficulty(lvlName);
+            String filePath = RvB.selectMap();
+            if(!filePath.isEmpty())
+                chooseDifficulty(filePath);
                 // Then it does newLoadedMap()
         });
         chooseMap.addButton(b);
