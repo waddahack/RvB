@@ -640,7 +640,7 @@ public class RvB{
     
     public static void updateProperties(){
         try {
-            RVBDB.Instance.saveProperties((game != null && !game.ended), progression, progressionTuto, cheatsActivated);
+            RVBDB.Instance.saveProperties((game != null && !game.ended && !game.gameOver && !game.gameWin), progression, progressionTuto, cheatsActivated);
         } catch (SQLException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }

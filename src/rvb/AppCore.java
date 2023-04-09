@@ -104,7 +104,7 @@ public abstract class AppCore {
     //public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
     public String buffsUsed = "";
-    protected boolean gameOver, gameWin;
+    public boolean gameOver, gameWin;
     public boolean inWave;
     public Enemy enemySelected = null;
     public boolean ended = false;
