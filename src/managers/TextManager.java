@@ -7,6 +7,9 @@ public final class TextManager {
         ERROR(
             new String[]{"Erreur"},
             new String[]{"Error"}),
+        SUCCESS(
+            new String[]{"Succès"},
+            new String[]{"Success"}),
         MS(
             new String[]{"vitesse de déplacement"},
             new String[]{"move speed"}),

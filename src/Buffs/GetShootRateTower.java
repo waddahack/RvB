@@ -6,7 +6,7 @@ import rvb.RvB;
 public class GetShootRateTower extends Buff{
     
     public GetShootRateTower(){
-        super("getShootRateTower", Text.TOWER_SHOOTRATE, Text.BUFF_SHOOTRATE_TOWER_DESC, 1);
+        super("GetShootRateTower", Text.TOWER_SHOOTRATE, Text.BUFF_SHOOTRATE_TOWER_DESC, 1);
         this.logo = RvB.textures.get("shootrateTower");
     }
     

@@ -1,12 +1,10 @@
 #A FAIRE#
-- Tuto embbeded database java -> https://www.youtube.com/watch?v=7FTG-AQvu2g&list=PLR2yPNIFMlL8e7NP-tsZ-XDfniK0XRS09&index=6
 - Achievments/progression : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre -> DB
 - changer mdp cheats + débloquer cheats enlève la progression de la game
 - popup icones et noms, ou tuto faudra bien un jour -> DB
 ##
 
 #NEXT#
-- Faire une sauvegarde auto & manuelle -> DB
 - Rocks !
 - Mode aventure
 ##

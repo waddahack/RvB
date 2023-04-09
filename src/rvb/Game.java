@@ -21,6 +21,12 @@ public class Game extends AppCore{
         }
     }
     
+    public Game(ArrayList<Tile> path, Difficulty diff){
+        init(diff);
+        initOverlays();
+        initMap(path);
+    }
+    
     public Game(Difficulty diff){
         init(diff);
         initOverlays();
@@ -167,7 +173,7 @@ public class Game extends AppCore{
                 y = (int) right.getY();
             }
             else if(nbRoadLeft > 0 || map.get(y).get(x) != null){ // On continue le pathing
-                r = rand.nextInt(2+diff.value); // proba tout droit
+                r = rand.nextInt(2+diff.probabilityRange); // proba tout droit
                 if(r != 0 && neighbors.contains(accross)){ // tout droit
                     x = (int) accross.getX();
                     y = (int) accross.getY();
@@ -190,7 +196,7 @@ public class Game extends AppCore{
                             neighbors.set(0, neighbors.get(1));
                             neighbors.set(1, temp);
                         }
-                        r = rand.nextInt(3+diff.value); // proba direction vers le centre
+                        r = rand.nextInt(3+diff.probabilityRange); // proba direction vers le centre
                         if(r > 0){
                             x = (int) neighbors.get(0).getX();
                             y = (int) neighbors.get(0).getY();

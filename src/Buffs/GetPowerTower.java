@@ -6,7 +6,7 @@ import rvb.RvB;
 public class GetPowerTower extends Buff{
     
     public GetPowerTower(){
-        super("getPowerTower", Text.TOWER_POWER, Text.BUFF_POWER_TOWER_DESC, 1);
+        super("GetPowerTower", Text.TOWER_POWER, Text.BUFF_POWER_TOWER_DESC, 1);
         this.logo = RvB.textures.get("powerTower");
     }
     

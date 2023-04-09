@@ -13,8 +13,22 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.*;
 import Utils.MyMath;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import java.io.Serializable;
 
-public abstract class Tower extends Shootable{
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Raztech.class, name = "Raztech"),
+    @JsonSubTypes.Type(value = PowerTower.class, name = "PowerTower"),
+    @JsonSubTypes.Type(value = RangeTower.class, name = "RangeTower"),
+    @JsonSubTypes.Type(value = ShootRateTower.class, name = "ShootRateTower"),
+    @JsonSubTypes.Type(value = BasicTower.class, name = "BasicTower"),
+    @JsonSubTypes.Type(value = CircleTower.class, name = "CircleTower"),
+    @JsonSubTypes.Type(value = BigTower.class, name = "BigTower"),
+    @JsonSubTypes.Type(value = FlameTower.class, name = "FlameTower")
+})
+public abstract class Tower extends Shootable implements Serializable{
 
     public int price;
     
@@ -26,6 +40,7 @@ public abstract class Tower extends Shootable{
     protected ArrayList<Upgrade> upgrades;
     public String type;
     protected Button focusButton;
+    public int[] nbUpgradesUsed;
     
     public Tower(String type){
         super();
@@ -182,6 +197,17 @@ public abstract class Tower extends Shootable{
         SoundManager.Instance.playOnce(SoundManager.SOUND_BUILD);
     }
     
+    public void autoPlace(ArrayList<ArrayList<Tile>> map){
+        x = Math.floorDiv((int)x, unite);
+        y = Math.floorDiv((int)y, unite);
+        map.get((int) y).set((int) x, null);
+        x = x*unite+unite/2;
+        y = y*unite+unite/2;
+        game.raisePrice(this);
+        isPlaced = true;
+        started = true;
+    }
+    
     @Override
     public void die(){
         super.die();
@@ -243,6 +269,8 @@ public abstract class Tower extends Shootable{
     }
     
     public int getPreRange(){
+        if(upgrades.size() == 0)
+            return getRange();
         int i = 0;
         Upgrade up = upgrades.get(i);
         while(up.name != "Range" && i < upgrades.size()-1)
@@ -250,6 +278,10 @@ public abstract class Tower extends Shootable{
         if(up.name != "Range" || !up.button.isHovered())
             return getRange();
         return (int) up.getIncreasedValueWithBonus();
+    }
+    
+    public Button getFocusButton(){
+        return focusButton;
     }
     
     public boolean isForBuff(){
@@ -270,5 +302,23 @@ public abstract class Tower extends Shootable{
     
     public int getPrice(){
         return price;
+    }
+    
+    @Override
+    public String toString(){
+        String nbUpgradesUsed = "[";
+        for(Upgrade up : upgrades)
+            nbUpgradesUsed += up.button.getNbClicks() + (up == upgrades.get(upgrades.size()-1) ? "" : ", ");
+        nbUpgradesUsed += "]";
+        return "{"+
+                "\"type\":\""+type+"\", "+
+                "\"x\":"+x+", "+
+                "\"y\":"+y+", "+
+                "\"angle\":"+angle+", "+
+                "\"focusIndex\":"+getFocusIndex()+", "+
+                "\"enemiesKilled\":"+enemiesKilled+", "+
+                "\"damagesDone\":"+damagesDone+", "+
+                "\"nbUpgradesUsed\":"+nbUpgradesUsed+
+               "}";
     }
 }

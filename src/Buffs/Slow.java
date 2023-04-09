@@ -6,7 +6,7 @@ import static rvb.RvB.game;
 public class Slow extends Buff{
     
     public Slow(){
-        super("slow", Text.BUFF_SLOW, Text.BUFF_SLOW_DESC, 3);
+        super("Slow", Text.BUFF_SLOW, Text.BUFF_SLOW_DESC, 3);
     }
     
     @Override

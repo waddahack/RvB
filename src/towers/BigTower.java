@@ -25,7 +25,7 @@ public class BigTower extends Tower{
     private ArrayList<Integer> flamesX = new ArrayList<>(), flamesY = new ArrayList<>();
     
     public BigTower() {
-        super("bigTower");
+        super("BigTower");
         textures.add(RvB.textures.get("bigTowerBase"));
         textures.add(RvB.textures.get("bigTowerTurret"));
         rotateIndex = 1;

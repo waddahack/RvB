@@ -1,5 +1,6 @@
 package rvb;
 
+import Buffs.*;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import managers.SoundManager;
 import java.awt.Color;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import java.nio.ByteBuffer;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import managers.TextManager;
 import managers.PopupManager;
+import managers.RVBDB;
 import managers.TextManager.Text;
 import static org.lwjgl.BufferUtils.createByteBuffer;
 import org.lwjgl.LWJGLException;
@@ -39,7 +42,10 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
+import towers.Tower;
 import ui.Overlay;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import towers.Raztech;
 
 public class RvB{
     
@@ -50,11 +56,15 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(1), MEDIUM(2), HARD(3), HARDCORE(3); // value atm used only for turns probability
-        public int value;
+        EASY("EASY", 1, 1), MEDIUM("MEDIUM", 2, 2), HARD("HARD", 3, 3), HARDCORE("HARDCORE", 3, 5); 
+        public int probabilityRange; // for turns probability maps random
+        public int riskValue;
+        public String name;
         
-        Difficulty(int value){
-            this.value = value;
+        Difficulty(String name, int probabilityRange, int riskValue){
+            this.name = name;
+            this.probabilityRange = probabilityRange;
+            this.riskValue = riskValue;
         }
         
         public int getNbRoad(){
@@ -91,7 +101,11 @@ public class RvB{
     private static ArrayList<String> consoleLines = new ArrayList<>();
     private static String commandPrompt = "";
     private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
-    private static boolean cheatsActivated = false, listeningKeyboard = false;
+    private static boolean listeningKeyboard = false;
+    // PROPERTIES
+    private static int progression;
+    private static String progressionTuto;
+    private static boolean cheatsActivated;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -114,6 +128,7 @@ public class RvB{
         } catch (IOException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         unite = Math.min(Math.floorDiv(Display.getWidth(), nbTileX), Math.floorDiv(Display.getHeight(), nbTileY));
         if(unite%2 != 0)
             unite -= 1;
@@ -169,7 +184,7 @@ public class RvB{
         }
     }
     
-    public static void init(){    
+    public static void init(){
         initTextures();
         initColors();
         initFonts();
@@ -188,11 +203,107 @@ public class RvB{
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
         TextManager.initialize();
+        RVBDB.initialize();
         menu = new Menu();
         lastUpdate = System.currentTimeMillis();
         lastUpdateFPS = System.currentTimeMillis();
     }
 
+    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
+        progression = prog;
+        progressionTuto = progTuto;
+        cheatsActivated = cheatsOn;
+        if(inGame){
+            Difficulty diff = Difficulty.MEDIUM;
+            switch(difficulty){
+                case "EASY":
+                    diff = Difficulty.EASY;
+                    break;
+                case "MEDIUM":
+                    diff = Difficulty.MEDIUM;
+                    break;
+                case "HARD":
+                    diff = Difficulty.HARD;
+                    break;
+                case "HARDCORE":
+                    diff = Difficulty.HARDCORE;
+                    break;
+            }
+            String[] arrayPath = pathString.split(";");
+            ArrayList<Tile> path = new ArrayList<>();
+            for(String pos : arrayPath){
+                Tile road = new Tile(RvB.textures.get("roadStraight"), "road");
+                String[] indexes = pos.split("/");
+                road.setRotateIndex(0);
+                road.setX(Integer.parseInt(indexes[0])*unite);
+                road.setY(Integer.parseInt(indexes[1])*unite);
+                path.add(road);
+            }
+            setMap(path, diff);
+            if(game != null){
+                game.gameLoaded = true;
+                game.life = life;
+                game.money = money;
+                game.waveNumber = waveNumber;
+                game.enemiesBonusLife = 15*((int)((waveNumber+1)/AppCore.bossEvery));
+                game.enemiesBonusMS = 6*((int)((waveNumber+1)/AppCore.bossEvery));
+                try {
+                    // Towers
+                    ObjectMapper mapper = new ObjectMapper();
+                    Tower[] towers = mapper.readValue(arrayTowers, Tower[].class);
+                    for(Tower t : towers){
+                        game.towers.add(t);
+                        t.autoPlace(game.map);
+                        if(t.getFocusButton() != null)
+                            t.getFocusButton().indexSwitch = t.getFocusIndex();
+                        for(int i = 0 ; i < t.nbUpgradesUsed.length ; i++)
+                            t.getUpgrades().get(i).setNbUsed(t.nbUpgradesUsed[i]);
+                        if(t.name == Text.RAZTECH){
+                            game.raztech = (Raztech) t;
+                            for(int i = 0 ; i < game.raztech.lvl-1 ; i++)
+                                game.raztech.levelUp(true);
+                        }
+                    }  
+                    // Buffs
+                    Buff[] buffs = mapper.readValue(arrayBuffs, Buff[].class);
+                    game.buffs.clear();
+                    for(Buff b : buffs)
+                        game.buffs.push(b);
+                    // BuffsUsed
+                    String[] arrayBuffsUsed = buffsUsed.split(";");
+                    for(String bu : arrayBuffsUsed){
+                        switch(bu){
+                            case "OS":
+                                new OS().pick();
+                                break;
+                            case "Slow":
+                                new Slow().pick();
+                                break;
+                            case "UpPowerTower":
+                                new UpPowerTower().pick();
+                                break;
+                            case "UpRangeTower":
+                                new UpRangeTower().pick();
+                                break;
+                            case "UpShootRateTower":
+                                new UpShootRateTower().pick();
+                                break;
+                            case "Upgrade":
+                                new Upgrade().pick();
+                                break;
+                            case "XP":
+                                new XP().pick();
+                                break;
+                        }
+                    }
+                    game.buffsUsed = buffsUsed;
+                } catch (IOException ex) {
+                    Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
     public static void update() {
         glClear(GL_COLOR_BUFFER_BIT);
         switch(state){
@@ -222,7 +333,7 @@ public class RvB{
         renderDebugTool();     
         
         renderMouse();
-    }  
+    } 
     
     private static void initDebugTool(){
         debugTool = new Overlay((int) (windWidth-290*ref), windHeight/6, (int) (280*ref), 4*windHeight/6);
@@ -256,10 +367,12 @@ public class RvB{
             debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Game", fonts.get("normalS"), "center");
             debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Wave :", fonts.get("normalS"), "topLeft");
             debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.waveNumber+"", fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Nb towers :", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
-            debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Raztech lvl :", fonts.get("normalS"), "topLeft");
-            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Difficulty :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), game.difficulty.name, fonts.get("normalS"), "topRight");
+            debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Nb towers :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), game.towers.size()+"", fonts.get("normalS"), "topRight");
+            /*debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Raztech lvl :", fonts.get("normalS"), "topLeft");
+            debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), (game.raztech != null ? game.raztech.lvl+"" : ""), fonts.get("normalS"), "topRight");*/
             debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Nb enemies :", fonts.get("normalS"), "topLeft");
             debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), ""+game.enemies.size(), fonts.get("normalS"), "topRight");
             debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Time passed in game :", fonts.get("normalS"), "topLeft");
@@ -270,9 +383,11 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Selected enemy", fonts.get("normalS"), "center");
                 debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Life :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.enemySelected.getRoundedLife()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Move speed :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText((int)(10*ref), (int)((s+40)*ref), "Total move speed :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), formatter.format(game.enemySelected.getMoveSpeed()), fonts.get("normalS"), "topRight");
-                s += 80;
+                debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Bonus Life/MS :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), formatter.format(game.enemySelected.bonusLife)+"/"+formatter.format(game.enemySelected.bonusMS), fonts.get("normalS"), "topRight");
+                s += 100;
             }
             // Selected tower
             if(game.towerSelected != null){
@@ -289,8 +404,6 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.enemiesKilled+"", fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+120)*ref), "Damages done :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+120)*ref), game.towerSelected.damagesDone+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+140)*ref), "Money gained :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+140)*ref), game.towerSelected.moneyGained+"", fonts.get("normalS"), "topRight");
             }
         }
         // CONSOLE
@@ -385,13 +498,14 @@ public class RvB{
                 }
                 else if(Keyboard.getEventKey() == Keyboard.KEY_RETURN){
                     PopupManager.Instance.closeCurrentPopup();
-                    if(commandPrompt.equals("MARINRUELEN")){
+                    // Here to check prompt command and do stuff
+                    /*if(commandPrompt.equals("MARINRUELEN")){
                         cheatsActivated = !cheatsActivated;
                         debug("Cheats "+(cheatsActivated?"on.":"off."));
                     }
                     else{
                         debug("Wrong password.");
-                    }
+                    }*/
                     listeningKeyboard = false;
                 }
                 else
@@ -503,7 +617,7 @@ public class RvB{
         switchStateTo(State.GAME);
     }
     
-    public static void newLoadedMap(String path, Difficulty difficulty){
+    public static void loadMap(String path, Difficulty difficulty){
         game = new Game(path, difficulty);
         if(game.path.size() == 0){
             game = null;
@@ -513,6 +627,23 @@ public class RvB{
         }
         switchStateTo(State.GAME);
         debug("Map loaded : "+path);
+    }
+    
+    public static void setMap(ArrayList<Tile> path, Difficulty difficulty){
+        game = new Game(path, difficulty);
+        if(game.path.size() == 0){
+            game = null;
+            debug("Error : Map saved not set");
+            return;
+        }
+    }
+    
+    public static void updateProperties(){
+        try {
+            RVBDB.Instance.saveProperties((game != null && !game.ended), progression, progressionTuto, cheatsActivated);
+        } catch (SQLException ex) {
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static boolean createLevelCreatedFile(){
@@ -693,6 +824,7 @@ public class RvB{
     }
     
     public static void exit(){
+        RVBDB.Instance.exitDB();
         Display.destroy();
         System.exit(0);
     }
@@ -781,13 +913,13 @@ public class RvB{
             textures.put("shootrateTowerBullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower_bullet.png"))));
             textures.put("shootRateUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/attackSpeed_up.png"))));
             // Buffs
-            textures.put("buff_slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
-            textures.put("buff_upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
-            textures.put("buff_os", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_os.png"))));
-            textures.put("buff_xp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_xp.png"))));
-            textures.put("buff_upPowerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upPowerTower.png"))));
-            textures.put("buff_upRangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upRangeTower.png"))));
-            textures.put("buff_upShootRateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upShootRateTower.png"))));
+            textures.put("buff_Slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
+            textures.put("buff_Upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
+            textures.put("buff_OS", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_os.png"))));
+            textures.put("buff_XP", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_xp.png"))));
+            textures.put("buff_UpPowerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upPowerTower.png"))));
+            textures.put("buff_UpRangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upRangeTower.png"))));
+            textures.put("buff_UpShootRateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upShootRateTower.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));

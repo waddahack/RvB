@@ -9,7 +9,7 @@ import towers.Tower;
 public class UpPowerTower extends Buff{
     
     public UpPowerTower(){
-        super("upPowerTower", Text.BUFF_UP_POWER_TOWER, Text.BUFF_UP_POWER_TOWER_DESC, 3);
+        super("UpPowerTower", Text.BUFF_UP_POWER_TOWER, Text.BUFF_UP_POWER_TOWER_DESC, 3);
     }
     
     @Override

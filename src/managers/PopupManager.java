@@ -104,7 +104,7 @@ public final class PopupManager {
             else if(gameType.equals("created"))
                 RvB.newCreatedMap(RvB.Difficulty.EASY);
             else
-                RvB.newLoadedMap(gameType, RvB.Difficulty.EASY);
+                RvB.loadMap(gameType, RvB.Difficulty.EASY);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         b.setOnHoverFunction(__ -> {

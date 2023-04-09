@@ -25,7 +25,7 @@ public class Button {
     private boolean mouseEntered = false;
     private boolean itemFramed = false;
     private Clip click;
-    private boolean clickSound = true;
+    public boolean clickSound = true;
     private boolean selected = false;
     public int indexSwitch = -1;
     private Consumer<Object> clickFunction = null, onHoverFunction = null;

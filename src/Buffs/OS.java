@@ -6,7 +6,7 @@ import rvb.RvB;
 public class OS extends Buff{
     
     public OS(){
-        super("os", Text.BUFF_OS, Text.BUFF_OS_DESC, 3);
+        super("OS", Text.BUFF_OS, Text.BUFF_OS_DESC, 3);
     }
     
     @Override

@@ -11,6 +11,7 @@ import towers.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import managers.PopupManager;
+import managers.RVBDB;
 import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -93,14 +95,15 @@ public abstract class AppCore {
     
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
-    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
+    public int money, life, waveNumber, nbWaveMax, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
     public int oldRaztechXpos = -1, oldRaztechYpos = -1;
     private int oldGameSpeed = 0;
     public ArrayList<Shootable> towers, towersDestroyed;
     public ArrayList<Shootable> enemies, enemiesDead, enemiesToAdd;
     public ArrayList<Tile> path;
-    public ArrayList<Rock> rocks;
+    //public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
+    public String buffsUsed = "";
     protected boolean gameOver, gameWin;
     public boolean inWave;
     public Enemy enemySelected = null;
@@ -110,10 +113,11 @@ public abstract class AppCore {
     public Bazoo bazoo = null;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
-    public boolean bossDead = false, bossDefeated = false;
-    private static int bossEvery = 6;
+    public boolean bossDead = false, bossDefeated = false, gameLoaded = false;
+    public static int bossEvery = 6;
     private boolean keyDown = false;
     private static Random random;
+    public Difficulty difficulty;
     protected int textureID = -10;
     private float waveBalanceMult;
     public int timeInGamePassed;
@@ -124,7 +128,7 @@ public abstract class AppCore {
     }
     
     protected void init(Difficulty diff){
-        rocks = new ArrayList<>();
+        //rocks = new ArrayList<>();
         towers = new ArrayList<>();
         towersDestroyed = new ArrayList<>();
         enemies = new ArrayList<>();
@@ -143,6 +147,8 @@ public abstract class AppCore {
         bigTowerPrice = BigTower.startPrice;
         
         waveNumber = 1;
+        nbWaveMax = 30;
+        difficulty = diff;
         if(diff == Difficulty.EASY){
             life = 125;
             money = 225;
@@ -390,6 +396,35 @@ public abstract class AppCore {
         textureID = RvB.loadTexture(mapImage);
     }
     
+    protected void saveGame(boolean showPopup){
+        RvB.updateProperties();
+        
+        String pathString = "", arrayTowers = "[", arrayBuffs = "[";
+        for(Tile road : path)
+            pathString += road.getIndexX()+"/"+road.getIndexY()+(road == path.get(path.size()-1) ? "" : ";");
+        for(Shootable t : towers){
+            Tower tower = (Tower) t;
+            arrayTowers += tower.toString()+(t == towers.get(towers.size()-1) ? "" : ", ");
+        }
+        arrayTowers += "]";
+        for(Buff b : buffs)
+            arrayBuffs += b.toString()+(b == buffs.get(buffs.size()-1) ? "" : ", ");
+        arrayBuffs += "]";
+        try {
+            boolean success = RVBDB.Instance.saveGame(waveNumber, money, life, pathString, difficulty.name, arrayTowers, arrayBuffs, buffsUsed);
+            if(showPopup){
+                if(!success)
+                    PopupManager.Instance.popup(Text.ERROR.getText());
+                else
+                    PopupManager.Instance.popup(Text.SUCCESS.getText());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+            if(showPopup)
+                PopupManager.Instance.popup(Text.ERROR.getText());
+        }
+    }
+    
     protected String saveLevel(String name, String dir, boolean overwrite){
         String fileName = "";
         try{
@@ -434,7 +469,7 @@ public abstract class AppCore {
                     p = 0.08f;
                 if(random.nextFloat() <= p){
                     Rock r = new Rock(j*unite, i*unite, random.nextInt(3));
-                    rocks.add(r);
+                    //rocks.add(r);
                     map.get(i).set(j, r);
                 }  
             }
@@ -487,11 +522,11 @@ public abstract class AppCore {
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    if(waveNumber > 30){
+                    if(waveNumber > nbWaveMax){
                         gameWin = true;
                     }
                     else{
-                        enemiesBonusLife += 15;
+                        enemiesBonusLife += 15; // À changer aussi dans RvB.initPropertiesAndGame
                         enemiesBonusMS += 6;
                         PopupManager.Instance.enemiesUpgraded(new String[]{
                             "+15% "+Text.HP.getText(),
@@ -501,15 +536,17 @@ public abstract class AppCore {
                         bossDefeated = false;
                     }
                 }
+                if(!gameOver && !gameWin)
+                    saveGame(false);
             }
         }
         
         renderOverlays();
         
-        if(gameOver)
-            gameOver();
-        else if(gameWin)
-            gameWin();
+        if(gameOver || gameWin)
+            gameEnded();
+        if(gameLoaded)
+            gameLoaded = false;
     }
     
     protected void checkInput(){
@@ -619,8 +656,8 @@ public abstract class AppCore {
         
         for(Tile road : path)
             road.renderSteps();
-        for(Rock rock : rocks)
-            rock.render();
+        /*for(Rock rock : rocks)
+            rock.render();*/
     }
     
     protected void initOverlays(){
@@ -912,16 +949,16 @@ public abstract class AppCore {
     
     public void raisePrice(Tower t){
         switch(t.type){
-            case "basicTower":
+            case "BasicTower":
                 basicTowerPrice *= 1.2;
                 break;
-            case "circleTower":
+            case "CircleTower":
                 circleTowerPrice *= 1.08;
                 break;
-            case "bigTower":
+            case "BigTower":
                 bigTowerPrice *= 1.1;
                 break;
-            case "flameTower":
+            case "FlameTower":
                 flameTowerPrice *= 1.1;
                 break;
         }
@@ -972,11 +1009,26 @@ public abstract class AppCore {
         return game.waveNumber%bossEvery == 0;
     }
     
-    protected static void gameWin(){
-        PopupManager.Instance.gameWin();
+    protected void gameEnded(){
+        if(PopupManager.Instance.onPopup() || RvB.stateChanged)
+            return;
+        addProgressionPoints();
+        RvB.updateProperties();
+        if(gameWin)
+            PopupManager.Instance.gameWin();
+        else
+            PopupManager.Instance.gameOver();
     }
-    protected static void gameOver(){
-        PopupManager.Instance.gameOver();
+    
+    private void addProgressionPoints(){
+        int points;
+        // passe en boucle ici
+        if(gameWin)
+            points = nbWaveMax*nbWaveMax*2*difficulty.riskValue;
+        else{
+            points = waveNumber*waveNumber*difficulty.riskValue;
+        }
+        //RVBDB.Instance.addProgressionPoints(points);
     }
     
     public void selectTower(Tower t){

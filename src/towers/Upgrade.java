@@ -89,6 +89,14 @@ public class Upgrade {
         button.setClickSound(SoundManager.Instance.getClip("upgrade"), SoundManager.Volume.SEMI_HIGH);
     }
     
+    public void setNbUsed(int nbClick){
+        button.clickSound = false;
+        for(int i = 0 ; i < nbClick ; i++){
+            game.money += price;
+            button.click();
+        } 
+        button.clickSound = true;
+    }
     
     public void render(){
         if(game.money < price && button.isEnabled()){

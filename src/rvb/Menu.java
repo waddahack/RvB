@@ -39,7 +39,7 @@ public class Menu {
         
         play = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
         play.setFunction(__ -> {
-            if(game == null)
+            if(game == null || game.ended)
                 PopupManager.Instance.chooseMap();
             else
                 switchStateTo(State.GAME);
@@ -106,7 +106,7 @@ public class Menu {
     
     public void update(){
         render();
-        if(game == null)
+        if(game == null || game.ended)
             regenerate.setHidden(true);
         else
             regenerate.setHidden(false);

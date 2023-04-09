@@ -6,7 +6,7 @@ import static rvb.RvB.game;
 public class Upgrade extends Buff{
     
     public Upgrade(){
-        super("upgrade", Text.BUFF_UPGRADE, Text.BUFF_UPGRADE_DESC, 5);
+        super("Upgrade", Text.BUFF_UPGRADE, Text.BUFF_UPGRADE_DESC, 5);
     }
     
     @Override

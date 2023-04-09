@@ -11,6 +11,7 @@ import static rvb.RvB.game;
 import static rvb.RvB.unite;
 import towers.Bullet;
 import Utils.MyMath;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.lwjgl.input.Mouse;
 
 public abstract class Shootable {
@@ -22,7 +23,9 @@ public abstract class Shootable {
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected Texture textureStatic, bulletSprite;
     protected Random random = new Random();
-    protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth, focusIndex;
+    protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth;
+    @JsonProperty("focusIndex")
+    protected int focusIndex;
     protected float newAngle = 0;
     protected Shootable enemyAimed;
     // CARACHTERISTIQUES PUBLIQUES
@@ -33,7 +36,7 @@ public abstract class Shootable {
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0, bonusLife = 0;
     // STATS
-    public int damagesDone = 0, enemiesKilled = 0, moneyGained = 0;
+    public int damagesDone = 0, enemiesKilled = 0;
     
     public Shootable(){
         textures = new ArrayList<>();
@@ -100,7 +103,6 @@ public abstract class Shootable {
         damagesDone += shootable.takeDamage(getPower());
         if(shootable.isDead()){
             enemiesKilled += 1;
-            moneyGained += shootable.getReward();
         }
     }
     
@@ -390,6 +392,10 @@ public abstract class Shootable {
     
     public boolean isSelected(){
         return selected;
+    }
+    
+    public int getFocusIndex(){
+        return focusIndex;
     }
     
     public int getSize(){

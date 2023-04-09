@@ -9,7 +9,7 @@ import towers.Tower;
 public class UpRangeTower extends Buff{
     
     public UpRangeTower(){
-        super("upRangeTower", Text.BUFF_UP_RANGE_TOWER, Text.BUFF_UP_RANGE_TOWER_DESC, 3);
+        super("UpRangeTower", Text.BUFF_UP_RANGE_TOWER, Text.BUFF_UP_RANGE_TOWER_DESC, 3);
     }
     
     @Override

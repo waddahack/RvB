@@ -15,7 +15,7 @@ public class RangeTower extends Tower{
     public ArrayList<Tower> towers;
     
     public RangeTower() {
-        super("rangeTower");
+        super("RangeTower");
         textures.add(RvB.textures.get("rangeTowerBase"));
         textures.add(RvB.textures.get("rangeTowerBalls"));
         rotateIndex = 1;
@@ -40,7 +40,7 @@ public class RangeTower extends Tower{
     @Override
     public void update(){
         super.update();
-        if(game.towerSelected != null && !game.towerSelected.isPlaced()){
+        if(game.gameLoaded || (game.towerSelected != null && !game.towerSelected.isPlaced())){
             for(Shootable t : game.towers){
                 if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range && !towers.contains(t) && t != this){
                     Tower to = (Tower) t;

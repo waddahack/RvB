@@ -15,7 +15,7 @@ public class PowerTower extends Tower{
     public ArrayList<Tower> towers;
     
     public PowerTower() {
-        super("powerTower");
+        super("PowerTower");
         textures.add(RvB.textures.get("powerTowerBase"));
         textures.add(RvB.textures.get("powerTowerElec"));
         rotateIndex = 1;
@@ -41,7 +41,7 @@ public class PowerTower extends Tower{
     public void update(){
         // Attention, lorsqu'une tourelle sous boost de this est vendu, une instance est gardée dans this.towers
         super.update();
-        if(game.towerSelected != null && !game.towerSelected.isPlaced()){
+        if(game.gameLoaded || (game.towerSelected != null && !game.towerSelected.isPlaced())){
             for(Shootable t : game.towers){
                 if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range && !towers.contains(t) && t != this){
                     Tower to = (Tower) t;

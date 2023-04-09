@@ -11,7 +11,7 @@ public class CircleTower extends Tower{
     public static int startPrice = 400;
     
     public CircleTower(){
-        super("circleTower");
+        super("CircleTower");
         textures.add(RvB.textures.get("circleTowerBase"));
         textures.add(RvB.textures.get("circleTowerTurret"));
         rotateIndex = 1;
