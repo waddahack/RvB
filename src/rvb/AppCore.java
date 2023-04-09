@@ -401,7 +401,7 @@ public abstract class AppCore {
         
         String pathString = "", arrayTowers = "[", arrayBuffs = "[";
         for(Tile road : path)
-            pathString += road.getIndexX()+"/"+road.getIndexY()+(road == path.get(path.size()-1) ? "" : ";");
+            pathString += road.getIndexX()+"/"+road.getIndexY()+"/"+road.nbStepped+(road == path.get(path.size()-1) ? "" : ";");
         for(Shootable t : towers){
             Tower tower = (Tower) t;
             arrayTowers += tower.toString()+(t == towers.get(towers.size()-1) ? "" : ", ");
@@ -1022,11 +1022,12 @@ public abstract class AppCore {
     
     private void addProgressionPoints(){
         int points;
+        // Checker si c'est une map random ou aventure (et pas creation !)
         // passe en boucle ici
         if(gameWin)
-            points = nbWaveMax*nbWaveMax*2*difficulty.riskValue;
+            points = (int) (nbWaveMax*nbWaveMax*2*difficulty.riskValue);
         else{
-            points = waveNumber*waveNumber*difficulty.riskValue;
+            points = (int) (waveNumber*waveNumber*difficulty.riskValue);
         }
         //RVBDB.Instance.addProgressionPoints(points);
     }

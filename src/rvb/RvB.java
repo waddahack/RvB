@@ -56,12 +56,12 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY("EASY", 1, 1), MEDIUM("MEDIUM", 2, 2), HARD("HARD", 3, 3), HARDCORE("HARDCORE", 3, 5); 
+        EASY("EASY", 1, 0.5f), MEDIUM("MEDIUM", 2, 1), HARD("HARD", 3, 2.5f), HARDCORE("HARDCORE", 3, 10); 
         public int probabilityRange; // for turns probability maps random
-        public int riskValue;
+        public float riskValue;
         public String name;
         
-        Difficulty(String name, int probabilityRange, int riskValue){
+        Difficulty(String name, int probabilityRange, float riskValue){
             this.name = name;
             this.probabilityRange = probabilityRange;
             this.riskValue = riskValue;
@@ -237,6 +237,7 @@ public class RvB{
                 road.setRotateIndex(0);
                 road.setX(Integer.parseInt(indexes[0])*unite);
                 road.setY(Integer.parseInt(indexes[1])*unite);
+                road.nbStepped = Integer.parseInt(indexes[2]);
                 path.add(road);
             }
             setMap(path, diff);
@@ -247,6 +248,9 @@ public class RvB{
                 game.waveNumber = waveNumber;
                 game.enemiesBonusLife = 15*((int)((waveNumber+1)/AppCore.bossEvery));
                 game.enemiesBonusMS = 6*((int)((waveNumber+1)/AppCore.bossEvery));
+                // Steps on roads
+                for(Tile road : game.path)
+                    road.setSteppedTexture();
                 try {
                     // Towers
                     ObjectMapper mapper = new ObjectMapper();
@@ -513,7 +517,7 @@ public class RvB{
             }
             
             // ESCAPE MENU
-            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0)){
+            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0) && (game == null || (!game.gameOver && !game.gameWin))){
                 if(PopupManager.Instance.onPopup())
                     PopupManager.Instance.closeCurrentPopup();
                 else

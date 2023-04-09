@@ -1,12 +1,10 @@
 #A FAIRE#
-- Achievments/progression : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre -> DB
-- changer mdp cheats + débloquer cheats enlève la progression de la game
-- popup icones et noms, ou tuto faudra bien un jour -> DB
+- Achievments/progression : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre
 ##
 
 #NEXT#
-- Rocks !
-- Mode aventure
+- Rocks ! (or trees)
+- Mode aventure (les premiers niveau sont presque des tutos)
 ##
 
 ROCKS :
@@ -15,9 +13,10 @@ ROCKS :
 	- pouvoir ajouter des rocks en creatif
 
 #IDEES#
+- Différents weathers (nouvelles textures quoi..............)
 - animations : peut-on draw qu'une partie d'une texture ?
 - mettre lib et assets dans le .jar
-- Mode endless
+- Mode endless...........................
 - TAB pour voir les stats des tourelles
 ##
 

@@ -86,6 +86,8 @@ public class Tile {
     }
     
     public void stepped(){
+        if(nbStepped >= 300)
+            return;
         nbStepped++;
         if(nbStepped == 1)
             stepTexture = RvB.textures.get("steps0" + (isRoadTurn() ? "Turn" : ""));
@@ -97,6 +99,19 @@ public class Tile {
             stepTexture = RvB.textures.get("steps3" + (isRoadTurn() ? "Turn" : ""));
         else if(nbStepped == 300)
             stepTexture = RvB.textures.get("steps4" + (isRoadTurn() ? "Turn" : ""));
+    }
+    
+    public void setSteppedTexture(){
+        if(nbStepped >= 300)
+            stepTexture = RvB.textures.get("steps4" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped >= 150)
+            stepTexture = RvB.textures.get("steps3" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped >= 50)
+            stepTexture = RvB.textures.get("steps2" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped >= 15)
+            stepTexture = RvB.textures.get("steps1" + (isRoadTurn() ? "Turn" : ""));
+        else if(nbStepped >= 1)
+            stepTexture = RvB.textures.get("steps0" + (isRoadTurn() ? "Turn" : ""));
     }
     
     public void setDirectionWithPos(){
