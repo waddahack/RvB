@@ -45,7 +45,7 @@ public class Raztech extends Tower{
         bulletSprite = RvB.textures.get("gun_bullet");
 
         range = 3*RvB.unite;
-        power = 4f;
+        power = 5f;
         shootRate = 1.8f;
         bulletSpeed = 20;
         growth = 3*ref;
@@ -176,6 +176,7 @@ public class Raztech extends Tower{
         game.oldRaztechYpos = (int) y;
         isPlaced = true;
         started = true;
+        game.getOverlays().get(0).getButtons().get(0).unlock();
         
         if(Math.random() < 0.5)
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
@@ -202,6 +203,7 @@ public class Raztech extends Tower{
         game.oldRaztechYpos = (int) y;
         isPlaced = true;
         started = true;
+        game.getOverlays().get(0).getButtons().get(0).unlock();
     }
     
     @Override

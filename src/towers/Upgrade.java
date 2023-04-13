@@ -90,12 +90,10 @@ public class Upgrade {
     }
     
     public void setNbUsed(int nbClick){
-        button.clickSound = false;
         for(int i = 0 ; i < nbClick ; i++){
             game.money += price;
-            button.click();
+            button.click(false);
         } 
-        button.clickSound = true;
     }
     
     public void render(){

@@ -33,7 +33,7 @@ public class RVBDB {
             ResultSet prop = stmt1.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             if(!prop.next()){
                 Statement stmt2 = connection.createStatement();
-                stmt2.executeUpdate("INSERT INTO properties (ingame, progression, progressiontuto, cheatson) VALUES (false, 0, null, false)");
+                stmt2.executeUpdate("INSERT INTO properties (ingame, progression, progressiontuto, cheatson, language) VALUES (false, 0, null, false, 'FR')");
                 stmt2.close();
                 prop = stmt1.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
                 prop.next();
@@ -43,12 +43,12 @@ public class RVBDB {
                 Statement stmt3 = connection.createStatement();
                 ResultSet gameSet = stmt3.executeQuery("SELECT * FROM game FETCH FIRST 1 ROWS ONLY");
                 gameSet.next();
-                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), true, prop.getBoolean("cheatson"), gameSet.getString("path"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
+                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), true, prop.getBoolean("cheatson"), prop.getString("language"), gameSet.getString("path"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
                 gameSet.close();
                 stmt3.close();
             }
             else
-                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), false, prop.getBoolean("cheatson"), "", "", 0, 0, 0, null, null, null);
+                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), false, prop.getBoolean("cheatson"), prop.getString("language"), "", "", 0, 0, 0, null, null, null);
             
             prop.close();
             stmt1.close();
@@ -84,12 +84,23 @@ public class RVBDB {
         return false;
     }
     
-    public static boolean saveProperties(boolean inGame, int progression, String progressionTuto, boolean cheatsOn) throws SQLException{
-        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET ingame = ?, progression = ?, progressiontuto = ?, cheatson = ?");
+    public static boolean saveProperties(boolean inGame, int progression, String progressionTuto, boolean cheatsOn, String language) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET ingame = ?, progression = ?, progressiontuto = ?, cheatson = ?, language = ?");
         pstmt.setBoolean(1, inGame);
         pstmt.setInt(2, progression);
         pstmt.setString(3, progressionTuto);
         pstmt.setBoolean(4, cheatsOn);
+        pstmt.setString(5, language);
+        int rows = pstmt.executeUpdate();
+        pstmt.close();
+        if(rows > 0)
+            return true;
+        return false;
+    }
+    
+    public static boolean updateLanguage(String language) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET language = ?");
+        pstmt.setString(1, language);
         int rows = pstmt.executeUpdate();
         pstmt.close();
         if(rows > 0)

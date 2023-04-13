@@ -36,7 +36,7 @@ public class CircleTower extends Tower{
         shootRate = 0.7f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 100f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Power", power, 4f, "+", 200f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Power", power, 2f, "+", 150f, 1.5f, 2));
         upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 275f, 2f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)

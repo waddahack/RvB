@@ -1,8 +1,12 @@
 package rvb;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import managers.TextManager;
 import ui.Button;
 import managers.PopupManager;
+import managers.RVBDB;
 import managers.TextManager.Text;
 import static rvb.RvB.*;
 import ui.Overlay;
@@ -10,7 +14,8 @@ import ui.Overlay;
 
 public class Menu {
     
-    private Button start, play, regenerate, create, option, exit, FR, ENG;
+    private Button start, play, regenerate, create, option, exit;
+    public Button FR, ENG;
     private Overlay[] overlays = new Overlay[5];
     
     public Menu(){
@@ -67,14 +72,23 @@ public class Menu {
             FR.setSelected(true);
             ENG.setSelected(false);
             TextManager.Instance.setLanguage("FR");
+            try {
+                RVBDB.Instance.updateLanguage("FR");
+            } catch (SQLException ex) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         ENG = new Button(unite*2+(int)(10*ref), 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("ENG"), null, colors.get("green_semidark"));
         ENG.setFunction(__ -> {
             ENG.setSelected(true);
             FR.setSelected(false);
             TextManager.Instance.setLanguage("ENG");
+            try {
+                RVBDB.Instance.updateLanguage("ENG");
+            } catch (SQLException ex) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
-        FR.setSelected(true);
         
         for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);

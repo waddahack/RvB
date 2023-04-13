@@ -40,9 +40,9 @@ public class Game extends AppCore{
                 System.out.println("failure : path too long");
                 path.clear();
             }
-        }while(path.isEmpty() && i < 10);
+        }while(path.isEmpty() && i < 100);
         if(path.isEmpty())
-            PopupManager.Instance.popup(Text.SECRET_REVEAL.getLines(), Text.WHAT.getText());
+            PopupManager.Instance.popup(Text.ERROR.getText());
         
         initMap(path);
     }

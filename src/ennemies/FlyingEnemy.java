@@ -53,7 +53,16 @@ public class FlyingEnemy extends Enemy{
 
         if(isInBase())
             commit();
-
+        if(slowedBy > 0 && moveSpeed == oldMoveSpeed){
+            moveSpeed *= (1-slowedBy);
+            stepEveryMilli *= (1+slowedBy);
+        }
+            
+        else if(slowedBy != 0 && game.timeInGamePassed - startTimeSlow >= 1000){
+            moveSpeed = oldMoveSpeed;
+            stepEveryMilli = oldstepEveryMilli;
+            slowedBy = 0;
+        }
         double speed = ((moveSpeed*game.gameSpeed) * RvB.deltaTime / 50) * RvB.ref;
         speed *= (hyp/700);
         

@@ -1,10 +1,13 @@
 #A FAIRE#
-- Achievments/progression : gagne de l'xp après des games pour débloquer des nouvelles tourelles et/ou powerup ou autre
+- CHANGER SYSTEME DRAW TEXTURE (pour prendre moins de mémoire) : Remplacer toutes les array de Texture par des int[] texturesID
+- TAB pour voir les stats des tourelles (ajouter stats de la dernière vague)
+- animations
 ##
 
 #NEXT#
-- Rocks ! (or trees)
-- Mode aventure (les premiers niveau sont presque des tutos)
+- Mode aventure (les premiers niveau sont presque des tutos) / Ecrire une histoire (chatGPT) puis trouver des mots neutre et sympa pour les difficultés
+- Achievments/progression : gagne de l'xp après des games pour ??? afficher la barre de progression dans le menu
+- menu option
 ##
 
 ROCKS :
@@ -13,15 +16,13 @@ ROCKS :
 	- pouvoir ajouter des rocks en creatif
 
 #IDEES#
-- Différents weathers (nouvelles textures quoi..............)
-- animations : peut-on draw qu'une partie d'une texture ?
+- Différents weathers (pour snow : mettre grass en blanc, et les snow en bleu glace et pas bcp => et boum)
 - mettre lib et assets dans le .jar
 - Mode endless...........................
-- TAB pour voir les stats des tourelles
 ##
 
 #SI JAMAIS#
-- menu option
+- Rocks ! (or trees)
 - refaire système mouse et keyboard input : dans la boucle rvb mettre dans une array
 les input pressé, puis check avec la liste, pour use une seule fois .next()
 - debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)

@@ -42,14 +42,14 @@ public class ShootRateTower extends Tower{
         super.update();
         if(game.gameLoaded || (game.towerSelected != null && !game.towerSelected.isPlaced())){
             for(Shootable t : game.towers){
-                if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range && !towers.contains(t) && t != this){
+                if(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= getRange() && !towers.contains(t) && t != this){
                     Tower to = (Tower) t;
                     to.bonusShootRate += power;
                     to.underShootRateTower = true;
                     to.updateBoosts(false, false, selected);
                     towers.add(to);
                 }
-                else if(!(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= range) && towers.contains(t)){
+                else if(!(MyMath.distanceBetween(getIndexX()*unite+unite/2, getIndexY()*unite+unite/2, t.getIndexX()*unite+unite/2, t.getIndexY()*unite+unite/2) <= getRange()) && towers.contains(t)){
                     Tower to = (Tower) t;
                     to.bonusShootRate -= power;
                     to.underShootRateTower = false;

@@ -1,7 +1,6 @@
 package ennemies;
 
 import static ennemies.BasicEnemy.balance;
-import javax.sound.sampled.Clip;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -12,10 +11,6 @@ import ui.Overlay;
 public class Bazoo extends Enemy{
     
     public int level;
-    private static Clip
-            entrance = SoundManager.Instance.getClip("boss_wave"),
-            defeated = SoundManager.Instance.getClip("boss_defeated"),
-            laugh = SoundManager.Instance.getClip("boss_laugh");
     
     public Bazoo(int lvl){
         super();
@@ -33,7 +28,7 @@ public class Bazoo extends Enemy{
         level = lvl;
         name = Text.ENEMY_BOSS;
         reward = lvl*50;
-        power = 50f;
+        power = 1000f;
         shootRate = 1f;
         moveSpeed = 2f;
         range = 3*RvB.unite;
@@ -42,9 +37,6 @@ public class Bazoo extends Enemy{
         hitboxWidth = (int) (size*0.51);
         volumeWalk = SoundManager.Volume.SEMI_HIGH;
         clipWalk = SoundManager.Instance.getClip("boss_walking");
-        SoundManager.Instance.setClipVolume(entrance, SoundManager.Volume.HIGH);
-        SoundManager.Instance.setClipVolume(defeated, SoundManager.Volume.SEMI_HIGH);
-        SoundManager.Instance.setClipVolume(laugh, SoundManager.Volume.SEMI_HIGH);
         stepEveryMilli = 1100;
         eBalance = balance;
         
@@ -101,11 +93,11 @@ public class Bazoo extends Enemy{
     @Override
     public void die(){
         if(life > 0){
-            SoundManager.Instance.playOnce(laugh);
+            SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_LAUGH);
             game.bossDefeated = false;
         } 
         else{
-            SoundManager.Instance.playOnce(defeated);
+            SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_DEFEATED);
             game.bossDefeated = true;
         }
         game.bazoo = null;
@@ -117,7 +109,7 @@ public class Bazoo extends Enemy{
     public void setStarted(boolean b){
         super.setStarted(b);
         if(started)
-            SoundManager.Instance.playOnce(entrance);
+            SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_ENTRANCE);
     }
     
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered

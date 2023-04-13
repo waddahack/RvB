@@ -32,7 +32,7 @@ public final class SoundManager
     private final ArrayList<Clip> clipsToPlayNextFrame;
     private final Map<String, Clip> ambianceClips;
     private boolean ready = true;
-    public static Clip SOUND_BUILD, SOUND_WAVE, SOUND_RAZTECH1, SOUND_RAZTECH2, SOUND_LEVELUP, SOUND_GAME_WIN, SOUND_GAME_OVER;
+    public static Clip SOUND_BUILD, SOUND_WAVE, SOUND_RAZTECH1, SOUND_RAZTECH2, SOUND_LEVELUP, SOUND_GAME_WIN, SOUND_BAZOO_ENTRANCE, SOUND_BAZOO_DEFEATED, SOUND_BAZOO_LAUGH;
     
     private SoundManager(){ 
         clipsToClose = new ArrayList<>();
@@ -52,8 +52,12 @@ public final class SoundManager
         setClipVolume(SOUND_LEVELUP, Volume.MEDIUM);
         SOUND_GAME_WIN = getClip("game_win");
         setClipVolume(SOUND_GAME_WIN, Volume.HIGH);
-        SOUND_GAME_OVER = getClip("game_over");
-        setClipVolume(SOUND_GAME_OVER, Volume.HIGH);
+        SOUND_BAZOO_ENTRANCE = getClip("boss_wave");
+        setClipVolume(SOUND_BAZOO_ENTRANCE, Volume.HIGH);
+        SOUND_BAZOO_DEFEATED = getClip("boss_defeated");
+        setClipVolume(SOUND_BAZOO_DEFEATED, Volume.SEMI_HIGH);
+        SOUND_BAZOO_LAUGH = getClip("boss_laugh");
+        setClipVolume(SOUND_BAZOO_LAUGH, Volume.VERY_HIGH);
     }
 
     public static void initialize(){

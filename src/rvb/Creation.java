@@ -2,11 +2,12 @@ package rvb;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import managers.PopupManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.State;
 import static rvb.RvB.mouseDown;
 import static rvb.RvB.stateChanged;
@@ -15,6 +16,7 @@ import static rvb.RvB.windHeight;
 import ui.Button;
 import ui.Overlay;
 import static rvb.RvB.ref;
+import static rvb.RvB.windWidth;
 
 public class Creation extends AppCore{
     
@@ -25,6 +27,11 @@ public class Creation extends AppCore{
         init(RvB.Difficulty.MEDIUM);
         initOverlays();   
         initMap("assets/temp/level_created.txt");
+        try {
+            createMapTextureEmpty();
+        } catch (Exception ex) {
+            Logger.getLogger(Creation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
@@ -41,11 +48,12 @@ public class Creation extends AppCore{
     
     @Override
     protected void render(){
-        for(ArrayList<Tile> row : map)
-            for(Tile t : row)
-                RvB.drawFilledRectangle(t.getRealX(), t.getRealY(), unite, unite, t.getTexture(), t.getAngle(), 1);
-        for(Tile road : roads)
+        RvB.drawTextureID(0, 0, windWidth, windHeight, textureID);
+
+        for(Tile road : roads){
+            road.render();
             road.renderDirection();
+        } 
     }
     
     @Override
@@ -54,10 +62,10 @@ public class Creation extends AppCore{
         Overlay o;
         Button b;
         
-        o = new Overlay(0, 0, RvB.windWidth, (int) (60*ref));
+        o = new Overlay(0, 0, windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         // Play button
-        b = new Button(RvB.windWidth/2, (int) (30*ref), (int) (240*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(windWidth/2, (int) (30*ref), (int) (240*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.PLAY, RvB.fonts.get("normalXL"));
         b.setFunction(__ -> {
             if(Mouse.getEventButtonState() && !mouseDown){ // Play button clicked
@@ -81,7 +89,7 @@ public class Creation extends AppCore{
         });
         o.addButton(b);
         // Clear button
-        b = new Button((int) (RvB.windWidth/2-300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int) (windWidth/2-300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.CLEAR, RvB.fonts.get("normal"));
         b.setFunction(__ -> {
             for(int i = 0 ; i < roads.size() ; i++){
@@ -93,7 +101,7 @@ public class Creation extends AppCore{
         });
         o.addButton(b);
         // Load button
-        b = new Button((int)(RvB.windWidth/2+300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int)(windWidth/2+300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.LOAD, RvB.fonts.get("normal"));
         b.setFunction(__ -> {
             String lvlName = RvB.selectMap();
@@ -101,7 +109,6 @@ public class Creation extends AppCore{
                 initMap(lvlName);
         });
         o.addButton(b);
-        overlays.add(o);
         // Download button
         b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setBG(RvB.textures.get("download"));
@@ -121,8 +128,9 @@ public class Creation extends AppCore{
             }
         });
         o.addButton(b);
+        overlays.add(o);
         
-        o = new Overlay(0, (int) (windHeight-60*ref), RvB.windWidth, (int) (60*ref));
+        o = new Overlay(0, (int) (windHeight-60*ref), windWidth, (int) (60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o);
     }
@@ -192,7 +200,7 @@ public class Creation extends AppCore{
             int indexX = getMouseIndexX();
             int indexY = getMouseIndexY();
             
-            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged && indexY >= 1 && indexY <= RvB.nbTileY-1){ // Puts road
+            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !overlays.get(1).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged && indexY >= 1 && indexY <= RvB.nbTileY-2){ // Puts road
                 Tile road = new Tile(RvB.textures.get("roadStraight"), "road");
                 road.setRotateIndex(0);
                 road.setX(indexX*unite);
@@ -208,19 +216,7 @@ public class Creation extends AppCore{
     }
     
     private void replaceWithGrass(int indexX, int indexY){
-        Texture t;
-        int n = rand.nextInt(100)+1;
-        if(n > 93)
-            t = RvB.textures.get("bigPlant1");
-        else if(n > 86)
-            t = RvB.textures.get("bigPlant2");
-        else
-            t = RvB.textures.get("grass");
-        n = 0;
-        if(t != RvB.textures.get("grass"))
-            n = (int)Math.round(rand.nextInt(361)/90)*90;  
-        Tile grass = new Tile(t, "grass");
-        grass.setAngle(n);
+        Tile grass = new Tile(RvB.textures.get("grass"), "grass");
         grass.setRotateIndex(0);
         grass.setX(indexX*unite);
         grass.setY(indexY*unite);

@@ -25,7 +25,6 @@ import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.opengl.Texture;
 import rvb.RvB.Cursor;
 import rvb.RvB.Difficulty;
 import static rvb.RvB.State.MENU;
@@ -147,33 +146,12 @@ public abstract class AppCore {
         bigTowerPrice = BigTower.startPrice;
         
         waveNumber = 1;
-        nbWaveMax = 30;
         difficulty = diff;
-        if(diff == Difficulty.EASY){
-            life = 125;
-            money = 225;
-            waveReward = 220;
-            waveBalanceMult = 0.9f;
-        }
-        else if(diff == Difficulty.MEDIUM){
-            life = 100;
-            money = 200;
-            waveReward = 200;
-            waveBalanceMult = 1f;
-        }
-        else if(diff == Difficulty.HARD){
-            life = 75;
-            money = 175;
-            waveReward = 180;
-            waveBalanceMult = 1.1f;
-        }
-        else if(diff == Difficulty.HARDCORE){
-            life = 1;
-            money = 175;
-            waveReward = 180;
-            waveBalanceMult = 1.1f;
-        }
-        
+        nbWaveMax = difficulty.nbWaveMax;
+        life = difficulty.life;
+        money = difficulty.money;
+        waveReward = difficulty.waveReward;
+        waveBalanceMult = difficulty.waveBalanceMult;
     }
     
     protected void initMap(String filePath){
@@ -218,24 +196,11 @@ public abstract class AppCore {
             map.get(path.get(i).getIndexY()).set(path.get(i).getIndexX(), path.get(i));
             
         // Replace null left by grass
-        int n;
-        Texture t;
         Tile tile;
         for(int i = 0 ; i < RvB.nbTileY ; i++){
             for(int j = 0 ; j < RvB.nbTileX ; j++){
                 if(map.get(i).get(j) == null){
-                    n = random.nextInt(100)+1;
-                    if(n > 93)
-                        t = RvB.textures.get("bigPlant1");
-                    else if(n > 86)
-                        t = RvB.textures.get("bigPlant2");
-                    else
-                        t = RvB.textures.get("grass");
-                    n = 0;
-                    if(t != RvB.textures.get("grass"))
-                        n = Math.round(random.nextInt(361)/90)*90;  
-                    tile = new Tile(t, "grass");
-                    tile.setAngle(n);
+                    tile = new Tile(RvB.textures.get("grass"), "grass");
                     tile.setRotateIndex(0);
                     tile.setX(j*unite);
                     tile.setY(i*unite);
@@ -360,35 +325,92 @@ public abstract class AppCore {
     }
     
     protected void createMapTexture() throws Exception {
+        createMapTexture("flower", false);
+    }
+    
+    protected void createMapTextureEmpty() throws Exception{
+        createMapTexture("flower", true);
+    }
+    
+    protected void createMapTexture(String extraName, boolean empty) throws Exception {
         BufferedImage mapImage = new BufferedImage(windWidth, windHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = mapImage.createGraphics();
         
         Image RS = ImageIO.read(new File("assets/images/road_straight.png")).getScaledInstance(unite, unite, 0);
         Image RT = ImageIO.read(new File("assets/images/road_turn.png")).getScaledInstance(unite, unite, 0);
         Image GR = ImageIO.read(new File("assets/images/grass.png")).getScaledInstance(unite, unite, 0);
-        Image P1 = ImageIO.read(new File("assets/images/big_plant1.png")).getScaledInstance(unite, unite, 0);
-        Image P2 = ImageIO.read(new File("assets/images/big_plant2.png")).getScaledInstance(unite, unite, 0);
+        
+        float extraDensity = 0; // per square
+        ArrayList<Image> extraImage = new ArrayList<>();
+        int extraSize = 0;
+        boolean extraOverlap;
+        switch(extraName){
+            case "flower":
+                extraSize = unite;
+                extraImage.add(ImageIO.read(new File("assets/images/big_plant1.png")).getScaledInstance(extraSize, extraSize, 0));
+                extraImage.add(ImageIO.read(new File("assets/images/big_plant2.png")).getScaledInstance(extraSize, extraSize, 0));
+                extraDensity = 0.2f;
+                break;
+        }
+        extraOverlap = extraDensity*unite*unite >= extraSize*extraSize;
+        AffineTransform context = g2d.getTransform();
         
         Tile tile;
         for(int i = 0 ; i < map.size() ; i++){
             for(int j = 0 ; j < map.get(i).size() ; j++){
                 tile = map.get(i).get(j);
                 
-                AffineTransform context = g2d.getTransform();
-                
                 g2d.rotate(Math.toRadians(tile.getAngle()), j*unite+unite/2, i*unite+unite/2);
  
-                if(map.get(i).get(j).getTexture() == RvB.textures.get("roadStraight"))
+                if(!empty && map.get(i).get(j).getTexture() == RvB.textures.get("roadStraight"))
                     g2d.drawImage(RS, j*unite, i*unite, null);
-                else if(map.get(i).get(j).getTexture() == RvB.textures.get("roadTurn"))
+                else if(!empty && map.get(i).get(j).getTexture() == RvB.textures.get("roadTurn"))
                     g2d.drawImage(RT, j*unite, i*unite, null);
-                else if(map.get(i).get(j).getTexture() == RvB.textures.get("bigPlant1"))
-                    g2d.drawImage(P1, j*unite, i*unite, null);
-                else if(map.get(i).get(j).getTexture() == RvB.textures.get("bigPlant2"))
-                    g2d.drawImage(P2, j*unite, i*unite, null);
                 else
                     g2d.drawImage(GR, j*unite, i*unite, null);
-                
+               
+                g2d.setTransform(context);
+            }
+        }
+        if(!extraImage.isEmpty()){
+            int posX, posY, nbNexted = 0;
+            ArrayList<int[]> posUsed = new ArrayList<>();
+            boolean next, stopDecr = false;
+            for(int i = 0 ; i < extraDensity*RvB.nbTileX*RvB.nbTileY ; i++){
+                if(nbNexted >= extraDensity*RvB.nbTileX*RvB.nbTileY/2)
+                    stopDecr = true;
+                posX = random.nextInt(RvB.nbTileX*unite);
+                posY = random.nextInt(RvB.nbTileY*unite);
+                if(!extraOverlap){
+                    next = false;
+                    for(int[] pos : posUsed){
+                        if(pos[0] <= posX+extraSize && pos[0] >= posX-extraSize && pos[1] <= posY+extraSize && pos[1] >= posY-extraSize){
+                            next = true;
+                            break;
+                        }
+                    }
+                    if(next){
+                        if(!stopDecr) i--;
+                        nbNexted++;
+                        continue;
+                    }
+                    posUsed.add(new int[]{posX, posY});
+                }
+                // To not put on roads
+                next = false;
+                for(Tile road : path){
+                    if(road.getRealX() <= posX+unite/2+extraSize/2 && road.getRealX() >= posX-unite/2-extraSize/2 && road.getRealY() <= posY+unite/2+extraSize/2 && road.getRealY() >= posY-unite/2-extraSize/2){
+                        next = true;
+                        break;
+                    }
+                }
+                if(next){
+                    if(!stopDecr) i--;
+                    nbNexted++;
+                    continue;
+                }
+                g2d.rotate(Math.toRadians(random.nextFloat()*360), posX, posY);
+                g2d.drawImage(extraImage.get(random.nextInt(extraImage.size())), posX-extraSize/2, posY-extraSize/2, null);
                 g2d.setTransform(context);
             }
         }
@@ -425,7 +447,7 @@ public abstract class AppCore {
         }
     }
     
-    protected String saveLevel(String name, String dir, boolean overwrite){
+    public String saveLevel(String name, String dir, boolean overwrite){
         String fileName = "";
         try{
             // Path
@@ -595,7 +617,7 @@ public abstract class AppCore {
         keyDown = Keyboard.getEventKeyState();
         if(!PopupManager.Instance.onPopup() && !keyDown && !Keyboard.isKeyDown(Keyboard.KEY_F1)){
             // PAUSE
-            if(Keyboard.isKeyDown(Keyboard.KEY_P) && inWave){
+            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && inWave){
                 if(gameSpeed > 0)
                     pause();
                 else
@@ -690,8 +712,7 @@ public abstract class AppCore {
             }
             b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
             b.setItemFramed(true);
-            if(i > 0)
-                b.lock();
+            b.lock();
             int index = i;
             b.setFunction(__ -> {
                 if(towerSelected != null)
@@ -890,7 +911,7 @@ public abstract class AppCore {
         wave.shuffleEnemies();
         if(bossRound()){
             bazoo = new Bazoo((waveNumber/bossEvery)-1);
-            wave.addEnemy(bazoo, 2*wave.getEnnemies().size()/3);
+            wave.addEnemy(bazoo, 0);
         }
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;

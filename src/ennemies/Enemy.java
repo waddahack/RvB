@@ -265,8 +265,10 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     }
     
     public void commit(){
-        if(game.life > 0)
+        if(game.life > 0){
             game.getAttackedBy(getPower());
+            game.money -= reward;
+        } 
         die();
     }
     

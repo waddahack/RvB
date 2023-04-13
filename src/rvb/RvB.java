@@ -56,12 +56,20 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY("EASY", 1, 0.5f), MEDIUM("MEDIUM", 2, 1), HARD("HARD", 3, 2.5f), HARDCORE("HARDCORE", 3, 10); 
+        EASY(30, 125, 300, 300, 0.8f, "EASY", 1, 0.5f), MEDIUM(30, 100, 240, 240, 1f, "MEDIUM", 2, 1), HARD(30, 75, 180, 180, 1.2f, "HARD", 3, 2.5f), HARDCORE(30, 1, 180, 180, 1.2f, "HARDCORE", 3, 10); 
+        
         public int probabilityRange; // for turns probability maps random
         public float riskValue;
         public String name;
+        public int nbWaveMax, life, money, waveReward;
+        public float waveBalanceMult;
         
-        Difficulty(String name, int probabilityRange, float riskValue){
+        Difficulty(int nbWaveMax, int life, int money, int waveReward, float waveBalanceMult, String name, int probabilityRange, float riskValue){
+            this.nbWaveMax = nbWaveMax;
+            this.life = life;
+            this.money = money;
+            this.waveReward = waveReward;
+            this.waveBalanceMult = waveBalanceMult;
             this.name = name;
             this.probabilityRange = probabilityRange;
             this.riskValue = riskValue;
@@ -203,16 +211,24 @@ public class RvB{
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
         TextManager.initialize();
-        RVBDB.initialize();
         menu = new Menu();
+        RVBDB.initialize();
         lastUpdate = System.currentTimeMillis();
         lastUpdateFPS = System.currentTimeMillis();
     }
 
-    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
+    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String language, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
         progression = prog;
         progressionTuto = progTuto;
         cheatsActivated = cheatsOn;
+        switch(language){
+            case "FR":
+                menu.FR.click(false);
+                break;
+            case "ENG":
+                menu.ENG.click(false);
+                break;
+        }
         if(inGame){
             Difficulty diff = Difficulty.MEDIUM;
             switch(difficulty){
@@ -517,7 +533,7 @@ public class RvB{
             }
             
             // ESCAPE MENU
-            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !(game != null && game.gameSpeed == 0) && (game == null || (!game.gameOver && !game.gameWin))){
+            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && (game == null || (!game.gameOver && !game.gameWin)) && !PopupManager.Instance.onRewardSelection()){
                 if(PopupManager.Instance.onPopup())
                     PopupManager.Instance.closeCurrentPopup();
                 else
@@ -644,7 +660,7 @@ public class RvB{
     
     public static void updateProperties(){
         try {
-            RVBDB.Instance.saveProperties((game != null && !game.ended && !game.gameOver && !game.gameWin), progression, progressionTuto, cheatsActivated);
+            RVBDB.Instance.saveProperties((game != null && !game.ended && !game.gameOver && !game.gameWin), progression, progressionTuto, cheatsActivated, TextManager.Instance.getLanguage());
         } catch (SQLException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -752,13 +768,13 @@ public class RvB{
         
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0);
-            glVertex2d(x, y);
+            glVertex2d(0, 0);
             glTexCoord2f(1, 0);
-            glVertex2d(x + width, y);
+            glVertex2d(width, 0);
             glTexCoord2f(1, 1);
-            glVertex2d(x + width, y + height);
+            glVertex2d(width, height);
             glTexCoord2f(0, 1);
-            glVertex2d(x, y + height);
+            glVertex2d(0, height);
         glEnd();
         
         glPopMatrix(); // Reset the current matrix to the one that was saved.
@@ -788,14 +804,10 @@ public class RvB{
         }
         
         glBegin(GL_QUADS);
-            glTexCoord2f(0, 0);
-            glVertex2d(x, y);
-            glTexCoord2f(1, 0);
-            glVertex2d(x + width, y);
-            glTexCoord2f(1, 1);
-            glVertex2d(x + width, y + height);
-            glTexCoord2f(0, 1);
-            glVertex2d(x, y + height);
+            glTexCoord2f(0, 0); glVertex2d(x, y);
+            glTexCoord2f(1, 0); glVertex2d(x + width, y);
+            glTexCoord2f(1, 1); glVertex2d(x + width, y + height);
+            glTexCoord2f(0, 1); glVertex2d(x, y + height);
         glEnd();
         
         if(texture != null)
@@ -858,8 +870,6 @@ public class RvB{
             textures.put("steps3Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps3_turn.png"))));
             textures.put("steps4Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps4_turn.png"))));
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
-            textures.put("bigPlant1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant1.png"))));
-            textures.put("bigPlant2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/big_plant2.png"))));
             textures.put("rock1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock1.png"))));
             textures.put("rock2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock2.png"))));
             // Icons

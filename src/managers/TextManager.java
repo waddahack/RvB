@@ -38,7 +38,7 @@ public final class TextManager {
             new String[]{"Retourner au menu"},
             new String[]{"Return to menu"}),
         ALL_ENEMIES(
-            new String[]{"Tous les ennemies"},
+            new String[]{"Tous les ennemis"},
             new String[]{"All enemies"}),
         SELL(
             new String[]{"Vendre"},
@@ -46,12 +46,6 @@ public final class TextManager {
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
             new String[]{"Bazoo had the system hacked !", "Options are unavailable..."}),
-        SECRET_REVEAL(
-            new String[]{"Bazoo est en fait le gentil ici.", "Raztech défend quelque chose qu'il lui a prit."},
-            new String[]{"Bazoo is actually the real good guy here.", "Raztech is defending something he took from him."}),
-        WHAT(
-            new String[]{"Quoi ?"},
-            new String[]{"What ?"}),
         XP(
             new String[]{"XP"},
             new String[]{"XP"}),
@@ -206,14 +200,14 @@ public final class TextManager {
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),
         BUFF_SLOW_DESC(
-            new String[]{"Les balles de Raztech", "ralentissent les", "ennemies de +15%", "pendant 1 sec."},
+            new String[]{"Les balles de Raztech", "ralentissent les", "ennemis de +15%", "pendant 1 sec."},
             new String[]{"Raztech's bullets", "slow enemies by +15%", "for 1 sec."}),
         BUFF_XP(
             new String[]{"Rune bleue"},
             new String[]{"Blue rune"}),
         BUFF_XP_DESC(
-            new String[]{"Raztech gagne", "+20% d'XP."},
-            new String[]{"Raztech gains", "+20% XP."}),
+            new String[]{"L'XP que Raztech", "gagne est", "+25% efficace."},
+            new String[]{"XP Raztech gains is", "+25% more effective."}),
         BUFF_OS(
             new String[]{"Vieux crâne"},
             new String[]{"Old skull"}),
@@ -256,14 +250,14 @@ public final class TextManager {
             new String[]{"Choisis un mode"},
             new String[]{"Select a mode"}),
         CANCEL(
-            new String[]{"Échape pour annuler"},
+            new String[]{"Échappe pour annuler"},
             new String[]{"Escape to cancel"}),
         EASY(
             new String[]{"Facile"},
             new String[]{"Easy"}),
-        NORMAL(
-            new String[]{"Normal"},
-            new String[]{"Normal"}),
+        MEDIUM(
+            new String[]{"Moyen"},
+            new String[]{"Medium"}),
         HARD(
             new String[]{"Difficile"},
             new String[]{"Hard"}),
@@ -286,20 +280,20 @@ public final class TextManager {
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),
         GUIDE(
-            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemies et en survivant aux vagues.", "Ce sera utile pour acheter des tourelles pour défendre votre terrain !"},
+            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemis et en survivant aux vagues.", "Ce sera utile pour acheter des tourelles pour défendre votre terrain !"},
             new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "The game ends whenever your health hits 0.", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
         INFO(
             new String[]{"Informations"},
             new String[]{"Informations"}),
         INFO_GUIDE(
-            new String[]{"Déplacer Raztech coûte 20% de l'XP de son prochain niveau.", "Vous pouvez sélectionner des ennemies et des tourelles. Clickez n'importe où pour désélectionner.", "Vous pouvez annuler la construction d'une nouvelle tour avec clique droit."},
+            new String[]{"Déplacer Raztech coûte 20% de l'XP de son prochain niveau.", "Vous pouvez sélectionner des ennemis et des tourelles. Clickez n'importe où pour désélectionner.", "Vous pouvez annuler la construction d'une nouvelle tour avec clique droit."},
             new String[]{"Moving Raztech costs 20% of his next level's XP.", "You can select enemies and towers. Click anywhere else to unselect.", "You can cancel a new tower construction by right clicking."}),
         SHORTCUTS(
             new String[]{"Raccourcis"},
             new String[]{"Shortcuts"}),
         SHORTCUTS_GUIDE(
-            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la prochaine vague", "P : Pause/Reprendre", "V : Changer la vitesse", "H : Ouvre cette fenêtre", "F1+D : Fenêtre debug", "Échap. : Menu"},
-            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start next wave", "P : Pause/Unpause", "V : Change the speed", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
+            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "H : Ouvre cette fenêtre", "F1+D : Fenêtre debug", "Échappe : Menu"},
+            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
         private final String[] FR_text, ENG_text;
         
@@ -336,5 +330,9 @@ public final class TextManager {
     
     public void setLanguage(String l){
         currentLanguage = l;
+    }
+    
+    public String getLanguage(){
+        return currentLanguage;
     }
 }

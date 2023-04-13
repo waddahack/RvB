@@ -88,10 +88,14 @@ public class Button {
     }
     
     public boolean click(){
+        return click(true);
+    }
+    
+    public boolean click(boolean clickSound){
         if(locked || disabled)
             return false;
         nbClicks++;
-        if(clickSound)
+        if(this.clickSound && clickSound)
             SoundManager.Instance.playOnce(click);
         if(nbClicks == nbClicksMax)
             hidden = true;
