@@ -36,7 +36,7 @@ public abstract class Shootable {
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0, bonusLife = 0;
     // STATS
-    public int damagesDone = 0, enemiesKilled = 0;
+    public int damagesDone = 0, enemiesKilled = 0, damagesDoneThisWave = 0, enemiesKilledThisWave = 0;
     
     public Shootable(){
         textures = new ArrayList<>();
@@ -100,9 +100,12 @@ public abstract class Shootable {
     public void attack(Shootable shootable){
         if(!shootable.hasStarted())
             return;
-        damagesDone += shootable.takeDamage(getPower());
+        float d = shootable.takeDamage(getPower());
+        damagesDone += d;
+        damagesDoneThisWave += d;
         if(shootable.isDead()){
             enemiesKilled += 1;
+            enemiesKilledThisWave += 1;
         }
     }
     
@@ -190,7 +193,7 @@ public abstract class Shootable {
         Shootable strongest = null;
         for(int i = 0 ; i < enemies.size() ; i++)
             if(enemies.get(i).hasStarted() && enemies.get(i).isInRangeOf(this)){
-                if(strongest == null || enemies.get(i).getMaxLife() > strongest.getMaxLife())
+                if(strongest == null || enemies.get(i).getLife() > strongest.getLife())
                     strongest = enemies.get(i);
             }
         return strongest;
@@ -200,7 +203,7 @@ public abstract class Shootable {
         Shootable weakest = null;
         for(int i = 0 ; i < enemies.size() ; i++)
             if(enemies.get(i).hasStarted() && enemies.get(i).isInRangeOf(this)){
-                if(weakest == null || enemies.get(i).getMaxLife() < weakest.getMaxLife())
+                if(weakest == null || enemies.get(i).getLife() < weakest.getLife())
                     weakest = enemies.get(i);
             }
         return weakest;

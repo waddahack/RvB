@@ -89,6 +89,7 @@ public class Menu {
                 Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        ENG.setSelected(true);
         
         for(int i = 0 ; i < 5 ; i++){
             overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);

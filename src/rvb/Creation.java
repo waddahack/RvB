@@ -20,10 +20,10 @@ import static rvb.RvB.windWidth;
 
 public class Creation extends AppCore{
     
-    private static Random rand = new Random();
     private ArrayList<Tile> roads;
     
     public Creation(){
+        super("creation");
         init(RvB.Difficulty.MEDIUM);
         initOverlays();   
         initMap("assets/temp/level_created.txt");

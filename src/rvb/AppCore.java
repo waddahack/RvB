@@ -102,7 +102,7 @@ public abstract class AppCore {
     public ArrayList<Tile> path;
     //public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
-    public String buffsUsed = "";
+    public String buffsUsed = "", type;
     public boolean gameOver, gameWin;
     public boolean inWave;
     public Enemy enemySelected = null;
@@ -112,17 +112,18 @@ public abstract class AppCore {
     public Bazoo bazoo = null;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
-    public boolean bossDead = false, bossDefeated = false, gameLoaded = false;
+    public boolean bossDead = false, bossDefeated = false, gameLoaded = false, progressionPointsAdded = false;
     public static int bossEvery = 6;
     private boolean keyDown = false;
-    private static Random random;
+    protected static Random random;
     public Difficulty difficulty;
     protected int textureID = -10;
     private float waveBalanceMult;
     public int timeInGamePassed;
     public int basicTowerPrice, circleTowerPrice, flameTowerPrice, bigTowerPrice;
     
-    public AppCore(){
+    public AppCore(String gameType){
+        type = gameType;
         random = new Random();
     }
     
@@ -547,7 +548,7 @@ public abstract class AppCore {
                     if(waveNumber > nbWaveMax){
                         gameWin = true;
                     }
-                    else{
+                    else if(!gameOver){
                         enemiesBonusLife += 15; // À changer aussi dans RvB.initPropertiesAndGame
                         enemiesBonusMS += 6;
                         PopupManager.Instance.enemiesUpgraded(new String[]{
@@ -623,7 +624,7 @@ public abstract class AppCore {
                 else
                     unpause();
             } 
-            // Change speed
+            // CHANGE SPEED
             else if(Keyboard.isKeyDown(Keyboard.KEY_V) && gameSpeed > 0){
                 overlays.get(1).getButtons().get(overlays.get(1).getButtons().size()-2).click();
             } 
@@ -646,6 +647,10 @@ public abstract class AppCore {
                 overlays.get(0).getButtons().get(2).click();
             else if(Keyboard.isKeyDown(Keyboard.KEY_4) && flameTowerPrice <= money)
                 overlays.get(0).getButtons().get(3).click();
+            // TOWER STATS
+            if(towerSelected != null && Keyboard.isKeyDown(Keyboard.KEY_TAB)){
+                towerSelected.switchOverlay();
+            }
         }
     }
     
@@ -915,6 +920,11 @@ public abstract class AppCore {
         }
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;
+        //STATS
+        for(Shootable t : towers){
+            t.damagesDoneThisWave = 0;
+            t.enemiesKilledThisWave = 0;
+        }
     }
     
     public void createTower(int id){
@@ -1033,7 +1043,8 @@ public abstract class AppCore {
     protected void gameEnded(){
         if(PopupManager.Instance.onPopup() || RvB.stateChanged)
             return;
-        addProgressionPoints();
+        if(!progressionPointsAdded && !type.equals("created"))
+            addProgressionPoints();
         RvB.updateProperties();
         if(gameWin)
             PopupManager.Instance.gameWin();
@@ -1043,14 +1054,18 @@ public abstract class AppCore {
     
     private void addProgressionPoints(){
         int points;
-        // Checker si c'est une map random ou aventure (et pas creation !)
-        // passe en boucle ici
         if(gameWin)
-            points = (int) (nbWaveMax*nbWaveMax*2*difficulty.riskValue);
+            points = (int) (nbWaveMax*nbWaveMax*2*difficulty.riskValue*(life/difficulty.life));
         else{
-            points = (int) (waveNumber*waveNumber*difficulty.riskValue);
+            points = (int) (waveNumber*waveNumber*difficulty.riskValue*(life/difficulty.life));
         }
-        //RVBDB.Instance.addProgressionPoints(points);
+        try {
+            RvB.progression += points;
+            RVBDB.Instance.updateProgressionPoints();
+            progressionPointsAdded = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void selectTower(Tower t){

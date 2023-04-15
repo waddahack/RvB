@@ -189,6 +189,20 @@ public final class TextManager {
             new String[]{"Vise le"},
             new String[]{"Focus the"}),
         
+        // STATS
+        ENEMIES_KILLED(
+            new String[]{"Ennemis tués"},
+            new String[]{"Enemies killed"}),
+        DAMAGES_DONE(
+            new String[]{"Dégâts commis"},
+            new String[]{"Damages done"}),
+        TOTAL(
+            new String[]{"Total"},
+            new String[]{"Total"}),
+        THIS_WAVE(
+            new String[]{"Cette vague"},
+            new String[]{"This wave"}),
+        
         // BUFFS
         BUFF_UPGRADE(
             new String[]{"Amélioration"},
@@ -200,8 +214,8 @@ public final class TextManager {
             new String[]{"Pieds froids"},
             new String[]{"Cold feet"}),
         BUFF_SLOW_DESC(
-            new String[]{"Les balles de Raztech", "ralentissent les", "ennemis de +15%", "pendant 1 sec."},
-            new String[]{"Raztech's bullets", "slow enemies by +15%", "for 1 sec."}),
+            new String[]{"Les balles de Raztech", "ralentissent les", "ennemis de +20%", "pendant 1 sec."},
+            new String[]{"Raztech's bullets", "slow enemies by +20%", "for 1 sec."}),
         BUFF_XP(
             new String[]{"Rune bleue"},
             new String[]{"Blue rune"}),
@@ -265,17 +279,17 @@ public final class TextManager {
             new String[]{"Hardcore"},
             new String[]{"Hardcore"}),
         BOSS_DEFEATED(
-            new String[]{"Je reviendrai plus fort !", "Tu ne devrais pas plaisanter avec moi vermine !", "Ce n'est qu'une question de temps...", "Je vais libérer ma vrai puissance !", "Plus je souffre, plus je deviens puissant !"},
-            new String[]{"I will be back much stronger !", "You should not mess with me filthy bug !", "It is just a matter of time...", "I will unleash my true power !", "The more I suffer, the more powerful I get !"}),
+            new String[]{"«Je reviendrai plus fort !»", "«Tu ne devrais pas plaisanter avec moi vermine !»", "«Ce n'est qu'une question de temps...»", "«Je vais libérer ma vraie puissance !»", "«Plus je souffre, plus je deviens puissant !»"},
+            new String[]{"\"I will be back much stronger !\"", "\"You should not mess with me filthy bug !\"", "\"It is just a matter of time...\"", "\"I will unleash my true power !\"", "\"The more I suffer, the more powerful I get !\""}),
         BOSS_NOT_DEFEATED(
-            new String[]{"Tu es faible.", "Je suis la fin, et j'arrive vite !", "MEUUUURS !", "Ça a toujours été une question de temps.", "Je n'ai pas fait attention, m'as-tu touché ?"},
-            new String[]{"You are weak.", "I am the end, and I am coming fast !", "You shall DIE !", "It has always been a matter of time.", "I have not noticed, did you even hit me ?"}),
+            new String[]{"«Tu es faible.»", "«Je suis la fin, et j'arrive vite !»", "«MEUUUURS !»", "«Ça a toujours été une question de temps.»", "«Je n'ai pas fait attention, m'as-tu touché ?»"},
+            new String[]{"\"You are weak.\"", "\"I am the end, and I am coming fast !\"", "\"You shall DIE !\"", "\"It has always been a matter of time.\"", "\"I have not noticed, did you even hit me ?\""}),
         BOSS_DEFEATED_ANSWER(
-            new String[]{"Toujours debout !", "Où es-tu ?", "J'attends...", "Même pas peur !", "Looser !"},
-            new String[]{"Still standing !", "Where're you ?", "I'm waiting...", "Not afraid !", "Looser !"}),
+            new String[]{"«Toujours debout !»", "«Où es-tu ?»", "«J'attends...»", "«Même pas peur !»", "«Looser !»"},
+            new String[]{"\"Still standing !\"", "\"Where're you ?\"", "\"I'm waiting...\"", "\"Not afraid !\"", "\"Looser !\""}),
         BOSS_NOT_DEFEATED_ANSWER(
-            new String[]{"Noooon !", "Toujours vivant !", "Ouch !", "Attention à toi", "Grrrrr..."},
-            new String[]{"Noooo !", "Still alive !", "Ouch !", "Watch yourself", "Grrrrr..."}),
+            new String[]{"«Noooon !", "«Toujours vivant !", "«Ouch !", "«Attention à toi»", "«Grrrrr...»"},
+            new String[]{"\"Noooo !\"", "\"Still alive !\"", "\"Ouch !\"", "\"Watch yourself\"", "\"Grrrrr...\""}),
         HOW_TO_PLAY(
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),
@@ -292,8 +306,8 @@ public final class TextManager {
             new String[]{"Raccourcis"},
             new String[]{"Shortcuts"}),
         SHORTCUTS_GUIDE(
-            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "H : Ouvre cette fenêtre", "F1+D : Fenêtre debug", "Échappe : Menu"},
-            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
+            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "Tab : Afficher les stats de la tour séléctionnée", "H : Ouvrir cette fenêtre", "F1+D : Fenêtre debug", "Échappe : Menu"},
+            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "Tab : Display selected tower's stats", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
         private final String[] FR_text, ENG_text;
         
@@ -320,7 +334,7 @@ public final class TextManager {
     private static String currentLanguage;
     
     public TextManager(){
-        currentLanguage = "FR";
+        currentLanguage = "ENG";
     }
 
     public static void initialize(){

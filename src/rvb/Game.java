@@ -11,6 +11,7 @@ import static rvb.RvB.nbTileY;
 public class Game extends AppCore{
     
     public Game(String lvlPath, Difficulty diff){
+        super("created");
         init(diff);
         initOverlays();
         initMap(lvlPath);
@@ -22,12 +23,14 @@ public class Game extends AppCore{
     }
     
     public Game(ArrayList<Tile> path, Difficulty diff){
+        super("loaded");
         init(diff);
         initOverlays();
         initMap(path);
     }
     
     public Game(Difficulty diff){
+        super("random");
         init(diff);
         initOverlays();
         

@@ -24,7 +24,7 @@ public final class PopupManager {
     private static final int width = (int) (800*ref), height = (int) (450*ref);
     private Overlay currentOverlay;
     private Overlay gameOver, gameWin, enemiesUpgraded, popup, chooseDifficulty, rewardSelection, help, chooseMap;
-    private final ArrayList<String> lines;
+    private final ArrayList<String> lines, anchors;
     private final ArrayList<String> buttonsText;
     private final ArrayList<UnicodeFont> fonts;
     private static Random random;
@@ -40,6 +40,7 @@ public final class PopupManager {
         lines = new ArrayList<>();
         buttonsText = new ArrayList<>();
         fonts = new ArrayList<>();
+        anchors = new ArrayList<>();
         initOverlays();
     }
 
@@ -115,8 +116,10 @@ public final class PopupManager {
             closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.MEDIUM);
-            else
+            else if(gameType.equals("created"))
                 RvB.newCreatedMap(RvB.Difficulty.MEDIUM);
+            else
+                RvB.loadMap(gameType, RvB.Difficulty.MEDIUM);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         b.setOnHoverFunction(__ -> {
@@ -129,8 +132,10 @@ public final class PopupManager {
             closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.HARD);
-            else
+            else if(gameType.equals("created"))
                 RvB.newCreatedMap(RvB.Difficulty.HARD);
+            else
+                RvB.loadMap(gameType, RvB.Difficulty.HARD);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         b.setOnHoverFunction(__ -> {
@@ -143,8 +148,10 @@ public final class PopupManager {
             closeCurrentPopup();
             if(gameType.equals("random"))
                 RvB.newRandomMap(RvB.Difficulty.HARDCORE);
-            else
+            else if(gameType.equals("created"))
                 RvB.newCreatedMap(RvB.Difficulty.HARDCORE);
+            else
+                RvB.loadMap(gameType, RvB.Difficulty.HARDCORE);
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         b.setOnHoverFunction(__ -> {
@@ -169,21 +176,6 @@ public final class PopupManager {
             RvB.setCursor(RvB.Cursor.DEFAULT);
         });
         gameOver.addButton(b);
-        /*b = new Button(gameOver.getW()-(int)(30*ref), gameOver.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
-        b.setBG(RvB.textures.get("download"));
-        if(RvB.game.getOverlays().get(1).getButtons().get(1).isLocked())
-            b.lock();
-        Button dlBut = b;
-        b.setFunction(__ -> {
-            String name = RvB.game.saveLevel("downloaded", "levels/", false);
-            if(name.isEmpty())
-                PopupManager.Instance.popup(Text.ERROR.getText());
-            else{
-                dlBut.lock();
-                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", "levels/"+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
-            }
-        });
-        gameOver.addButton(b);*/
         // GAME WIN
         gameWin = new Overlay(RvB.windWidth/2-width/2, RvB.windHeight/2-height/2, width, height);
         gameWin.display(false);
@@ -238,20 +230,22 @@ public final class PopupManager {
             return;
         RvB.drawFilledRectangle(0, 0, RvB.windWidth, RvB.windHeight, null, 0.4f, RvB.textures.get("board"));
         renderCurrentOverlay();
+    }
+    
+    private void renderCurrentOverlay(){
+        currentOverlay.render();
+        
         if(currentOverlay == null)
             return;
         int top = this.top;
         for(int i = 0 ; i < lines.size() ; i++){
             if(i > 0)
                 top += fonts.get(i).getHeight(lines.get(i))+8*ref;
-            currentOverlay.drawText(currentOverlay.getW()/2, top, lines.get(i), fonts.get(i));
+            currentOverlay.drawText(currentOverlay.getW()/2, top, lines.get(i), fonts.get(i), anchors.get(i));
         }
         for(int i = 0 ; i < buttonsText.size() ; i++)
             currentOverlay.getButtons().get(i).drawText(0, 0, buttonsText.get(i), RvB.fonts.get("normalLB"));
-    }
-    
-    private void renderCurrentOverlay(){
-        currentOverlay.render();
+        
         if(currentOverlay == rewardSelection){
             Button b;
             Buff buff;
@@ -344,7 +338,6 @@ public final class PopupManager {
     public void gameOver(){
         if(currentOverlay == gameOver)
             return;
-        //gameOver.addButton(b);
         if(!game.ended && !SoundManager.SOUND_BAZOO_LAUGH.isRunning())
             SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_LAUGH);
         initPopup(gameOver);
@@ -370,6 +363,11 @@ public final class PopupManager {
         if(!game.ended)
             SoundManager.Instance.playOnce(SoundManager.SOUND_GAME_WIN);
         initPopup(gameWin);
+        Button b = RvB.game.getOverlays().get(1).getButtons().get(1);
+        b.setX(gameWin.getW()-b.getW());
+        b.setY(b.getH());
+        b.enable();
+        gameWin.addButton(b);
         if(RvB.state == State.GAME){
             game.unpause();
         } 
@@ -502,14 +500,24 @@ public final class PopupManager {
     }
 
     private void addText(String text, UnicodeFont font){
-        lines.add(text);
-        fonts.add(font);
+        addText(text, font, "center");
     }
     
     private void addText(String[] lines, UnicodeFont font){
+        addText(lines, font, "center");
+    }
+    
+    private void addText(String text, UnicodeFont font, String anchor){
+        lines.add(text);
+        fonts.add(font);
+        anchors.add(anchor);
+    }
+    
+    private void addText(String[] lines, UnicodeFont font, String anchor){
         for(String t : lines){
             this.lines.add(t);
             fonts.add(font);
+            anchors.add(anchor);
         }
     }
     

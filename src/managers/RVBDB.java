@@ -33,7 +33,7 @@ public class RVBDB {
             ResultSet prop = stmt1.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             if(!prop.next()){
                 Statement stmt2 = connection.createStatement();
-                stmt2.executeUpdate("INSERT INTO properties (ingame, progression, progressiontuto, cheatson, language) VALUES (false, 0, null, false, 'FR')");
+                stmt2.executeUpdate("INSERT INTO properties (ingame, progression, progressiontuto, cheatson, language) VALUES (false, 0, null, false, 'ENG')");
                 stmt2.close();
                 prop = stmt1.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
                 prop.next();
@@ -91,6 +91,16 @@ public class RVBDB {
         pstmt.setString(3, progressionTuto);
         pstmt.setBoolean(4, cheatsOn);
         pstmt.setString(5, language);
+        int rows = pstmt.executeUpdate();
+        pstmt.close();
+        if(rows > 0)
+            return true;
+        return false;
+    }
+    
+    public static boolean updateProgressionPoints() throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET progression = ?");
+        pstmt.setInt(1, RvB.progression);
         int rows = pstmt.executeUpdate();
         pstmt.close();
         if(rows > 0)

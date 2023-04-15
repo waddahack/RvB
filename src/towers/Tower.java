@@ -98,25 +98,25 @@ public abstract class Tower extends Shootable implements Serializable{
     }
     
     public void initOverlay(){
-        Overlay o1, o2;
-        
+        Overlay o1, o2, o3;
+        // Name
         o1 = new Overlay(0, RvB.windHeight-(int)((60+30)*ref), (int)(140*ref), (int)(30*ref));
         o1.setBG(RvB.textures.get("board"), 0.6f);
         overlays.add(o1);
-        
+        // Overlay
         o2 = new Overlay(0, RvB.windHeight-(int)(60*ref), RvB.windWidth, (int)(60*ref));
         o2.setBG(RvB.textures.get("board"), 0.6f);
+        int imageSize = o2.getH()-(int)(5*ref);
+        o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
         
         int sep = (int) (700 * ref);
         sep -= (int)(ref*90*upgrades.size());
         if(sep < 25)
             sep = 25;
-        int imageSize = o2.getH()-(int)(5*ref);
         int marginToCenter = RvB.windWidth-o1.getW()-((upgrades.size()-1)*sep + (upgrades.size()-1));
         marginToCenter = marginToCenter/2;
         if(marginToCenter < 0)
             marginToCenter = 0;
-        o2.addImage(o1.getW()/2, o2.getH()/2, imageSize, imageSize, textureStatic);
         Button b;
         // init upgrades position
         for(int i = 0 ; i < upgrades.size() ; i++){
@@ -154,6 +154,13 @@ public abstract class Tower extends Shootable implements Serializable{
             o2.addButton(focusButton);
         }
         overlays.add(o2);
+        
+        // Stats
+        o3 = new Overlay(o2.getX(), o2.getY(), o2.getW(), o2.getH());
+        o3.setBG(RvB.textures.get("board"), 0.6f);
+        o3.addImage(o1.getW()/2, o3.getH()/2, imageSize, imageSize, textureStatic);
+        o3.display(false);
+        overlays.add(o3);
     }
     
     public void renderOverlay(){
@@ -167,21 +174,48 @@ public abstract class Tower extends Shootable implements Serializable{
         overlay.drawText(overlay.getW()/2, overlay.getH()/2, name.getText(), RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
-        for(Upgrade up : upgrades)
-            up.render();
-        String price;
+        if(overlay.isDisplayed()){
+            for(Upgrade up : upgrades)
+                up.render();
+            String price;
+
+            b = overlay.getButtons().get(0);
+            if(b.isHovered()){
+                price = "+ "+(int)(totalMoneySpent/2);
+                b.drawText(price, RvB.fonts.get("canBuy"));
+            }
+            else
+                b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
+            if(canFocus){
+                b = overlay.getButtons().get(1);
+                overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+            }
+        }
         
-        b = overlay.getButtons().get(0);
-        if(b.isHovered()){
-            price = "+ "+(int)(totalMoneySpent/2);
-            b.drawText(price, RvB.fonts.get("canBuy"));
+        overlay = overlays.get(2);
+        if(overlay.isDisplayed()){
+            overlay.drawText(2*overlay.getW()/8, overlay.getH()/2, Text.THIS_WAVE.getText()+" :", RvB.fonts.get("title"), "center");
+            
+            overlay.drawText(3*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(3*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilledThisWave, RvB.fonts.get("normal"), "center");
+            overlay.drawText(4*overlay.getW()/8, (int)(8*ref), Text.DAMAGES_DONE.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(4*overlay.getW()/8, 2*overlay.getH()/3, ""+damagesDoneThisWave, RvB.fonts.get("normal"), "center");
+            
+            overlay.drawText(5*overlay.getW()/8, overlay.getH()/2, Text.TOTAL.getText()+" :", RvB.fonts.get("title"), "center");
+            
+            overlay.drawText(6*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(6*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilled, RvB.fonts.get("normal"), "center");
+            overlay.drawText(7*overlay.getW()/8, (int)(8*ref), Text.DAMAGES_DONE.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(7*overlay.getW()/8, 2*overlay.getH()/3, ""+damagesDone, RvB.fonts.get("normal"), "center");
         }
-        else
-            b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
-        if(canFocus){
-            b = overlay.getButtons().get(1);
-            overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
-        }
+    }
+    
+    public void switchOverlay(){
+        if(overlays.size() < 3)
+            return;
+        Overlay upgrades = overlays.get(1), stats = overlays.get(2);
+        upgrades.display(!upgrades.isDisplayed());
+        stats.display(!stats.isDisplayed());
     }
     
     public void place(ArrayList<ArrayList<Tile>> map){
@@ -266,6 +300,8 @@ public abstract class Tower extends Shootable implements Serializable{
     public void setSelected(boolean selected){
         super.setSelected(selected);
         updateBoosts(false, false, false);
+        if(!selected && (overlays.size() < 3 || overlays.get(2).isDisplayed()))
+            switchOverlay();
     }
     
     public int getPreRange(){
@@ -318,6 +354,8 @@ public abstract class Tower extends Shootable implements Serializable{
                 "\"focusIndex\":"+getFocusIndex()+", "+
                 "\"enemiesKilled\":"+enemiesKilled+", "+
                 "\"damagesDone\":"+damagesDone+", "+
+                "\"enemiesKilledThisWave\":"+enemiesKilledThisWave+", "+
+                "\"damagesDoneThisWave\":"+damagesDoneThisWave+", "+
                 "\"nbUpgradesUsed\":"+nbUpgradesUsed+
                "}";
     }

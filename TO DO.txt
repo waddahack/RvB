@@ -1,12 +1,11 @@
 #A FAIRE#
-- CHANGER SYSTEME DRAW TEXTURE (pour prendre moins de mémoire) : Remplacer toutes les array de Texture par des int[] texturesID
-- TAB pour voir les stats des tourelles (ajouter stats de la dernière vague)
 - animations
+- afficher progression
+- tuto
 ##
 
 #NEXT#
 - Mode aventure (les premiers niveau sont presque des tutos) / Ecrire une histoire (chatGPT) puis trouver des mots neutre et sympa pour les difficultés
-- Achievments/progression : gagne de l'xp après des games pour ??? afficher la barre de progression dans le menu
 - menu option
 ##
 
@@ -23,6 +22,7 @@ ROCKS :
 
 #SI JAMAIS#
 - Rocks ! (or trees)
+- CHANGER SYSTEME DRAW TEXTURE (pour prendre moins de mémoire) : Remplacer toutes les array de Texture par des int[] texturesID
 - refaire système mouse et keyboard input : dans la boucle rvb mettre dans une array
 les input pressé, puis check avec la liste, pour use une seule fois .next()
 - debug & cheats key binds (y'a de quoi s'amuser, hitbox ? etc...)

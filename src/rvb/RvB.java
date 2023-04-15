@@ -111,9 +111,9 @@ public class RvB{
     private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
     private static boolean listeningKeyboard = false;
     // PROPERTIES
-    private static int progression;
-    private static String progressionTuto;
-    private static boolean cheatsActivated;
+    public static int progression;
+    public static String progressionTuto;
+    public static boolean cheatsActivated;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -379,11 +379,14 @@ public class RvB{
         // Cheats activated
         debugTool.drawText((int)(10*ref), (int)(90*ref), "Cheats :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(90*ref), (cheatsActivated ? "on" : "off"), fonts.get("normalS"), "topRight");
+        // PP
+        debugTool.drawText((int)(10*ref), (int)(110*ref), "PP :", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), ""+progression, fonts.get("normalS"), "topRight");
         // Say Hi!
-        debugTool.drawText((int)(10*ref), (int)(110*ref), "Say hi :", fonts.get("normalS"), "topLeft");
-        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), "F1+H", fonts.get("normalS"), "topRight");
+        debugTool.drawText((int)(10*ref), (int)(130*ref), "Say hi :", fonts.get("normalS"), "topLeft");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(130*ref), "F1+H", fonts.get("normalS"), "topRight");
         if(game != null){
-            int s = 150;
+            int s = 170;
             debugTool.drawText(debugTool.getW()/2, (int)(s*ref), "Game", fonts.get("normalS"), "center");
             debugTool.drawText((int)(10*ref), (int)((s+20)*ref), "Wave :", fonts.get("normalS"), "topLeft");
             debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+20)*ref), game.waveNumber+"", fonts.get("normalS"), "topRight");
@@ -420,10 +423,6 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), formatter.format(game.towerSelected.bonusRange)+" / "+formatter.format(game.towerSelected.bonusPower)+" / "+formatter.format(game.towerSelected.bonusShootRate), fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Follows :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.towerSelected.getFollow()+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+100)*ref), "Enemy killed :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+100)*ref), game.towerSelected.enemiesKilled+"", fonts.get("normalS"), "topRight");
-                debugTool.drawText((int)(10*ref), (int)((s+120)*ref), "Damages done :", fonts.get("normalS"), "topLeft");
-                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+120)*ref), game.towerSelected.damagesDone+"", fonts.get("normalS"), "topRight");
             }
         }
         // CONSOLE
@@ -630,11 +629,13 @@ public class RvB{
             return;
         }
         switchStateTo(State.GAME);
+        game.saveGame(false);
     }
     
     public static void newCreatedMap(Difficulty difficulty){
         game = new Game("assets/temp/level_created.txt", difficulty);
         switchStateTo(State.GAME);
+        game.saveGame(false);
     }
     
     public static void loadMap(String path, Difficulty difficulty){
@@ -647,6 +648,7 @@ public class RvB{
         }
         switchStateTo(State.GAME);
         debug("Map loaded : "+path);
+        game.saveGame(false);
     }
     
     public static void setMap(ArrayList<Tile> path, Difficulty difficulty){
@@ -915,17 +917,14 @@ public class RvB{
             textures.put("powerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower.png"))));
             textures.put("powerTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower_base.png"))));
             textures.put("powerTowerElec", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower_elec.png"))));
-            textures.put("powerUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_up.png"))));
             
             textures.put("rangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower.png"))));
             textures.put("rangeTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower_base.png"))));
             textures.put("rangeTowerBalls", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_tower_balls.png"))));
-            textures.put("rangeUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/range_up.png"))));
             
             textures.put("shootrateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower.png"))));
             textures.put("shootrateTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower_base.png"))));
             textures.put("shootrateTowerBullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shootrate_tower_bullet.png"))));
-            textures.put("shootRateUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/attackSpeed_up.png"))));
             // Buffs
             textures.put("buff_Slow", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_slow.png"))));
             textures.put("buff_Upgrade", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upgrade.png"))));
@@ -934,6 +933,9 @@ public class RvB{
             textures.put("buff_UpPowerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upPowerTower.png"))));
             textures.put("buff_UpRangeTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upRangeTower.png"))));
             textures.put("buff_UpShootRateTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/buff_upShootRateTower.png"))));
+            textures.put("powerUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/power_up.png"))));
+            textures.put("rangeUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/range_up.png"))));
+            textures.put("shootRateUp", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/buffs/attackSpeed_up.png"))));
             // Bullets
             textures.put("bulletBlue", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet_blue.png"))));
             textures.put("bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/bullet.png"))));
@@ -1132,6 +1134,24 @@ public class RvB{
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXLB.addAsciiGlyphs();
         
+        color = RvB.colors.get("green_dark");
+        awtFont = new Font(police, Font.BOLD, (int)(20*ref));
+        UnicodeFont titleS = new UnicodeFont(awtFont);
+        titleS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        titleS.addAsciiGlyphs();
+        
+        color = RvB.colors.get("lightGreen");
+        awtFont = new Font(police, Font.BOLD, (int)(26*ref));
+        UnicodeFont title = new UnicodeFont(awtFont);
+        title.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        title.addAsciiGlyphs();
+        
+        color = RvB.colors.get("lightGreen");
+        awtFont = new Font(police, Font.BOLD, (int)(32*ref));
+        UnicodeFont titleL = new UnicodeFont(awtFont);
+        titleL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        titleL.addAsciiGlyphs();
+        
         color = RvB.colors.get("money");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont money = new UnicodeFont(awtFont);
@@ -1188,6 +1208,12 @@ public class RvB{
             fonts.put("normalLB", normalLB);
             normalXLB.loadGlyphs();
             fonts.put("normalXLB", normalXLB);
+            titleS.loadGlyphs();
+            fonts.put("titleS", titleS);
+            title.loadGlyphs();
+            fonts.put("title", title);
+            titleL.loadGlyphs();
+            fonts.put("titleL", titleL);
             money.loadGlyphs();
             fonts.put("money", money);
             life.loadGlyphs();

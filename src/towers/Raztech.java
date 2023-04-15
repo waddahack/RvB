@@ -60,7 +60,7 @@ public class Raztech extends Tower{
     
     @Override
     public void initOverlay(){
-        Overlay o1, o2;
+        Overlay o1, o2, o3;
         
         o1 = new Overlay(0, RvB.windHeight-(int)((60+45)*ref), (int)(200*ref), (int)(45*ref));
         o1.setBG(RvB.textures.get("board"), 0.6f);
@@ -92,6 +92,13 @@ public class Raztech extends Tower{
         });
         o2.addButton(focusButton);
         overlays.add(o2);
+        
+        // Stats
+        o3 = new Overlay(o2.getX(), o2.getY(), o2.getW(), o2.getH());
+        o3.setBG(RvB.textures.get("board"), 0.6f);
+        o3.addImage(o1.getW()/2, o3.getH()/2, imageSize, imageSize, textureStatic);
+        o3.display(false);
+        overlays.add(o3);
     }
     
     @Override
@@ -106,34 +113,53 @@ public class Raztech extends Tower{
         overlay.drawText(overlay.getW()/2, overlay.getH()/2, name.getText()+" ("+Text.LVL.getText()+lvl+")", RvB.fonts.get("normalL"));
         
         overlay = overlays.get(1);
-        int width = (int) (500*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
-        int xpWidth = (int) ((float)(xp)/(float)(maxXP) * width);
-        if(xpWidth < 0) xpWidth = 0;
+        if(overlay.isDisplayed()){
+            int width = (int) (500*ref), height = (int) (30*ref), x = overlays.get(0).getW()+(int)(60*ref), y = overlay.getY()+overlay.getH()/2-height/2;
+            int xpWidth = (int) ((float)(xp)/(float)(maxXP) * width);
+            if(xpWidth < 0) xpWidth = 0;
 
-        RvB.drawString(overlays.get(0).getW()+(int)(20*ref), y+height/2, Text.XP.getText()+" :", RvB.fonts.get("normal"));
-        
-        RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
-        RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
-        RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
-        
-        RvB.drawString(x+width/2, y+height/2, xp+"/"+maxXP, RvB.fonts.get("normalBlack"));
+            RvB.drawString(overlays.get(0).getW()+(int)(20*ref), y+height/2, Text.XP.getText()+" :", RvB.fonts.get("normal"));
 
-        for(Upgrade up : upgrades)
-            up.render();
+            RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
+            RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
+            RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
+
+            RvB.drawString(x+width/2, y+height/2, xp+"/"+maxXP, RvB.fonts.get("normalBlack"));
+
+            for(Upgrade up : upgrades)
+                up.render();
+
+            // buff upgrade
+            overlay.drawText(overlay.getW()-(int) (740*ref), (int)(overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2-18*ref), (int)(bonusRange*100)+"%", RvB.fonts.get("normalS"), "topLeft");
+            overlay.drawText(overlay.getW()-(int) (740*ref), overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2, (int)(bonusPower*100)+"%", RvB.fonts.get("normalS"), "topLeft");
+            overlay.drawText(overlay.getW()-(int) (740*ref), (int)(overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2+18*ref), (int)(bonusShootRate*100)+"%", RvB.fonts.get("normalS"), "topLeft");
+            // buff slow
+            overlay.drawText(overlay.getW()-(int) (660*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(slow*100)+"%", RvB.fonts.get("normal"), "topLeft");
+            // buff xp
+            overlay.drawText(overlay.getW()-(int) (580*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(chanceToKill*100)+"%", RvB.fonts.get("normal"), "topLeft");        
+            // buff xp
+            overlay.drawText(overlay.getW()-(int) (500*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(bonusXP*100)+"%", RvB.fonts.get("normal"), "topLeft");
+
+            b = overlay.getButtons().get(0);
+            overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+        }
         
-        // buff upgrade
-        overlay.drawText(overlay.getW()-(int) (740*ref), (int)(overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2-18*ref), (int)(bonusRange*100)+"%", RvB.fonts.get("normalS"), "topLeft");
-        overlay.drawText(overlay.getW()-(int) (740*ref), overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2, (int)(bonusPower*100)+"%", RvB.fonts.get("normalS"), "topLeft");
-        overlay.drawText(overlay.getW()-(int) (740*ref), (int)(overlay.getH()/2-RvB.fonts.get("normalS").getFont().getSize()/2+18*ref), (int)(bonusShootRate*100)+"%", RvB.fonts.get("normalS"), "topLeft");
-        // buff slow
-        overlay.drawText(overlay.getW()-(int) (660*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(slow*100)+"%", RvB.fonts.get("normal"), "topLeft");
-        // buff xp
-        overlay.drawText(overlay.getW()-(int) (580*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(chanceToKill*100)+"%", RvB.fonts.get("normal"), "topLeft");        
-        // buff xp
-        overlay.drawText(overlay.getW()-(int) (500*ref), overlay.getH()/2-RvB.fonts.get("normal").getFont().getSize()/2, (int)(bonusXP*100)+"%", RvB.fonts.get("normal"), "topLeft");
-        
-        b = overlay.getButtons().get(0);
-        overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
+        overlay = overlays.get(2);
+        if(overlay.isDisplayed()){
+            overlay.drawText(2*overlay.getW()/8, overlay.getH()/2, Text.THIS_WAVE.getText()+" :", RvB.fonts.get("title"), "center");
+            
+            overlay.drawText(3*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(3*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilledThisWave, RvB.fonts.get("normal"), "center");
+            overlay.drawText(4*overlay.getW()/8, (int)(8*ref), Text.DAMAGES_DONE.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(4*overlay.getW()/8, 2*overlay.getH()/3, ""+damagesDoneThisWave, RvB.fonts.get("normal"), "center");
+            
+            overlay.drawText(5*overlay.getW()/8, overlay.getH()/2, Text.TOTAL.getText()+" :", RvB.fonts.get("title"), "center");
+            
+            overlay.drawText(6*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(6*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilled, RvB.fonts.get("normal"), "center");
+            overlay.drawText(7*overlay.getW()/8, (int)(8*ref), Text.DAMAGES_DONE.getText(), RvB.fonts.get("titleS"), "topMid");
+            overlay.drawText(7*overlay.getW()/8, 2*overlay.getH()/3, ""+damagesDone, RvB.fonts.get("normal"), "center");
+        }
     }
     
     @Override
@@ -211,13 +237,17 @@ public class Raztech extends Tower{
         if(!enemy.hasStarted())
             return;
         Enemy e = (Enemy) enemy;
+        float d;
         if(Math.random() <= chanceToKill)
-            damagesDone += e.takeDamage(getPower()*18);
+            d = e.takeDamage(getPower()*18);
         else
-            damagesDone += e.takeDamage(getPower());
+            d = e.takeDamage(getPower());
+        damagesDone += d;
+        damagesDoneThisWave += d;
         e.beSlowedBy(slow);
         if(e.isDead()){
             enemiesKilled += 1;
+            enemiesKilledThisWave += 1;
             if(e != game.bazoo)
                 gainXP(e.getReward());
         }
@@ -289,6 +319,8 @@ public class Raztech extends Tower{
                 "\"focusIndex\":"+getFocusIndex()+", "+
                 "\"enemiesKilled\":"+enemiesKilled+", "+
                 "\"damagesDone\":"+damagesDone+", "+
+                "\"enemiesKilledThisWave\":"+enemiesKilledThisWave+", "+
+                "\"damagesDoneThisWave\":"+damagesDoneThisWave+", "+
                 "\"nbUpgradesUsed\":[], "+
                 "\"lvl\":"+lvl+", "+
                 "\"xp\":"+xp+
