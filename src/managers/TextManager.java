@@ -110,7 +110,6 @@ public final class TextManager {
             new String[]{"Gagné"},
             new String[]{"Won"}),
         
-        
         // MENU
         ADVENTURE(
             new String[]{"Aventure"},

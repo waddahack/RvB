@@ -706,10 +706,14 @@ public class RvB{
         } finally{
             if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
         }
+        File levelsFolder = new File(System.getProperty("user.home")+File.separator+"RvB", "levels");
+        if(!levelsFolder.exists()) {
+            levelsFolder.mkdir();
+        }
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
         chooser.setFileFilter(filter);
-        chooser.setCurrentDirectory(new File("levels/"));
+        chooser.setCurrentDirectory(levelsFolder);
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             filePath = chooser.getSelectedFile().getPath();

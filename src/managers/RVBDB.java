@@ -27,10 +27,10 @@ public class RVBDB {
     }
     
     private static void initDB(){
-        String appDataPath = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming";
-        File appFolder = new File(appDataPath, "RvB");
+        String userHome = System.getProperty("user.home");
+        File appFolder = new File(userHome, "RvB");
         if (!appFolder.exists()) {
-            appFolder.mkdirs();
+            appFolder.mkdir();
         }
         // Création de la connection
         try {

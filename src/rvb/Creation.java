@@ -1,7 +1,7 @@
 package rvb;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import managers.PopupManager;
@@ -37,6 +37,12 @@ public class Creation extends AppCore{
     @Override
     protected void initMap(String name){
         super.initMap(name);
+        
+        try {
+            createMapTextureEmpty();
+        } catch (Exception ex) {
+            Logger.getLogger(Creation.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         roads = new ArrayList<>();
         if(!path.isEmpty()){
@@ -115,16 +121,20 @@ public class Creation extends AppCore{
         b.setFunction(__ -> {
             String[] error = calculatePath();
             String name;
+            File levelsFolder = new File(System.getProperty("user.home")+File.separator+"RvB", "levels");
+            if (!levelsFolder.exists()) {
+                levelsFolder.mkdir();
+            }
             if(error == null)
-                name = saveLevel("created", "levels/", false);
+                name = saveLevel("created", levelsFolder.getAbsolutePath()+File.separator, false);
             else{
                 path = (ArrayList<Tile>) roads.clone();
-                name = saveLevel("created_unfinished", "levels/", false);
+                name = saveLevel("unfinished", levelsFolder.getAbsolutePath()+File.separator, false);
             }
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{
-                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", "levels/"+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
             }
         });
         o.addButton(b);

@@ -458,14 +458,14 @@ public abstract class AppCore {
                 pathCoords += road.getIndexY()+" ";
             }
             // Write in file
-            File file = new File(dir+"level_"+name+".txt");
             fileName = "level_"+name;
+            File file = new File(dir+fileName+".txt");
             if(!file.createNewFile() && !overwrite){
                 int i = 0;
                 do{
-                    file = new File(dir+"level_"+name+" ("+(++i)+").txt");
+                    fileName = "level_"+name+" ("+(++i)+")";
+                    file = new File(dir+fileName+".txt");
                 }while(!file.createNewFile());
-                fileName = "level_"+name+" ("+i+")";
             }
             PrintWriter writer = new PrintWriter(file);
             writer.print(pathCoords);
@@ -541,11 +541,9 @@ public abstract class AppCore {
                 inWave = false;
                 wave = null;
                 money += waveReward;
-                if(!gameOver && waveNumber+1 < difficulty.nbWaveMax)
-                    waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    if(waveNumber > nbWaveMax){
+                    if(waveNumber == nbWaveMax){
                         gameWin = true;
                     }
                     else if(!gameOver){
@@ -559,8 +557,10 @@ public abstract class AppCore {
                         bossDefeated = false;
                     }
                 }
-                if(!gameOver && !gameWin)
+                if(!gameOver && !gameWin){
+                    waveNumber++;
                     saveGame(false);
+                }
             }
         }
         
@@ -756,12 +756,16 @@ public abstract class AppCore {
         b.setBG(RvB.textures.get("download"));
         Button dlBut = b;
         b.setFunction(__ -> {
-            String name = saveLevel("downloaded", "levels/", false);
+            File levelsFolder = new File(System.getProperty("user.home")+File.separator+"RvB", "levels");
+            if (!levelsFolder.exists()) {
+                levelsFolder.mkdir();
+            }
+            String name = saveLevel(type=="created" ? "created":"downloaded", levelsFolder.getAbsolutePath()+File.separator, false);
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{
                 dlBut.lock();
-                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", "levels/"+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
             }
         });
         o.addButton(b);
