@@ -114,6 +114,7 @@ public class RvB{
     public static int progression;
     public static String progressionTuto;
     public static boolean cheatsActivated;
+    public static String bestScoreEasy, bestScoreMedium, bestScoreHard, bestScoreHardcore;
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -217,7 +218,7 @@ public class RvB{
         lastUpdateFPS = System.currentTimeMillis();
     }
 
-    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String language, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
+    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String language, String bsEasy, String bsMedium, String bsHard, String bsHardcore, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
         progression = prog;
         progressionTuto = progTuto;
         cheatsActivated = cheatsOn;
@@ -229,6 +230,10 @@ public class RvB{
                 menu.ENG.click(false);
                 break;
         }
+        bestScoreEasy = bsEasy;
+        bestScoreMedium = bsMedium;
+        bestScoreHard = bsHard;
+        bestScoreHardcore = bsHardcore;
         if(inGame){
             Difficulty diff = Difficulty.MEDIUM;
             switch(difficulty){
@@ -532,7 +537,7 @@ public class RvB{
             }
             
             // ESCAPE MENU
-            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && (game == null || (!game.gameOver && !game.gameWin)) && !PopupManager.Instance.onRewardSelection()){
+            if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && (game == null || game.ended || (!game.gameOver && !game.gameWin)) && !PopupManager.Instance.onRewardSelection()){
                 if(PopupManager.Instance.onPopup())
                     PopupManager.Instance.closeCurrentPopup();
                 else
@@ -662,7 +667,8 @@ public class RvB{
     
     public static void updateProperties(){
         try {
-            RVBDB.Instance.saveProperties((game != null && !game.ended && !game.gameOver && !game.gameWin), progression, progressionTuto, cheatsActivated, TextManager.Instance.getLanguage());
+            RVBDB.Instance.updateProgressionTuto(progressionTuto);
+            RVBDB.Instance.updateInGame(game != null && !game.ended && !game.gameOver && !game.gameWin);
         } catch (SQLException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1140,13 +1146,13 @@ public class RvB{
         titleS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         titleS.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = RvB.colors.get("green_dark");
         awtFont = new Font(police, Font.BOLD, (int)(26*ref));
         UnicodeFont title = new UnicodeFont(awtFont);
         title.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         title.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = RvB.colors.get("green_dark");
         awtFont = new Font(police, Font.BOLD, (int)(32*ref));
         UnicodeFont titleL = new UnicodeFont(awtFont);
         titleL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));

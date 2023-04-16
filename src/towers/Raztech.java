@@ -146,14 +146,14 @@ public class Raztech extends Tower{
         
         overlay = overlays.get(2);
         if(overlay.isDisplayed()){
-            overlay.drawText(2*overlay.getW()/8, overlay.getH()/2, Text.THIS_WAVE.getText()+" :", RvB.fonts.get("title"), "center");
+            overlay.drawText(2*overlay.getW()/8, overlay.getH()/2, Text.THIS_WAVE.getText()+" :", RvB.fonts.get("normalLB"), "center");
             
             overlay.drawText(3*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
             overlay.drawText(3*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilledThisWave, RvB.fonts.get("normal"), "center");
             overlay.drawText(4*overlay.getW()/8, (int)(8*ref), Text.DAMAGES_DONE.getText(), RvB.fonts.get("titleS"), "topMid");
             overlay.drawText(4*overlay.getW()/8, 2*overlay.getH()/3, ""+damagesDoneThisWave, RvB.fonts.get("normal"), "center");
             
-            overlay.drawText(5*overlay.getW()/8, overlay.getH()/2, Text.TOTAL.getText()+" :", RvB.fonts.get("title"), "center");
+            overlay.drawText(5*overlay.getW()/8, overlay.getH()/2, Text.TOTAL.getText()+" :", RvB.fonts.get("normalLB"), "center");
             
             overlay.drawText(6*overlay.getW()/8, (int)(8*ref), Text.ENEMIES_KILLED.getText(), RvB.fonts.get("titleS"), "topMid");
             overlay.drawText(6*overlay.getW()/8, 2*overlay.getH()/3, ""+enemiesKilled, RvB.fonts.get("normal"), "center");

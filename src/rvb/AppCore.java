@@ -112,7 +112,7 @@ public abstract class AppCore {
     public Bazoo bazoo = null;
     protected Wave wave;
     protected ArrayList<Overlay> overlays;
-    public boolean bossDead = false, bossDefeated = false, gameLoaded = false, progressionPointsAdded = false;
+    public boolean bossDead = false, bossDefeated = false, gameLoaded = false, endGamePropertiesUpdated = false;
     public static int bossEvery = 6;
     private boolean keyDown = false;
     protected static Random random;
@@ -541,7 +541,7 @@ public abstract class AppCore {
                 inWave = false;
                 wave = null;
                 money += waveReward;
-                if(!gameOver)
+                if(!gameOver && waveNumber+1 < difficulty.nbWaveMax)
                     waveNumber++;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
@@ -1043,8 +1043,16 @@ public abstract class AppCore {
     protected void gameEnded(){
         if(PopupManager.Instance.onPopup() || RvB.stateChanged)
             return;
-        if(!progressionPointsAdded && !type.equals("created"))
-            addProgressionPoints();
+        if(!endGamePropertiesUpdated && !type.equals("created") && !type.equals("loaded")){
+            try {
+                addProgressionPoints();
+                if(type.equals("random"))
+                    updateBestScore();
+                endGamePropertiesUpdated = true;
+            } catch (SQLException ex) {
+                Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         RvB.updateProperties();
         if(gameWin)
             PopupManager.Instance.gameWin();
@@ -1052,19 +1060,68 @@ public abstract class AppCore {
             PopupManager.Instance.gameOver();
     }
     
-    private void addProgressionPoints(){
+    private void addProgressionPoints() throws SQLException{
         int points;
         if(gameWin)
             points = (int) (nbWaveMax*nbWaveMax*2*difficulty.riskValue*(life/difficulty.life));
         else{
             points = (int) (waveNumber*waveNumber*difficulty.riskValue*(life/difficulty.life));
         }
-        try {
-            RvB.progression += points;
-            RVBDB.Instance.updateProgressionPoints();
-            progressionPointsAdded = true;
-        } catch (SQLException ex) {
-            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+        RvB.progression += points;
+        RVBDB.Instance.updateProgressionPoints(RvB.progression);
+    }
+    
+    private void updateBestScore() throws SQLException{
+        int newNbWave = waveNumber, newLifePercent = (int)(100*life/difficulty.life);
+        String bestScore = null, newScore = newNbWave+";"+newLifePercent;
+        switch(difficulty.name){
+            case "EASY":
+                bestScore = RvB.bestScoreEasy;
+                break;
+            case "MEDIUM":
+                bestScore = RvB.bestScoreMedium;
+                break;
+            case "HARD":
+                bestScore = RvB.bestScoreHard;
+                break;
+            case "HARDCORE":
+                bestScore = RvB.bestScoreHardcore;
+                break;
+        }
+        if(bestScore == null){
+            changeBestScore(newScore);
+            RVBDB.Instance.updateBestScore(newScore, difficulty.name);
+            return;
+        }
+        int nbWave = Integer.parseInt(bestScore.split(";")[0]);
+        int lifePercent = Integer.parseInt(bestScore.split(";")[1]);
+        if(nbWave == difficulty.nbWaveMax){
+            if(newNbWave == difficulty.nbWaveMax && newLifePercent > lifePercent){
+                changeBestScore(newScore);
+                RVBDB.Instance.updateBestScore(newScore, difficulty.name);
+                return;
+            }
+        }
+        if(newNbWave > nbWave){
+            changeBestScore(newScore);
+            RVBDB.Instance.updateBestScore(newScore, difficulty.name);
+        }
+    }
+    
+    private void changeBestScore(String newBestScore){
+        switch(difficulty.name){
+            case "EASY":
+                RvB.bestScoreEasy = newBestScore;
+                break;
+            case "MEDIUM":
+                RvB.bestScoreMedium = newBestScore;
+                break;
+            case "HARD":
+                RvB.bestScoreHard = newBestScore;
+                break;
+            case "HARDCORE":
+                RvB.bestScoreHardcore = newBestScore;
+                break;
         }
     }
     

@@ -51,7 +51,6 @@ public final class PopupManager {
     
     public void initOverlays(){
         Button b;
-        Overlay o;
         int butWith = (int) (180*ref);
         int butHeight = (int)(ref*36);
         // POPUP AFFICHAGE
@@ -108,6 +107,7 @@ public final class PopupManager {
         });
         b.setOnHoverFunction(__ -> {
             renderDiffDesc(RvB.Difficulty.EASY);
+            renderBestScore(RvB.Difficulty.EASY);
         });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 5*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -124,6 +124,7 @@ public final class PopupManager {
         });
         b.setOnHoverFunction(__ -> {
             renderDiffDesc(RvB.Difficulty.MEDIUM);
+            renderBestScore(RvB.Difficulty.MEDIUM);
         });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 6*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -140,6 +141,7 @@ public final class PopupManager {
         });
         b.setOnHoverFunction(__ -> {
             renderDiffDesc(RvB.Difficulty.HARD);
+            renderBestScore(RvB.Difficulty.HARD);
         });
         chooseDifficulty.addButton(b);
         b = new Button(chooseDifficulty.getW()/2, 7*chooseDifficulty.getH()/8, butWith, butHeight, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
@@ -156,6 +158,7 @@ public final class PopupManager {
         });
         b.setOnHoverFunction(__ -> {
             renderDiffDesc(RvB.Difficulty.HARDCORE);
+            renderBestScore(RvB.Difficulty.HARDCORE);
         });
         chooseDifficulty.addButton(b);
         // GAME OVER
@@ -587,6 +590,41 @@ public final class PopupManager {
         }
         RvB.drawFilledRectangle(posX+(int)(2*ref), posY+4*(int)(32*ref)-(int)(14*ref), (int)(28*ref), (int)(28*ref), null, 1, RvB.textures.get("roadStraight"));
         RvB.drawString(posX+(int)(48*ref)+RvB.fonts.get("normal").getWidth(t.getText())/2, posY+4*(int)(32*ref), t.getText(), RvB.fonts.get("normal"));
+    }
+    
+    private void renderBestScore(RvB.Difficulty diff){
+        if(!gameType.equals("random"))
+            return;
+        String bestScore = null;
+        switch(diff.name){
+            case "EASY" :
+                bestScore = RvB.bestScoreEasy;
+                break;
+            case "MEDIUM" :
+                bestScore = RvB.bestScoreMedium;
+                break;
+            case "HARD" :
+                bestScore = RvB.bestScoreHard;
+                break;
+            case "HARDCORE" :
+                bestScore = RvB.bestScoreHardcore;
+                break;
+        }
+        if(bestScore == null || bestScore.isEmpty())
+            return;
+        int posX = chooseDifficulty.getW()-chooseDifficulty.getW()/6;
+        int posY = chooseDifficulty.getH()/2;
+        String nbWave = bestScore.split(";")[0], lifePercent = bestScore.split(";")[1];
+        
+        chooseDifficulty.drawText(posX, posY, Text.BEST_PERF.getText(), RvB.fonts.get("titleS"));
+        
+        if(Integer.parseInt(nbWave) < diff.nbWaveMax){
+            chooseDifficulty.drawText(posX, posY+(int)(32*ref), Text.WAVE.getText()+" : "+nbWave, RvB.fonts.get("normal"));
+        }
+        else{
+            chooseDifficulty.drawText(posX, posY+(int)(32*ref), Text.WON.getText(), RvB.fonts.get("normal"));
+            chooseDifficulty.drawText(posX, posY+(int)(64*ref), Text.LIFEPOINT_LEFT.getText()+" : "+lifePercent+"%", RvB.fonts.get("normal"));
+        }
     }
     
     public boolean onPopup(){

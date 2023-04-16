@@ -29,7 +29,7 @@ public final class TextManager {
             new String[]{"Bazoo a été plus fort...", "Il a gagné une bataille, mais pas la guerre."},
             new String[]{"Bazoo have been stronger...", "He's won a battle, but not the war."}),
         GAME_WIN(
-            new String[]{"Vous avez gagné !", "Bazoo s'incline et reparre vers ses terres bredouille !"},
+            new String[]{"Vous avez gagné !", "Bazoo s'incline et repart vers ses terres bredouille !"},
             new String[]{"You win !", "Bazoo bows and leave back to his lands empty-handed !"}),
         WAVE(
             new String[]{"Vague"},
@@ -106,6 +106,9 @@ public final class TextManager {
         PATH_NOT_LOOP(
             new String[]{"Ça ne peut pas être une boucle !"},
             new String[]{"It can't be a loop !"}),
+        WON(
+            new String[]{"Gagné"},
+            new String[]{"Won"}),
         
         
         // MENU
@@ -278,6 +281,12 @@ public final class TextManager {
         HARDCORE(
             new String[]{"Hardcore"},
             new String[]{"Hardcore"}),
+        BEST_PERF(
+            new String[]{"Meilleure performance"},
+            new String[]{"Best performance"}),
+        LIFEPOINT_LEFT(
+            new String[]{"Points de vie restant"},
+            new String[]{"Life points left"}),
         BOSS_DEFEATED(
             new String[]{"«Je reviendrai plus fort !»", "«Tu ne devrais pas plaisanter avec moi vermine !»", "«Ce n'est qu'une question de temps...»", "«Je vais libérer ma vraie puissance !»", "«Plus je souffre, plus je deviens puissant !»"},
             new String[]{"\"I will be back much stronger !\"", "\"You should not mess with me filthy bug !\"", "\"It is just a matter of time...\"", "\"I will unleash my true power !\"", "\"The more I suffer, the more powerful I get !\""}),
