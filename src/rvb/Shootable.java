@@ -36,7 +36,8 @@ public abstract class Shootable {
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0, bonusLife = 0;
     // STATS
-    public int damagesDone = 0, enemiesKilled = 0, damagesDoneThisWave = 0, enemiesKilledThisWave = 0;
+    public int enemiesKilled = 0, enemiesKilledThisWave = 0;
+    public float damagesDone = 0, damagesDoneThisWave = 0;
     
     public Shootable(){
         textures = new ArrayList<>();

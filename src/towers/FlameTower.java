@@ -29,11 +29,11 @@ public class FlameTower extends Tower{
         continuousSound = true;
         bulletSprite = RvB.textures.get("flame");
         
-        range = (int) (1.4*RvB.unite);
-        power = 0.8f;
+        range = (int) (1.5*RvB.unite);
+        power = 1f;
         shootRate = 30f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade(this, "Range", range, 1.35f, "*", 180f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 200f, 1.5f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 400f, 1.6f, 3));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
