@@ -66,8 +66,7 @@ public abstract class Buff implements Serializable{
         return (nbMaxPick < 0 || nbPick < nbMaxPick);
     }
     
-    @Override
-    public String toString(){
+    public String getJSON(){
         return "{"+
                 "\"id\":\""+id+"\", "+
                 "\"nbPick\":"+nbPick+

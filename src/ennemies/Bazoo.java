@@ -1,6 +1,7 @@
 package ennemies;
 
 import static ennemies.BasicEnemy.balance;
+import static ennemies.Enemy.Type.BOSS;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -13,7 +14,7 @@ public class Bazoo extends Enemy{
     public int level;
     
     public Bazoo(int lvl){
-        super();
+        super(BOSS);
         textures.add(RvB.textures.get("bazoo"));
         texturesBright.add(RvB.textures.get("bazooBright"));
         rotateIndex = 0;

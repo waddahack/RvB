@@ -1,6 +1,7 @@
 package ennemies;
 
 import Utils.MyMath;
+import static ennemies.Enemy.Type.FLYING;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -15,7 +16,7 @@ public class FlyingEnemy extends Enemy{
     private int turningSpriteAngle = 0;
     
     public FlyingEnemy(){
-        super();
+        super(FLYING);
         textures.add(RvB.textures.get("flyingEnemyBase"));
         textures.add(RvB.textures.get("flyingEnemyProp"));
         texturesBright.add(RvB.textures.get("flyingEnemyBaseBright"));
@@ -27,7 +28,7 @@ public class FlyingEnemy extends Enemy{
         reward = 10;
         power = 12f;
         shootRate = 1f;
-        moveSpeed = 1.8f;
+        moveSpeed = 1.6f;
         range = 3*unite;
         life = 132f;
         size = (int) (1.25*unite);

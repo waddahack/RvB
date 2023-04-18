@@ -110,55 +110,6 @@ public final class TextManager {
             new String[]{"Gagné"},
             new String[]{"Won"}),
         
-        // MENU
-        ADVENTURE(
-            new String[]{"Aventure"},
-            new String[]{"Adventure"}),
-        FIGHT(
-            new String[]{"Combattre Bazoo"},
-            new String[]{"Fight Bazoo"}),
-        RANDOM_MAP(
-            new String[]{"Map aléatoire"},
-            new String[]{"Random map"}),
-        LOAD_MAP(
-            new String[]{"Charger une map"},
-            new String[]{"Load a map"}),
-        CREATION(
-            new String[]{"Création"},
-            new String[]{"Creation"}),
-        CONTINUE(
-            new String[]{"Continuer"},
-            new String[]{"Continue"}),
-        NEW_GAME(
-            new String[]{"Nouvelle partie"},
-            new String[]{"New game"}),
-        MODIFY(
-            new String[]{"Modifier"},
-            new String[]{"Modify"}),
-        MISSING_FILE_LEVELS(
-            new String[]{"Hmmm... Étrange...", "Créer un dossier \"levels\" dans", "le même endroit que ton jeu."},
-            new String[]{"Hmmm... Very strange...", "Create a directory \"levels\" in", "the same location than your game."}),
-        
-        // ENEMIES
-        ENEMY_BASIC(
-            new String[]{"Bazooldat"},
-            new String[]{"Bazooldier"}),
-        ENEMY_FAST(
-            new String[]{"Quazoo"},
-            new String[]{"Quazoo"}),
-        ENEMY_TRICKY(
-            new String[]{"Groupe de Bazooldats"},
-            new String[]{"Bazooldier group"}),
-        ENEMY_STRONG(
-            new String[]{"Bazank"},
-            new String[]{"Bazank"}),
-        ENEMY_FLYING(
-            new String[]{"Bazooptère"},
-            new String[]{"Bazoopter"}),
-        ENEMY_BOSS(
-            new String[]{"Bazoo"},
-            new String[]{"Bazoo"}),
-        
         // TOWERS
         RAZTECH(
             new String[]{"Raztech"},
@@ -191,7 +142,39 @@ public final class TextManager {
             new String[]{"Vise le"},
             new String[]{"Focus the"}),
         
+        // ENEMIES
+        ENEMY_BASIC(
+            new String[]{"Bazooldat"},
+            new String[]{"Bazooldier"}),
+        ENEMY_FAST(
+            new String[]{"Quazoo"},
+            new String[]{"Quazoo"}),
+        ENEMY_TRICKY(
+            new String[]{"Groupe de Bazooldats"},
+            new String[]{"Bazooldier group"}),
+        ENEMY_STRONG(
+            new String[]{"Bazank"},
+            new String[]{"Bazank"}),
+        ENEMY_FLYING(
+            new String[]{"Bazooptère"},
+            new String[]{"Bazoopter"}),
+        ENEMY_BOSS(
+            new String[]{"Bazoo"},
+            new String[]{"Bazoo"}),
+        
         // STATS
+        STATS(
+            new String[]{"Statistiques"},
+            new String[]{"Statistics"}),
+        GLOBAL(
+            new String[]{"Globale"},
+            new String[]{"Global"}),
+        PROGRESSION(
+            new String[]{"Progression"},
+            new String[]{"Progress"}),
+        RAZTECH_LVL_MAX(
+            new String[]{"Niveau max avec Raztech"},
+            new String[]{"Level max with Raztech"}),
         ENEMIES_KILLED(
             new String[]{"Ennemis tués"},
             new String[]{"Enemies killed"}),
@@ -204,6 +187,77 @@ public final class TextManager {
         THIS_WAVE(
             new String[]{"Cette vague"},
             new String[]{"This wave"}),
+        PB(
+            new String[]{"Record personnel"},
+            new String[]{"Personal best"}),
+        BASICTOWER_PLACED(
+            new String[]{Text.TOWER_BASIC.FR_text[0]+" placés"},
+            new String[]{Text.TOWER_BASIC.ENG_text[0]+" placed"}),
+        CIRCLETOWER_PLACED(
+            new String[]{Text.TOWER_CIRCLE.FR_text[0]+" placées"},
+            new String[]{Text.TOWER_CIRCLE.ENG_text[0]+" placed"}),
+        BIGTOWER_PLACED(
+            new String[]{Text.TOWER_BIG.FR_text[0]+" placés"},
+            new String[]{Text.TOWER_BIG.ENG_text[0]+" placed"}),
+        FLAMETOWER_PLACED(
+            new String[]{Text.TOWER_FLAME.FR_text[0]+" placés"},
+            new String[]{Text.TOWER_FLAME.ENG_text[0]+" placed"}),
+        BASICENEMY_KILLED(
+            new String[]{Text.ENEMY_BASIC.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_BASIC.ENG_text[0]+" killed"}),
+        FASTENEMY_KILLED(
+            new String[]{Text.ENEMY_FAST.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_FAST.ENG_text[0]+" killed"}),
+        TRICKYENEMY_KILLED(
+            new String[]{Text.ENEMY_TRICKY.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_TRICKY.ENG_text[0]+" killed"}),
+        STRONGENEMY_KILLED(
+            new String[]{Text.ENEMY_STRONG.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_STRONG.ENG_text[0]+" killed"}),
+        FLYINGENEMY_KILLED(
+            new String[]{Text.ENEMY_FLYING.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_FLYING.ENG_text[0]+" killed"}),
+        BOSS_KILLED(
+            new String[]{Text.ENEMY_BOSS.FR_text[0]+" tués"},
+            new String[]{Text.ENEMY_BOSS.ENG_text[0]+" killed"}),
+        NB_GAMES(
+            new String[]{"Nombre de parties"},
+            new String[]{"Number of games"}),
+        WINRATE(
+            new String[]{"Taux de réussite"},
+            new String[]{"Win rate"}),
+        AVERAGE_WAVENUMBER(
+            new String[]{"Nombre de vagues moyen"},
+            new String[]{"Average number of waves"}),
+        
+        // MENU
+        ADVENTURE(
+            new String[]{"Aventure"},
+            new String[]{"Adventure"}),
+        FIGHT(
+            new String[]{"Combattre Bazoo"},
+            new String[]{"Fight Bazoo"}),
+        RANDOM_MAP(
+            new String[]{"Map aléatoire"},
+            new String[]{"Random map"}),
+        LOAD_MAP(
+            new String[]{"Charger une map"},
+            new String[]{"Load a map"}),
+        CREATION(
+            new String[]{"Création"},
+            new String[]{"Creation"}),
+        CONTINUE(
+            new String[]{"Continuer"},
+            new String[]{"Continue"}),
+        NEW_GAME(
+            new String[]{"Nouvelle partie"},
+            new String[]{"New game"}),
+        MODIFY(
+            new String[]{"Modifier"},
+            new String[]{"Modify"}),
+        MISSING_FILE_LEVELS(
+            new String[]{"Hmmm... Étrange...", "Créer un dossier \"levels\" dans", "le même endroit que ton jeu."},
+            new String[]{"Hmmm... Very strange...", "Create a directory \"levels\" in", "the same location than your game."}),
         
         // BUFFS
         BUFF_UPGRADE(
@@ -266,7 +320,7 @@ public final class TextManager {
             new String[]{"Choisis un mode"},
             new String[]{"Select a mode"}),
         CANCEL(
-            new String[]{"Échappe pour annuler"},
+            new String[]{"Échap pour annuler"},
             new String[]{"Escape to cancel"}),
         EASY(
             new String[]{"Facile"},
@@ -280,9 +334,6 @@ public final class TextManager {
         HARDCORE(
             new String[]{"Hardcore"},
             new String[]{"Hardcore"}),
-        BEST_PERF(
-            new String[]{"Meilleure performance"},
-            new String[]{"Best performance"}),
         LIFEPOINT_LEFT(
             new String[]{"Points de vie restant"},
             new String[]{"Life points left"}),
@@ -314,7 +365,7 @@ public final class TextManager {
             new String[]{"Raccourcis"},
             new String[]{"Shortcuts"}),
         SHORTCUTS_GUIDE(
-            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "Tab : Afficher les stats de la tour séléctionnée", "H : Ouvrir cette fenêtre", "F1+D : Fenêtre debug", "Échappe : Menu"},
+            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "Tab : Afficher les stats de la tour séléctionnée", "H : Ouvrir cette fenêtre", "F1+D : Fenêtre debug", "Échap : Menu"},
             new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "Tab : Display selected tower's stats", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
         private final String[] FR_text, ENG_text;

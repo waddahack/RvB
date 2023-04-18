@@ -4,13 +4,14 @@ import rvb.RvB;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import static rvb.RvB.ref;
+import static towers.Tower.Type.BASIC;
 
 public class BasicTower extends Tower{
     
     public static int startPrice = 200;
     
     public BasicTower() {
-        super("BasicTower");
+        super(BASIC);
         textures.add(RvB.textures.get("basicTowerBase"));
         textures.add(RvB.textures.get("basicTowerTurret"));
         rotateIndex = 1;
@@ -31,9 +32,9 @@ public class BasicTower extends Tower{
         shootRate = 0.5f;
         bulletSpeed = 20;
         upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 120f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Power", power, 10f, "+", 120f, 1.4f, 3));
+        upgrades.add(new Upgrade(this, "Power", power, 10f, "+", 140f, 1.4f, 2));
         upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.25f, "*", 100f, 1.5f, 3));
-        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 100f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 50f, 1.5f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

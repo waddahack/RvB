@@ -34,7 +34,7 @@ public class Game extends AppCore{
         init(diff);
         initOverlays();
         
-        int i = -1;
+        int i = 0;
         ArrayList<Tile> path;
         do{
             System.out.println("generate map attempt : "+(++i));

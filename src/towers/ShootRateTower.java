@@ -8,6 +8,7 @@ import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import rvb.Shootable;
+import static towers.Tower.Type.SHOOTRATE;
 import ui.Overlay;
 
 public class ShootRateTower extends Tower{
@@ -15,7 +16,7 @@ public class ShootRateTower extends Tower{
     public ArrayList<Tower> towers;
     
     public ShootRateTower() {
-        super("ShootRateTower");
+        super(SHOOTRATE);
         textures.add(RvB.textures.get("shootrateTowerBase"));
         textures.add(RvB.textures.get("shootrateTowerBullet"));
         rotateIndex = 1;

@@ -11,6 +11,7 @@ import static rvb.RvB.ref;
 import rvb.Shootable;
 import Utils.MyMath;
 import org.newdawn.slick.opengl.Texture;
+import static towers.Tower.Type.BIG;
 
 public class BigTower extends Tower{
     
@@ -25,7 +26,7 @@ public class BigTower extends Tower{
     private ArrayList<Integer> flamesX = new ArrayList<>(), flamesY = new ArrayList<>();
     
     public BigTower() {
-        super("BigTower");
+        super(BIG);
         textures.add(RvB.textures.get("bigTowerBase"));
         textures.add(RvB.textures.get("bigTowerTurret"));
         rotateIndex = 1;
@@ -46,15 +47,15 @@ public class BigTower extends Tower{
         bulletSizeBonus = 10;
         
         range = 7*RvB.unite/3;
-        power = 20f;
+        power = 30f;
         shootRate = 0.3f;
         bulletSpeed = 8;
         explodeRadius = RvB.unite;
-        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.5f, 3));
-        upgrades.add(new Upgrade(this, "Power", power, 1.4f, "*", 300f, 1.6f, 2));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.4f, "*", 180f, 1.5f, 3));
-        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 100f, 1.8f, 2));
-        upgrades.add(new Upgrade(this, "Explode radius", explodeRadius, RvB.unite/2, "+", 200f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.4f, 3));
+        upgrades.add(new Upgrade(this, "Power", power, 1.3f, "*", 200f, 1.6f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 250f, 1.5f, 1));
+        upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 50f, 1.8f, 2));
+        upgrades.add(new Upgrade(this, "Explode radius", explodeRadius, 1.35f, "*", 180f, 1.5f, 2));
         
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)

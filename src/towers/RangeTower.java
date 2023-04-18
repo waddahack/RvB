@@ -8,6 +8,7 @@ import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import rvb.Shootable;
+import static towers.Tower.Type.RANGE;
 import ui.Overlay;
 
 public class RangeTower extends Tower{
@@ -15,7 +16,7 @@ public class RangeTower extends Tower{
     public ArrayList<Tower> towers;
     
     public RangeTower() {
-        super("RangeTower");
+        super(RANGE);
         textures.add(RvB.textures.get("rangeTowerBase"));
         textures.add(RvB.textures.get("rangeTowerBalls"));
         rotateIndex = 1;

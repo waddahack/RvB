@@ -4,13 +4,14 @@ import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.ref;
+import static towers.Tower.Type.FLAME;
 
 public class FlameTower extends Tower{
 
     public static int startPrice = 800;
     
     public FlameTower(){
-        super("FlameTower");
+        super(FLAME);
         textures.add(RvB.textures.get("flameTowerBase"));
         textures.add(RvB.textures.get("flameTowerTurret"));
         rotateIndex = 1;
@@ -30,11 +31,11 @@ public class FlameTower extends Tower{
         bulletSprite = RvB.textures.get("flame");
         
         range = (int) (1.5*RvB.unite);
-        power = 1f;
+        power = 1.5f;
         shootRate = 30f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 200f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 400f, 1.6f, 3));
+        upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 300f, 1.4f, 3));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;
@@ -66,5 +67,10 @@ public class FlameTower extends Tower{
         if(addY < 1)
             addY = 1;
         bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(addX)-addX/2, enemyAimed.getY()+random.nextInt(addY)-addY/2, size/2, bulletSprite, true, true));
+    }
+    
+    @Override
+    public boolean canShoot(){
+        return canShoot && (RvB.game.timeInGamePassed-lastShoot >= 1000/getShootRate());
     }
 }

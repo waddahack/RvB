@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import managers.PopupManager;
 import rvb.RvB;
 import managers.SoundManager;
+import managers.StatsManager;
 import managers.TextManager;
 import managers.TextManager.Text;
 import org.lwjgl.input.Mouse;
@@ -14,6 +15,7 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import rvb.Shootable;
 import rvb.Tile;
+import static towers.Tower.Type.RAZTECH;
 import ui.Button;
 import ui.Overlay;
 
@@ -28,7 +30,7 @@ public class Raztech extends Tower{
     private boolean right = true;
     
     public Raztech() {
-        super("Raztech");
+        super(RAZTECH);
         textures.add(RvB.textures.get("raztech"));
         rotateIndex = 0;
         textureStatic = RvB.textures.get("raztech");
@@ -45,7 +47,7 @@ public class Raztech extends Tower{
         bulletSprite = RvB.textures.get("gun_bullet");
 
         range = 3*RvB.unite;
-        power = 5f;
+        power = 6f;
         shootRate = 1.8f;
         bulletSpeed = 20;
         growth = 3*ref;
@@ -208,6 +210,7 @@ public class Raztech extends Tower{
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
         else
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH2);
+        StatsManager.Instance.updateTowerPlaced(type);
     }
     
     @Override
@@ -250,6 +253,8 @@ public class Raztech extends Tower{
             enemiesKilledThisWave += 1;
             if(e != game.bazoo)
                 gainXP(e.getReward());
+            
+            StatsManager.Instance.updateEnemyKilled(e.type);
         }
     }
     
@@ -292,6 +297,9 @@ public class Raztech extends Tower{
                 PopupManager.Instance.rewardSelection();
             else
                 PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl+" !", "\n", Text.RANGE.getText()+" +"+Math.round(upgrades.get(0).addOrMultiplicateValue), Text.POWER.getText()+" +"+Math.round(upgrades.get(1).addOrMultiplicateValue), Text.SHOOTRATE.getText()+" +"+upgrades.get(2).addOrMultiplicateValue, Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normalL")}, "...");
+            // Stats
+            if(lvl > StatsManager.Instance.raztechLvlMax)
+                StatsManager.Instance.raztechLvlMax = lvl;
         }
     }
     
@@ -309,8 +317,7 @@ public class Raztech extends Tower{
         chanceToKill += amount;
     }
     
-    @Override
-    public String toString(){
+    public String getJSON(){
         return "{"+
                 "\"type\":\""+type+"\", "+
                 "\"x\":"+x+", "+

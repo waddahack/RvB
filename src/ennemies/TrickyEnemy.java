@@ -1,5 +1,6 @@
 package ennemies;
 
+import static ennemies.Enemy.Type.TRICKY;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -11,7 +12,7 @@ public class TrickyEnemy extends Enemy{
     public static int balance = 30;
     
     public TrickyEnemy(){
-        super();
+        super(TRICKY);
         textures.add(RvB.textures.get("trickyEnemy"));
         texturesBright.add(RvB.textures.get("trickyEnemyBright"));
         rotateIndex = 0;

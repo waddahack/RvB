@@ -1,7 +1,6 @@
 package rvb;
 
 import Buffs.Buff;
-import managers.SoundManager;
 import ennemies.*;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -19,8 +18,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import managers.PopupManager;
-import managers.RVBDB;
+import managers.*;
 import managers.TextManager.Text;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -94,7 +92,7 @@ public abstract class AppCore {
     
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
-    public int money, life, waveNumber, nbWaveMax, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
+    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
     public int oldRaztechXpos = -1, oldRaztechYpos = -1;
     private int oldGameSpeed = 0;
     public ArrayList<Shootable> towers, towersDestroyed;
@@ -148,7 +146,6 @@ public abstract class AppCore {
         
         waveNumber = 1;
         difficulty = diff;
-        nbWaveMax = difficulty.nbWaveMax;
         life = difficulty.life;
         money = difficulty.money;
         waveReward = difficulty.waveReward;
@@ -420,18 +417,16 @@ public abstract class AppCore {
     }
     
     protected void saveGame(boolean showPopup){
-        RvB.updateProperties();
-        
         String pathString = "", arrayTowers = "[", arrayBuffs = "[";
         for(Tile road : path)
             pathString += road.getIndexX()+"/"+road.getIndexY()+"/"+road.nbStepped+(road == path.get(path.size()-1) ? "" : ";");
         for(Shootable t : towers){
             Tower tower = (Tower) t;
-            arrayTowers += tower.toString()+(t == towers.get(towers.size()-1) ? "" : ", ");
+            arrayTowers += tower.getJSON()+(t == towers.get(towers.size()-1) ? "" : ", ");
         }
         arrayTowers += "]";
         for(Buff b : buffs)
-            arrayBuffs += b.toString()+(b == buffs.get(buffs.size()-1) ? "" : ", ");
+            arrayBuffs += b.getJSON()+(b == buffs.get(buffs.size()-1) ? "" : ", ");
         arrayBuffs += "]";
         try {
             boolean success = RVBDB.Instance.saveGame(waveNumber, money, life, pathString, difficulty.name, arrayTowers, arrayBuffs, buffsUsed);
@@ -517,9 +512,6 @@ public abstract class AppCore {
         
         render();
         
-        for(Shootable t : towers)
-            t.update();
-        
         if(inWave){
             wave.update();
             for(int i = enemies.size()-1 ; i >= 0 ; i--)
@@ -534,6 +526,10 @@ public abstract class AppCore {
             if(enemySelected != null)
                 renderEnemySelected();
         }
+        
+        for(Shootable t : towers)
+            t.update();
+        
         if(gameSpeed > 0){
             // Wave check if done
             if(inWave && wave.isDone()){
@@ -543,7 +539,7 @@ public abstract class AppCore {
                 money += waveReward;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    if(waveNumber == nbWaveMax){
+                    if(waveNumber == difficulty.nbWaveMax){
                         gameWin = true;
                     }
                     else if(!gameOver){
@@ -760,7 +756,7 @@ public abstract class AppCore {
             if (!levelsFolder.exists()) {
                 levelsFolder.mkdir();
             }
-            String name = saveLevel(type=="created" ? "created":"downloaded", levelsFolder.getAbsolutePath()+File.separator, false);
+            String name = saveLevel(type.equals("created") ? "created":"downloaded", levelsFolder.getAbsolutePath()+File.separator, false);
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{
@@ -983,20 +979,14 @@ public abstract class AppCore {
     }
     
     public void raisePrice(Tower t){
-        switch(t.type){
-            case "BasicTower":
-                basicTowerPrice *= 1.2;
-                break;
-            case "CircleTower":
-                circleTowerPrice *= 1.08;
-                break;
-            case "BigTower":
-                bigTowerPrice *= 1.1;
-                break;
-            case "FlameTower":
-                flameTowerPrice *= 1.1;
-                break;
-        }
+        if(t.type == Tower.Type.BASIC)
+            basicTowerPrice *= 1.2;
+        else if(t.type == Tower.Type.CIRCLE)
+            circleTowerPrice *= 1.08;
+        else if(t.type == Tower.Type.BIG)
+            bigTowerPrice *= 1.1;
+        else if(t.type == Tower.Type.FLAME)
+            flameTowerPrice *= 1.1;
     }
     
     public int getMouseIndexX(){
@@ -1047,86 +1037,18 @@ public abstract class AppCore {
     protected void gameEnded(){
         if(PopupManager.Instance.onPopup() || RvB.stateChanged)
             return;
-        if(!endGamePropertiesUpdated && !type.equals("created") && !type.equals("loaded")){
-            try {
-                addProgressionPoints();
-                if(type.equals("random"))
-                    updateBestScore();
-                endGamePropertiesUpdated = true;
-            } catch (SQLException ex) {
-                Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if(!endGamePropertiesUpdated){
+            StatsManager.Instance.updateModeStats();
+            if(!type.equals("created") && !type.equals("loaded"))
+                StatsManager.Instance.addProgressionPoints();
+            if(type.equals("random"))
+                StatsManager.Instance.updateBestScore();
+            endGamePropertiesUpdated = true;
         }
-        RvB.updateProperties();
         if(gameWin)
             PopupManager.Instance.gameWin();
         else
             PopupManager.Instance.gameOver();
-    }
-    
-    private void addProgressionPoints() throws SQLException{
-        int points;
-        if(gameWin)
-            points = (int) (nbWaveMax*nbWaveMax*2*difficulty.riskValue*(life/difficulty.life));
-        else{
-            points = (int) (waveNumber*waveNumber*difficulty.riskValue*(life/difficulty.life));
-        }
-        RvB.progression += points;
-        RVBDB.Instance.updateProgressionPoints(RvB.progression);
-    }
-    
-    private void updateBestScore() throws SQLException{
-        int newNbWave = waveNumber, newLifePercent = (int)(100*life/difficulty.life);
-        String bestScore = null, newScore = newNbWave+";"+newLifePercent;
-        switch(difficulty.name){
-            case "EASY":
-                bestScore = RvB.bestScoreEasy;
-                break;
-            case "MEDIUM":
-                bestScore = RvB.bestScoreMedium;
-                break;
-            case "HARD":
-                bestScore = RvB.bestScoreHard;
-                break;
-            case "HARDCORE":
-                bestScore = RvB.bestScoreHardcore;
-                break;
-        }
-        if(bestScore == null){
-            changeBestScore(newScore);
-            RVBDB.Instance.updateBestScore(newScore, difficulty.name);
-            return;
-        }
-        int nbWave = Integer.parseInt(bestScore.split(";")[0]);
-        int lifePercent = Integer.parseInt(bestScore.split(";")[1]);
-        if(nbWave == difficulty.nbWaveMax){
-            if(newNbWave == difficulty.nbWaveMax && newLifePercent > lifePercent){
-                changeBestScore(newScore);
-                RVBDB.Instance.updateBestScore(newScore, difficulty.name);
-                return;
-            }
-        }
-        if(newNbWave > nbWave){
-            changeBestScore(newScore);
-            RVBDB.Instance.updateBestScore(newScore, difficulty.name);
-        }
-    }
-    
-    private void changeBestScore(String newBestScore){
-        switch(difficulty.name){
-            case "EASY":
-                RvB.bestScoreEasy = newBestScore;
-                break;
-            case "MEDIUM":
-                RvB.bestScoreMedium = newBestScore;
-                break;
-            case "HARD":
-                RvB.bestScoreHard = newBestScore;
-                break;
-            case "HARDCORE":
-                RvB.bestScoreHardcore = newBestScore;
-                break;
-        }
     }
     
     public void selectTower(Tower t){

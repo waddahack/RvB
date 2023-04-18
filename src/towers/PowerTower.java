@@ -8,6 +8,7 @@ import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import rvb.Shootable;
+import static towers.Tower.Type.POWER;
 import ui.Overlay;
 
 public class PowerTower extends Tower{
@@ -15,7 +16,7 @@ public class PowerTower extends Tower{
     public ArrayList<Tower> towers;
     
     public PowerTower() {
-        super("PowerTower");
+        super(POWER);
         textures.add(RvB.textures.get("powerTowerBase"));
         textures.add(RvB.textures.get("powerTowerElec"));
         rotateIndex = 1;

@@ -1,6 +1,7 @@
 package managers;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,7 +16,10 @@ import rvb.RvB;
 public class RVBDB {
     
     public static RVBDB Instance;
+    
+    public static String version;
     private static Connection connection;
+    private static boolean updateTables = true;
     
     public RVBDB(){
         initDB();
@@ -59,20 +63,23 @@ public class RVBDB {
         try {
             Statement stmt = connection.createStatement();
             ResultSet prop = getProperties(stmt);
+            version = prop.getString("version");
             if(prop.getBoolean("ingame")){
                 Statement stmt2 = connection.createStatement();
                 ResultSet gameSet = stmt2.executeQuery("SELECT * FROM game FETCH FIRST 1 ROWS ONLY");
                 gameSet.next();
-                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), true, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("bestscoreeasy"), prop.getString("bestscoremedium"), prop.getString("bestscorehard"), prop.getString("bestscorehardcore"), gameSet.getString("path"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
+                RvB.initPropertiesAndGame(true, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), gameSet.getString("path"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
                 gameSet.close();
                 stmt2.close();
             }
             else
-                RvB.initPropertiesAndGame(prop.getInt("progression"), prop.getString("progressiontuto"), false, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("bestscoreeasy"), prop.getString("bestscoremedium"), prop.getString("bestscorehard"), prop.getString("bestscorehardcore"), "", "", 0, 0, 0, null, null, null);
+                RvB.initPropertiesAndGame(false, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), "", "", 0, 0, 0, null, null, null);
             
             prop.close();
             stmt.close();
         } catch (SQLException ex) {
+            Logger.getLogger(RVBDB.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(RVBDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -81,14 +88,10 @@ public class RVBDB {
         Statement createProperties = connection.createStatement();
         String sql = "CREATE TABLE properties (\n" +
                     "    ingame BOOLEAN DEFAULT false,\n" +
-                    "    progression INTEGER DEFAULT 0,\n" +
-                    "    progressiontuto VARCHAR(20) DEFAULT null,\n" +
                     "    cheatson BOOLEAN DEFAULT false,\n" +
                     "    language VARCHAR(5) DEFAULT 'ENG',\n" +
-                    "    bestscoreeasy VARCHAR(10) DEFAULT null,\n" +
-                    "    bestscoremedium VARCHAR(10) DEFAULT null,\n" +
-                    "    bestscorehard VARCHAR(10) DEFAULT null,\n" +
-                    "    bestscorehardcore VARCHAR(10) DEFAULT null\n" +
+                    "    stats VARCHAR(2000) DEFAULT null,\n" +
+                    "    version VARCHAR(5) DEFAULT null\n" +
                     ")";
         createProperties.executeUpdate(sql);
         createProperties.close();
@@ -112,39 +115,49 @@ public class RVBDB {
         ResultSet prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
         if(!prop.next()){
             Statement stmt2 = connection.createStatement();
-            stmt2.executeUpdate("INSERT INTO properties (ingame, progression, progressiontuto, cheatson, language, bestscoreeasy, bestscoremedium, bestscorehard, bestscorehardcore) VALUES (false, 0, null, false, 'ENG', null, null, null, null)");
+            stmt2.executeUpdate("INSERT INTO properties (ingame, cheatson, language, stats, version) VALUES (false, false, 'ENG', null, '"+RvB.version+"')");
             stmt2.close();
             prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             prop.next();
         }
-        else{
-            /*prop.close();
-            checkPropertiesColumns();*/
+        else if(updateTables){
+            prop.close();
+            updatePropertiesTable();
             prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             prop.next();
         }
         return prop;
     }
     
-    private static void checkPropertiesColumns() throws SQLException{
-        // Exemple de quoi faire pour checker si la colonne existe et les créer si non
-        // (à faire si on rajoute des colonnes plus tard, pour pouvoir garder la DB de l'utilisateur intact)
-        /*Statement stmt1 = connection.createStatement();
-        ResultSet res = stmt1.executeQuery("SELECT COLUMNNAME FROM SYS.SYSCOLUMNS WHERE COLUMNNAME='BESTSCOREEASY'");
-        if(res.next()){
-            res.close();
-            stmt1.close();
-            return;
+    private static void updatePropertiesTable() throws SQLException{
+        Statement stmt = connection.createStatement();
+        ResultSet columnVersion = stmt.executeQuery("SELECT columnname FROM sys.syscolumns WHERE columnname='VERSION'");
+        if(!columnVersion.next()){
+            Statement propStmt = connection.createStatement();
+            ResultSet prop = propStmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
+            prop.next();
+            StatsManager.Instance.progression = prop.getInt("progression");
+            StatsManager.Instance.modeEasyBestScore = prop.getString("bestscoreeasy");
+            StatsManager.Instance.modeMediumBestScore = prop.getString("bestscoremedium");
+            StatsManager.Instance.modeHardBestScore = prop.getString("bestscorehard");
+            StatsManager.Instance.modeHardcoreBestScore = prop.getString("bestscorehardcore");
+            prop.close();
+            propStmt.close();
+            
+            Statement stmt2 = connection.createStatement();
+            stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN stats VARCHAR(2000) DEFAULT null");
+            stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN version VARCHAR(5) DEFAULT null");
+            stmt2.executeUpdate("UPDATE properties SET stats='"+StatsManager.Instance.getJSON()+"', version='"+RvB.version+"'");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN bestscoreeasy");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN bestscoremedium");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN bestscorehard");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN bestscorehardcore");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN progression");
+            stmt2.executeUpdate("ALTER TABLE properties DROP COLUMN progressiontuto");
+            stmt2.close();
         }
-        res.close();
-        stmt1.close();
-        
-        Statement stmt2 = connection.createStatement();
-        stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN bestscoreeasy VARCHAR(10) DEFAULT null");
-        stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN bestscoremedium VARCHAR(10) DEFAULT null");
-        stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN bestscorehard VARCHAR(10) DEFAULT null");
-        stmt2.executeUpdate("ALTER TABLE properties ADD COLUMN bestscorehardcore VARCHAR(10) DEFAULT null");
-        stmt2.close();*/
+        columnVersion.close();
+        stmt.close();
     }
     
     public static boolean saveGame(int waveNumber, int money, int life, String pathString, String difficulty, String towers, String buffs, String buffsUsed) throws SQLException{
@@ -183,19 +196,9 @@ public class RVBDB {
         return false;
     }
     
-    public static boolean updateProgressionTuto(String progressionTuto) throws SQLException{
-        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET progressiontuto = ?");
-        pstmt.setString(1, progressionTuto);
-        int rows = pstmt.executeUpdate();
-        pstmt.close();
-        if(rows > 0)
-            return true;
-        return false;
-    }
-    
-    public static boolean updateProgressionPoints(int progression) throws SQLException{
-        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET progression = ?");
-        pstmt.setInt(1, progression);
+    public static boolean updateStats(String stats) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET stats = ?");
+        pstmt.setString(1, stats);
         int rows = pstmt.executeUpdate();
         pstmt.close();
         if(rows > 0)
@@ -206,31 +209,6 @@ public class RVBDB {
     public static boolean updateLanguage(String language) throws SQLException{
         PreparedStatement pstmt = connection.prepareStatement("UPDATE properties SET language = ?");
         pstmt.setString(1, language);
-        int rows = pstmt.executeUpdate();
-        pstmt.close();
-        if(rows > 0)
-            return true;
-        return false;
-    }
-    
-    public static boolean updateBestScore(String newBestScore, String difficulty) throws SQLException{
-        String sql = "UPDATE properties SET ";
-        switch(difficulty){
-            case "EASY":
-                sql += "bestscoreeasy = ?";
-                break;
-            case "MEDIUM":
-                sql += "bestscoremedium = ?";
-                break;
-            case "HARD":
-                sql += "bestscorehard = ?";
-                break;
-            case "HARDCORE":
-                sql += "bestscorehardcore = ?";
-                break;
-        }
-        PreparedStatement pstmt = connection.prepareStatement(sql);
-        pstmt.setString(1, newBestScore);
         int rows = pstmt.executeUpdate();
         pstmt.close();
         if(rows > 0)

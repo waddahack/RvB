@@ -14,6 +14,11 @@ import ui.Overlay;
 
 public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
+    public static enum Type{
+        BASIC, FAST, TRICKY, STRONG, FLYING, BOSS
+    }
+    
+    public Type type;
     public float bonusMS = 0;
     protected int eBalance;
     protected int indiceTuile = -1, startTimeStopFor, startTimeMove, startTimeSlow;
@@ -27,8 +32,9 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     protected Clip clipWalk;
     protected SoundManager.Volume volumeWalk = SoundManager.Volume.SEMI_LOW;
     
-    public Enemy(){
+    public Enemy(Type type){
         super();
+        this.type = type;
         if(game.spawn != null){
             x = game.spawn.getX()+unite/2;
             y = game.spawn.getY()+unite/2;

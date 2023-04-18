@@ -2,7 +2,6 @@ package rvb;
 
 import Buffs.*;
 import de.matthiasmann.twl.utils.PNGDecoder;
-import managers.SoundManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
@@ -25,9 +24,7 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import managers.TextManager;
-import managers.PopupManager;
-import managers.RVBDB;
+import managers.*;
 import managers.TextManager.Text;
 import static org.lwjgl.BufferUtils.createByteBuffer;
 import org.lwjgl.LWJGLException;
@@ -50,7 +47,7 @@ import towers.Raztech;
 public class RvB{
     
     public static enum State{
-        MENU, GAME, CREATION, EXIT
+        MENU, STATS, OPTIONS, GAME, CREATION, EXIT
     }
     public static enum Cursor{
         DEFAULT, POINTER, GRAB
@@ -96,7 +93,9 @@ public class RvB{
     public static boolean mouseDown = false, stateChanged = false;
     public static double lastUpdate, lastUpdateFPS;
     public static double deltaTime;
-    public static Menu menu;
+    public static MenuWindow menu;
+    public static StatsWindow menuStats;
+    public static OptionsWindow options;
     public static Game game = null, adventureGame = null;
     public static Creation creation = null;
     public static Map<String, Texture> textures;
@@ -110,11 +109,10 @@ public class RvB{
     private static String commandPrompt = "";
     private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
     private static boolean listeningKeyboard = false;
+    private static boolean exit = false;
     // PROPERTIES
-    public static int progression;
-    public static String progressionTuto;
     public static boolean cheatsActivated;
-    public static String bestScoreEasy, bestScoreMedium, bestScoreHard, bestScoreHardcore;
+    public static String version = "2.9";
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
@@ -148,7 +146,7 @@ public class RvB{
         
         init();
         
-        while(!Display.isCloseRequested()){
+        while(!Display.isCloseRequested() && !exit){
             lastUpdate = System.currentTimeMillis();
 
             update();
@@ -163,7 +161,7 @@ public class RvB{
             
         }
         releaseTextures();
-        exit();
+        saveAndExit();
     }
     
     private static void calculateFPS(){
@@ -212,15 +210,16 @@ public class RvB{
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
         TextManager.initialize();
-        menu = new Menu();
+        StatsManager.initialize();
+        menu = new MenuWindow();
+        menuStats = new StatsWindow();
+        options = new OptionsWindow();
         RVBDB.initialize();
         lastUpdate = System.currentTimeMillis();
         lastUpdateFPS = System.currentTimeMillis();
     }
 
-    public static void initPropertiesAndGame(int prog, String progTuto, boolean inGame, boolean cheatsOn, String language, String bsEasy, String bsMedium, String bsHard, String bsHardcore, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed){
-        progression = prog;
-        progressionTuto = progTuto;
+    public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
         cheatsActivated = cheatsOn;
         switch(language){
             case "FR":
@@ -230,10 +229,11 @@ public class RvB{
                 menu.ENG.click(false);
                 break;
         }
-        bestScoreEasy = bsEasy;
-        bestScoreMedium = bsMedium;
-        bestScoreHard = bsHard;
-        bestScoreHardcore = bsHardcore;
+        ObjectMapper mapper = new ObjectMapper();
+        if(stats != null && !stats.isEmpty()){
+            StatsManager.Instance = mapper.readValue(stats, StatsManager.class);
+            StatsManager.Instance.updateProgression();
+        }
         if(inGame){
             Difficulty diff = Difficulty.MEDIUM;
             switch(difficulty){
@@ -272,59 +272,54 @@ public class RvB{
                 // Steps on roads
                 for(Tile road : game.path)
                     road.setSteppedTexture();
-                try {
-                    // Towers
-                    ObjectMapper mapper = new ObjectMapper();
-                    Tower[] towers = mapper.readValue(arrayTowers, Tower[].class);
-                    for(Tower t : towers){
-                        game.towers.add(t);
-                        t.autoPlace(game.map);
-                        if(t.getFocusButton() != null)
-                            t.getFocusButton().indexSwitch = t.getFocusIndex();
-                        for(int i = 0 ; i < t.nbUpgradesUsed.length ; i++)
-                            t.getUpgrades().get(i).setNbUsed(t.nbUpgradesUsed[i]);
-                        if(t.name == Text.RAZTECH){
-                            game.raztech = (Raztech) t;
-                            for(int i = 0 ; i < game.raztech.lvl-1 ; i++)
-                                game.raztech.levelUp(true);
-                        }
-                    }  
-                    // Buffs
-                    Buff[] buffs = mapper.readValue(arrayBuffs, Buff[].class);
-                    game.buffs.clear();
-                    for(Buff b : buffs)
-                        game.buffs.push(b);
-                    // BuffsUsed
-                    String[] arrayBuffsUsed = buffsUsed.split(";");
-                    for(String bu : arrayBuffsUsed){
-                        switch(bu){
-                            case "OS":
-                                new OS().pick();
-                                break;
-                            case "Slow":
-                                new Slow().pick();
-                                break;
-                            case "UpPowerTower":
-                                new UpPowerTower().pick();
-                                break;
-                            case "UpRangeTower":
-                                new UpRangeTower().pick();
-                                break;
-                            case "UpShootRateTower":
-                                new UpShootRateTower().pick();
-                                break;
-                            case "Upgrade":
-                                new Upgrade().pick();
-                                break;
-                            case "XP":
-                                new XP().pick();
-                                break;
-                        }
+                // Towers
+                Tower[] towers = mapper.readValue(arrayTowers, Tower[].class);
+                for(Tower t : towers){
+                    game.towers.add(t);
+                    t.autoPlace(game.map);
+                    if(t.getFocusButton() != null)
+                        t.getFocusButton().indexSwitch = t.getFocusIndex();
+                    for(int i = 0 ; i < t.nbUpgradesUsed.length ; i++)
+                        t.getUpgrades().get(i).setNbUsed(t.nbUpgradesUsed[i]);
+                    if(t.name == Text.RAZTECH){
+                        game.raztech = (Raztech) t;
+                        for(int i = 0 ; i < game.raztech.lvl-1 ; i++)
+                            game.raztech.levelUp(true);
                     }
-                    game.buffsUsed = buffsUsed;
-                } catch (IOException ex) {
-                    Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
+                }  
+                // Buffs
+                Buff[] buffs = mapper.readValue(arrayBuffs, Buff[].class);
+                game.buffs.clear();
+                for(Buff b : buffs)
+                    game.buffs.push(b);
+                // BuffsUsed
+                String[] arrayBuffsUsed = buffsUsed.split(";");
+                for(String bu : arrayBuffsUsed){
+                    switch(bu){
+                        case "OS":
+                            new OS().pick();
+                            break;
+                        case "Slow":
+                            new Slow().pick();
+                            break;
+                        case "UpPowerTower":
+                            new UpPowerTower().pick();
+                            break;
+                        case "UpRangeTower":
+                            new UpRangeTower().pick();
+                            break;
+                        case "UpShootRateTower":
+                            new UpShootRateTower().pick();
+                            break;
+                        case "Upgrade":
+                            new Upgrade().pick();
+                            break;
+                        case "XP":
+                            new XP().pick();
+                            break;
+                    }
                 }
+                game.buffsUsed = buffsUsed;
             }
         }
     }
@@ -335,18 +330,20 @@ public class RvB{
             case MENU:
                 menu.update();
                 break;
+            case STATS:
+                menuStats.update();
+                break;
+            case OPTIONS:
+                options.update();
+                break;
             case GAME:
                 game.update();
                 break;
-
             case CREATION:
                 creation.update();
                 break;
-
             case EXIT:
-                releaseTextures();
-                //releaseAudio();
-                exit();
+                exit = true;
                 break;
         }
         
@@ -386,7 +383,7 @@ public class RvB{
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(90*ref), (cheatsActivated ? "on" : "off"), fonts.get("normalS"), "topRight");
         // PP
         debugTool.drawText((int)(10*ref), (int)(110*ref), "PP :", fonts.get("normalS"), "topLeft");
-        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), ""+progression, fonts.get("normalS"), "topRight");
+        debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(110*ref), ""+StatsManager.Instance.progression, fonts.get("normalS"), "topRight");
         // Say Hi!
         debugTool.drawText((int)(10*ref), (int)(130*ref), "Say hi :", fonts.get("normalS"), "topLeft");
         debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)(130*ref), "F1+H", fonts.get("normalS"), "topRight");
@@ -522,18 +519,15 @@ public class RvB{
                 }
                 else if(Keyboard.getEventKey() == Keyboard.KEY_RETURN){
                     PopupManager.Instance.closeCurrentPopup();
-                    // Here to check prompt command and do stuff
-                    /*if(commandPrompt.equals("MARINRUELEN")){
-                        cheatsActivated = !cheatsActivated;
-                        debug("Cheats "+(cheatsActivated?"on.":"off."));
+                    try{
+                        StatsManager.Instance.cheatAddProgressionPoints(Integer.parseInt(commandPrompt));
+                    } catch(Exception e){
+                        debug(commandPrompt+" is not a number.");
                     }
-                    else{
-                        debug("Wrong password.");
-                    }*/
                     listeningKeyboard = false;
                 }
                 else
-                    commandPrompt += Keyboard.getKeyName(Keyboard.getEventKey());
+                    commandPrompt += Keyboard.getEventCharacter();
             }
             
             // ESCAPE MENU
@@ -547,8 +541,8 @@ public class RvB{
             // COMMANDES
             if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
                 // Prompt command
-                if(Keyboard.isKeyDown(Keyboard.KEY_RETURN)){
-                    PopupManager.Instance.popup("Enter password", "Cancel");
+                if(Keyboard.isKeyDown(Keyboard.KEY_P)){
+                    PopupManager.Instance.popup("How many PP to add ?", "Cancel");
                     PopupManager.Instance.setCallback(__ -> {
                         listeningKeyboard = false;
                     });
@@ -665,15 +659,6 @@ public class RvB{
         }
     }
     
-    public static void updateProperties(){
-        try {
-            RVBDB.Instance.updateProgressionTuto(progressionTuto);
-            RVBDB.Instance.updateInGame(game != null && !game.ended && !game.gameOver && !game.gameWin);
-        } catch (SQLException ex) {
-            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     public static boolean createLevelCreatedFile(){
         try{
             File file = new File("assets/temp/level_created.txt");
@@ -694,15 +679,15 @@ public class RvB{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             success = true;
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (LWJGLException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
         }
@@ -723,7 +708,7 @@ public class RvB{
             Display.setFullscreen(true);
             success = true;
         } catch (LWJGLException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuWindow.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             if(!success) PopupManager.Instance.popup(Text.ERROR.getText());
         }
@@ -851,7 +836,15 @@ public class RvB{
        glEnd();
     }
     
-    public static void exit(){
+    public static void saveAndExit(){
+        releaseTextures();
+        try {
+            RVBDB.Instance.updateStats(StatsManager.Instance.getJSON());
+            RVBDB.Instance.updateInGame(game != null && !game.ended && !game.gameOver && !game.gameWin);
+            RVBDB.Instance.updateLanguage(TextManager.Instance.getLanguage());
+        } catch (SQLException ex) {
+            Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
+        }
         RVBDB.Instance.exitDB();
         Display.destroy();
         System.exit(0);
@@ -1090,103 +1083,109 @@ public class RvB{
         float[] color;
         String police = "Bahnschrift";
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         Font awtFont = new Font(police, Font.BOLD, (int)(16*ref));
         UnicodeFont normalSB = new UnicodeFont(awtFont);
         normalSB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalSB.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(16*ref));
         UnicodeFont normalS = new UnicodeFont(awtFont);
         normalS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalS.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont normal = new UnicodeFont(awtFont);
         normal.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normal.addAsciiGlyphs();
         
-        color = RvB.colors.get("black");
+        color = colors.get("black");
         awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont normalBlack = new UnicodeFont(awtFont);
         normalBlack.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalBlack.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(25*ref));
         UnicodeFont normalL = new UnicodeFont(awtFont);
         normalL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalL.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.PLAIN, (int)(34*ref));
         UnicodeFont normalXL = new UnicodeFont(awtFont);
         normalXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXL.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(20*ref));
         UnicodeFont normalB = new UnicodeFont(awtFont);
         normalB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalB.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont normalLB = new UnicodeFont(awtFont);
         normalLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalLB.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightGreen");
+        color = colors.get("lightGreen");
         awtFont = new Font(police, Font.BOLD, (int)(34*ref));
         UnicodeFont normalXLB = new UnicodeFont(awtFont);
         normalXLB.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         normalXLB.addAsciiGlyphs();
         
-        color = RvB.colors.get("green_dark");
+        color = colors.get("green_dark");
         awtFont = new Font(police, Font.BOLD, (int)(20*ref));
         UnicodeFont titleS = new UnicodeFont(awtFont);
         titleS.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         titleS.addAsciiGlyphs();
         
-        color = RvB.colors.get("green_dark");
-        awtFont = new Font(police, Font.BOLD, (int)(26*ref));
+        color = colors.get("green_dark");
+        awtFont = new Font(police, Font.BOLD, (int)(32*ref));
         UnicodeFont title = new UnicodeFont(awtFont);
         title.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         title.addAsciiGlyphs();
         
-        color = RvB.colors.get("green_dark");
-        awtFont = new Font(police, Font.BOLD, (int)(32*ref));
+        color = colors.get("green_dark");
+        awtFont = new Font(police, Font.BOLD, (int)(48*ref));
         UnicodeFont titleL = new UnicodeFont(awtFont);
         titleL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         titleL.addAsciiGlyphs();
         
-        color = RvB.colors.get("money");
+        color = colors.get("green_dark");
+        awtFont = new Font(police, Font.BOLD, (int)(72*ref));
+        UnicodeFont titleXL = new UnicodeFont(awtFont);
+        titleXL.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
+        titleXL.addAsciiGlyphs();
+        
+        color = colors.get("money");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont money = new UnicodeFont(awtFont);
         money.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         money.addAsciiGlyphs();
         
-        color = RvB.colors.get("life");
+        color = colors.get("life");
         awtFont = new Font(police, Font.BOLD, (int)(24*ref));
         UnicodeFont life = new UnicodeFont(awtFont);
         life.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         life.addAsciiGlyphs();
         
-        color = RvB.colors.get("money");
+        color = colors.get("money");
         awtFont = new Font(police, Font.BOLD, (int)(18*ref));
         UnicodeFont canBuy = new UnicodeFont(awtFont);
         canBuy.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         canBuy.addAsciiGlyphs();
         
-        color = RvB.colors.get("lightRed");
+        color = colors.get("lightRed");
         awtFont = new Font(police, Font.PLAIN, (int)(18*ref));
         UnicodeFont cantBuy = new UnicodeFont(awtFont);
         cantBuy.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
         cantBuy.addAsciiGlyphs();
         
-        color = RvB.colors.get("bonus");
+        color = colors.get("bonus");
         awtFont = new Font(police, Font.PLAIN, (int)(20*ref));
         UnicodeFont bonus = new UnicodeFont(awtFont);
         bonus.getEffects().add(new ColorEffect(new Color(color[0], color[1], color[2])));
@@ -1224,6 +1223,8 @@ public class RvB{
             fonts.put("title", title);
             titleL.loadGlyphs();
             fonts.put("titleL", titleL);
+            titleXL.loadGlyphs();
+            fonts.put("titleXL", titleXL);
             money.loadGlyphs();
             fonts.put("money", money);
             life.loadGlyphs();

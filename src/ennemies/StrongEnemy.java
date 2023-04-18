@@ -1,5 +1,6 @@
 package ennemies;
 
+import static ennemies.Enemy.Type.STRONG;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -9,7 +10,7 @@ public class StrongEnemy extends Enemy{
     public static int balance = 60;
     
     public StrongEnemy(){
-        super();
+        super(STRONG);
         textures.add(RvB.textures.get("strongEnemy"));
         texturesBright.add(RvB.textures.get("strongEnemyBright"));
         rotateIndex = 0;

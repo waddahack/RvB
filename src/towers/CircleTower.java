@@ -5,13 +5,14 @@ import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import static towers.Tower.Type.CIRCLE;
 
 public class CircleTower extends Tower{
 
-    public static int startPrice = 400;
+    public static int startPrice = 350;
     
     public CircleTower(){
-        super("CircleTower");
+        super(CIRCLE);
         textures.add(RvB.textures.get("circleTowerBase"));
         textures.add(RvB.textures.get("circleTowerTurret"));
         rotateIndex = 1;
@@ -35,9 +36,9 @@ public class CircleTower extends Tower{
         power = 6f;
         shootRate = 0.7f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 100f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Power", power, 2f, "+", 200f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 300f, 2f, 2));
+        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 140f, 1.4f, 2));
+        upgrades.add(new Upgrade(this, "Power", power, 2f, "+", 200f, 1.6f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 300f, 1.9f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

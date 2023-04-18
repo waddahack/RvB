@@ -1,24 +1,19 @@
 package rvb;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import managers.TextManager;
 import ui.Button;
 import managers.PopupManager;
-import managers.RVBDB;
 import managers.TextManager.Text;
 import static rvb.RvB.*;
 import ui.Overlay;
 
 
-public class Menu {
+public class MenuWindow extends Window{
     
-    private Button start, play, regenerate, create, option, exit;
+    private Button start, play, regenerate, create, option, exit, stats;
     public Button FR, ENG;
-    private Overlay[] overlays = new Overlay[5];
     
-    public Menu(){
+    public MenuWindow(){
         int width = (int) (250*ref);
         int height = (int) (60*ref);
         
@@ -30,7 +25,13 @@ public class Menu {
         exit.setFunction(__ -> {
             switchStateTo(State.EXIT);
         });
-        
+        stats = new Button((int)(width*0.3)+(int)(50*ref), (int)(50*ref), (int)(width*0.6), (int)(height*0.6), colors.get("green_semidark"), colors.get("green_dark"));
+        stats.setText(Text.STATS, RvB.fonts.get("normal"));
+        stats.setFunction(__ -> {
+            switchStateTo(State.STATS);
+        });
+                
+                
         start = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
         start.lock();
         start.setText(Text.ADVENTURE, fonts.get("normalL"));
@@ -72,66 +73,62 @@ public class Menu {
             FR.setSelected(true);
             ENG.setSelected(false);
             TextManager.Instance.setLanguage("FR");
-            try {
-                RVBDB.Instance.updateLanguage("FR");
-            } catch (SQLException ex) {
-                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
         ENG = new Button(unite*2+(int)(10*ref), 0, (int)(40*ref), (int)(40*ref), RvB.textures.get("ENG"), null, colors.get("green_semidark"));
         ENG.setFunction(__ -> {
             ENG.setSelected(true);
             FR.setSelected(false);
             TextManager.Instance.setLanguage("ENG");
-            try {
-                RVBDB.Instance.updateLanguage("ENG");
-            } catch (SQLException ex) {
-                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
         ENG.setSelected(true);
         
+        Overlay o;
         for(int i = 0 ; i < 5 ; i++){
-            overlays[i] = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);
+            o = new Overlay(0, (i+1)*windHeight/6, windWidth, windHeight/6);
+            overlays.add(o);
             switch(i){
                 case 0:
-                    overlays[i] = new Overlay(0, 0, windWidth, windHeight/3);
-                    overlays[i].addButton(option);
-                    overlays[i].addButton(exit);
-                    overlays[i].addImage(windWidth/2, (int)(windWidth/10f + 100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
+                    overlays.remove(o);
+                    o = new Overlay(0, 0, windWidth, windHeight/3);
+                    o.addButton(option);
+                    o.addButton(exit);
+                    o.addButton(stats);
+                    o.addImage(windWidth/2, (int)(windWidth/10f + 100*ref), windWidth/2, (int) (windWidth/5f), RvB.textures.get("title"));
+                    overlays.add(o);
                     break;
                 case 1:
-                    overlays[i].addButton(start);
+                    o.addButton(start);
                     break;
                 case 2:
-                    overlays[i].addButton(play);
-                    overlays[i].addButton(regenerate);
+                    o.addButton(play);
+                    o.addButton(regenerate);
                     break;
                 case 3:
-                    overlays[i].addButton(create);
+                    o.addButton(create);
                     break;
                 case 4:
-                    overlays[4] = new Overlay(0, windHeight-FR.getH(), windWidth, FR.getH());
-                    overlays[4].addButton(FR);
-                    overlays[4].addButton(ENG);
+                    overlays.remove(o);
+                    o = new Overlay(0, windHeight-FR.getH(), windWidth, FR.getH());
+                    o.addButton(FR);
+                    o.addButton(ENG);
+                    overlays.add(o);
                     break;
             }
         }
     }
     
+    @Override
     public void update(){
-        render();
+        super.update();
         if(game == null || game.ended)
             regenerate.setHidden(true);
         else
             regenerate.setHidden(false);
     }
     
-    private void render(){
-        drawFilledRectangle(0, 0, windWidth, windHeight, null, 1, textures.get("grass"));
-        for(Overlay o : overlays){
-            o.render();
-        }
+    @Override
+    protected void render(){
+        super.render();
         if(regenerate.isHidden())
             play.drawText(Text.FIGHT.getText(), fonts.get("normalL"));
         else
@@ -139,16 +136,9 @@ public class Menu {
         create.drawText(Text.CREATION.getText(), fonts.get("normalL"));
     }
     
-    public void disableAllButtons(){
-        for(Overlay o : overlays)
-            for(Button b : o.getButtons())
-                b.disable();
-    }
-    
+    @Override
     public void enableAllButtons(){
-        for(Overlay o : overlays)
-            for(Button b : o.getButtons())
-                b.enable();
+        super.enableAllButtons();
         start.enable();
     }
     

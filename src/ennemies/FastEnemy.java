@@ -1,5 +1,6 @@
 package ennemies;
 
+import static ennemies.Enemy.Type.FAST;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -9,7 +10,7 @@ public class FastEnemy extends Enemy{
     public static int balance = 20;
     
     public FastEnemy(){
-        super();
+        super(FAST);
         textures.add(RvB.textures.get("fastEnemy"));
         texturesBright.add(RvB.textures.get("fastEnemyBright"));
         rotateIndex = 0;

@@ -13,36 +13,65 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import ui.*;
 import Utils.MyMath;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonValue;
+import ennemies.Enemy;
 import java.io.Serializable;
+import managers.StatsManager;
+import towers.Tower.Type;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = Raztech.class, name = "Raztech"),
-    @JsonSubTypes.Type(value = PowerTower.class, name = "PowerTower"),
-    @JsonSubTypes.Type(value = RangeTower.class, name = "RangeTower"),
-    @JsonSubTypes.Type(value = ShootRateTower.class, name = "ShootRateTower"),
-    @JsonSubTypes.Type(value = BasicTower.class, name = "BasicTower"),
-    @JsonSubTypes.Type(value = CircleTower.class, name = "CircleTower"),
-    @JsonSubTypes.Type(value = BigTower.class, name = "BigTower"),
-    @JsonSubTypes.Type(value = FlameTower.class, name = "FlameTower")
+    @JsonSubTypes.Type(value = Raztech.class, name = "RAZTECH"),
+    @JsonSubTypes.Type(value = PowerTower.class, name = "POWER"),
+    @JsonSubTypes.Type(value = RangeTower.class, name = "RANGE"),
+    @JsonSubTypes.Type(value = ShootRateTower.class, name = "SHOOTRATE"),
+    @JsonSubTypes.Type(value = BasicTower.class, name = "BASIC"),
+    @JsonSubTypes.Type(value = CircleTower.class, name = "CIRCLE"),
+    @JsonSubTypes.Type(value = BigTower.class, name = "BIG"),
+    @JsonSubTypes.Type(value = FlameTower.class, name = "FLAME")
 })
 public abstract class Tower extends Shootable implements Serializable{
-
-    public int price;
     
+    public static enum Type{
+        BASIC("BASIC"), CIRCLE("CIRCLE"), BIG("BIG"), FLAME("FLAME"), POWER("POWER"), RANGE("RANGE"), SHOOTRATE("SHOOTRATE"), RAZTECH("RAZTECH");
+
+        private final String name;
+
+        Type(String name) {
+            this.name = name;
+        }
+
+        @JsonValue
+        public String getName() {
+            return name;
+        }
+
+        @JsonCreator
+        public static Type fromName(String name) {
+            for (Type type : Type.values()) {
+                if (type.name.equalsIgnoreCase(name)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Invalid name: " + name);
+        }
+    }
+    
+    public Type type;
+    public int price;
     protected int hitboxWidth, totalMoneySpent;
     public float growth = 0;
     protected boolean isPlaced = false, forBuff = false, canFocus = true;
     public boolean underPowerTower = false, underRangeTower = false, underShootRateTower = false;
     protected ArrayList<Overlay> overlays;
     protected ArrayList<Upgrade> upgrades;
-    public String type;
     protected Button focusButton;
     public int[] nbUpgradesUsed;
     
-    public Tower(String type){
+    public Tower(Type type){
         super();
         this.type = type;
         this.x = Mouse.getX();
@@ -218,6 +247,14 @@ public abstract class Tower extends Shootable implements Serializable{
         stats.display(!stats.isDisplayed());
     }
     
+    @Override
+    public void attack(Shootable shootable){
+        super.attack(shootable);
+        Enemy e = (Enemy) shootable;
+        if(e.isDead())
+            StatsManager.Instance.updateEnemyKilled(e.type);
+    }
+    
     public void place(ArrayList<ArrayList<Tile>> map){
         x = Math.floorDiv(Mouse.getX(), unite);
         y = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite);
@@ -229,6 +266,7 @@ public abstract class Tower extends Shootable implements Serializable{
         isPlaced = true;
         started = true;
         SoundManager.Instance.playOnce(SoundManager.SOUND_BUILD);
+        StatsManager.Instance.updateTowerPlaced(type);
     }
     
     public void autoPlace(ArrayList<ArrayList<Tile>> map){
@@ -340,14 +378,13 @@ public abstract class Tower extends Shootable implements Serializable{
         return price;
     }
     
-    @Override
-    public String toString(){
+    public String getJSON(){
         String nbUpgradesUsed = "[";
         for(Upgrade up : upgrades)
             nbUpgradesUsed += up.button.getNbClicks() + (up == upgrades.get(upgrades.size()-1) ? "" : ", ");
         nbUpgradesUsed += "]";
         return "{"+
-                "\"type\":\""+type+"\", "+
+                "\"type\":\""+type.name+"\", "+
                 "\"x\":"+x+", "+
                 "\"y\":"+y+", "+
                 "\"angle\":"+angle+", "+

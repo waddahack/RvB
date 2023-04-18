@@ -25,7 +25,7 @@ public class Upgrade {
         this.name = name;
         switch(name){
             case "Range":
-                nbNumberToRound = 0;
+                nbNumberToRound = 0; // Change this value also in Shootable.getXXX()
                 icon = RvB.textures.get("rangeIcon");
                 break;
             case "Power":
@@ -33,7 +33,7 @@ public class Upgrade {
                 icon = RvB.textures.get("powerIcon");
                 break;
             case "Attack speed":
-                nbNumberToRound = 1;
+                nbNumberToRound = 2; 
                 icon = RvB.textures.get("attackSpeedIcon");
                 break;
             case "Bullet speed":
@@ -161,7 +161,7 @@ public class Upgrade {
     }
     
     public void setValue(float v){
-        value = (float) (Math.round(Math.pow(10, nbNumberToRound)*v)/Math.pow(10, nbNumberToRound));
+        value = v;
     }
     
     public float getIncreasedValueWithBonus(){
@@ -185,9 +185,9 @@ public class Upgrade {
         }
         switch(addOrMultiplicate){
             case "+":
-                return (float) (Math.round(Math.pow(10, nbNumberToRound)*((value+addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.round((value+addOrMultiplicateValue)*(1+bonus)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
             case "*":
-                return (float) (Math.round(Math.pow(10, nbNumberToRound)*((value*addOrMultiplicateValue)*(1+bonus)))/Math.pow(10, nbNumberToRound));
+                return (float) (Math.round((value*addOrMultiplicateValue)*(1+bonus)*Math.pow(10, nbNumberToRound))/Math.pow(10, nbNumberToRound));
         };
         return 0;
     }

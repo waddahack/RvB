@@ -598,16 +598,16 @@ public final class PopupManager {
         String bestScore = null;
         switch(diff.name){
             case "EASY" :
-                bestScore = RvB.bestScoreEasy;
+                bestScore = StatsManager.Instance.modeEasyBestScore;
                 break;
             case "MEDIUM" :
-                bestScore = RvB.bestScoreMedium;
+                bestScore = StatsManager.Instance.modeMediumBestScore;
                 break;
             case "HARD" :
-                bestScore = RvB.bestScoreHard;
+                bestScore = StatsManager.Instance.modeHardBestScore;
                 break;
             case "HARDCORE" :
-                bestScore = RvB.bestScoreHardcore;
+                bestScore = StatsManager.Instance.modeHardcoreBestScore;
                 break;
         }
         if(bestScore == null || bestScore.isEmpty())
@@ -616,7 +616,7 @@ public final class PopupManager {
         int posY = chooseDifficulty.getH()/2;
         String nbWave = bestScore.split(";")[0], lifePercent = bestScore.split(";")[1];
         
-        chooseDifficulty.drawText(posX, posY, Text.BEST_PERF.getText(), RvB.fonts.get("titleS"));
+        chooseDifficulty.drawText(posX, posY, Text.PB.getText(), RvB.fonts.get("titleS"));
         
         if(Integer.parseInt(nbWave) < diff.nbWaveMax){
             chooseDifficulty.drawText(posX, posY+(int)(32*ref), Text.WAVE.getText()+" : "+nbWave, RvB.fonts.get("normal"));

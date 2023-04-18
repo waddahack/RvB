@@ -317,7 +317,7 @@ public abstract class Shootable {
     }
     
     public float getShootRate(){
-        return (float)(Math.round(shootRate*(1+bonusShootRate)*10f)/10f);
+        return (float)(Math.round(shootRate*(1+bonusShootRate)*100f)/100f);
     }
     
     public boolean isMultipleShot(){
