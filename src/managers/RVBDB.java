@@ -137,10 +137,10 @@ public class RVBDB {
             ResultSet prop = propStmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             prop.next();
             StatsManager.Instance.progression = prop.getInt("progression");
-            StatsManager.Instance.modeEasyBestScore = prop.getString("bestscoreeasy");
-            StatsManager.Instance.modeMediumBestScore = prop.getString("bestscoremedium");
-            StatsManager.Instance.modeHardBestScore = prop.getString("bestscorehard");
-            StatsManager.Instance.modeHardcoreBestScore = prop.getString("bestscorehardcore");
+            StatsManager.Instance.modeEasyBestScore = prop.getString("bestscoreeasy") == null ? "" : prop.getString("bestscoreeasy");
+            StatsManager.Instance.modeMediumBestScore = prop.getString("bestscoremedium") == null ? "" : prop.getString("bestscoremedium");
+            StatsManager.Instance.modeHardBestScore = prop.getString("bestscorehard") == null ? "" : prop.getString("bestscorehard");
+            StatsManager.Instance.modeHardcoreBestScore = prop.getString("bestscorehardcore") == null ? "" : prop.getString("bestscorehardcore");
             prop.close();
             propStmt.close();
             
