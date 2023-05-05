@@ -1,6 +1,8 @@
 package towers;
 
+import managers.PopupManager;
 import managers.SoundManager;
+import managers.TutoManager;
 import org.newdawn.slick.opengl.Texture;
 import rvb.RvB;
 import ui.Button;
@@ -80,6 +82,7 @@ public class Upgrade {
             game.money -= price;
             tower.totalMoneySpent += price;
             increasePrice();
+            TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.PWR_PGRDD);
         });
         button.setOnHoverFunction(__ -> {
             RvB.drawString(x, y-(int)(9*ref), nbNumberToRound == 0 ? (int)getIncreasedValueWithBonus()+"" : getIncreasedValueWithBonus()+"", RvB.fonts.get("bonus"));
@@ -101,7 +104,7 @@ public class Upgrade {
             button.disable();
             RvB.setCursor(RvB.Cursor.DEFAULT);
         }    
-        else if(game.money >= price)
+        else if(game.money >= price && !PopupManager.Instance.onPopup())
             button.enable();
         if(tower.isPlaced)
             button.update();

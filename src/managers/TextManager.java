@@ -46,6 +46,12 @@ public final class TextManager {
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
             new String[]{"Bazoo had the system hacked !", "Options are unavailable..."}),
+        OK(
+            new String[]{"Ok"},
+            new String[]{"Ok"}),
+        DOTS(
+            new String[]{"..."},
+            new String[]{"..."}),
         XP(
             new String[]{"XP"},
             new String[]{"XP"}),
@@ -106,9 +112,24 @@ public final class TextManager {
         PATH_NOT_LOOP(
             new String[]{"Ça ne peut pas être une boucle !"},
             new String[]{"It can't be a loop !"}),
+        PATH_TOO_LONG(
+            new String[]{"Le chemin est trop long", "pour la difficulté choisie.", "Vous n'obtiendrez pas de points de", "progression et le meilleur score ne pourra", "pas être battu."},
+            new String[]{"The path is too long", "for the chosen difficulty.", "You won't get any progression", "points and the best score cannot", "be beaten."}),
         WON(
             new String[]{"Gagné"},
             new String[]{"Won"}),
+        X1(
+            new String[]{"x1"},
+            new String[]{"x1"}),
+        X2(
+            new String[]{"x2"},
+            new String[]{"x2"}),
+        X4(
+            new String[]{"x4"},
+            new String[]{"x4"}),
+        NEXT(
+            new String[]{" >> "},
+            new String[]{" >> "}),
         
         // TOWERS
         RAZTECH(
@@ -127,13 +148,13 @@ public final class TextManager {
             new String[]{"Flametech"},
             new String[]{"Flametech"}),
         TOWER_RANGE(
-            new String[]{"Tour de portée"},
+            new String[]{"Tour d'ampleur"},
             new String[]{"Range tower"}),
         TOWER_POWER(
-            new String[]{"Tour de puissance"},
+            new String[]{"Tour de force"},
             new String[]{"Power tower"}),
         TOWER_SHOOTRATE(
-            new String[]{"Tour de vitesse"},
+            new String[]{"Tour de célérité"},
             new String[]{"Speed tower"}),
         FOCUS_SWITCH(
             new String[]{"Premier", "Dernier", "Plus fort", "Plus faible", "Plus proche"},
@@ -312,6 +333,74 @@ public final class TextManager {
             new String[]{"La tour de vitesse", "donne +5% de", "vitesse d'attaque."},
             new String[]{"The speed tower", "gives +5%", "attack speed."}),
         
+        // TUTO
+        WLCM_RND(
+            new String[]{"Bienvenue sur le champ de bataille !", "C'est ici que vous affronterez Bazoo --bazooZoomed-- ", "et son armée."},
+            new String[]{"Welcome to the battle field !", "It's here that you'll fight --bazooZoomed-- ", "and his army."}),
+        WLCM_RND2(
+            new String[]{"Pour cela, vous aurez besoin de pièces --coins--.", "C'est avec ceci que vous pourrez acquérir", "de nouvelles tours qui vous", "aideront à vous défendre.", "Vous en récoltez en tuant des ennemis", " et après chaque vague."},
+            new String[]{"To achieve that, you'll need coins --coins--.", "With these, you'll be able to buy", "new towers which will help", "you defend yourself.", "You'll earn some of it by killing enemies", "and after every wave."}),
+        WLCM_RND3(
+            new String[]{"Si des ennemis passent le chemin,", "vous perdrez des points de vies --heart--.", "Arrivé à 0, la partie est perdu.", "Pour gagner, il faut persister", "jusqu'à que --bazooZoomed-- abandonne.", "Vous pouvez quitter le jeu avec une", " partie en cours, elle sera sauvegardée."},
+            new String[]{"If enemies come to cross the field,", "you'd lose health points --heart--.", "Down to 0, the game is lost.", "To win, you must persist until --bazooZoomed-- gives up.", "You can exit the game with a war", "in progress, it'll be saved."}),
+        WLCM_RND4(
+            new String[]{"Commençons par placer Raztech --raztech-- ", "à côté du chemin !"},
+            new String[]{"Let's begin by placing Raztech --raztech-- ", "next to the path !"}),
+        RZTCH_PLCD(
+            new String[]{"--raztech-- est la seule tourelle qui", "gagne des points d'expériences", "en tuant des ennemis."},
+            new String[]{"--raztech-- is the only tower that", "gains experience points", "by killing enemies."}),
+        RZTCH_PLCD2(
+            new String[]{"En ayant placé --raztech--, vous avez débloqué", "une nouvelle tour : la Razanon --basicTower--.", "Placez en une.", "Pour désélectionner une tour,", "cliquez autre part."},
+            new String[]{"By placing --raztech--, you've unlocked", "a new tower : the Razannon --basicTower--.", "Place one of those.", "To deselect a tower,", "click anywhere else."}),
+        TWR_PLCD(
+            new String[]{"Parfait !", " ", "Vous pouvez désormais lancer", "la première vague."},
+            new String[]{"Perfect !", " ", "You can now start", "the first wave."}),
+        TWR_PLCD2(
+            new String[]{"Vous pouvez changer la vitesse du jeu ici."},
+            new String[]{"You can change the game speed here."}),
+        FRST_WV(
+            new String[]{"Grâce aux --coins-- que vous récoltez, vous", "pouvez également améliorer vos tours !", "(sauf --raztech-- qui lui augmente en niveau)", "Sélectionnez votre --basicTower-- ", "et améliorez sa puissance --powerIcon-- !"},
+            new String[]{"With --coins-- you earn, you", "can also upgrade your towers !", "(except --raztech-- who's leveling up)", "Select your --basicTower-- ", "and upgrade its power --powerIcon-- !"}),
+        PWR_PGRDD(
+            new String[]{"Super !", " ", "Les améliorations dépendent", "du type de la tourelle."},
+            new String[]{"Great !", " ", "Upgrades depend on the", "tower's type."}),
+        PWR_PGRDD2(
+            new String[]{"Voici ce que --basicTower-- peut améliorer :", " ", "--rangeIcon-- : La portée", "--powerIcon-- : La puissance, les dégâts", "--attackSpeedIcon-- : La vitesse de tire", "--bulletSpeedIcon-- : La vitesse des balles"},
+            new String[]{"Here's what --basicTower-- can upgrade :", " ", "--rangeIcon-- : The range", "--powerIcon-- : The power, the damages", "--attackSpeedIcon-- : The shooting speed", "--bulletSpeedIcon-- : The bullets' speed"}),
+        SCND_WV(
+            new String[]{"Il est possible de déplacer --raztech-- en", "cliquant sur --placeRaztech--, mais cela coûte 20%", "de l'XP max avant le prochaine niveau."},
+            new String[]{"It's possible to move --raztech-- by", "clicking on --placeRaztech--, but it costs 20%", "of the max XP before the next level."}),
+        SCND_WV2(
+            new String[]{"Toute tourelle qui vise peut changer", "sa cible."},
+            new String[]{"Every tower that aims can change", "their focus"}),
+        SCND_WV3(
+            new String[]{"Toutes les tourelles (sauf --raztech--) peuvent", "être vendues pour 50% des --coins-- ", "qui ont été investi dedans."},
+            new String[]{"Every tower (except --raztech--) can", "be sold for 50% of --coins-- ", "invested in it."}),
+        THRD_WV(
+            new String[]{"Il est possible de sélectionner des", "ennemis pour voir leurs --heart--."},
+            new String[]{"It's possible to select", "enemies to see their --heart--."}),
+        FRTH_WV(
+            new String[]{"Vous pouvez mettre pause avec ESPACE", "pendant une vague pour prendre", "votre temps."},
+            new String[]{"You can pause the game with SPACE", "in order to take your time."}),
+        FRTH_WV2(
+            new String[]{"En sélectionnant une tourelle,", "il est possible de voir ses statistiques", "en appuyant sur TAB."},
+            new String[]{"By selecting a tower", "you can see its statistics", "by pressing TAB."}),
+        FRTH_WV3(
+            new String[]{"Pas d'inquiétude, vous avez un bouton d'aide", "pour vous rappeler des grandes lignes", "et connaître quelques raccourcis !"},
+            new String[]{"No worries, you have a help button", "to remind you of the main information", "and to learn some shortcuts !"}),
+        LVL_P(
+            new String[]{"--raztech-- est passé niveau 2 !", " ", "À chaque niveau passé, les caractéristiques", "de --raztech-- s'améliorent.", "Cela débloque aussi des nouvelles tourelles."},
+            new String[]{"--raztech-- has leveled up !", " ", "At each level gained, --raztech--'s characteristics", "get better.", "It also unlocks new towers."}),
+        LVL_P2(
+            new String[]{"Quand --raztech-- passe un niveau,", "cela vous permet également de", "choisir un bonus parmi les", "trois proposés."},
+            new String[]{"When --raztech-- levels up,", "you can also choose one of the", "three bonus offered."}),
+        GM_NDD(
+            new String[]{"Vous pouvez télécharger la map", "pour la rejouer, la partager ou la modifier."},
+            new String[]{"You can download the map", "to play it again, share it or edit it"}),
+        GM_NDD2(
+            new String[]{"En partie, le bouton se trouve ici."},
+            new String[]{"In game, the button appears here."}),
+        
         // POPUPS
         SELECT_DIFF(
             new String[]{"Choisis une difficulté"},
@@ -353,13 +442,13 @@ public final class TextManager {
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),
         GUIDE(
-            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "La partie s'achève lorsque vos points de vie tombent à 0.", "Vous gagnerez des pièces en tuant des ennemis et en survivant aux vagues.", "Ce sera utile pour acheter des tourelles pour défendre votre terrain !"},
-            new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "The game ends whenever your health hits 0.", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
+            new String[]{"Vague par vague, vous allez être submergés d'ennemis.", "Votre but est de les empêcher de tout traverser.", "Sinon vous perdrez des points de vie.", "Combattez Bazoo, ou mourez !", "Vous gagnerez des pièces en tuant des ennemis et en survivant aux vagues.", "Ce sera utile pour acheter des tourelles pour défendre votre terrain !"},
+            new String[]{"Wave by wave, you will be submerged by enemies.", "Your goal is to prevent them from going all the way through.", "Otherwise you'll lose health points.", "Fight Bazoo or die !", "You will gain coins by killing enemies and surviving waves.", "It'll be useful to buy towers to defend your terrain !"}),
         INFO(
             new String[]{"Informations"},
             new String[]{"Informations"}),
         INFO_GUIDE(
-            new String[]{"Déplacer Raztech coûte 20% de l'XP de son prochain niveau.", "Vous pouvez sélectionner des ennemis et des tourelles. Clickez n'importe où pour désélectionner.", "Vous pouvez annuler la construction d'une nouvelle tour avec clique droit."},
+            new String[]{"Déplacer Raztech coûte 20% de l'XP de son prochain niveau.", "Vous pouvez sélectionner des ennemis et des tourelles. Cliquez n'importe où pour désélectionner.", "Vous pouvez annuler la construction d'une nouvelle tour avec clique droit."},
             new String[]{"Moving Raztech costs 20% of his next level's XP.", "You can select enemies and towers. Click anywhere else to unselect.", "You can cancel a new tower construction by right clicking."}),
         SHORTCUTS(
             new String[]{"Raccourcis"},

@@ -28,7 +28,7 @@ public class Bazoo extends Enemy{
         bulletSpeed = 20;*/
         level = lvl;
         name = Text.ENEMY_BOSS;
-        reward = lvl*50;
+        reward = lvl*25;
         power = 1000f;
         shootRate = 1f;
         moveSpeed = 2f;
@@ -94,7 +94,8 @@ public class Bazoo extends Enemy{
     @Override
     public void die(){
         if(life > 0){
-            SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_LAUGH);
+            if(!game.ended)
+                SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_LAUGH);
             game.bossDefeated = false;
         } 
         else{

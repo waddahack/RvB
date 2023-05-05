@@ -8,6 +8,7 @@ import managers.SoundManager;
 import managers.StatsManager;
 import managers.TextManager;
 import managers.TextManager.Text;
+import managers.TutoManager;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.UnicodeFont;
 import static rvb.RvB.game;
@@ -124,7 +125,7 @@ public class Raztech extends Tower{
 
             RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
             RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
-            RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
+            RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, (int)(4*ref));
 
             RvB.drawString(x+width/2, y+height/2, xp+"/"+maxXP, RvB.fonts.get("normalBlack"));
 
@@ -211,6 +212,7 @@ public class Raztech extends Tower{
         else
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH2);
         StatsManager.Instance.updateTowerPlaced(type);
+        TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.RZTCH_PLCD);
     }
     
     @Override
@@ -236,6 +238,25 @@ public class Raztech extends Tower{
     }
     
     @Override
+    public boolean canBePlaced(){
+        if(!TutoManager.Instance.hasDone(TutoManager.TutoStep.RZTCH_PLCD)){
+            if(!super.canBePlaced())
+                return false;
+            int ix = Math.floorDiv((int) x, unite), iy = Math.floorDiv((int)y, unite);
+            if(iy-1 >= 0 && game.map.get(iy-1).get(ix).getType().equals("road"))
+                return true;
+            if(iy+1 < RvB.nbTileY && game.map.get(iy+1).get(ix).getType().equals("road"))
+                return true;
+            if(ix-1 >= 0 && game.map.get(iy).get(ix-1).getType().equals("road"))
+                return true;
+            if(ix+1 < RvB.nbTileX && game.map.get(iy).get(ix+1).getType().equals("road"))
+                return true;
+            return false;
+        }
+        return super.canBePlaced();
+    }
+    
+    @Override
     public void attack(Shootable enemy){ 
         if(!enemy.hasStarted())
             return;
@@ -252,7 +273,7 @@ public class Raztech extends Tower{
             enemiesKilled += 1;
             enemiesKilledThisWave += 1;
             if(e != game.bazoo)
-                gainXP(e.getReward());
+                gainXP(e.getReward()*2);
             
             StatsManager.Instance.updateEnemyKilled(e.type);
         }
@@ -267,6 +288,7 @@ public class Raztech extends Tower{
     
     public void levelUp(){
         levelUp(false);
+        TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.LVL_P);
     }
     
     public void levelUp(boolean setup){
@@ -296,7 +318,7 @@ public class Raztech extends Tower{
             if(!game.buffs.empty())
                 PopupManager.Instance.rewardSelection();
             else
-                PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl+" !", "\n", Text.RANGE.getText()+" +"+Math.round(upgrades.get(0).addOrMultiplicateValue), Text.POWER.getText()+" +"+Math.round(upgrades.get(1).addOrMultiplicateValue), Text.SHOOTRATE.getText()+" +"+upgrades.get(2).addOrMultiplicateValue, Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normalL")}, "...");
+                PopupManager.Instance.popup(new String[]{Text.LEVEL.getText()+lvl+" !", "\n", Text.RANGE.getText()+" +"+Math.round(upgrades.get(0).addOrMultiplicateValue), Text.POWER.getText()+" +"+Math.round(upgrades.get(1).addOrMultiplicateValue), Text.SHOOTRATE.getText()+" +"+upgrades.get(2).addOrMultiplicateValue, Text.NOTHING_LEFT.getText()}, new UnicodeFont[]{RvB.fonts.get("normalXLB"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normal"), RvB.fonts.get("normalL")}, Text.DOTS);
             // Stats
             if(lvl > StatsManager.Instance.raztechLvlMax)
                 StatsManager.Instance.raztechLvlMax = lvl;
@@ -317,11 +339,12 @@ public class Raztech extends Tower{
         chanceToKill += amount;
     }
     
+    @Override
     public String getJSON(){
         return "{"+
                 "\"type\":\""+type+"\", "+
-                "\"x\":"+x+", "+
-                "\"y\":"+y+", "+
+                "\"indexXSaved\":"+getIndexX()+", "+
+                "\"indexYSaved\":"+getIndexY()+", "+
                 "\"angle\":"+angle+", "+
                 "\"focusIndex\":"+getFocusIndex()+", "+
                 "\"enemiesKilled\":"+enemiesKilled+", "+

@@ -23,7 +23,7 @@ public class Creation extends AppCore{
     private ArrayList<Tile> roads;
     
     public Creation(){
-        super("creation");
+        super();
         init(RvB.Difficulty.MEDIUM);
         initOverlays();   
         initMap("assets/temp/level_created.txt");
@@ -37,7 +37,6 @@ public class Creation extends AppCore{
     @Override
     protected void initMap(String name){
         super.initMap(name);
-        
         try {
             createMapTextureEmpty();
         } catch (Exception ex) {
@@ -134,7 +133,7 @@ public class Creation extends AppCore{
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{
-                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, Text.OK);
             }
         });
         o.addButton(b);

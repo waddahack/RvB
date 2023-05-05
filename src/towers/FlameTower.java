@@ -8,7 +8,7 @@ import static towers.Tower.Type.FLAME;
 
 public class FlameTower extends Tower{
 
-    public static int startPrice = 800;
+    public static int startPrice = 1000;
     
     public FlameTower(){
         super(FLAME);
@@ -31,11 +31,11 @@ public class FlameTower extends Tower{
         bulletSprite = RvB.textures.get("flame");
         
         range = (int) (1.5*RvB.unite);
-        power = 1.5f;
+        power = 1f;
         shootRate = 30f;
         bulletSpeed = 25;
-        upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 200f, 1.5f, 2));
-        upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 300f, 1.4f, 3));
+        upgrades.add(new Upgrade(this, "Range", range, 1.25f, "*", 180f, 1.5f, 2));
+        upgrades.add(new Upgrade(this, "Power", power, 0.5f, "+", 500f, 1.35f, 3));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

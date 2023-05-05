@@ -15,7 +15,7 @@ import static towers.Tower.Type.BIG;
 
 public class BigTower extends Tower{
     
-    public static int startPrice = 550;
+    public static int startPrice = 600;
     private Clip explodeClip;
     
     private float explodeX, explodeY;
@@ -47,7 +47,7 @@ public class BigTower extends Tower{
         bulletSizeBonus = 10;
         
         range = 7*RvB.unite/3;
-        power = 30f;
+        power = 28f;
         shootRate = 0.3f;
         bulletSpeed = 8;
         explodeRadius = RvB.unite;

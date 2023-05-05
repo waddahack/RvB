@@ -30,6 +30,14 @@ public class Button {
     public int indexSwitch = -1;
     private Consumer<Object> clickFunction = null, onHoverFunction = null;
     
+    public Button(int x, int y, int width, int height, Texture bg){
+        build(x ,y, width, height, null, null, bg, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+    }
+    
+    public Button(int x, int y, int width, int height){
+        build(x ,y, width, height, null, null, null, RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
+    }
+    
     public Button(int x, int y, int width, int height, float[] rgb, float[] borderRgb){
         build(x ,y, width, height, null, null, null, rgb, borderRgb, 0);
     }
@@ -150,7 +158,7 @@ public class Button {
         }
         // hover
         if((isMouseIn() || selected) && borderRgb != null && !disabled)
-            RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, 4);
+            RvB.drawRectangle(x-width/2, y-height/2, width, height, borderRgb, 1f, (int) (4*ref));
         // text
         if(text != null && font != null)
             RvB.drawString(x, y, indexSwitch >= 0 ? text.getLines()[indexSwitch] : text.getText(), font);
@@ -257,6 +265,10 @@ public class Button {
     
     public void setY(int y){
         this.y = y;
+    }
+    
+    public void setText(Text text){
+        setText(text, font == null ? RvB.fonts.get("normal") : font);
     }
     
     public void setText(Text text, UnicodeFont font){

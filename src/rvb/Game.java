@@ -7,30 +7,28 @@ import managers.TextManager.Text;
 import rvb.RvB.Difficulty;
 import static rvb.RvB.nbTileX;
 import static rvb.RvB.nbTileY;
+import static rvb.RvB.ref;
+import ui.Button;
+import ui.Overlay;
 
 public class Game extends AppCore{
     
     public Game(String lvlPath, Difficulty diff){
-        super("created");
+        super();
         init(diff);
         initOverlays();
         initMap(lvlPath);
-        String error = calculatePath();
-        if(error != null){
-            path.clear();
-            PopupManager.Instance.popup(error);
-        }
     }
     
     public Game(ArrayList<Tile> path, Difficulty diff){
-        super("loaded");
+        super();
         init(diff);
         initOverlays();
         initMap(path);
     }
     
     public Game(Difficulty diff){
-        super("random");
+        super();
         init(diff);
         initOverlays();
         
@@ -48,6 +46,17 @@ public class Game extends AppCore{
             PopupManager.Instance.popup(Text.ERROR.getText());
         
         initMap(path);
+    }
+    
+    @Override
+    public void initOverlays(){
+        super.initOverlays();
+        Overlay o = overlays.get(1);
+        Button b = new Button(o.getW()-(int)(500*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("questionMark"));
+        b.setFunction(__ -> {
+            PopupManager.Instance.help();
+        });
+        o.addButton(b);
     }
     
     private static ArrayList<Tile> generateRandomPath(Difficulty diff){
@@ -227,8 +236,8 @@ public class Game extends AppCore{
         return path;
     }
     
-    private String calculatePath(){
-        String error = Text.PATH_NOT_VALID.getText();
+    public Text calculatePath(Difficulty diff){
+        Text error = Text.PATH_NOT_VALID;
         if(path.size() == 0)
             return error;
         ArrayList<Tile> roads = (ArrayList<Tile>) path.clone();
@@ -262,6 +271,8 @@ public class Game extends AppCore{
         }
         if(n < roads.size())
             return error;
+        if(roads.size() > diff.getNbRoad()*1.2)
+            return Text.PATH_TOO_LONG;
         return null;
     }
 }

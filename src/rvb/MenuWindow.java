@@ -4,6 +4,7 @@ import managers.TextManager;
 import ui.Button;
 import managers.PopupManager;
 import managers.TextManager.Text;
+import managers.TutoManager;
 import static rvb.RvB.*;
 import ui.Overlay;
 
@@ -36,10 +37,12 @@ public class MenuWindow extends Window{
         start.lock();
         start.setText(Text.ADVENTURE, fonts.get("normalL"));
         start.setFunction(__ -> {
+            // Faire comme les autres
             if(adventureGame == null || adventureGame.ended || adventureGame.waveNumber == 1)
                 adventureGame = new Game("1", Difficulty.MEDIUM);
 
             game = adventureGame;
+            game.saveBestScore = false;
             switchStateTo(State.GAME);
         });
         
@@ -57,6 +60,7 @@ public class MenuWindow extends Window{
         });
         
         create = new Button(windWidth/2, windHeight/6, width, height, colors.get("green_semidark"), colors.get("green_dark"));
+        create.setText(Text.CREATION, fonts.get("normalL"));
         create.setFunction(__ -> {
             if(createLevelCreatedFile()){
                 if(creation == null)
@@ -120,26 +124,20 @@ public class MenuWindow extends Window{
     @Override
     public void update(){
         super.update();
-        if(game == null || game.ended)
+        if(!TutoManager.Instance.hasDone(TutoManager.TutoStep.GM_NDD)){
+            menu.getStart().lock();
+            menu.getCreate().lock();
             regenerate.setHidden(true);
+        }
+        else{
+            //menu.getStart().unlock();
+            menu.getCreate().unlock();
+            regenerate.setHidden(game == null || game.ended);
+        }
+        if(game == null || game.ended)
+            play.setText(Text.FIGHT, fonts.get("normalL"));
         else
-            regenerate.setHidden(false);
-    }
-    
-    @Override
-    protected void render(){
-        super.render();
-        if(regenerate.isHidden())
-            play.drawText(Text.FIGHT.getText(), fonts.get("normalL"));
-        else
-            play.drawText(Text.CONTINUE.getText(), fonts.get("normalL"));
-        create.drawText(Text.CREATION.getText(), fonts.get("normalL"));
-    }
-    
-    @Override
-    public void enableAllButtons(){
-        super.enableAllButtons();
-        start.enable();
+            play.setText(Text.CONTINUE, fonts.get("normalL"));
     }
     
     public Button getStart(){

@@ -100,9 +100,8 @@ public abstract class AppCore {
     public ArrayList<Tile> path;
     //public ArrayList<Rock> rocks;
     public Stack<Buff> buffs;
-    public String buffsUsed = "", type;
-    public boolean gameOver, gameWin;
-    public boolean inWave;
+    public String buffsUsed = "";
+    public boolean inWave, gameOver, gameWin, saveBestScore = true, addPP = true;
     public Enemy enemySelected = null;
     public boolean ended = false;
     public Tower towerSelected;
@@ -120,8 +119,7 @@ public abstract class AppCore {
     public int timeInGamePassed;
     public int basicTowerPrice, circleTowerPrice, flameTowerPrice, bigTowerPrice;
     
-    public AppCore(String gameType){
-        type = gameType;
+    public AppCore(){
         random = new Random();
     }
     
@@ -416,31 +414,29 @@ public abstract class AppCore {
         textureID = RvB.loadTexture(mapImage);
     }
     
-    protected void saveGame(boolean showPopup){
-        String pathString = "", arrayTowers = "[", arrayBuffs = "[";
+    public String getPathString(){
+        String pathString = "";
         for(Tile road : path)
             pathString += road.getIndexX()+"/"+road.getIndexY()+"/"+road.nbStepped+(road == path.get(path.size()-1) ? "" : ";");
+        return pathString;
+    }
+    
+    public String getArrayTowers(){
+        String arrayTowers = "[";
         for(Shootable t : towers){
             Tower tower = (Tower) t;
             arrayTowers += tower.getJSON()+(t == towers.get(towers.size()-1) ? "" : ", ");
         }
         arrayTowers += "]";
+        return arrayTowers;
+    }
+    
+    public String getArrayBuffs(){
+        String arrayBuffs = "[";
         for(Buff b : buffs)
             arrayBuffs += b.getJSON()+(b == buffs.get(buffs.size()-1) ? "" : ", ");
         arrayBuffs += "]";
-        try {
-            boolean success = RVBDB.Instance.saveGame(waveNumber, money, life, pathString, difficulty.name, arrayTowers, arrayBuffs, buffsUsed);
-            if(showPopup){
-                if(!success)
-                    PopupManager.Instance.popup(Text.ERROR.getText());
-                else
-                    PopupManager.Instance.popup(Text.SUCCESS.getText());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
-            if(showPopup)
-                PopupManager.Instance.popup(Text.ERROR.getText());
-        }
+        return arrayBuffs;
     }
     
     public String saveLevel(String name, String dir, boolean overwrite){
@@ -504,18 +500,31 @@ public abstract class AppCore {
         clearArrays();
         
         if(this == RvB.game && !inWave && !PopupManager.Instance.onPopup()){
-            if(SoundManager.Instance.isReady())
+            if(SoundManager.Instance.isReady()){
                 overlays.get(1).getButtons().get(0).enable();
-            else
+                overlays.get(1).getButtons().get(0).setText(Text.START_WAVE, RvB.fonts.get("normalB"));
+            }
+            else{
                 overlays.get(1).getButtons().get(0).disable();
+                overlays.get(1).getButtons().get(0).setText(Text.WAITING, RvB.fonts.get("normal"));
+            }
         }
         
         render();
         
+        for(Shootable t : towers)
+            t.update();
+        
         if(inWave){
             wave.update();
-            for(int i = enemies.size()-1 ; i >= 0 ; i--)
-                enemies.get(i).update();
+            if(bossRound() && bazoo != null)
+                bazoo.update();
+            for(int i = enemies.size()-1 ; i >= 0 ; i--){
+                Enemy e = (Enemy) enemies.get(i);
+                if(e != bazoo)
+                    e.update();
+            }
+                
             for(Shootable e : enemies){
                 Enemy en = (Enemy) e;
                 if(en != bazoo)
@@ -527,9 +536,6 @@ public abstract class AppCore {
                 renderEnemySelected();
         }
         
-        for(Shootable t : towers)
-            t.update();
-        
         if(gameSpeed > 0){
             // Wave check if done
             if(inWave && wave.isDone()){
@@ -539,7 +545,7 @@ public abstract class AppCore {
                 money += waveReward;
                 SoundManager.Instance.closeAllClips();
                 if(bossDead){
-                    if(waveNumber == difficulty.nbWaveMax){
+                    if(!gameOver && waveNumber == difficulty.nbWaveMax){
                         gameWin = true;
                     }
                     else if(!gameOver){
@@ -555,8 +561,20 @@ public abstract class AppCore {
                 }
                 if(!gameOver && !gameWin){
                     waveNumber++;
-                    saveGame(false);
+                    try {
+                        RVBDB.Instance.saveGame(waveNumber, money, life, getPathString(), difficulty.name, getArrayTowers(), getArrayBuffs(), buffsUsed);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                if(waveNumber == 2)
+                    TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.FRST_WV);
+                else if(waveNumber == 3)
+                    TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.SCND_WV);
+                else if(waveNumber == 4)
+                    TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.THRD_WV);
+                else if(waveNumber == 5)
+                    TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.FRTH_WV);
             }
         }
         
@@ -622,7 +640,7 @@ public abstract class AppCore {
             } 
             // CHANGE SPEED
             else if(Keyboard.isKeyDown(Keyboard.KEY_V) && gameSpeed > 0){
-                overlays.get(1).getButtons().get(overlays.get(1).getButtons().size()-2).click();
+                overlays.get(1).getButtons().get(overlays.get(1).getButtons().size()-3).click();
             } 
             // POPUP HELP
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
@@ -665,10 +683,7 @@ public abstract class AppCore {
     }
     
     protected void renderEnemySelected(){
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+0.5f, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+1, RvB.colors.get("green_dark"));
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2+1.5f, RvB.colors.get("green_dark"));
+        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2, RvB.colors.get("green_dark"), (int)(2*ref));
     }
     
     protected void render(){
@@ -711,7 +726,7 @@ public abstract class AppCore {
                     textureName = "flameTower";
                     break;
             }
-            b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b = new Button(startPos + (size + sep)*i, (int)(30*ref), size, size, RvB.textures.get(textureName));
             b.setItemFramed(true);
             b.lock();
             int index = i;
@@ -722,7 +737,7 @@ public abstract class AppCore {
             });
             o.addButton(b);
         }
-        b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"));
         b.setItemFramed(true);
         b.setFunction(__ -> {
             if(towerSelected != null)
@@ -732,23 +747,25 @@ public abstract class AppCore {
         o.addButton(b);
         overlays.add(o);
         
-        // Overlay top
+        // Overlay top, indexes : WAVEBUT -> 0, DLBUT -> 1, GMSPEEDBUT -> 2, BACKBUT -> 3, HELPBUT -> 4
         o = new Overlay(0, 0, windWidth, (int)(60*ref));
         o.setBG(RvB.textures.get("board"), 0.6f);
         // Wave button
-        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref));
+        b.setText(Text.START_WAVE, RvB.fonts.get("normalB"));
         b.setClickSound(SoundManager.SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
         Button waveBut = b;
         b.setFunction(__ -> {
             if(!inWave){
                 waveBut.disable();
                 RvB.setCursor(Cursor.DEFAULT);
+                waveBut.setText(Text.DEFENDING, RvB.fonts.get("normal"));
                 startWave();
             }
         });
         o.addButton(b);
         // Download button
-        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref));
         b.setBG(RvB.textures.get("download"));
         Button dlBut = b;
         b.setFunction(__ -> {
@@ -756,33 +773,38 @@ public abstract class AppCore {
             if (!levelsFolder.exists()) {
                 levelsFolder.mkdir();
             }
-            String name = saveLevel(type.equals("created") ? "created":"downloaded", levelsFolder.getAbsolutePath()+File.separator, false);
+            String name = saveLevel("downloaded", levelsFolder.getAbsolutePath()+File.separator, false);
             if(name.isEmpty())
                 PopupManager.Instance.popup(Text.ERROR.getText());
             else{
                 dlBut.lock();
-                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, "Ok");
+                PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, Text.OK);
             }
         });
         o.addButton(b);
         // game speed button
-        b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref));
+        b.setText(Text.X1, RvB.fonts.get("normalB"));
+        Button gameSpeedBut = b;
         b.setFunction(__ -> {
             switch(gameSpeed){
                 case 1:
                     gameSpeed = 2;
+                    gameSpeedBut.setText(Text.X2);
                     break;
                 case 2:
                     gameSpeed = 4;
+                    gameSpeedBut.setText(Text.X4);
                     break;
                 case 4:
                     gameSpeed = 1;
+                    gameSpeedBut.setText(Text.X1);
                     break;
             }
         });
         o.addButton(b);
         // back button
-        b = new Button((int)(60*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button((int)(60*ref), o.getH()/2, (int)(32*ref), (int)(32*ref));
         b.setBG(RvB.textures.get("arrowBack"));
         b.setFunction(__ -> {
             RvB.switchStateTo(MENU);
@@ -832,7 +854,7 @@ public abstract class AppCore {
                 o.drawText(x+width/2, o.getH()/3, Text.LVL.getText()+raztech.lvl, RvB.fonts.get("normalS"));
                 RvB.drawFilledRectangle(x, y, width, height, RvB.colors.get("lightGreen"), 1f, null);
                 RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
-                RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, 4);
+                RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, (int)(4*ref));
             }
         }
         //
@@ -847,20 +869,6 @@ public abstract class AppCore {
         t = life+"";
         o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
         o.drawImage((int)((330+8.8*t.length())*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
-        
-        t = inWave ? Text.DEFENDING.getText() : Text.START_WAVE.getText();
-        if(inWave)
-            t = Text.DEFENDING.getText();
-        else{
-            if(!SoundManager.Instance.isReady())
-                t = Text.WAITING.getText();
-            else
-                t = Text.START_WAVE.getText();
-        }
-        o.getButtons().get(0).drawText(0, 0, t, RvB.fonts.get(inWave ? "normal" : "normalB"));
-            
-        t = "x"+gameSpeed;
-        o.getButtons().get(2).drawText(0, 0, t, RvB.fonts.get("normalB"));
         //
         if(enemySelected != null && !enemySelected.isDead())
             enemySelected.renderInfo();
@@ -916,7 +924,7 @@ public abstract class AppCore {
         wave.shuffleEnemies();
         if(bossRound()){
             bazoo = new Bazoo((waveNumber/bossEvery)-1);
-            wave.addEnemy(bazoo, 0);
+            wave.addEnemy(bazoo, wave.getEnnemies().size()/5);
         }
         enemies = (ArrayList<Shootable>)wave.getEnnemies().clone();
         inWave = true;
@@ -1039,9 +1047,9 @@ public abstract class AppCore {
             return;
         if(!endGamePropertiesUpdated){
             StatsManager.Instance.updateModeStats();
-            if(!type.equals("created") && !type.equals("loaded"))
+            if(addPP)
                 StatsManager.Instance.addProgressionPoints();
-            if(type.equals("random"))
+            if(saveBestScore)
                 StatsManager.Instance.updateBestScore();
             endGamePropertiesUpdated = true;
         }
@@ -1049,6 +1057,7 @@ public abstract class AppCore {
             PopupManager.Instance.gameWin();
         else
             PopupManager.Instance.gameOver();
+        TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.GM_NDD);
     }
     
     public void selectTower(Tower t){
@@ -1066,12 +1075,20 @@ public abstract class AppCore {
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
                 b.disable();
+        for(Shootable s : towers){
+            Tower t = (Tower)s;
+            t.disableAllButtons();
+        }
     }
     
     public void enableAllButtons(){
         for(Overlay o : overlays)
             for(Button b : o.getButtons())
                 b.enable();
+        for(Shootable s : towers){
+            Tower t = (Tower)s;
+            t.enableAllButtons();
+        }
     }
 
     public void setEnemySelected(Enemy e) {

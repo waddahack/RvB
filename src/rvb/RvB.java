@@ -42,6 +42,8 @@ import org.newdawn.slick.opengl.TextureLoader;
 import towers.Tower;
 import ui.Overlay;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.management.ManagementFactory;
+import org.lwjgl.opengl.DisplayMode;
 import towers.Raztech;
 
 public class RvB{
@@ -109,17 +111,42 @@ public class RvB{
     private static String commandPrompt = "";
     private static int nbConsoleLines = 0, nbConsoleLinesMax = 7;
     private static boolean listeningKeyboard = false;
-    private static boolean exit = false;
+    private static boolean exit = false, debugging = false;
     // PROPERTIES
     public static boolean cheatsActivated;
-    public static String version = "2.9";
+    public static String version = "2.11";
     
     public static void main(String[] args){
         System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
+        /*String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("linux")) {
+            // Ajouter l'option -z noexecstack aux arguments de lancement
+            System.setProperty("org.lwjgl.librarypath", "lib/");
+            System.setProperty("run.args", "-z noexecstack");
+        } else if (os.contains("mac os x") || os.contains("macos") || os.contains("darwin")) {
+            // Ajouter l'option -Wl,-no_pie aux arguments de lancement
+            System.setProperty("org.lwjgl.librarypath", "lib/");
+            System.setProperty("run.args", "-Wl,-no_pie");
+        }
+        if (System.getProperty("org.lwjgl.librarypath") == null) {
+            System.setProperty("org.lwjgl.librarypath", new File("lib").getAbsolutePath());
+        }*/
+        for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+            if (arg.contains("-agentlib:jdwp")) {
+                debugging = true;
+                break;
+            }
+        }
         try{
+            if(Display.getDesktopDisplayMode().isFullscreenCapable() && !debugging)
+                Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
+            else{
+                java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+                Display.setDisplayMode(new DisplayMode(screenSize.width, screenSize.height));
+            }
+            
             Display.setLocation(0, 0);
-            Display.setFullscreen(true);
-            Display.setInitialBackground(112f/255f, 153/255f, 50/255f);
+            Display.setInitialBackground(72f/255f, 98/255f, 34/255f);
             Display.setResizable(false);
             Display.setTitle("RvB");
             Display.setIcon(new ByteBuffer[] {
@@ -158,7 +185,6 @@ public class RvB{
             
             deltaTime = System.currentTimeMillis() - lastUpdate;
             calculateFPS();
-            
         }
         releaseTextures();
         saveAndExit();
@@ -206,6 +232,7 @@ public class RvB{
         Mouse.setGrabbed(true);
         Mouse.setCursorPosition(windWidth/2, windHeight/2);
         setCursor(Cursor.DEFAULT);
+        
         SoundManager.initialize();
         SoundManager.Instance.playAllAmbiance();
         PopupManager.initialize();
@@ -214,12 +241,14 @@ public class RvB{
         menu = new MenuWindow();
         menuStats = new StatsWindow();
         options = new OptionsWindow();
+        TutoManager.initialize();
         RVBDB.initialize();
+        
         lastUpdate = System.currentTimeMillis();
         lastUpdateFPS = System.currentTimeMillis();
     }
 
-    public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
+    public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String tutoSteps, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
         cheatsActivated = cheatsOn;
         switch(language){
             case "FR":
@@ -276,6 +305,7 @@ public class RvB{
                 Tower[] towers = mapper.readValue(arrayTowers, Tower[].class);
                 for(Tower t : towers){
                     game.towers.add(t);
+                    t.updatePos();
                     t.autoPlace(game.map);
                     if(t.getFocusButton() != null)
                         t.getFocusButton().indexSwitch = t.getFocusIndex();
@@ -322,6 +352,7 @@ public class RvB{
                 game.buffsUsed = buffsUsed;
             }
         }
+        TutoManager.Instance.setupSteps(tutoSteps);
     }
     
     public static void update() {
@@ -503,7 +534,7 @@ public class RvB{
     
     public static void renderMouse(){
         if(cursorTexture != null)
-            drawFilledRectangle(Mouse.getX()-cursorPos[0], windHeight-Mouse.getY()-cursorPos[1], 28, 28, null, 1, cursorTexture);
+            drawFilledRectangle(Mouse.getX()-cursorPos[0], windHeight-Mouse.getY()-cursorPos[1], (int)(32*ref), (int)(32*ref), null, 1, cursorTexture);
     }
     
     public static void checkInput() {
@@ -532,9 +563,9 @@ public class RvB{
             
             // ESCAPE MENU
             if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && (game == null || game.ended || (!game.gameOver && !game.gameWin)) && !PopupManager.Instance.onRewardSelection()){
-                if(PopupManager.Instance.onPopup())
+                if(PopupManager.Instance.onPopup() && !PopupManager.Instance.onPopupTuto())
                     PopupManager.Instance.closeCurrentPopup();
-                else
+                else if(!PopupManager.Instance.onPopupTuto())
                     switchStateTo(State.MENU);
             }
             
@@ -542,7 +573,7 @@ public class RvB{
             if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
                 // Prompt command
                 if(Keyboard.isKeyDown(Keyboard.KEY_P)){
-                    PopupManager.Instance.popup("How many PP to add ?", "Cancel");
+                    PopupManager.Instance.popup("How many PP to add ?", Text.CANCEL);
                     PopupManager.Instance.setCallback(__ -> {
                         listeningKeyboard = false;
                     });
@@ -600,6 +631,13 @@ public class RvB{
                     }
                 }
             }
+            // Reset tuto (therefore resets game in progress)
+            else if(Keyboard.isKeyDown(Keyboard.KEY_T)){
+                switchStateTo(State.MENU);
+                PopupManager.Instance.closeCurrentPopup();
+                TutoManager.Instance.clearStepsDone();
+                game = null;
+            }
             // Game speed
             else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
                 if(game != null)
@@ -628,34 +666,49 @@ public class RvB{
             return;
         }
         switchStateTo(State.GAME);
-        game.saveGame(false);
     }
     
     public static void newCreatedMap(Difficulty difficulty){
         game = new Game("assets/temp/level_created.txt", difficulty);
+        Text error = game.calculatePath(difficulty);
+        if(error != null){
+            game.saveBestScore = false;
+            game.addPP = false;
+            if(error != Text.PATH_TOO_LONG){
+                game = null;
+                return;
+            }
+            PopupManager.Instance.popup(error.getLines());
+        }
         switchStateTo(State.GAME);
-        game.saveGame(false);
     }
     
     public static void loadMap(String path, Difficulty difficulty){
         game = new Game(path, difficulty);
-        if(game.path.size() == 0){
-            game = null;
-            if(!PopupManager.Instance.onPopup())
-                PopupManager.Instance.popup(Text.ERROR.getText());
-            return;
+        Text error = game.calculatePath(difficulty);
+        if(error != null){
+            game.saveBestScore = false;
+            game.addPP = false;
+            if(error != Text.PATH_TOO_LONG){
+                game = null;
+                return;
+            }
+            PopupManager.Instance.popup(error.getLines());
         }
         switchStateTo(State.GAME);
         debug("Map loaded : "+path);
-        game.saveGame(false);
     }
     
     public static void setMap(ArrayList<Tile> path, Difficulty difficulty){
         game = new Game(path, difficulty);
-        if(game.path.size() == 0){
-            game = null;
-            debug("Error : Map saved not set");
-            return;
+        Text error = game.calculatePath(difficulty);
+        if(error != null){
+            game.saveBestScore = false;
+            game.addPP = false;
+            if(error != Text.PATH_TOO_LONG){
+                game = null;
+                debug("Error : Map saved not set");
+            }
         }
     }
     
@@ -721,20 +774,39 @@ public class RvB{
         stateChanged = true;
         setCursor(Cursor.DEFAULT);
         if(s == State.MENU){
-            menu.enableAllButtons();
             if(game != null)
                 game.pause();
         }  
         else if(s == State.GAME){
-            game.enableAllButtons();
             game.unpause();
+            TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.WLCM_RND);
         }
-        else if(s == State.CREATION)
-            creation.enableAllButtons();
     }
     
-    public static void drawString(int x, int y, String text, UnicodeFont font){
-        font.drawString(x - font.getWidth(text)/2, y - font.getHeight(text)/2, text);
+    public static void drawString(int x, int y, String string, UnicodeFont font){
+        String[] lines = string.split("--");
+        if(lines.length == 1 || lines.length%2 == 0)
+            font.drawString(x - font.getWidth(string)/2, y - font.getHeight(string)/2, string);
+        else{
+            int textWidth = 0, cursorX = 0, fontSize = font.getFont().getSize(), imageSize = (int)(fontSize*1.5);
+            for(int i = 0 ; i < lines.length ; i++){
+                if(i%2 != 0)
+                    textWidth += imageSize;
+                else
+                    textWidth += font.getWidth(lines[i]);
+            }
+            for(int i = 0 ; i < lines.length ; i++){
+                String s = lines[i];
+                if(i%2 != 0){
+                    drawFilledRectangle(x+cursorX - textWidth/2, y - imageSize/2, imageSize, imageSize, null, 1, textures.get(lines[i]));
+                    cursorX += imageSize;
+                }
+                else{
+                    font.drawString(x+cursorX - textWidth/2, y - fontSize/2, s);
+                    cursorX += font.getWidth(s);
+                }
+            }
+        }
     }
     
     public static void drawRectangle(int x, int y, int width, int height, float[] rgb, float a, int thickness){
@@ -790,7 +862,7 @@ public class RvB{
     }
     
     public static void drawFilledRectangle(float x, float y, int width, int height, float[] rgb, float a, Texture texture){
-        if (texture != null) {
+        if(texture != null) {
             texture.bind();
             glEnable(GL_TEXTURE_2D);
             glColor4f(1, 1, 1, a);
@@ -812,12 +884,18 @@ public class RvB{
     }
     
     public static void drawCircle(double x, double y, float radius, float[] rgb){
+        drawCircle(x, y, radius, rgb, 1);
+    }
+    
+    public static void drawCircle(double x, double y, float radius, float[] rgb, int thickness){
         float DEG2RAD = (float) (3.15149/180), degInRad;
         glBegin(GL_LINE_LOOP);
         glColor3f(rgb[0], rgb[1], rgb[2]);
-        for(int i = 0 ; i < 360; i++){
-            degInRad = i*DEG2RAD;
-            glVertex2d(x+cos(degInRad)*radius, y+sin(degInRad)*radius);
+        for(float t = 0 ; t < thickness ; t+=0.5f){
+            for(int i = 0 ; i < 360; i++){
+                degInRad = i*DEG2RAD;
+                glVertex2d(x+cos(degInRad)*(radius+t), y+sin(degInRad)*(radius+t));
+            }
         }
         glEnd();
     }
@@ -839,8 +917,12 @@ public class RvB{
     public static void saveAndExit(){
         releaseTextures();
         try {
+            boolean inGame = game != null && !game.ended && !game.gameOver && !game.gameWin;
+            if(inGame)
+                RVBDB.Instance.saveGame(game.waveNumber, game.money, game.life, game.getPathString(), game.difficulty.name, game.getArrayTowers(), game.getArrayBuffs(), game.buffsUsed);
             RVBDB.Instance.updateStats(StatsManager.Instance.getJSON());
-            RVBDB.Instance.updateInGame(game != null && !game.ended && !game.gameOver && !game.gameWin);
+            RVBDB.Instance.updateTutoSteps(TutoManager.Instance.getStepsJSON());
+            RVBDB.Instance.updateInGame(inGame);
             RVBDB.Instance.updateLanguage(TextManager.Instance.getLanguage());
         } catch (SQLException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
@@ -897,6 +979,9 @@ public class RvB{
             textures.put("coinsCantBuy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins_cantBuy.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             textures.put("enemyRate", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_rate.png"))));
+            textures.put("cross", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cross.png"))));
+            textures.put("arrowPoint", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_point.png"))));
+            textures.put("questionMark", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/question_mark.png"))));
             // Towers
             textures.put("raztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/raztech.png"))));
             textures.put("placeRaztech", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/place_raztech.png"))));

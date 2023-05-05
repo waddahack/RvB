@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
 import ennemies.Enemy;
 import java.io.Serializable;
+import managers.PopupManager;
 import managers.StatsManager;
 import towers.Tower.Type;
 
@@ -70,6 +71,7 @@ public abstract class Tower extends Shootable implements Serializable{
     protected ArrayList<Upgrade> upgrades;
     protected Button focusButton;
     public int[] nbUpgradesUsed;
+    public int indexXSaved, indexYSaved;
     
     public Tower(Type type){
         super();
@@ -83,7 +85,7 @@ public abstract class Tower extends Shootable implements Serializable{
     
     @Override
     public void update(){
-        if(game.towerSelected == null && isClicked(0))
+        if(game.towerSelected == null && isClicked(0) && !PopupManager.Instance.onPopup())
             game.selectTower(this);
         
         if(isSelected()){
@@ -103,12 +105,13 @@ public abstract class Tower extends Shootable implements Serializable{
     }
     
     protected void renderPrevisu(){
-        if(canBePlaced()){
-            float xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
-            for(int i = 0 ; i < textures.size() ; i++)
-                RvB.drawFilledRectangle(xPos, yPos, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 0.5f);
-            for(int i = 0 ; i < texturesAdditive.size() ; i++)
-                RvB.drawFilledRectangle(xPos-3*unite/10, yPos-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
+        float xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
+        for(int i = 0 ; i < textures.size() ; i++)
+            RvB.drawFilledRectangle(xPos, yPos, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 0.5f);
+        for(int i = 0 ; i < texturesAdditive.size() ; i++)
+            RvB.drawFilledRectangle(xPos-3*unite/10, yPos-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
+        if(!canBePlaced()){
+            RvB.drawFilledRectangle(xPos-size/2, yPos-size/2, size, size, null, 1f, RvB.textures.get("cross"));
         }
         x = Mouse.getX();
         y = RvB.windHeight-Mouse.getY();
@@ -120,10 +123,11 @@ public abstract class Tower extends Shootable implements Serializable{
             xPos = Math.floorDiv(xPos, unite)*unite+unite/2;
             yPos = Math.floorDiv(yPos, unite)*unite+unite/2;
         }
-        RvB.drawCircle(xPos, yPos, getPreRange(), RvB.colors.get("blue"));
+        RvB.drawFilledCircle(xPos, yPos, getPreRange(), RvB.colors.get("grey_light"), 0.1f);
+        RvB.drawCircle(xPos, yPos, getPreRange(), RvB.colors.get("blue"), (int)(2*ref));
         RvB.drawCircle(xPos, yPos, getPreRange()-1, RvB.colors.get("grey"));
-        RvB.drawCircle(xPos, yPos, getPreRange()-2, RvB.colors.get("grey_light"));
-        RvB.drawFilledCircle(xPos, yPos, getPreRange()-2, RvB.colors.get("grey_light"), 0.1f);
+        RvB.drawCircle(xPos, yPos, getPreRange()-1.5f, RvB.colors.get("grey_light"));
+        
     }
     
     public void initOverlay(){
@@ -354,6 +358,25 @@ public abstract class Tower extends Shootable implements Serializable{
         return (int) up.getIncreasedValueWithBonus();
     }
     
+    public void disableAllButtons(){
+        for(Upgrade up : upgrades)
+            up.button.disable();
+        for(Button b : overlays.get(1).getButtons())
+            b.disable();
+    }
+    
+    public void enableAllButtons(){
+        for(Upgrade up : upgrades)
+            up.button.enable();
+        for(Button b : overlays.get(1).getButtons())
+            b.enable();
+    }
+    
+    public void updatePos(){
+        x = indexXSaved*unite;
+        y = indexYSaved*unite;
+    }
+    
     public Button getFocusButton(){
         return focusButton;
     }
@@ -385,8 +408,8 @@ public abstract class Tower extends Shootable implements Serializable{
         nbUpgradesUsed += "]";
         return "{"+
                 "\"type\":\""+type.name+"\", "+
-                "\"x\":"+x+", "+
-                "\"y\":"+y+", "+
+                "\"indexXSaved\":"+getIndexX()+", "+
+                "\"indexYSaved\":"+getIndexY()+", "+
                 "\"angle\":"+angle+", "+
                 "\"focusIndex\":"+getFocusIndex()+", "+
                 "\"enemiesKilled\":"+enemiesKilled+", "+

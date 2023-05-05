@@ -3,6 +3,7 @@ package ennemies;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.sound.sampled.Clip;
+import managers.PopupManager;
 import rvb.Shootable;
 import managers.SoundManager;
 import rvb.Tile;
@@ -61,7 +62,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     @Override
     public void update(){
-        if(game.enemySelected == null && isClicked(0) && started)
+        if(game.enemySelected == null && isClicked(0) && started && !PopupManager.Instance.onPopup())
             game.setEnemySelected(this);
         if(isMouseIn() && !mouseEntered && RvB.cursor != RvB.Cursor.POINTER){
             mouseEntered = true;
@@ -251,7 +252,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         float[] bgColor = evolutions.isEmpty() ? RvB.colors.get("lightGreen") : evolutions.size() > 1 ? evolutions.get(evolutions.size()-2).lifeColor : RvB.colors.get("life");
         RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, width, height, bgColor, 1, null);
         RvB.drawFilledRectangle(o.getX()+o.getW()/2-width/2, o.getY()+o.getH()-height-3, currentLife, height, evolutions.isEmpty() ? RvB.colors.get("life") : evolutions.peek().lifeColor, 1, null);
-        RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, 2);        
+        RvB.drawRectangle(o.getX()+o.getW()/2-width/2, (int) (o.getY()+o.getH()-height-3), width, height, RvB.colors.get("green_dark"), 0.8f, (int) (2*ref));        
         // Name & life max
         o.drawText(o.getW()/2, (int) (12*ref), name.getText(), RvB.fonts.get("normalL"));
         o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+Math.round(maxLife))/2+5, (int)(12*ref), ""+Math.round(maxLife), RvB.fonts.get("life"));

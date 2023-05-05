@@ -1,9 +1,12 @@
 package towers;
 
+import java.util.ArrayList;
 import rvb.RvB;
 import managers.SoundManager;
 import managers.TextManager.Text;
+import managers.TutoManager;
 import static rvb.RvB.ref;
+import rvb.Tile;
 import static towers.Tower.Type.BASIC;
 
 public class BasicTower extends Tower{
@@ -42,5 +45,11 @@ public class BasicTower extends Tower{
         
         initBack();
         initOverlay();
+    }
+    
+    @Override
+    public void place(ArrayList<ArrayList<Tile>> map){
+        super.place(map);
+        TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.TWR_PLCD);
     }
 }

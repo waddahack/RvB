@@ -8,7 +8,6 @@ public class StatsManager {
     public static StatsManager Instance;
     
     public int progression=0, progressionPalier=0, progressionMax=300, progressionLvl=1, raztechLvlMax=0;
-    public String progressionTuto=""; // NOT TREATED NOR USED ATM
     public int modeEasyNbGames=0, modeEasyNbWins=0, modeEasyNbWaves=0, modeMediumNbGames=0, modeMediumNbWins=0, modeMediumNbWaves=0, modeHardNbGames=0, modeHardNbWins=0, modeHardNbWaves=0, modeHardcoreNbGames=0, modeHardcoreNbWins=0, modeHardcoreNbWaves=0;
     public String modeEasyBestScore="", modeMediumBestScore="", modeHardBestScore="", modeHardcoreBestScore="";
     public int basicEnemyKilled=0, fastEnemyKilled=0, trickyEnemyKilled=0, strongEnemyKilled=0, flyingEnemyKilled=0, bossEnemyKilled=0;
@@ -164,7 +163,6 @@ public class StatsManager {
     public String getJSON(){
         return "{"
                 + "\"progression\":"+progression+","
-                + "\"progressionTuto\":\""+progressionTuto+"\","
                 + "\"raztechLvlMax\":"+raztechLvlMax+","
                 + "\"modeEasyNbGames\":"+modeEasyNbGames+","
                 + "\"modeEasyNbWins\":"+modeEasyNbWins+","

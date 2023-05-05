@@ -17,7 +17,7 @@ public class BasicEnemy extends Enemy{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("basicEnemy");
         name = Text.ENEMY_BASIC;
-        reward = 2;
+        reward = 1;
         power = 2f;
         shootRate = 1f;
         moveSpeed = 3.5f;
