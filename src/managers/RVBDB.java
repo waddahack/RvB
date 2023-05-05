@@ -114,7 +114,7 @@ public class RVBDB {
         ResultSet prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
         if(!prop.next()){
             Statement stmt2 = connection.createStatement();
-            stmt2.executeUpdate("INSERT INTO properties (ingame, cheatson, language, stats, version, tutosteps) VALUES (false, false, 'ENG', null, '"+RvB.version+"', 0)");
+            stmt2.executeUpdate("INSERT INTO properties (ingame, cheatson, language, stats, version, tutosteps) VALUES (false, false, 'ENG', null, '"+RvB.version+"', '')");
             stmt2.close();
             prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             prop.next();
