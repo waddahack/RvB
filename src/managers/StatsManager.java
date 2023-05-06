@@ -1,9 +1,11 @@
 package managers;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ennemies.Enemy;
 import static rvb.RvB.game;
 import towers.Tower;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StatsManager {
     public static StatsManager Instance;
     

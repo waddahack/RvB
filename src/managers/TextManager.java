@@ -341,7 +341,7 @@ public final class TextManager {
             new String[]{"Pour cela, vous aurez besoin de pièces --coins--.", "C'est avec ceci que vous pourrez acquérir", "de nouvelles tours qui vous", "aideront à vous défendre.", "Vous en récoltez en tuant des ennemis", " et après chaque vague."},
             new String[]{"To achieve that, you'll need coins --coins--.", "With these, you'll be able to buy", "new towers which will help", "you defend yourself.", "You'll earn some of it by killing enemies", "and after every wave."}),
         WLCM_RND3(
-            new String[]{"Si des ennemis passent le chemin,", "vous perdrez des points de vies --heart--.", "Arrivé à 0, la partie est perdu.", "Pour gagner, il faut persister", "jusqu'à que --bazooZoomed-- abandonne.", "Vous pouvez quitter le jeu avec une", " partie en cours, elle sera sauvegardée."},
+            new String[]{"Si des ennemis passent le chemin,", "vous perdrez des points de vies --heart--.", "Arrivé à 0, la partie est perdue.", "Pour gagner, il faut persister", "jusqu'à que --bazooZoomed-- abandonne.", "Vous pouvez quitter le jeu avec une", " partie en cours, elle sera sauvegardée."},
             new String[]{"If enemies come to cross the field,", "you'd lose health points --heart--.", "Down to 0, the game is lost.", "To win, you must persist until --bazooZoomed-- gives up.", "You can exit the game with a war", "in progress, it'll be saved."}),
         WLCM_RND4(
             new String[]{"Commençons par placer Raztech --raztech-- ", "à côté du chemin !"},

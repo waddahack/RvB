@@ -140,6 +140,13 @@ public class MenuWindow extends Window{
             play.setText(Text.CONTINUE, fonts.get("normalL"));
     }
     
+    @Override
+    public void render(){
+        super.render();
+        Overlay o = overlays.get(0);
+        o.drawText(RvB.windWidth-(int)(20*ref), RvB.windHeight-(int)(20*ref), "Version : "+RvB.version, RvB.fonts.get("normal"), "bottomRight");
+    }
+    
     public Button getStart(){
         return start;
     }
