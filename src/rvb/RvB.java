@@ -55,20 +55,24 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(30, 125, 300, 300, 0.8f, "EASY", 1, 0.5f), MEDIUM(30, 100, 240, 240, 1f, "MEDIUM", 2, 1), HARD(30, 75, 180, 180, 1.2f, "HARD", 3, 2.5f), HARDCORE(30, 1, 180, 180, 1.2f, "HARDCORE", 3, 10); 
+        EASY(30, 125, 300, 300, 0.8f, 0.9f, "EASY", 1, 0.5f),
+        MEDIUM(30, 100, 240, 240, 1f, 1f, "MEDIUM", 2, 1),
+        HARD(30, 75, 180, 180, 1.2f, 1.1f, "HARD", 3, 3f),
+        HARDCORE(30, 1, 180, 180, 1.2f, 1.1f, "HARDCORE", 3, 10); 
         
         public int probabilityRange; // for turns probability maps random
         public float riskValue;
         public String name;
         public int nbWaveMax, life, money, waveReward;
-        public float waveBalanceMult;
+        public float waveBalanceMult, enemiesLife;
         
-        Difficulty(int nbWaveMax, int life, int money, int waveReward, float waveBalanceMult, String name, int probabilityRange, float riskValue){
+        Difficulty(int nbWaveMax, int life, int money, int waveReward, float waveBalanceMult, float enemiesLife, String name, int probabilityRange, float riskValue){
             this.nbWaveMax = nbWaveMax;
             this.life = life;
             this.money = money;
             this.waveReward = waveReward;
             this.waveBalanceMult = waveBalanceMult;
+            this.enemiesLife = enemiesLife;
             this.name = name;
             this.probabilityRange = probabilityRange;
             this.riskValue = riskValue;
@@ -296,8 +300,8 @@ public class RvB{
                 game.life = life;
                 game.money = money;
                 game.waveNumber = waveNumber;
-                game.enemiesBonusLife = 15*((int)((waveNumber+1)/AppCore.bossEvery));
-                game.enemiesBonusMS = 6*((int)((waveNumber+1)/AppCore.bossEvery));
+                game.enemiesBonusLife = 25*((int)((waveNumber+1)/AppCore.bossEvery));
+                game.enemiesBonusMS = 8*((int)((waveNumber+1)/AppCore.bossEvery));
                 // Steps on roads
                 for(Tile road : game.path)
                     road.setSteppedTexture();
@@ -659,8 +663,23 @@ public class RvB{
     }
     
     public static void newRandomMap(Difficulty difficulty){
-        game = new Game(difficulty);
-        
+        if(TutoManager.Instance.hasDone(TutoManager.TutoStep.GM_NDD))
+            game = new Game(difficulty);
+        else{
+            String pathString = "0/8 1/8 1/7 2/7 2/6 2/5 2/4 2/3 3/3 3/2 4/2 5/2 6/2 6/3 6/4 6/5 7/5 8/5 9/5 9/6 10/6 11/6 11/7 10/7 10/8 9/8 8/8 7/8 7/9 6/9 5/9 5/10 5/11 6/11 6/12 7/12 8/12 8/11 9/11 9/12 9/13 10/13 11/13 11/12 11/11 12/11 12/10 13/10 13/9 13/8 13/7 13/6 13/5 14/5 15/5 16/5 16/6 17/6 17/7 17/8 17/9 18/9 19/9 20/9 20/10 20/11 20/12 20/13 20/14 21/14 21/15 22/15 23/15 24/15 25/15 26/15 26/14 26/13 26/12 25/12 25/11 24/11 24/10 24/9 23/9 23/8 23/7 23/6 23/5 24/5 25/5 26/5 27/5 27/6 28/6 28/7 29/7 29/8 29/9 30/9 31/9 ";
+            String[] indexes = pathString.split(" ");
+            ArrayList<Tile> path = new ArrayList<>();
+            for(String index : indexes){
+                int x = Integer.parseInt(index.split("/")[0]);
+                int y = Integer.parseInt(index.split("/")[1]);
+                Tile t = new Tile(RvB.textures.get("roadStraight"), "road");
+                t.setX(x*unite);
+                t.setY(y*unite);
+                path.add(t);
+            }
+            game = new Game(path, difficulty);
+        }
+            
         if(game.path.size() == 0){
             game = null;
             return;
@@ -779,7 +798,12 @@ public class RvB{
         }  
         else if(s == State.GAME){
             game.unpause();
+            game.enableAllButtons();
             TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.WLCM_RND);
+        }
+        else if(s == State.CREATION){
+            creation.enableAllButtons();
+            //TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.WLCM_CRTN);
         }
     }
     
@@ -959,6 +983,7 @@ public class RvB{
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
             textures.put("rock1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock1.png"))));
             textures.put("rock2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock2.png"))));
+            textures.put("frame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/tile_frame.png"))));
             // Icons
             textures.put("FR", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_francais.png"))));
             textures.put("ENG", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_RU.png"))));
@@ -979,6 +1004,7 @@ public class RvB{
             textures.put("coinsCantBuy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/coins_cantBuy.png"))));
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             textures.put("enemyRate", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_rate.png"))));
+            textures.put("enemyLife", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_life.png"))));
             textures.put("cross", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cross.png"))));
             textures.put("arrowPoint", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_point.png"))));
             textures.put("questionMark", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/question_mark.png"))));

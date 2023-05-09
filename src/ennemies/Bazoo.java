@@ -33,7 +33,7 @@ public class Bazoo extends Enemy{
         shootRate = 1f;
         moveSpeed = 2f;
         range = 3*RvB.unite;
-        life = 800f;
+        life = 700f;
         size = 3*RvB.unite;
         hitboxWidth = (int) (size*0.51);
         volumeWalk = SoundManager.Volume.SEMI_HIGH;

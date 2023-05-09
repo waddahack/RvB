@@ -54,6 +54,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     @Override
     protected void initBack(){
         super.initBack();
+        life *= game.difficulty.enemiesLife;
         moveSpeed += moveSpeed*bonusMS/100f;
         oldMoveSpeed = moveSpeed;
         oldstepEveryMilli = stepEveryMilli;

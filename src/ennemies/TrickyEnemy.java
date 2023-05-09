@@ -23,7 +23,7 @@ public class TrickyEnemy extends Enemy{
         shootRate = 1f;
         moveSpeed = 3.1f;
         range = 0;
-        life = 80f;
+        life = 70f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         eBalance = balance;

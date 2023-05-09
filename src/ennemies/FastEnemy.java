@@ -21,7 +21,7 @@ public class FastEnemy extends Enemy{
         shootRate = 1f;
         moveSpeed = 4.4f;
         range = 3*RvB.unite;
-        life = 46f;
+        life = 40f;
         size = RvB.unite;
         hitboxWidth = size;
         eBalance = balance;

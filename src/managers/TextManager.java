@@ -171,8 +171,8 @@ public final class TextManager {
             new String[]{"Quazoo"},
             new String[]{"Quazoo"}),
         ENEMY_TRICKY(
-            new String[]{"Groupe de Bazooldats"},
-            new String[]{"Bazooldier group"}),
+            new String[]{"Groupe de bazooldats"},
+            new String[]{"Group of bazooldiers"}),
         ENEMY_STRONG(
             new String[]{"Bazank"},
             new String[]{"Bazank"}),
@@ -318,19 +318,19 @@ public final class TextManager {
             new String[]{"Électricité"},
             new String[]{"Electricity"}),
         BUFF_UP_POWER_TOWER_DESC(
-            new String[]{"La tour de puissance", "donne +5% de dégât."},
+            new String[]{"La tour de force", "donne +5% de dégât."},
             new String[]{"The power tower", "gives +5% damage."}),
         BUFF_UP_RANGE_TOWER(
             new String[]{"Oeil flottant"},
             new String[]{"Floating eye"}),
         BUFF_UP_RANGE_TOWER_DESC(
-            new String[]{"La tour de portée", "donne +5% de portée."},
+            new String[]{"La tour d'amplitude", "donne +5% de portée."},
             new String[]{"The range tower", "gives +5% range."}),
         BUFF_UP_SHOOTRATE_TOWER(
             new String[]{"Balle polie"},
             new String[]{"Polished bullet"}),
         BUFF_UP_SHOOTRATE_TOWER_DESC(
-            new String[]{"La tour de vitesse", "donne +5% de", "vitesse d'attaque."},
+            new String[]{"La tour de célérité", "donne +5% de", "vitesse d'attaque."},
             new String[]{"The speed tower", "gives +5%", "attack speed."}),
         
         // TUTO
@@ -341,17 +341,23 @@ public final class TextManager {
             new String[]{"Pour cela, vous aurez besoin de pièces --coins--.", "C'est avec ceci que vous pourrez acquérir", "de nouvelles tours qui vous", "aideront à vous défendre.", "Vous en récoltez en tuant des ennemis", " et après chaque vague."},
             new String[]{"To achieve that, you'll need coins --coins--.", "With these, you'll be able to buy", "new towers which will help", "you defend yourself.", "You'll earn some of it by killing enemies", "and after every wave."}),
         WLCM_RND3(
-            new String[]{"Si des ennemis passent le chemin,", "vous perdrez des points de vies --heart--.", "Arrivé à 0, la partie est perdue.", "Pour gagner, il faut persister", "jusqu'à que --bazooZoomed-- abandonne.", "Vous pouvez quitter le jeu avec une", " partie en cours, elle sera sauvegardée."},
-            new String[]{"If enemies come to cross the field,", "you'd lose health points --heart--.", "Down to 0, the game is lost.", "To win, you must persist until --bazooZoomed-- gives up.", "You can exit the game with a war", "in progress, it'll be saved."}),
+            new String[]{"Si des ennemis passent le chemin,", "vous perdrez des points de vies --heart--.", "Arrivé à 0, la partie est perdue.", "Pour gagner, il faut persister", "jusqu'à que --bazooZoomed-- abandonne."},
+            new String[]{"If enemies come to cross the field,", "you'd lose health points --heart--.", "Down to 0, the game is lost.", "To win, you must persist until --bazooZoomed-- gives up."}),
         WLCM_RND4(
-            new String[]{"Commençons par placer Raztech --raztech-- ", "à côté du chemin !"},
-            new String[]{"Let's begin by placing Raztech --raztech-- ", "next to the path !"}),
+            new String[]{"C'est par ici que les ennemis vont arriver."},
+            new String[]{"Enemis will come from here."}),
+        WLCM_RND5(
+            new String[]{"Commençons par placer Raztech --raztech-- ", "là où il peut être efficace !"},
+            new String[]{"Let's begin by placing Raztech --raztech-- ", "where he can be effective !"}),
         RZTCH_PLCD(
             new String[]{"--raztech-- est la seule tourelle qui", "gagne des points d'expériences", "en tuant des ennemis."},
             new String[]{"--raztech-- is the only tower that", "gains experience points", "by killing enemies."}),
         RZTCH_PLCD2(
             new String[]{"En ayant placé --raztech--, vous avez débloqué", "une nouvelle tour : la Razanon --basicTower--.", "Placez en une.", "Pour désélectionner une tour,", "cliquez autre part."},
             new String[]{"By placing --raztech--, you've unlocked", "a new tower : the Razannon --basicTower--.", "Place one of those.", "To deselect a tower,", "click anywhere else."}),
+        TWR_BGHT(
+            new String[]{"Tant que vous n'avez pas placé", "la tour, vous pouvez annuler avec", "clic droit."},
+            new String[]{"Until you place the tower,", "you can cancel with right click."}),
         TWR_PLCD(
             new String[]{"Parfait !", " ", "Vous pouvez désormais lancer", "la première vague."},
             new String[]{"Perfect !", " ", "You can now start", "the first wave."}),
@@ -386,8 +392,8 @@ public final class TextManager {
             new String[]{"En sélectionnant une tourelle,", "il est possible de voir ses statistiques", "en appuyant sur TAB."},
             new String[]{"By selecting a tower", "you can see its statistics", "by pressing TAB."}),
         FRTH_WV3(
-            new String[]{"Pas d'inquiétude, vous avez un bouton d'aide", "pour vous rappeler des grandes lignes", "et connaître quelques raccourcis !"},
-            new String[]{"No worries, you have a help button", "to remind you of the main information", "and to learn some shortcuts !"}),
+            new String[]{"Pas d'inquiétude, vous avez un bouton d'aide", "pour vous rappeler des grandes lignes", "et connaître quelques raccourcis !", " ", "Vous pouvez quitter le jeu avec une", " partie en cours, elle sera sauvegardée."},
+            new String[]{"No worries, you have a help button", "to remind you of the main information", "and to learn some shortcuts !", " ", "You can exit the game with a war", "in progress, it'll be saved."}),
         LVL_P(
             new String[]{"--raztech-- est passé niveau 2 !", " ", "À chaque niveau passé, les caractéristiques", "de --raztech-- s'améliorent.", "Cela débloque aussi des nouvelles tourelles."},
             new String[]{"--raztech-- has leveled up !", " ", "At each level gained, --raztech--'s characteristics", "get better.", "It also unlocks new towers."}),

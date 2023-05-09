@@ -21,7 +21,7 @@ public class StrongEnemy extends Enemy{
         shootRate = 1f;
         moveSpeed = 2.6f;
         range = 3*RvB.unite;
-        life = 310f;
+        life = 270f;
         size = RvB.unite;
         hitboxWidth = size;
         eBalance = balance;

@@ -549,11 +549,11 @@ public abstract class AppCore {
                         gameWin = true;
                     }
                     else if(!gameOver){
-                        enemiesBonusLife += 15; // À changer aussi dans RvB.initPropertiesAndGame
-                        enemiesBonusMS += 6;
+                        enemiesBonusLife += 25; // À changer aussi dans RvB.initPropertiesAndGame
+                        enemiesBonusMS += 8;
                         PopupManager.Instance.enemiesUpgraded(new String[]{
-                            "+15% "+Text.HP.getText(),
-                            "+6% "+Text.MS.getText()
+                            "+25% "+Text.HP.getText(),
+                            "+8% "+Text.MS.getText()
                         });
                         bossDead = false;
                         bossDefeated = false;
@@ -692,8 +692,10 @@ public abstract class AppCore {
         if(spawn != null)
             spawn.renderDirection();
         
-        for(Tile road : path)
-            road.renderSteps();
+        for(ArrayList<Tile> row : map){
+            for(Tile t: row)
+                if(t != null) t.render();
+        }
         /*for(Rock rock : rocks)
             rock.render();*/
     }
@@ -734,6 +736,8 @@ public abstract class AppCore {
                 if(towerSelected != null)
                     selectTower(null);
                 createTower(index);
+                if(index == 0)
+                    TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.TWR_BGHT);
             });
             o.addButton(b);
         }
@@ -986,6 +990,20 @@ public abstract class AppCore {
         }
     }
     
+    public void showTile(int ix, int iy, boolean show){
+        boolean br = false;
+        for(ArrayList<Tile> row : map){
+            for(Tile t : row){
+                if(t != null && t.getIndexX() == ix && t.getIndexY() == iy){
+                    t.show = show;
+                    br = true;
+                    break;
+                }
+            }
+            if(br) break;
+        }
+    }
+    
     public void raisePrice(Tower t){
         if(t.type == Tower.Type.BASIC)
             basicTowerPrice *= 1.2;
@@ -1019,6 +1037,7 @@ public abstract class AppCore {
         } 
     }
 
+   
     public boolean onPause(){
         return gameSpeed == 0;
     }

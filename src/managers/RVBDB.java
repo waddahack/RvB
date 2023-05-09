@@ -157,7 +157,9 @@ public class RVBDB {
             Statement propStmt = connection.createStatement();
             propStmt.executeUpdate("ALTER TABLE properties ADD COLUMN tutosteps VARCHAR(5000) DEFAULT ''");
             propStmt.close();
-            //ICI enlever inGame si in game
+            Statement propStmt2 = connection.createStatement();
+            propStmt2.executeUpdate("UPDATE properties SET ingame = false");
+            propStmt2.close();
         }
     }
     

@@ -271,7 +271,7 @@ public class Game extends AppCore{
         }
         if(n < roads.size())
             return error;
-        if(roads.size() > diff.getNbRoad()*1.2)
+        if(roads.size() > diff.getNbRoad())
             return Text.PATH_TOO_LONG;
         return null;
     }

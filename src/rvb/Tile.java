@@ -18,6 +18,7 @@ public class Tile {
     protected int nbStepped = 0;
     public String type;
     public Tile previousRoad = null, nextRoad = null;
+    public boolean show = false;
     
     public Tile(String t){
         texture = null;
@@ -59,10 +60,8 @@ public class Tile {
     }
     
     public void render(){
-        RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle, 1);
-    }
-    
-    public void renderSteps(){
+        if(show)
+            RvB.drawFilledRectangle(renderX, renderY, size, size, RvB.textures.get("frame"), 0, 1);
         if(stepTexture != null)
             RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle, 1);
     }

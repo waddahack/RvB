@@ -30,7 +30,7 @@ public class FlyingEnemy extends Enemy{
         shootRate = 1f;
         moveSpeed = 1.6f;
         range = 3*unite;
-        life = 132f;
+        life = 115f;
         size = (int) (1.25*unite);
         hitboxWidth = size;
         eBalance = balance;

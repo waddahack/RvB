@@ -22,7 +22,7 @@ public class BasicEnemy extends Enemy{
         shootRate = 1f;
         moveSpeed = 3.5f;
         range = 3*RvB.unite;
-        life = 34f;
+        life = 30f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         volumeWalk = SoundManager.Volume.VERY_LOW;

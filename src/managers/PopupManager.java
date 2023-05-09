@@ -315,7 +315,7 @@ public final class PopupManager {
             addText(infoLines[i], (fonts != null ? (i < fonts.length ? fonts[i] : fonts[fonts.length-1]) : RvB.fonts.get("normalXL")));
     }
     
-    public void popupTuto(int x, int y, int w, int h, Text text, int[] pointPos, Consumer<Object> callback){
+    public void popupTuto(int x, int y, int w, int h, Text text, String pointPos, Consumer<Object> callback){
         if(RvB.state != RvB.State.GAME)
             return;
         initPopup(popupTuto);
@@ -342,13 +342,29 @@ public final class PopupManager {
         popupTuto.addText(text, RvB.fonts.get("normal"), new int[]{w/2, Math.floorDiv(8-text.getLines().length, 2)*(RvB.fonts.get("normal").getFont().getSize()+(int)(8*ref))+(int)(8*ref)}, "topMid");
         popupTuto.clearImages();
         if(pointPos != null){
-            int px = pointPos[0], py = pointPos[1], angle = 45;
-            if(px+popupTuto.getX() > RvB.windWidth/2 && py+popupTuto.getY() > RvB.windHeight/2)
-                angle = 135;
-            else if(px+popupTuto.getX() < RvB.windWidth/2 && py+popupTuto.getY() > RvB.windHeight/2)
-                angle = 225;
-            else if(px+popupTuto.getX() < RvB.windWidth/2 && py+popupTuto.getY() < RvB.windHeight/2)
-                angle = -135;
+            int px, py, angle;
+            switch(pointPos){
+                case "topLeft" :
+                    angle = -45;
+                    px = (int)(-10*ref);
+                    py = (int)(-10*ref);
+                    break;
+                case "topRight" :
+                    angle = 45;
+                    px = w+(int)(10*ref);
+                    py = (int)(-10*ref);
+                    break;
+                case "bottomLeft" :
+                    angle = 225;
+                    px = (int)(-10*ref);
+                    py = h+(int)(10*ref);
+                    break;
+                default :
+                    angle = 135;
+                    px = w+(int)(10*ref);
+                    py = h+(int)(10*ref);
+                    break;
+            }
             popupTuto.addImage(px, py, RvB.unite*2, RvB.unite*2, RvB.textures.get("arrowPoint"), angle);
         }
         if(RvB.state == State.GAME && (game.gameOver || game.gameWin)){
@@ -629,11 +645,12 @@ public final class PopupManager {
     
     private void renderDiffDesc(RvB.Difficulty diff){
         int posX = chooseDifficulty.getX()+chooseDifficulty.getW()/4;
-        int posY = chooseDifficulty.getY()+chooseDifficulty.getH()/2;
+        int posY = chooseDifficulty.getY()+chooseDifficulty.getH()/2-(int)(42*ref);
         RvB.drawString(posX, posY, "--heart-- "+diff.life, RvB.fonts.get("normalL"));
         RvB.drawString(posX, posY+(int)(42*ref), "--coins-- "+diff.money, RvB.fonts.get("normalL"));
         RvB.drawString(posX, posY+2*(int)(42*ref), "--coinsAdd-- "+diff.waveReward, RvB.fonts.get("normalL"));
         RvB.drawString(posX, posY+3*(int)(42*ref), "--enemyRate-- "+(int)(diff.waveBalanceMult*100)+"%", RvB.fonts.get("normalL"));
+        RvB.drawString(posX, posY+4*(int)(42*ref), "--enemyLife-- "+(int)(diff.enemiesLife*100)+"%", RvB.fonts.get("normalL"));
         if(!gameType.equals("random"))
             return;
         Text t = null;
@@ -651,7 +668,7 @@ public final class PopupManager {
                 t = Text.SHORT;
                 break;
         }
-        RvB.drawString(posX, posY+4*(int)(42*ref), "--roadStraight-- "+t.getText(), RvB.fonts.get("normalL"));
+        RvB.drawString(posX, posY+5*(int)(42*ref), "--roadStraight-- "+t.getText(), RvB.fonts.get("normalL"));
     }
     
     private void renderBestScore(RvB.Difficulty diff){

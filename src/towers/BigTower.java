@@ -47,11 +47,11 @@ public class BigTower extends Tower{
         bulletSizeBonus = 10;
         
         range = 7*RvB.unite/3;
-        power = 28f;
+        power = 26f;
         shootRate = 0.3f;
         bulletSpeed = 8;
         explodeRadius = RvB.unite;
-        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.4f, 3));
+        upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 120f, 1.4f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 1.3f, "*", 200f, 1.6f, 2));
         upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 250f, 1.5f, 1));
         upgrades.add(new Upgrade(this, "Bullet speed", bulletSpeed, 10f, "+", 50f, 1.8f, 2));

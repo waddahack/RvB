@@ -243,13 +243,7 @@ public class Raztech extends Tower{
             if(!super.canBePlaced())
                 return false;
             int ix = Math.floorDiv((int) x, unite), iy = Math.floorDiv((int)y, unite);
-            if(iy-1 >= 0 && game.map.get(iy-1).get(ix).getType().equals("road"))
-                return true;
-            if(iy+1 < RvB.nbTileY && game.map.get(iy+1).get(ix).getType().equals("road"))
-                return true;
-            if(ix-1 >= 0 && game.map.get(iy).get(ix-1).getType().equals("road"))
-                return true;
-            if(ix+1 < RvB.nbTileX && game.map.get(iy).get(ix+1).getType().equals("road"))
+            if(ix == 4 && iy == 4)
                 return true;
             return false;
         }

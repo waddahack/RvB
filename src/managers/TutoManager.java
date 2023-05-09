@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import managers.TextManager.Text;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
+import static rvb.RvB.unite;
 import static rvb.RvB.windHeight;
 import static rvb.RvB.windWidth;
 import towers.Tower;
@@ -21,29 +22,33 @@ public final class TutoManager {
     public enum TutoStep{
         // FIRST GAME
         WLCM_RND(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND, null, null, true),
-        WLCM_RND2(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND2, null, null, true),
-        WLCM_RND3(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND3, null, null, true),
-        WLCM_RND4(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND4, null, __ -> {
+        WLCM_RND2(popupW/2+4*unite, popupH/2+unite, popupW, popupH, Text.WLCM_RND2, "topLeft", null, true),
+        WLCM_RND3(popupW/2+6*unite, popupH/2+unite, popupW, popupH, Text.WLCM_RND3, "topLeft", null, true),
+        WLCM_RND4(popupW/2+unite, windHeight/2+2*unite, popupW, popupH, Text.WLCM_RND4, "topLeft", null, true),
+        WLCM_RND5(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND5, null, __ -> {
             game.disableAllButtons();
             game.getOverlays().get(1).getButtons().get(0).lock();
             game.getOverlays().get(1).getButtons().get(4).lock();
             game.getOverlays().get(1).getButtons().get(1).lock();
             game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).enable();
+            game.showTile(4, 4, true);
         }, false),
-        RZTCH_PLCD(popupW/2+(int)(300*ref), windHeight-popupH/2-(int)(72*ref), popupW, popupH, Text.RZTCH_PLCD, new int[]{(int)(-10*ref), popupH+(int)(10*ref)}, null, true),
+        RZTCH_PLCD(popupW/2+(int)(300*ref), windHeight-popupH/2-(int)(72*ref), popupW, popupH, Text.RZTCH_PLCD, "bottomLeft", null, true),
         RZTCH_PLCD2(windWidth/2, windHeight/2, popupW, popupH, Text.RZTCH_PLCD2, null, __ -> {
             game.disableAllButtons();
             game.getOverlays().get(0).getButtons().get(0).unlock();
             game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).lock();
+            game.showTile(4, 4, false);
         }, false),
+        TWR_BGHT(windWidth/2, windHeight/2, popupW, popupH, Text.TWR_BGHT, null, null, false),
         TWR_PLCD(0, 0, 0, 0, null, null, __ -> {
             Tower bt = (Tower)game.towers.get(0);
             for(Upgrade up : bt.getUpgrades())
                 up.button.lock();
             game.getOverlays().get(1).getButtons().get(0).unlock();
         }, true),
-        TWR_PLCD2(windWidth-popupW/2-(int)(240*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD, new int[]{popupW+(int)(10*ref), (int)(-10*ref)}, null, true),
-        TWR_PLCD3(windWidth-popupW/2-(int)(400*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD2, new int[]{popupW+(int)(10*ref), (int)(-10*ref)}, null, false),
+        TWR_PLCD2(windWidth-popupW/2-(int)(240*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD, "topRight", null, true),
+        TWR_PLCD3(windWidth-popupW/2-(int)(400*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD2, "topRight", null, false),
         FRST_WV(windWidth/2, windHeight/2, popupW, popupH, Text.FRST_WV, null, __ -> {
             game.disableAllButtons();
             game.getOverlays().get(1).getButtons().get(0).lock();
@@ -62,11 +67,11 @@ public final class TutoManager {
         SCND_WV(0, 0, 0, 0, null, null, __ -> {
             game.selectTower(null);
         }, true),
-        SCND_WV2(popupW/2+(int)(260*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV, new int[]{(int)(-10*ref), popupH+(int)(10*ref)}, __ -> {
+        SCND_WV2(popupW/2+(int)(260*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV, "bottomLeft", __ -> {
             game.selectTower((Tower)game.towers.get(0));
         }, true), // Montrer qu'on peut déplacer raztech
-        SCND_WV3(windWidth-popupW/2-(int)(200*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV2, new int[]{popupW+(int)(10*ref), popupH+(int)(10*ref)}, null, true), // Changer le focus
-        SCND_WV4(popupW/2+(int)(230*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV3, new int[]{(int)(-10*ref), popupH+(int)(10*ref)}, __ -> {
+        SCND_WV3(windWidth-popupW/2-(int)(200*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV2, "bottomRight", null, true), // Changer le focus
+        SCND_WV4(popupW/2+(int)(230*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV3, "bottomLeft", __ -> {
             game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).unlock();
         }, false), // Vendre
         THRD_WV(windWidth/2, windHeight/2, popupW, popupH, Text.THRD_WV, null, null, false), // Select un ennemi
@@ -74,14 +79,14 @@ public final class TutoManager {
         FRTH_WV2(windWidth/2, windHeight/2, popupW, popupH, Text.FRTH_WV2, null, __ -> {
             game.getOverlays().get(1).getButtons().get(4).unlock();
         }, true), // TAB
-        FRTH_WV3(windWidth-popupW/2-(int)(550*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.FRTH_WV3, new int[]{popupW+(int)(10*ref), (int)(-10*ref)}, null, false), // Help
+        FRTH_WV3(windWidth-popupW/2-(int)(550*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.FRTH_WV3, "topRight", null, false), // Help
         LVL_P(windWidth/2-popupW/2-(int)(150*ref), windHeight/2-popupH/2-(int)(50*ref), popupW, popupH, Text.LVL_P, null, null, true), // Lvl up
         LVL_P2(windWidth/2, windHeight/2+(int)(300*ref), popupW, popupH, Text.LVL_P2, null, null, false),
         GM_NDD(0, 0, 0, 0, null, null, __ -> {
             game.getOverlays().get(1).getButtons().get(1).unlock();
         }, true),
-        GM_NDD2(windWidth/2+(int)(550*ref), windHeight/2-(int)(40*ref), popupW, popupH, Text.GM_NDD, new int[]{(int)(-10*ref), (int)(-10*ref)}, null, true), // Download de map
-        GM_NDD3(windWidth-popupW/2-(int)(40*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.GM_NDD2, new int[]{popupW+(int)(10*ref), (int)(-10*ref)}, null, false); // Download de map
+        GM_NDD2(windWidth/2+(int)(600*ref), windHeight/2-(int)(40*ref), popupW, popupH, Text.GM_NDD, "topLeft", null, true), // Download de map
+        GM_NDD3(windWidth-popupW/2-(int)(40*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.GM_NDD2, "topRight", null, false); // Download de map
         
         
         // CREATION reste à faire LVL_P et creation
@@ -92,9 +97,9 @@ public final class TutoManager {
         private final int x, y, width, height;
         private final boolean hasNextPage;
         private final Consumer<Object> callback;
-        private final int[] pointPos;
+        private final String pointPos;
         
-        TutoStep(int x, int y, int w, int h, Text t, int[] pp, Consumer<Object> cb, boolean hasNP){
+        TutoStep(int x, int y, int w, int h, Text t, String pp, Consumer<Object> cb, boolean hasNP){
             id = tutoStepId++;
             this.x = x;
             this.y = y;
