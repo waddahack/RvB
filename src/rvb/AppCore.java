@@ -693,7 +693,7 @@ public abstract class AppCore {
             spawn.renderDirection();
         
         for(ArrayList<Tile> row : map){
-            for(Tile t: row)
+            for(Tile t : row)
                 if(t != null) t.render();
         }
         /*for(Rock rock : rocks)

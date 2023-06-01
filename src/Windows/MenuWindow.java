@@ -1,10 +1,14 @@
-package rvb;
+package Windows;
 
+import Windows.Window;
 import managers.TextManager;
 import ui.Button;
 import managers.PopupManager;
 import managers.TextManager.Text;
 import managers.TutoManager;
+import rvb.Creation;
+import rvb.Game;
+import rvb.RvB;
 import static rvb.RvB.*;
 import ui.Overlay;
 
@@ -144,7 +148,7 @@ public class MenuWindow extends Window{
     public void render(){
         super.render();
         Overlay o = overlays.get(0);
-        o.drawText(RvB.windWidth-(int)(20*ref), RvB.windHeight-(int)(20*ref), "Version : "+RvB.version, RvB.fonts.get("normal"), "bottomRight");
+        o.drawText(RvB.windWidth-(int)(20*ref), RvB.windHeight-(int)(20*ref), RvB.version, RvB.fonts.get("normal"), "bottomRight");
     }
     
     public Button getStart(){

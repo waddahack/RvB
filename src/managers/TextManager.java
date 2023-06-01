@@ -406,6 +406,24 @@ public final class TextManager {
         GM_NDD2(
             new String[]{"En partie, le bouton se trouve ici."},
             new String[]{"In game, the button appears here."}),
+        WLCM_CRTN(
+            new String[]{"Bienvenue dans le mode création !", "Ici, vous pouvez modeler", "votre propore chemin --pathIcon--.", "Il doit commencer et finir du", "bord droit ou gauche."},
+            new String[]{"Welcome to the creation mode !", "Here, you can create your", "own path --pathIcon--.", "It has to begin and end from", "the left or right side."}),
+        WLCM_CRTN2(
+            new String[]{"Une fois le --pathIcon-- terminé,", "cliquez sur jouer.", "Cela va lancer une vérification.", "Si le --pathIcon-- est valide, vous pourrez choisir", "une difficulté puis jouer votre map !"},
+            new String[]{"Once the --pathIcon-- is done,", "click on play.", "It'll check the validity of the --pathIcon--.", "If it's all good, you can choose a difficulty", "then play your map !"}),
+        WLCM_CRTN3(
+            new String[]{"Clic gauche pour placer une route,", "clic droit pour enlever la route.", "Vous pouvez rester appuyer."},
+            new String[]{"Left click to put a road,", "right click to take a road off.", "You can hold the clicks."}),
+        WLCM_CRTN4(
+            new String[]{"Cela supprime toutes les routes d'un coup."},
+            new String[]{"It deletes all roads."}),
+        WLCM_CRTN5(
+            new String[]{"Vous pouvez charger une carte", "téléchargée !"},
+            new String[]{"You can load a downloaded map !"}),
+        WLCM_CRTN6(
+            new String[]{"Ici pour télécharger votre carte,", "qu'elle soit terminée ou non."},
+            new String[]{"Here to download your map,", "even if it's not finished yet."}),
         
         // POPUPS
         SELECT_DIFF(

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import managers.TextManager.Text;
+import rvb.RvB;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
@@ -86,11 +87,16 @@ public final class TutoManager {
             game.getOverlays().get(1).getButtons().get(1).unlock();
         }, true),
         GM_NDD2(windWidth/2+(int)(600*ref), windHeight/2-(int)(40*ref), popupW, popupH, Text.GM_NDD, "topLeft", null, true), // Download de map
-        GM_NDD3(windWidth-popupW/2-(int)(40*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.GM_NDD2, "topRight", null, false); // Download de map
+        GM_NDD3(windWidth-popupW/2-(int)(40*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.GM_NDD2, "topRight", null, false), // Download de map
         
         
-        // CREATION reste à faire LVL_P et creation
-        // ...
+        // CREATION reste à faire creation
+        WLCM_CRTN(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_CRTN, null, null, true),
+        WLCM_CRTN2(windWidth/2+popupW/2+(int)(100*ref), popupH/2+(int)(70*ref), popupW, popupH, Text.WLCM_CRTN2, "topLeft", null, true),
+        WLCM_CRTN3(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_CRTN3, null, null, true),
+        WLCM_CRTN4(windWidth/2, popupH/2+(int)(70*ref), popupW, popupH, Text.WLCM_CRTN4, "topLeft", null, true),
+        WLCM_CRTN5(windWidth/2, popupH/2+(int)(70*ref), popupW, popupH, Text.WLCM_CRTN5, "topRight", null, true),
+        WLCM_CRTN6(windWidth-popupW/2-(int)(100*ref), popupH/2+(int)(70*ref), popupW, popupH, Text.WLCM_CRTN6, "topRight", null, false);
         
         private final int id;
         private final Text text;
@@ -185,7 +191,7 @@ public final class TutoManager {
     public void clearStepsDone(){
         /*ArrayList<TutoStep> tsList = new ArrayList<>();
         for(TutoStep ts : TutoStep.values())
-            if(ts.id < 19)
+            if(ts.id < 30)
                 tsList.add(ts);
         stepsDone = tsList;*/
         stepsDone.clear();

@@ -1,5 +1,8 @@
 package rvb;
 
+import Windows.StatsWindow;
+import Windows.MenuWindow;
+import Windows.OptionsWindow;
 import Buffs.*;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import java.awt.Color;
@@ -803,7 +806,7 @@ public class RvB{
         }
         else if(s == State.CREATION){
             creation.enableAllButtons();
-            //TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.WLCM_CRTN);
+            TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.WLCM_CRTN);
         }
     }
     
@@ -1005,6 +1008,7 @@ public class RvB{
             textures.put("heart", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/heart.png"))));
             textures.put("enemyRate", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_rate.png"))));
             textures.put("enemyLife", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/enemy_life.png"))));
+            textures.put("pathIcon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/path_icon.png"))));
             textures.put("cross", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/cross.png"))));
             textures.put("arrowPoint", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/arrow_point.png"))));
             textures.put("questionMark", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/question_mark.png"))));

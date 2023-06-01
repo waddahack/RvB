@@ -316,7 +316,7 @@ public final class PopupManager {
     }
     
     public void popupTuto(int x, int y, int w, int h, Text text, String pointPos, Consumer<Object> callback){
-        if(RvB.state != RvB.State.GAME)
+        if(RvB.state == RvB.State.MENU)
             return;
         initPopup(popupTuto);
         popupTuto.setW(w);
@@ -668,7 +668,7 @@ public final class PopupManager {
                 t = Text.SHORT;
                 break;
         }
-        RvB.drawString(posX, posY+5*(int)(42*ref), "--roadStraight-- "+t.getText(), RvB.fonts.get("normalL"));
+        RvB.drawString(posX, posY+5*(int)(42*ref), "--pathIcon-- "+t.getText(), RvB.fonts.get("normalL"));
     }
     
     private void renderBestScore(RvB.Difficulty diff){

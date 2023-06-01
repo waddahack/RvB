@@ -1,7 +1,9 @@
-package rvb;
+package Windows;
 
+import Windows.Window;
 import managers.StatsManager;
 import managers.TextManager.Text;
+import rvb.RvB;
 import rvb.RvB.Difficulty;
 import static rvb.RvB.State.MENU;
 import static rvb.RvB.fonts;

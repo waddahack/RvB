@@ -56,6 +56,7 @@ public class Creation extends AppCore{
         RvB.drawTextureID(0, 0, windWidth, windHeight, textureID);
 
         for(Tile road : roads){
+            RvB.drawFilledRectangle(road.getRealX(), road.getRealY(), unite, unite, road.getTexture(), road.getAngle(), 1f);
             road.render();
             road.renderDirection();
         } 
