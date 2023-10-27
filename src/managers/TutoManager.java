@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import managers.TextManager.Text;
-import rvb.RvB;
 import static rvb.RvB.game;
 import static rvb.RvB.ref;
 import static rvb.RvB.unite;
@@ -28,17 +27,17 @@ public final class TutoManager {
         WLCM_RND4(popupW/2+unite, windHeight/2+2*unite, popupW, popupH, Text.WLCM_RND4, "topLeft", null, true),
         WLCM_RND5(windWidth/2, windHeight/2, popupW, popupH, Text.WLCM_RND5, null, __ -> {
             game.disableAllButtons();
-            game.getOverlays().get(1).getButtons().get(0).lock();
-            game.getOverlays().get(1).getButtons().get(4).lock();
-            game.getOverlays().get(1).getButtons().get(1).lock();
-            game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).enable();
+            game.OvMain.getButtons().get(0).lock();
+            game.OvMain.getButtons().get(4).lock();
+            game.OvMain.getButtons().get(1).lock();
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).enable();
             game.showTile(4, 4, true);
         }, false),
         RZTCH_PLCD(popupW/2+(int)(300*ref), windHeight-popupH/2-(int)(72*ref), popupW, popupH, Text.RZTCH_PLCD, "bottomLeft", null, true),
         RZTCH_PLCD2(windWidth/2, windHeight/2, popupW, popupH, Text.RZTCH_PLCD2, null, __ -> {
             game.disableAllButtons();
-            game.getOverlays().get(0).getButtons().get(0).unlock();
-            game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).lock();
+            game.OvShop.getButtons().get(0).unlock();
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).lock();
             game.showTile(4, 4, false);
         }, false),
         TWR_BGHT(windWidth/2, windHeight/2, popupW, popupH, Text.TWR_BGHT, null, null, false),
@@ -46,20 +45,20 @@ public final class TutoManager {
             Tower bt = (Tower)game.towers.get(0);
             for(Upgrade up : bt.getUpgrades())
                 up.button.lock();
-            game.getOverlays().get(1).getButtons().get(0).unlock();
+            game.OvMain.getButtons().get(0).unlock();
         }, true),
         TWR_PLCD2(windWidth-popupW/2-(int)(240*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD, "topRight", null, true),
         TWR_PLCD3(windWidth-popupW/2-(int)(400*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.TWR_PLCD2, "topRight", null, false),
         FRST_WV(windWidth/2, windHeight/2, popupW, popupH, Text.FRST_WV, null, __ -> {
             game.disableAllButtons();
-            game.getOverlays().get(1).getButtons().get(0).lock();
+            game.OvMain.getButtons().get(0).lock();
             game.selectTower(null);
             Tower bt = (Tower)game.towers.get(0);
             bt.getUpgrades().get(1).button.unlock();
         }, false),
         PWR_PGRDD(windWidth/2, windHeight/2, popupW, popupH, Text.PWR_PGRDD, null, null, true),
         PWR_PGRDD2(windWidth/2, windHeight/2, popupW, popupH, Text.PWR_PGRDD2, null, __ -> {
-            game.getOverlays().get(1).getButtons().get(0).unlock();
+            game.OvMain.getButtons().get(0).unlock();
             Tower bt = (Tower)game.towers.get(0);
             for(Upgrade up : bt.getUpgrades())
                 up.button.unlock();
@@ -73,18 +72,18 @@ public final class TutoManager {
         }, true), // Montrer qu'on peut déplacer raztech
         SCND_WV3(windWidth-popupW/2-(int)(200*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV2, "bottomRight", null, true), // Changer le focus
         SCND_WV4(popupW/2+(int)(230*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV3, "bottomLeft", __ -> {
-            game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).unlock();
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).unlock();
         }, false), // Vendre
         THRD_WV(windWidth/2, windHeight/2, popupW, popupH, Text.THRD_WV, null, null, false), // Select un ennemi
         FRTH_WV(windWidth/2, windHeight/2, popupW, popupH, Text.FRTH_WV, null, null, true), // Pause
         FRTH_WV2(windWidth/2, windHeight/2, popupW, popupH, Text.FRTH_WV2, null, __ -> {
-            game.getOverlays().get(1).getButtons().get(4).unlock();
+            game.OvMain.getButtons().get(4).unlock();
         }, true), // TAB
         FRTH_WV3(windWidth-popupW/2-(int)(550*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.FRTH_WV3, "topRight", null, false), // Help
         LVL_P(windWidth/2-popupW/2-(int)(150*ref), windHeight/2-popupH/2-(int)(50*ref), popupW, popupH, Text.LVL_P, null, null, true), // Lvl up
         LVL_P2(windWidth/2, windHeight/2+(int)(300*ref), popupW, popupH, Text.LVL_P2, null, null, false),
         GM_NDD(0, 0, 0, 0, null, null, __ -> {
-            game.getOverlays().get(1).getButtons().get(1).unlock();
+            game.OvMain.getButtons().get(1).unlock();
         }, true),
         GM_NDD2(windWidth/2+(int)(600*ref), windHeight/2-(int)(40*ref), popupW, popupH, Text.GM_NDD, "topLeft", null, true), // Download de map
         GM_NDD3(windWidth-popupW/2-(int)(40*ref), popupH/2+(int)(72*ref), popupW, popupH, Text.GM_NDD2, "topRight", null, false), // Download de map

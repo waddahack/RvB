@@ -411,7 +411,7 @@ public final class PopupManager {
         if(!game.ended && !SoundManager.SOUND_BAZOO_LAUGH.isRunning())
             SoundManager.Instance.playOnce(SoundManager.SOUND_BAZOO_LAUGH);
         initPopup(gameOver);
-        Button b = RvB.game.getOverlays().get(1).getButtons().get(1);
+        Button b = RvB.game.OvMain.getButtons().get(1);
         b.setX(gameOver.getW()-b.getW());
         b.setY(b.getH());
         b.enable();
@@ -431,7 +431,7 @@ public final class PopupManager {
         if(!game.ended)
             SoundManager.Instance.playOnce(SoundManager.SOUND_GAME_WIN);
         initPopup(gameWin);
-        Button b = RvB.game.getOverlays().get(1).getButtons().get(1);
+        Button b = RvB.game.OvMain.getButtons().get(1);
         b.setX(gameWin.getW()-b.getW());
         b.setY(b.getH());
         b.enable();

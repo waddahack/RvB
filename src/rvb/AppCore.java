@@ -92,7 +92,7 @@ public abstract class AppCore {
     
     public ArrayList<ArrayList<Tile>> map;
     public Tile spawn, base;
-    public int money, life, waveNumber, waveReward, nbTower = 2, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
+    public int money, life, waveNumber, waveReward, gameSpeed = 1, enemiesBonusLife = 0, enemiesBonusMS = 0;
     public int oldRaztechXpos = -1, oldRaztechYpos = -1;
     private int oldGameSpeed = 0;
     public ArrayList<Shootable> towers, towersDestroyed;
@@ -108,7 +108,7 @@ public abstract class AppCore {
     public Raztech raztech = null;
     public Bazoo bazoo = null;
     protected Wave wave;
-    protected ArrayList<Overlay> overlays;
+    public Overlay OvShop, OvMain, OvEnemyInfo;
     public boolean bossDead = false, bossDefeated = false, gameLoaded = false, endGamePropertiesUpdated = false;
     public static int bossEvery = 6;
     private boolean keyDown = false;
@@ -501,12 +501,12 @@ public abstract class AppCore {
         
         if(this == RvB.game && !inWave && !PopupManager.Instance.onPopup()){
             if(SoundManager.Instance.isReady()){
-                overlays.get(1).getButtons().get(0).enable();
-                overlays.get(1).getButtons().get(0).setText(Text.START_WAVE, RvB.fonts.get("normalB"));
+                OvMain.getButtons().get(0).enable();
+                OvMain.getButtons().get(0).setText(Text.START_WAVE, RvB.fonts.get("normalB"));
             }
             else{
-                overlays.get(1).getButtons().get(0).disable();
-                overlays.get(1).getButtons().get(0).setText(Text.WAITING, RvB.fonts.get("normal"));
+                OvMain.getButtons().get(0).disable();
+                OvMain.getButtons().get(0).setText(Text.WAITING, RvB.fonts.get("normal"));
             }
         }
         
@@ -539,7 +539,7 @@ public abstract class AppCore {
         if(gameSpeed > 0){
             // Wave check if done
             if(inWave && wave.isDone()){
-                overlays.get(1).getButtons().get(0).enable();
+                OvMain.getButtons().get(0).enable();
                 inWave = false;
                 wave = null;
                 money += waveReward;
@@ -618,7 +618,7 @@ public abstract class AppCore {
         while(Mouse.next()){
             // Reinitializing if left clicking nowhere
             if(Mouse.isButtonDown(0) && !mouseDown){ //If left or right click
-                if(!overlays.get(1).isClicked(0) && !overlays.get(0).isClicked(0)){ //If game overlays aren't clicked
+                if(!OvMain.isClicked(0) && !OvShop.isClicked(0)){ //If game overlays aren't clicked
                     if(towerSelected != null && !towerSelected.isClicked(0) && !anyEnemyClicked(0)){
                         selectTower(null);
                     }
@@ -640,7 +640,7 @@ public abstract class AppCore {
             } 
             // CHANGE SPEED
             else if(Keyboard.isKeyDown(Keyboard.KEY_V) && gameSpeed > 0){
-                overlays.get(1).getButtons().get(overlays.get(1).getButtons().size()-3).click();
+                OvMain.getButtons().get(OvMain.getButtons().size()-3).click();
             } 
             // POPUP HELP
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
@@ -648,19 +648,19 @@ public abstract class AppCore {
             } 
             // START WAVE
             if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !inWave){
-                overlays.get(1).getButtons().get(0).click();
+                OvMain.getButtons().get(0).click();
             } 
             // TOWERS
             if(Keyboard.isKeyDown(Keyboard.KEY_R))
-                overlays.get(0).getButtons().get(overlays.get(0).getButtons().size()-1).click();
+                OvShop.getButtons().get(OvShop.getButtons().size()-1).click();
             else if(Keyboard.isKeyDown(Keyboard.KEY_1) && basicTowerPrice <= money)
-                overlays.get(0).getButtons().get(0).click();
+                OvShop.getButtons().get(0).click();
             else if(Keyboard.isKeyDown(Keyboard.KEY_2) && circleTowerPrice <= money)
-                overlays.get(0).getButtons().get(1).click();
+                OvShop.getButtons().get(1).click();
             else if(Keyboard.isKeyDown(Keyboard.KEY_3) && bigTowerPrice <= money)
-                overlays.get(0).getButtons().get(2).click();
+                OvShop.getButtons().get(2).click();
             else if(Keyboard.isKeyDown(Keyboard.KEY_4) && flameTowerPrice <= money)
-                overlays.get(0).getButtons().get(3).click();
+                OvShop.getButtons().get(3).click();
             // TOWER STATS
             if(towerSelected != null && Keyboard.isKeyDown(Keyboard.KEY_TAB)){
                 towerSelected.switchOverlay();
@@ -694,15 +694,13 @@ public abstract class AppCore {
         
         for(ArrayList<Tile> row : map){
             for(Tile t : row)
-                if(t != null) t.render();
+                if(t != null) t.update();
         }
         /*for(Rock rock : rocks)
             rock.render();*/
     }
     
     protected void initOverlays(){
-        overlays = new ArrayList<>();
-        Overlay o;
         Button b;
         int nbTower = 4;
         int size = (int) (50*ref);
@@ -710,8 +708,8 @@ public abstract class AppCore {
         int startPos = windWidth/2 - (nbTower-1)*size/2 - (nbTower-1)*sep/2;
         
         // Overlay tours
-        o = new Overlay(0, windHeight-(int)(60*ref), windWidth, (int)(60*ref));
-        o.setBG(RvB.textures.get("board"), 0.6f);
+        OvShop = new Overlay(0, windHeight-(int)(60*ref), windWidth, (int)(60*ref));
+        OvShop.setBG(RvB.textures.get("board"), 0.6f);
         String textureName = "";
         for(int i = 0 ; i < nbTower ; i++){
             switch(i){
@@ -739,7 +737,7 @@ public abstract class AppCore {
                 if(index == 0)
                     TutoManager.Instance.showTutoIfNotDone(TutoManager.TutoStep.TWR_BGHT);
             });
-            o.addButton(b);
+            OvShop.addButton(b);
         }
         b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"));
         b.setItemFramed(true);
@@ -748,14 +746,13 @@ public abstract class AppCore {
                 selectTower(null);
             createTower(4);
         });
-        o.addButton(b);
-        overlays.add(o);
+        OvShop.addButton(b);
         
         // Overlay top, indexes : WAVEBUT -> 0, DLBUT -> 1, GMSPEEDBUT -> 2, BACKBUT -> 3, HELPBUT -> 4
-        o = new Overlay(0, 0, windWidth, (int)(60*ref));
-        o.setBG(RvB.textures.get("board"), 0.6f);
+        OvMain = new Overlay(0, 0, windWidth, (int)(60*ref));
+        OvMain.setBG(RvB.textures.get("board"), 0.6f);
         // Wave button
-        b = new Button(o.getW()-(int)(150*ref), o.getH()/2, (int)(150*ref), (int)(40*ref));
+        b = new Button(OvMain.getW()-(int)(150*ref), OvMain.getH()/2, (int)(150*ref), (int)(40*ref));
         b.setText(Text.START_WAVE, RvB.fonts.get("normalB"));
         b.setClickSound(SoundManager.SOUND_WAVE, SoundManager.Volume.VERY_HIGH);
         Button waveBut = b;
@@ -767,9 +764,9 @@ public abstract class AppCore {
                 startWave();
             }
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // Download button
-        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref));
+        b = new Button(OvMain.getW()-(int)(30*ref), OvMain.getH()/2, (int)(32*ref), (int)(32*ref));
         b.setBG(RvB.textures.get("download"));
         Button dlBut = b;
         b.setFunction(__ -> {
@@ -785,9 +782,9 @@ public abstract class AppCore {
                 PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, Text.OK);
             }
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // game speed button
-        b = new Button(o.getW()-(int)(350*ref), o.getH()/2, (int)(60*ref), (int)(30*ref));
+        b = new Button(OvMain.getW()-(int)(350*ref), OvMain.getH()/2, (int)(60*ref), (int)(30*ref));
         b.setText(Text.X1, RvB.fonts.get("normalB"));
         Button gameSpeedBut = b;
         b.setFunction(__ -> {
@@ -806,22 +803,20 @@ public abstract class AppCore {
                     break;
             }
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // back button
-        b = new Button((int)(60*ref), o.getH()/2, (int)(32*ref), (int)(32*ref));
+        b = new Button((int)(60*ref), OvMain.getH()/2, (int)(32*ref), (int)(32*ref));
         b.setBG(RvB.textures.get("arrowBack"));
         b.setFunction(__ -> {
             RvB.switchStateTo(MENU);
         });
-        o.addButton(b);
-        overlays.add(o);
+        OvMain.addButton(b);
         
         // overlay enemy selected
         int width = (int) (700*ref), height = (int) (50*ref);
-        o = new Overlay(windWidth/2-width/2, (int)(5*ref), width, height);
-        o.setBG(RvB.textures.get("darkBoard"), 0.4f);
-        o.setBorder(RvB.colors.get("green_dark"), 2, 0.8f);
-        overlays.add(o);
+        OvEnemyInfo = new Overlay(windWidth/2-width/2, (int)(5*ref), width, height);
+        OvEnemyInfo.setBG(RvB.textures.get("darkBoard"), 0.4f);
+        OvEnemyInfo.setBorder(RvB.colors.get("green_dark"), 2, 0.8f);
     }
     
     public void renderOverlays(){ 
@@ -831,7 +826,7 @@ public abstract class AppCore {
         
         //// Overlay selection tours
         if(towerSelected == null){
-            o = overlays.get(0);
+            o = OvShop;
             o.render();     
             
             b = o.getButtons().get(0);
@@ -863,7 +858,7 @@ public abstract class AppCore {
         }
         //
         //// Overlay principal
-        o = overlays.get(1);
+        o = OvMain;
         o.render();
         
         t = money+"";
@@ -1091,9 +1086,12 @@ public abstract class AppCore {
     }
     
     public void disableAllButtons(){
-        for(Overlay o : overlays)
-            for(Button b : o.getButtons())
-                b.disable();
+        for(Button b : OvMain.getButtons())
+            b.disable();
+        for(Button b : OvShop.getButtons())
+            b.disable();
+        for(Button b : OvEnemyInfo.getButtons())
+            b.disable();
         for(Shootable s : towers){
             Tower t = (Tower)s;
             t.disableAllButtons();
@@ -1101,9 +1099,12 @@ public abstract class AppCore {
     }
     
     public void enableAllButtons(){
-        for(Overlay o : overlays)
-            for(Button b : o.getButtons())
-                b.enable();
+        for(Button b : OvMain.getButtons())
+            b.enable();
+        for(Button b : OvShop.getButtons())
+            b.enable();
+        for(Button b : OvEnemyInfo.getButtons())
+            b.enable();
         for(Shootable s : towers){
             Tower t = (Tower)s;
             t.enableAllButtons();
@@ -1112,19 +1113,15 @@ public abstract class AppCore {
 
     public void setEnemySelected(Enemy e) {
         if(e == null){
-            overlays.get(2).display(false);
+            OvEnemyInfo.display(false);
             if(enemySelected != null)
                 enemySelected.setSelected(false);
         }  
         else{
-            overlays.get(2).display(true);
+            OvEnemyInfo.display(true);
             e.setSelected(true);
         } 
         enemySelected = e;
-    }
-    
-    public ArrayList<Overlay> getOverlays() {
-        return overlays;
     }
     
     public void addEnemy(Enemy e){

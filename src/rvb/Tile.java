@@ -59,7 +59,11 @@ public class Tile {
         setY(y);
     }
     
-    public void render(){
+    public void update(){
+        render();
+    }
+    
+    protected void render(){
         if(show)
             RvB.drawFilledRectangle(renderX, renderY, size, size, RvB.textures.get("frame"), 0, 1);
         if(stepTexture != null)

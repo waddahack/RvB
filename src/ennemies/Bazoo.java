@@ -46,8 +46,9 @@ public class Bazoo extends Enemy{
             Evolution evo2 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo2"), RvB.textures.get("bazooEvo2Bright"), RvB.colors.get("life2"), evo1);
             Evolution evo3 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo3"), RvB.textures.get("bazooEvo3Bright"), RvB.colors.get("life3"), evo2);
             Evolution evo4 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo4"), RvB.textures.get("bazooEvo4Bright"), RvB.colors.get("life4"), evo3);
-            Evolution evo5 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
-            Evolution evo6 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
+            Evolution evo5 = new Evolution(this, 30*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
+            Evolution evo6 = new Evolution(this, 30*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
+            Evolution evo7 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo7"), RvB.textures.get("bazooEvo7Bright"), RvB.colors.get("life7"), evo6);
             
             evolutions.add(evo1);
             if(level >= 2)
@@ -59,6 +60,9 @@ public class Bazoo extends Enemy{
             if(level >= 4){
                 evolutions.add(evo5);
                 evolutions.add(evo6);
+            }
+            if(level >= 5){
+                evolutions.add(evo7);
             } 
         }
         
@@ -117,7 +121,7 @@ public class Bazoo extends Enemy{
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
     @Override
     public void renderInfo(){
-        Overlay o = game.getOverlays().get(2);
+        Overlay o = game.OvEnemyInfo;
         o.render();
         // Sprites
         RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, RvB.textures.get("bazooZoomed"));

@@ -64,12 +64,10 @@ public class Creation extends AppCore{
     
     @Override
     protected void initOverlays(){
-        overlays = new ArrayList<>();
-        Overlay o;
         Button b;
-        
-        o = new Overlay(0, 0, windWidth, (int) (60*ref));
-        o.setBG(RvB.textures.get("board"), 0.6f);
+        // overlay main
+        OvMain = new Overlay(0, 0, windWidth, (int) (60*ref));
+        OvMain.setBG(RvB.textures.get("board"), 0.6f);
         // Play button
         b = new Button(windWidth/2, (int) (30*ref), (int) (240*ref), (int) (42*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.PLAY, RvB.fonts.get("normalXL"));
@@ -85,7 +83,7 @@ public class Creation extends AppCore{
                 }
             }
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // Back button
         b = new Button((int) (60*ref), (int) (30*ref), (int) (32*ref), (int) (32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setBG(RvB.textures.get("arrowBack"));
@@ -93,7 +91,7 @@ public class Creation extends AppCore{
             if(Mouse.getEventButtonState() && !mouseDown) // Back button clicked
                 RvB.state = State.MENU;
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // Clear button
         b = new Button((int) (windWidth/2-300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.CLEAR, RvB.fonts.get("normal"));
@@ -105,7 +103,7 @@ public class Creation extends AppCore{
             path.clear();
             roads.clear();
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // Load button
         b = new Button((int)(windWidth/2+300*ref), (int) (30*ref), (int) (120*ref), (int) (28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setText(Text.LOAD, RvB.fonts.get("normal"));
@@ -114,9 +112,9 @@ public class Creation extends AppCore{
             if(!lvlName.isEmpty())
                 initMap(lvlName);
         });
-        o.addButton(b);
+        OvMain.addButton(b);
         // Download button
-        b = new Button(o.getW()-(int)(30*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+        b = new Button(OvMain.getW()-(int)(30*ref), OvMain.getH()/2, (int)(32*ref), (int)(32*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setBG(RvB.textures.get("download"));
         b.setFunction(__ -> {
             String[] error = calculatePath();
@@ -137,12 +135,10 @@ public class Creation extends AppCore{
                 PopupManager.Instance.popup(new String[]{Text.MAP_DOWNLOADED.getText(), " ", levelsFolder.getAbsolutePath()+File.separator+name}, new UnicodeFont[]{RvB.fonts.get("normalL"), RvB.fonts.get("normalXL"), RvB.fonts.get("normalXL")}, Text.OK);
             }
         });
-        o.addButton(b);
-        overlays.add(o);
+        OvMain.addButton(b);
         
-        o = new Overlay(0, (int) (windHeight-60*ref), windWidth, (int) (60*ref));
-        o.setBG(RvB.textures.get("board"), 0.6f);
-        overlays.add(o);
+        OvShop = new Overlay(0, (int) (windHeight-60*ref), windWidth, (int) (60*ref));
+        OvShop.setBG(RvB.textures.get("board"), 0.6f);
     }
     
     private String[] calculatePath(){
@@ -189,15 +185,11 @@ public class Creation extends AppCore{
     
     @Override
     public void renderOverlays(){ 
-        Overlay o;
-        
         //// Overlay du haut
-        o = overlays.get(0);
-        o.render();
+        OvMain.render();
         //
         //// Overlay du bas
-        o = overlays.get(1);
-        o.render();
+        OvShop.render();
         //
     }
     
@@ -210,7 +202,7 @@ public class Creation extends AppCore{
             int indexX = getMouseIndexX();
             int indexY = getMouseIndexY();
             
-            if(Mouse.isButtonDown(0) && !overlays.get(0).buttonClicked(0) && !overlays.get(1).buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged && indexY >= 1 && indexY <= RvB.nbTileY-2){ // Puts road
+            if(Mouse.isButtonDown(0) && !OvMain.buttonClicked(0) && !OvShop.buttonClicked(0) && !map.get(indexY).get(indexX).type.equals("road") && !stateChanged && indexY >= 1 && indexY <= RvB.nbTileY-2){ // Puts road
                 Tile road = new Tile(RvB.textures.get("roadStraight"), "road");
                 road.setRotateIndex(0);
                 road.setX(indexX*unite);

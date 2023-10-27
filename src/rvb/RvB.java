@@ -58,10 +58,10 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(30, 125, 300, 300, 0.8f, 0.9f, "EASY", 1, 0.5f),
-        MEDIUM(30, 100, 240, 240, 1f, 1f, "MEDIUM", 2, 1),
-        HARD(30, 75, 180, 180, 1.2f, 1.1f, "HARD", 3, 3f),
-        HARDCORE(30, 1, 180, 180, 1.2f, 1.1f, "HARDCORE", 3, 10); 
+        EASY(24, 125, 350, 300, 0.8f, 0.9f, "EASY", 1, 0.5f),
+        MEDIUM(30, 100, 300, 250, 1f, 1f, "MEDIUM", 2, 1),
+        HARD(36, 75, 250, 200, 1.1f, 1.1f, "HARD", 3, 3f),
+        HARDCORE(36, 1, 250, 200, 1.1f, 1.1f, "HARDCORE", 3, 10); 
         
         public int probabilityRange; // for turns probability maps random
         public float riskValue;
@@ -83,12 +83,12 @@ public class RvB{
         
         public int getNbRoad(){
             if(this == Difficulty.EASY)
-                return (int) ((nbTileX*nbTileY) / 6);
+                return (int) ((nbTileX*nbTileY) / 5);
             
             if(this == Difficulty.MEDIUM)
-                return (int) ((nbTileX*nbTileY) / 7);
+                return (int) ((nbTileX*nbTileY) / 6);
             
-            return (int) ((nbTileX*nbTileY) / 8);
+            return (int) ((nbTileX*nbTileY) / 7);
         }
     }
     
@@ -1094,6 +1094,8 @@ public class RvB{
             textures.put("bazooEvo5Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo5_bright.png"))));
             textures.put("bazooEvo6", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo6.png"))));
             textures.put("bazooEvo6Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo6_bright.png"))));
+            textures.put("bazooEvo7", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo7.png"))));
+            textures.put("bazooEvo7Bright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/bazoo_evo7_bright.png"))));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(RvB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -1155,7 +1157,8 @@ public class RvB{
         float[] life3 = {255f/255f, 195f/255f, 80f/255f};
         float[] life4 = {255f/255f, 225f/255f, 80f/255f};
         float[] life5 = {255f/255f, 255f/255f, 25f/255f};
-        float[] life6 = {210f/255f, 255f/255f, 25f/255f};
+        float[] life6 = {180f/255f, 255f/255f, 25f/255f};
+        float[] life7 = {120f/255f, 255f/255f, 25f/255f};
         float[] money = {240f/255f, 220f/255f, 0};
         float[] lightGreen = {225f/255f, 240f/255f, 200f/255f};
         float[] lightBlue = {116f/255f, 136f/255f, 204f/255f};
@@ -1177,6 +1180,7 @@ public class RvB{
         colors.put("life4", life4);
         colors.put("life5", life5);
         colors.put("life6", life6);
+        colors.put("life7", life7);
         colors.put("money", money);
         colors.put("lightGreen", lightGreen);
         colors.put("lightRed", lightRed);

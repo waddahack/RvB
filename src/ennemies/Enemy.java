@@ -242,7 +242,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     /// enemy.renderOverlay() is called in game, right after main overlay is rendered
     public void renderInfo(){
-        Overlay o = game.getOverlays().get(2);
+        Overlay o = game.OvEnemyInfo;
         o.render();
         // Sprites
         RvB.drawFilledRectangle(o.getX()+20, o.getY(), o.getH(), o.getH(), null, 1, textureStatic);

@@ -51,12 +51,11 @@ public class Game extends AppCore{
     @Override
     public void initOverlays(){
         super.initOverlays();
-        Overlay o = overlays.get(1);
-        Button b = new Button(o.getW()-(int)(500*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("questionMark"));
+        Button b = new Button(OvMain.getW()-(int)(500*ref), OvMain.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("questionMark"));
         b.setFunction(__ -> {
             PopupManager.Instance.help();
         });
-        o.addButton(b);
+        OvMain.addButton(b);
     }
     
     private static ArrayList<Tile> generateRandomPath(Difficulty diff){

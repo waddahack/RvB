@@ -189,8 +189,8 @@ public class Raztech extends Tower{
     @Override
     public void place(ArrayList<ArrayList<Tile>> map){
         if(game.raztech == null){
-            game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
-            game.getOverlays().get(0).getButtons().get(0).unlock();
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
+            game.OvShop.getButtons().get(0).unlock();
             game.raztech = this;
         }
         else{
@@ -205,7 +205,7 @@ public class Raztech extends Tower{
         game.oldRaztechYpos = (int) y;
         isPlaced = true;
         started = true;
-        game.getOverlays().get(0).getButtons().get(0).unlock();
+        game.OvShop.getButtons().get(0).unlock();
         
         if(Math.random() < 0.5)
             SoundManager.Instance.playOnce(SoundManager.SOUND_RAZTECH1);
@@ -218,8 +218,8 @@ public class Raztech extends Tower{
     @Override
     public void autoPlace(ArrayList<ArrayList<Tile>> map){
         if(game.raztech == null){
-            game.getOverlays().get(0).getButtons().get(game.getOverlays().get(0).getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
-            game.getOverlays().get(0).getButtons().get(0).unlock();
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).setBG(RvB.textures.get("placeRaztech"));
+            game.OvShop.getButtons().get(0).unlock();
             game.raztech = this;
         }
         else{
@@ -234,7 +234,7 @@ public class Raztech extends Tower{
         game.oldRaztechYpos = (int) y;
         isPlaced = true;
         started = true;
-        game.getOverlays().get(0).getButtons().get(0).unlock();
+        game.OvShop.getButtons().get(0).unlock();
     }
     
     @Override
@@ -301,11 +301,11 @@ public class Raztech extends Tower{
         if(!setup)
             lvl++;
         if(lvl >= 2)
-            game.getOverlays().get(0).getButtons().get(1).unlock();
+            game.OvShop.getButtons().get(1).unlock();
         if(lvl >= 4)
-            game.getOverlays().get(0).getButtons().get(2).unlock();
+            game.OvShop.getButtons().get(2).unlock();
         if(lvl >= 6)
-            game.getOverlays().get(0).getButtons().get(3).unlock();
+            game.OvShop.getButtons().get(3).unlock();
         
         if(!setup){
             SoundManager.Instance.playOnce(SoundManager.SOUND_LEVELUP);
