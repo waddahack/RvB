@@ -26,7 +26,7 @@ public class FlyingEnemy extends Enemy{
         
         name = Text.ENEMY_FLYING;
         reward = 5;
-        power = 12f;
+        commitPower = 12f;
         shootRate = 1f;
         moveSpeed = 1.6f;
         range = 3*unite;

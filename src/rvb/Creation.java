@@ -194,6 +194,22 @@ public class Creation extends AppCore{
     }
     
     @Override
+    public void enableAllButtons(){
+        for(Button b : OvMain.getButtons())
+            b.enable();
+        for(Button b : OvShop.getButtons())
+            b.enable();
+    }
+    
+    @Override
+    public void disableAllButtons(){
+        for(Button b : OvMain.getButtons())
+            b.disable();
+        for(Button b : OvShop.getButtons())
+            b.disable();
+    }
+    
+    @Override
     protected void checkInput(){
         // Click check
         if(stateChanged)

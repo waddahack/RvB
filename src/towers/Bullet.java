@@ -12,7 +12,7 @@ public class Bullet{
     private int speed;
     private Shootable aim, shooter;
     private boolean follow, firstUpdate = true, haveWaited = false, goThrough = false, cone;
-    private float x, y, xDest, yDest, angle, radius;
+    private float x, y, xStart, yStart, xDest, yDest, angle, radius;
     private double waitFor, startTime;
     private Texture sprite;
     private ArrayList<Shootable> enemies; 
@@ -34,6 +34,8 @@ public class Bullet{
         this.shooter = shooter;
         this.x = xStart;
         this.y = yStart;
+        this.xStart = xStart;
+        this.yStart = yStart;
         this.radius = radius;
         enemies = shooter.getEnemies();
         enemiesTouched = new ArrayList<>();
@@ -52,13 +54,13 @@ public class Bullet{
         this.goThrough = goThrough;
         this.cone = cone;
         this.waitFor = waitFor;
-        angle = (float) MyMath.angleDegreesBetween(shooter.getX(), shooter.getY(), this.xDest, this.yDest);
+        angle = (float) MyMath.angleDegreesBetween(xStart, yStart, this.xDest, this.yDest);
     }
     
     public void move(){
         double speed = (this.speed*game.gameSpeed * RvB.deltaTime / 50) * RvB.ref;
-        double xDiffConst = xDest-shooter.getX(), yDiffConst = yDest-shooter.getY(), xDiff = xDiffConst, yDiff = yDiffConst;
-        double hyp = MyMath.distanceBetween(shooter.getX(), shooter.getY(), xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest);
+        double xDiffConst = xDest-xStart, yDiffConst = yDest-yStart, xDiff = xDiffConst, yDiff = yDiffConst;
+        double hyp = MyMath.distanceBetween(xStart, yStart, xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(xStart, yStart, xDest, yDest);
         Shootable enemyTouched = hasTouched(angle);
         boolean inRange = isInRange();
         if((enemyTouched == null || goThrough) && inRange){
@@ -105,7 +107,7 @@ public class Bullet{
     private void render(){
         if(cone){
             // distanceDone / totalDistance
-            float distanceDone = (float) (MyMath.distanceBetween(x, y, shooter.getX(), shooter.getY()));
+            float distanceDone = (float) (MyMath.distanceBetween(x, y, xStart, yStart));
             float totalDistance = (float) shooter.getRange();
             float percentToDest = (float) (distanceDone / totalDistance);
             if(percentToDest < 0.2)
@@ -129,12 +131,12 @@ public class Bullet{
     }
     
     private boolean isInRange(){
-        double angle = MyMath.angleBetween(shooter.getX(), shooter.getY(), xDest, yDest), cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle)), coef = 1.5;
+        double angle = MyMath.angleBetween(xStart, yStart, xDest, yDest), cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle)), coef = 1.5;
         if(shooter.isMultipleShot())
             coef = 1;
         if(follow)
             return (x <= RvB.windWidth && x >= 0 && y <= RvB.windHeight && y >= 0 && !aim.isDead());
-        return (Math.abs(x-shooter.getX()) <= shooter.getRange()*cosinus*coef+RvB.unite/2 && Math.abs(y-shooter.getY()) <= shooter.getRange()*sinus*coef+RvB.unite/2);
+        return (Math.abs(x-xStart) <= shooter.getRange()*cosinus*coef+RvB.unite/2 && Math.abs(y-yStart) <= shooter.getRange()*sinus*coef+RvB.unite/2);
     }
     
     private Shootable hasTouched(double angle){
@@ -158,13 +160,13 @@ public class Bullet{
     
     private boolean aimTouched(Shootable aim, double cosinus, double sinus){
         int xHitBoxPoint = (int) ((aim.getHitboxWidth()/2)*cosinus + (radius/2)*cosinus), yHitBoxPoint = (int) ((aim.getHitboxWidth()/2)*sinus + (radius/2)*sinus);
-        if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
+        if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)
             return true;
-        if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
+        if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)
             return true;
-        if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
+        if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)
             return true;
-        if(x <= aim.getX()+xHitBoxPoint && x >= aim.getX()-xHitBoxPoint && y <= aim.getY()+yHitBoxPoint && y >= aim.getY()-yHitBoxPoint)
+        if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)
             return true;
         return false;
     }

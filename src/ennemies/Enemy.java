@@ -22,6 +22,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     public Type type;
     public float bonusMS = 0;
     protected int eBalance;
+    protected float commitPower;
     protected int indiceTuile = -1, startTimeStopFor, startTimeMove, startTimeSlow;
     protected int stepEveryMilli, oldstepEveryMilli, startTimeSteps;
     protected float xBase, yBase, moveSpeed, oldMoveSpeed, slowedBy = 0;
@@ -49,6 +50,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
         canShoot = false;
         focusIndex = 4;
+        isTower = false;
     }
     
     @Override
@@ -115,6 +117,13 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         } 
         else
             super.render();
+        
+        // Select circle
+        if(isSelected()){
+            RvB.drawCircle(x, y, hitboxWidth/2, RvB.colors.get("green_dark"), (int)(2*ref));
+            if(enemyAimed != null)
+                RvB.drawCircle(enemyAimed.getX(), enemyAimed.getY(), RvB.unite/2, RvB.colors.get("life"), (int)(2*ref));
+        }
     }
     
     protected void move(){
@@ -126,7 +135,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
             if(isInBase())
                 commit();
             else
-                setDirection();
+                setDirection(false);
         }
         
         if(slowedBy > 0 && moveSpeed == oldMoveSpeed){
@@ -158,13 +167,13 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         startTimeMove = game.timeInGamePassed;
     }
     
-    public void setDirection(){
+    public void setDirection(boolean reset){
         Tile tile = game.path.get(indiceTuile);
         if(tile.nextRoad.type.equals("nothing")){
             die();
             return;
         }
-        if(dir == null){
+        if(dir == null || reset){
             dir = tile.getDirection();
             switch(dir){
                 case "down":
@@ -260,6 +269,21 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     }
     
     @Override
+    public void attack(Shootable shootable){
+        super.attack(shootable);
+        if(shootable.isDead())
+            setDirection(true);
+    }
+    
+    @Override
+    public void aim(Shootable s){
+        Shootable aim = enemyAimed;
+        super.aim(s);
+        if(enemyAimed == null && aim != null)
+            setDirection(true);
+    }
+    
+    @Override
     public void die(){
         super.die();
         game.enemiesDead.add(this);
@@ -274,7 +298,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     public void commit(){
         if(game.life > 0){
-            game.getAttackedBy(getPower());
+            game.getAttackedBy(commitPower);
             game.money -= reward;
         } 
         die();

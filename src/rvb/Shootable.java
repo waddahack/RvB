@@ -35,6 +35,7 @@ public abstract class Shootable {
     public int range = 0, bulletSpeed = 0, size = unite, explodeRadius;
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0, bonusLife = 0;
+    public boolean isTower;
     // STATS
     public int enemiesKilled = 0, enemiesKilledThisWave = 0;
     public float damagesDone = 0, damagesDoneThisWave = 0;
@@ -233,6 +234,8 @@ public abstract class Shootable {
     }
     
     public void aim(Shootable s){
+        if(s != null && s.life == 0)
+            s = null;
         if(s == null && enemyAimed != null)
             enemyAimed.setIsAimed(false);
         enemyAimed = s;
@@ -242,6 +245,8 @@ public abstract class Shootable {
         if(rotateIndex >= 0){
             float t = 0.3f;
             newAngle = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
+            if(!isTower)
+                newAngle += 90;
 
             if(newAngle-angle > 180)
                 newAngle -= 360;
@@ -452,7 +457,7 @@ public abstract class Shootable {
         float y = (float)(this.y+size*Math.sin(Math.toRadians(angle))/2);
         x = Math.abs(x) < 2 ? 0 : x;
         y = Math.abs(y) < 2 ? 0 : y;
-        Bullet bullet = new Bullet(this, x, y, enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
+        Bullet bullet = new Bullet(this, isTower ? x : this.x, isTower ? y : this.y, enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);
         bullets.add(bullet);
         if(clip != null){
             if(continuousSound){

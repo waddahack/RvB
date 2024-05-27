@@ -36,7 +36,7 @@ public class Raztech extends Tower{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("raztech");
         price = priceP;
-        life = 100f;
+        life = 0f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         totalMoneySpent = priceP;

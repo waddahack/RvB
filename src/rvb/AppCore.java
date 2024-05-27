@@ -532,8 +532,6 @@ public abstract class AppCore {
             }
             if(bossRound() && bazoo != null)
                 bazoo.render();
-            if(enemySelected != null)
-                renderEnemySelected();
         }
         
         if(gameSpeed > 0){
@@ -680,10 +678,6 @@ public abstract class AppCore {
             if(e.isClicked(but))
                 return true;
         return false;
-    }
-    
-    protected void renderEnemySelected(){
-        RvB.drawCircle(enemySelected.getX(), enemySelected.getY(), enemySelected.getHitboxWidth()/2, RvB.colors.get("green_dark"), (int)(2*ref));
     }
     
     protected void render(){
@@ -910,7 +904,8 @@ public abstract class AppCore {
         waveBalance = (int) (bossRound() ? waveBalance*0.7 : waveBalance);
         wave = new Wave();
         int min, max;
-        while(waveBalance >= uEnemies[0].balance){
+        waveBalance = uEnemies[0].addToWave(1, waveBalance);
+        /*while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
@@ -919,7 +914,7 @@ public abstract class AppCore {
                 if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
-        }
+        }*/
         wave.shuffleEnemies();
         if(bossRound()){
             bazoo = new Bazoo((waveNumber/bossEvery)-1);

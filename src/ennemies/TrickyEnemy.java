@@ -19,7 +19,7 @@ public class TrickyEnemy extends Enemy{
         textureStatic = RvB.textures.get("trickyEnemy");
         name = Text.ENEMY_TRICKY;
         reward = 3;
-        power = 6f;
+        commitPower = 6f;
         shootRate = 1f;
         moveSpeed = 3.1f;
         range = 0;
@@ -47,7 +47,7 @@ public class TrickyEnemy extends Enemy{
                 e.setY(y);
                 e.angle = angle;
                 e.setIndiceTuile(indiceTuile);
-                e.setDirection();
+                e.setDirection(true);
                 e.stopFor((int) (i*350*ref));
                 game.addEnemy(e);
             }

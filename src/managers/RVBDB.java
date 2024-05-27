@@ -18,7 +18,7 @@ public class RVBDB {
     public static RVBDB Instance;
     
     private static Connection connection;
-    private static boolean updateTables = true;
+    private static boolean updateTables = false;
     
     public RVBDB(){
         initDB();
@@ -89,7 +89,6 @@ public class RVBDB {
                     "    cheatson BOOLEAN DEFAULT false,\n" +
                     "    language VARCHAR(5) DEFAULT 'ENG',\n" +
                     "    stats VARCHAR(2000) DEFAULT null,\n" +
-                    "    version VARCHAR(5) DEFAULT null,\n" +
                     "    tutosteps VARCHAR(5000) DEFAULT ''\n" +
                     ")";
         createProperties.executeUpdate(sql);
@@ -114,7 +113,7 @@ public class RVBDB {
         ResultSet prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
         if(!prop.next()){
             Statement stmt2 = connection.createStatement();
-            stmt2.executeUpdate("INSERT INTO properties (ingame, cheatson, language, stats, version, tutosteps) VALUES (false, false, 'ENG', null, '"+RvB.version+"', '')");
+            stmt2.executeUpdate("INSERT INTO properties (ingame, cheatson, language, stats, tutosteps) VALUES (false, false, 'ENG', null, '')");
             stmt2.close();
             prop = stmt.executeQuery("SELECT * FROM properties FETCH FIRST 1 ROWS ONLY");
             prop.next();
@@ -130,37 +129,13 @@ public class RVBDB {
     
     private static void updateTables() throws SQLException{
         Statement stmt = connection.createStatement();
-        ResultSet columnVersion = stmt.executeQuery("SELECT version FROM properties");
-        if(!columnVersion.next()){
-            columnVersion.close();
-            stmt.close();
-            return;
-        }
-        
-        String versionDBString = columnVersion.getString("version");
-        int versionDB = Integer.parseInt(versionDBString.split("\\.")[0]);
-        int underVersionDB = Integer.parseInt(versionDBString.split("\\.")[1]);
-        String versionAppString = RvB.version;
-        int versionApp = Integer.parseInt(versionAppString.split("\\.")[0]);
-        int underVersionApp = Integer.parseInt(versionAppString.split("\\.")[1]);
-        
-        columnVersion.close();
-        stmt.close();
-        
-        if(versionDB < versionApp || (versionDB == versionApp && underVersionDB < underVersionApp)){
-            // TOUJOURS CHANGER VERSION DANS PROPERTIES
-            PreparedStatement versStmt = connection.prepareStatement("UPDATE properties SET version = ?");
-            versStmt.setString(1, RvB.version);
-            versStmt.executeUpdate();
-            versStmt.close();
-            //
-            Statement propStmt = connection.createStatement();
-            propStmt.executeUpdate("ALTER TABLE properties ADD COLUMN tutosteps VARCHAR(5000) DEFAULT ''");
-            propStmt.close();
-            Statement propStmt2 = connection.createStatement();
-            propStmt2.executeUpdate("UPDATE properties SET ingame = false");
-            propStmt2.close();
-        }
+
+        Statement propStmt = connection.createStatement();
+        propStmt.executeUpdate("ALTER TABLE properties ADD COLUMN tutosteps VARCHAR(5000) DEFAULT ''");
+        propStmt.close();
+        Statement propStmt2 = connection.createStatement();
+        propStmt2.executeUpdate("UPDATE properties SET ingame = false");
+        propStmt2.close();
     }
     
     public static boolean saveGame(int waveNumber, int money, int life, String pathString, String difficulty, String towers, String buffs, String buffsUsed) throws SQLException{

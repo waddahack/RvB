@@ -247,7 +247,7 @@ public class Game extends AppCore{
                 return error;
             if(road.previousRoad != null && road.previousRoad.type == "nothing"){
                 if(spawn == null){
-                    if(!(road.getIndexX() == 0 || road.getIndexX() == nbTileX))
+                    if(!(road.getIndexX() == 0 || road.getIndexX() == nbTileX-1))
                         return error;
                     spawn = road;
                 }

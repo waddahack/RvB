@@ -29,7 +29,7 @@ public class Bazoo extends Enemy{
         level = lvl;
         name = Text.ENEMY_BOSS;
         reward = lvl*25;
-        power = 1000f;
+        commitPower = 1000f;
         shootRate = 1f;
         moveSpeed = 2f;
         range = 3*RvB.unite;

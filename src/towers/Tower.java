@@ -81,6 +81,7 @@ public abstract class Tower extends Shootable implements Serializable{
         upgrades = new ArrayList<>();
         overlays = new ArrayList<>();
         focusIndex = 0;
+        isTower = true;
     }
     
     @Override
@@ -127,7 +128,14 @@ public abstract class Tower extends Shootable implements Serializable{
         RvB.drawCircle(xPos, yPos, getPreRange(), RvB.colors.get("blue"), (int)(2*ref));
         RvB.drawCircle(xPos, yPos, getPreRange()-1, RvB.colors.get("grey"));
         RvB.drawCircle(xPos, yPos, getPreRange()-1.5f, RvB.colors.get("grey_light"));
-        
+        // Lifebar
+        if(isSelected() && life < maxLife){
+            int width = (int) (50*ref), height = (int) (6*ref);
+            int currentLife = (int) (((double)life/(double)maxLife)*width);
+            float[] bgColor = RvB.colors.get("lightRed");
+            RvB.drawFilledRectangle(x-width/2, y-size/2-height-2, width, height, bgColor, 1, null);
+            RvB.drawFilledRectangle(x-width/2, y-size/2-height-2, currentLife, height, RvB.colors.get("life"), 1, null);
+        }
     }
     
     public void initOverlay(){
@@ -287,8 +295,10 @@ public abstract class Tower extends Shootable implements Serializable{
     @Override
     public void die(){
         super.die();
-        game.map.get((int) y).set((int) x, new Tile("grass"));
+        game.map.get((int) getIndexY()).set((int) getIndexX(), new Tile("grass"));
         game.towersDestroyed.add(this);
+        if(game.towerSelected == this)
+            game.towerSelected = null;
     }
     
     public boolean canBePlaced(){
@@ -416,7 +426,8 @@ public abstract class Tower extends Shootable implements Serializable{
                 "\"damagesDone\":"+damagesDone+", "+
                 "\"enemiesKilledThisWave\":"+enemiesKilledThisWave+", "+
                 "\"damagesDoneThisWave\":"+damagesDoneThisWave+", "+
-                "\"nbUpgradesUsed\":"+nbUpgradesUsed+
+                "\"nbUpgradesUsed\":"+nbUpgradesUsed+", "+
+                "\"life\":"+life+
                "}";
     }
 }
