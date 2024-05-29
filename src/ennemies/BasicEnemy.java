@@ -20,16 +20,6 @@ public class BasicEnemy extends Enemy{
         reward = 1;
         commitPower = 2f;
         
-        canShoot = true;
-        follow = true;
-        power = 2f;
-        bulletSprite = RvB.textures.get("bullet");
-        clip = SoundManager.Instance.getClip("cannon");
-        SoundManager.Instance.setClipVolume(clip, volume);
-        bulletSpeed = 20;
-        shootRate = 1f;
-        range = 10*RvB.unite;
-        
         moveSpeed = 3.5f;
         life = 30f;
         size = 4*RvB.unite/5;

@@ -19,10 +19,10 @@ public class ShootRateTower extends Tower{
         super(SHOOTRATE);
         textures.add(RvB.textures.get("shootrateTowerBase"));
         textures.add(RvB.textures.get("shootrateTowerBullet"));
-        rotateIndex = 1;
+        rotateIndexShoot = 1;
         textureStatic = RvB.textures.get("shootrateTower");
         canShoot = false;
-        life = 100f;
+        life = 0f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         totalMoneySpent = price;

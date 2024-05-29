@@ -1,7 +1,6 @@
 package ennemies;
 
 import java.util.ArrayList;
-import java.util.Stack;
 import javax.sound.sampled.Clip;
 import managers.PopupManager;
 import rvb.Shootable;
@@ -16,7 +15,7 @@ import ui.Overlay;
 public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     public static enum Type{
-        BASIC, FAST, TRICKY, STRONG, FLYING, BOSS
+        BASIC, FAST, TRICKY, STRONG, FLYING, SNIPER, BOSS
     }
     
     public Type type;
@@ -29,8 +28,6 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     protected String dir;
     protected long stopFor = -1;
     protected double movingBy;
-    protected Stack<Evolution> evolutions = new Stack<>();
-    protected static Clip armorBreak = SoundManager.Instance.getClip("armor_break");
     protected Clip clipWalk;
     protected SoundManager.Volume volumeWalk = SoundManager.Volume.SEMI_LOW;
     
@@ -47,7 +44,6 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         }
         startTimeMove = game.timeInGamePassed;
         startTimeSteps = game.timeInGamePassed;
-        SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
         canShoot = false;
         focusIndex = 4;
         isTower = false;
@@ -57,6 +53,10 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     protected void initBack(){
         super.initBack();
         life *= game.difficulty.enemiesLife;
+        for(Evolution evo : evolutions){
+            evo.life *= game.difficulty.enemiesLife;
+            evo.maxLife = evo.life;
+        }
         moveSpeed += moveSpeed*bonusMS/100f;
         oldMoveSpeed = moveSpeed;
         oldstepEveryMilli = stepEveryMilli;
@@ -101,15 +101,14 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     public void render(){
         if(!started && stopFor == -1)
             return;
-        if(rotateIndex < 0 || enemyAimed == null || enemyAimed.isDead()){
-            double t = 0.03*moveSpeed*game.gameSpeed;
-            if(t < 0.1) t = 0.1;
+        
+        double t = 0.03*moveSpeed*game.gameSpeed;
+        if(t < 0.1) t = 0.1;
 
-            if(Math.abs(angle - newAngle) <= 5)
-                t = 1;
+        if(Math.abs(angle - newAngle) <= 5)
+            t = 1;
 
-            angle = (int) Math.round((1-t)*angle + t*newAngle);
-        }   
+        angle = (int) Math.round((1-t)*angle + t*newAngle);
 
         if(!evolutions.isEmpty()){
             RvB.drawFilledRectangle(x, y, size, size, textures.get(0), angle, 1);
@@ -127,6 +126,8 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     }
     
     protected void move(){
+        if(moveSpeed <= 0)
+            return;
         if(isOnCenterOfTile() && !isOnSameTile()){
             indiceTuile += 1;
             if(indiceTuile > 0)
@@ -289,7 +290,7 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
         game.enemiesDead.add(this);
         if(selected)
             game.setEnemySelected(null);
-        game.money += reward;
+        game.money += reward*1.5;
         if(clipWalk != null){
             clipWalk.stop();
             SoundManager.Instance.clipToClose(clipWalk);
@@ -340,7 +341,9 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
     
     @Override
     public ArrayList<Shootable> getEnemies(){
-        return game.towers;
+        ArrayList<Shootable> enemies = (ArrayList<Shootable>)game.towers.clone();
+        enemies.remove(game.raztech);
+        return enemies;
     }
     
     public int getIndiceTuile(){

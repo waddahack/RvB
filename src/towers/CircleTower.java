@@ -15,7 +15,9 @@ public class CircleTower extends Tower{
         super(CIRCLE);
         textures.add(RvB.textures.get("circleTowerBase"));
         textures.add(RvB.textures.get("circleTowerTurret"));
-        rotateIndex = 1;
+        texturesBright.add(RvB.textures.get("circleTowerBaseBright"));
+        texturesBright.add(RvB.textures.get("circleTowerTurretBright"));
+        rotateIndexShoot = 1;
         canFocus = false;
         textureStatic = RvB.textures.get("circleTower");
         price = RvB.game.circleTowerPrice;
@@ -33,12 +35,12 @@ public class CircleTower extends Tower{
         bulletSprite = RvB.textures.get("bullet");
         
         range = (int) (1.2*RvB.unite);
-        power = 6f;
+        power = 5f;
         shootRate = 0.7f;
         bulletSpeed = 25;
         upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 140f, 1.4f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 2f, "+", 200f, 1.6f, 2));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.5f, "*", 300f, 1.9f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.4f, "*", 300f, 1.9f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

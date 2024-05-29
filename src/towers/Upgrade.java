@@ -79,6 +79,8 @@ public class Upgrade {
                     break;
             }
             tower.size += tower.growth;
+            tower.maxLife += 10;
+            tower.life += 10;
             game.money -= price;
             tower.totalMoneySpent += price;
             increasePrice();
@@ -95,6 +97,7 @@ public class Upgrade {
     public void setNbUsed(int nbClick){
         for(int i = 0 ; i < nbClick ; i++){
             game.money += price;
+            tower.life -= 10;
             button.click(false);
         } 
     }

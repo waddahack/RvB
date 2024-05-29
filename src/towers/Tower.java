@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
 import ennemies.Enemy;
 import java.io.Serializable;
+import javax.sound.sampled.Clip;
 import managers.PopupManager;
 import managers.StatsManager;
 import towers.Tower.Type;
@@ -72,6 +73,8 @@ public abstract class Tower extends Shootable implements Serializable{
     protected Button focusButton;
     public int[] nbUpgradesUsed;
     public int indexXSaved, indexYSaved;
+    private Clip destroyedClip;
+    private int repairPrice = 1; // for each life point
     
     public Tower(Type type){
         super();
@@ -82,6 +85,8 @@ public abstract class Tower extends Shootable implements Serializable{
         overlays = new ArrayList<>();
         focusIndex = 0;
         isTower = true;
+        destroyedClip = SoundManager.Instance.getClip("destroyed");
+        SoundManager.Instance.setClipVolume(destroyedClip, SoundManager.Volume.MEDIUM);
     }
     
     @Override
@@ -101,14 +106,15 @@ public abstract class Tower extends Shootable implements Serializable{
         }
         else{
             super.update();
-            super.render();
+            
+            render();
         }
     }
     
     protected void renderPrevisu(){
         float xPos = Math.floorDiv(Mouse.getX(), unite)*unite+unite/2, yPos = Math.floorDiv(RvB.windHeight-Mouse.getY(), unite)*unite+unite/2;
         for(int i = 0 ; i < textures.size() ; i++)
-            RvB.drawFilledRectangle(xPos, yPos, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 0.5f);
+            RvB.drawFilledRectangle(xPos, yPos, size, size, textures.get(i), i == rotateIndexShoot ? (int)angle : 0, 0.5f);
         for(int i = 0 ; i < texturesAdditive.size() ; i++)
             RvB.drawFilledRectangle(xPos-3*unite/10, yPos-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
         if(!canBePlaced()){
@@ -116,6 +122,16 @@ public abstract class Tower extends Shootable implements Serializable{
         }
         x = Mouse.getX();
         y = RvB.windHeight-Mouse.getY();
+    }
+    
+    @Override
+    public void renderLifeBar(){
+        int width = (int) (40*ref), height = (int) (6*ref);
+        int currentLife = (int) (((double)life/(double)maxLife)*width);
+        float[] bgColor = RvB.colors.get("lightRed");
+        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, width, height, bgColor, 1, null);
+        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, currentLife, height, RvB.colors.get("life"), 1, null);
+        RvB.drawRectangle((int)(x-width/2), (int) (y-size/2-height/2), width, height, RvB.colors.get("green_dark"), 1, 2);
     }
     
     public void renderDetails(){
@@ -128,14 +144,6 @@ public abstract class Tower extends Shootable implements Serializable{
         RvB.drawCircle(xPos, yPos, getPreRange(), RvB.colors.get("blue"), (int)(2*ref));
         RvB.drawCircle(xPos, yPos, getPreRange()-1, RvB.colors.get("grey"));
         RvB.drawCircle(xPos, yPos, getPreRange()-1.5f, RvB.colors.get("grey_light"));
-        // Lifebar
-        if(isSelected() && life < maxLife){
-            int width = (int) (50*ref), height = (int) (6*ref);
-            int currentLife = (int) (((double)life/(double)maxLife)*width);
-            float[] bgColor = RvB.colors.get("lightRed");
-            RvB.drawFilledRectangle(x-width/2, y-size/2-height-2, width, height, bgColor, 1, null);
-            RvB.drawFilledRectangle(x-width/2, y-size/2-height-2, currentLife, height, RvB.colors.get("life"), 1, null);
-        }
     }
     
     public void initOverlay(){
@@ -163,7 +171,7 @@ public abstract class Tower extends Shootable implements Serializable{
         for(int i = 0 ; i < upgrades.size() ; i++){
             upgrades.get(i).initPosAndButton(o1.getW() + marginToCenter + i*sep, o2.getY() + o2.getH()/2, this);
         }
-        // button sell
+        // button sell id 0
         b = new Button(o1.getW()+(int)(60*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
         b.setClickSound(SoundManager.Instance.getClip("sell"), SoundManager.Volume.MEDIUM);
         b.setFunction(__ -> {
@@ -184,7 +192,24 @@ public abstract class Tower extends Shootable implements Serializable{
             game.towersDestroyed.add(this);
         });
         o2.addButton(b);
-        // button focus
+        if(life > 0){
+            // button repair id 1
+            b = new Button(o1.getW()+(int)(200*ref), o2.getH()/2, (int)(80*ref), (int)(28*ref), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"));
+            b.setFunction(__ -> {
+                if(!isPlaced)
+                    return;
+                if(life == maxLife)
+                    return;
+                int price = (int)(maxLife-life)*repairPrice;
+                if(price > game.money)
+                    return;
+                game.money -= price;
+                life = maxLife;
+                SoundManager.Instance.playOnce(SoundManager.Instance.getClip("repair"));
+            });
+            o2.addButton(b);
+        }
+        // button focus id 2
         if(canFocus){
             b = new Button(o2.getW()-(int)(140*ref), o2.getH()-(int)(20*ref), (int)(120*ref), (int)(32*ref), TextManager.Text.FOCUS_SWITCH, RvB.fonts.get("normal"), RvB.colors.get("green_semidark"), RvB.colors.get("green_dark"), 0);
             b.setSwitch();
@@ -219,7 +244,8 @@ public abstract class Tower extends Shootable implements Serializable{
             for(Upgrade up : upgrades)
                 up.render();
             String price;
-
+            
+            // button sell
             b = overlay.getButtons().get(0);
             if(b.isHovered()){
                 price = "+ "+(int)(totalMoneySpent/2);
@@ -227,8 +253,26 @@ public abstract class Tower extends Shootable implements Serializable{
             }
             else
                 b.drawText(Text.SELL.getText(), RvB.fonts.get("normal"));
-            if(canFocus){
+            if(life > 0){
+                // button repair
                 b = overlay.getButtons().get(1);
+                if(b.isHovered()){
+                    int totalRP = (int)(maxLife-life)*repairPrice;
+                    if(totalRP <= game.money){
+                        b.drawText(totalRP+"   ", RvB.fonts.get("canBuy"));
+                        RvB.drawFilledRectangle(b.getX()+(int)(22*ref), b.getY(), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"), 0, 1);
+                    }
+                    else{
+                        b.drawText(totalRP+"   ", RvB.fonts.get("cantBuy"));
+                        RvB.drawFilledRectangle(b.getX()+(int)(22*ref), b.getY(), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"), 0, 1);
+                    }    
+                }
+                else
+                    b.drawText(Text.REPAIR.getText(), RvB.fonts.get("normal"));
+            }
+            if(canFocus){
+                // button focus
+                b = overlay.getButtons().get(2);
                 overlay.drawText(b.getX(), b.getY()-overlay.getY()-(int)(30*ref), Text.FOCUS.getText(), RvB.fonts.get("normal"));
             }
         }
@@ -299,6 +343,8 @@ public abstract class Tower extends Shootable implements Serializable{
         game.towersDestroyed.add(this);
         if(game.towerSelected == this)
             game.towerSelected = null;
+        game.decreasePrice(this);
+        SoundManager.Instance.playOnce(destroyedClip);
     }
     
     public boolean canBePlaced(){

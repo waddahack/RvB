@@ -17,7 +17,9 @@ public class BasicTower extends Tower{
         super(BASIC);
         textures.add(RvB.textures.get("basicTowerBase"));
         textures.add(RvB.textures.get("basicTowerTurret"));
-        rotateIndex = 1;
+        texturesBright.add(RvB.textures.get("basicTowerBaseBright"));
+        texturesBright.add(RvB.textures.get("basicTowerTurretBright"));
+        rotateIndexShoot = 1;
         textureStatic = RvB.textures.get("basicTower");
         price = RvB.game.basicTowerPrice;
         life = 100f;
@@ -32,7 +34,7 @@ public class BasicTower extends Tower{
         
         range = 3*RvB.unite;
         power = 22f;
-        shootRate = 0.5f;
+        shootRate = 0.7f;
         bulletSpeed = 20;
         upgrades.add(new Upgrade(this, "Range", range, 1.3f, "*", 120f, 1.5f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 10f, "+", 140f, 1.4f, 2));

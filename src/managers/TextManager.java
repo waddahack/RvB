@@ -43,6 +43,9 @@ public final class TextManager {
         SELL(
             new String[]{"Vendre"},
             new String[]{"Sell"}),
+        REPAIR(
+            new String[]{"Réparer"},
+            new String[]{"Repair"}),
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
             new String[]{"Bazoo had the system hacked !", "Options are unavailable..."}),
@@ -173,6 +176,9 @@ public final class TextManager {
         ENEMY_TRICKY(
             new String[]{"Groupe de bazooldats"},
             new String[]{"Group of bazooldiers"}),
+        ENEMY_SNIPER(
+            new String[]{"Znooper"},
+            new String[]{"Znooper"}),
         ENEMY_STRONG(
             new String[]{"Bazank"},
             new String[]{"Bazank"}),
@@ -478,8 +484,8 @@ public final class TextManager {
             new String[]{"Raccourcis"},
             new String[]{"Shortcuts"}),
         SHORTCUTS_GUIDE(
-            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "Tab : Afficher les stats de la tour séléctionnée", "H : Ouvrir cette fenêtre", "F1+D : Fenêtre debug", "Échap : Menu"},
-            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "Tab : Display selected tower's stats", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
+            new String[]{"R : Placer Raztech", "1 à 4 : Construire une nouvelle tour", "Espace : Lancer la vague / Pause / Reprendre", "V : Changer la vitesse", "Tab : Afficher les stats de la tour séléctionnée", "L : Afficher les barres de vie des ennemies", "H : Ouvrir cette fenêtre", "F1+D : Fenêtre debug", "Échap : Menu"},
+            new String[]{"R : Place Raztech", "1 to 4 : Build a new tower", "Space : Start wave / Pause / Unpause", "V : Change the speed", "Tab : Display selected tower's stats", "L : Display enemies' life bars", "H : Open this window", "F1+D : Debug window", "Esc. : Menu"});
 
         private final String[] FR_text, ENG_text;
         

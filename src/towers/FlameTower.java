@@ -14,7 +14,9 @@ public class FlameTower extends Tower{
         super(FLAME);
         textures.add(RvB.textures.get("flameTowerBase"));
         textures.add(RvB.textures.get("flameTowerTurret"));
-        rotateIndex = 1;
+        texturesBright.add(RvB.textures.get("flameTowerBaseBright"));
+        texturesBright.add(RvB.textures.get("flameTowerTurretBright"));
+        rotateIndexShoot = 1;
         textureStatic = RvB.textures.get(("flameTower"));
         price = RvB.game.flameTowerPrice;
         life = 100f;
@@ -66,7 +68,7 @@ public class FlameTower extends Tower{
             addX = 1;
         if(addY < 1)
             addY = 1;
-        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angle))/2), (float)(y+size*Math.sin(Math.toRadians(angle))/2), enemyAimed.getX()+random.nextInt(addX)-addX/2, enemyAimed.getY()+random.nextInt(addY)-addY/2, size/2, bulletSprite, true, true));
+        bullets.add(new Bullet(this, (float)(x+size*Math.cos(Math.toRadians(angleShoot))/2), (float)(y+size*Math.sin(Math.toRadians(angleShoot))/2), enemyAimed.getX()+random.nextInt(addX)-addX/2, enemyAimed.getY()+random.nextInt(addY)-addY/2, size/2, bulletSprite, true, true));
     }
     
     @Override

@@ -79,7 +79,7 @@ public class StatsManager {
         }
         int nbWave = Integer.parseInt(bestScore.split(";")[0]);
         int lifePercent = Integer.parseInt(bestScore.split(";")[1]);
-        if(nbWave == game.difficulty.nbWaveMax){
+        if(nbWave == game.difficulty.nbWaveMax){ // ICI faire +1 et voir si ça marche
             if(newNbWave == game.difficulty.nbWaveMax && newLifePercent > lifePercent){
                 changeBestScore(newScore);
                 return;

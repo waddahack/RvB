@@ -58,7 +58,7 @@ public class RvB{
         DEFAULT, POINTER, GRAB
     }
     public static enum Difficulty{
-        EASY(24, 125, 350, 300, 0.8f, 0.9f, "EASY", 1, 0.5f),
+        EASY(24, 125, 350, 300, 0.8f, 0.8f, "EASY", 1, 0.5f),
         MEDIUM(30, 100, 300, 250, 1f, 1f, "MEDIUM", 2, 1),
         HARD(36, 75, 250, 200, 1.1f, 1.1f, "HARD", 3, 3f),
         HARDCORE(36, 1, 250, 200, 1.1f, 1.1f, "HARDCORE", 3, 10); 
@@ -99,7 +99,7 @@ public class RvB{
     public static int windWidth, windHeight;
     public static int syncFPS = 120, averageFPS = syncFPS, FPScounter = 0, counter = 0;
     public static float ref;
-    public static boolean mouseDown = false, stateChanged = false;
+    public static boolean mouseDown = false, stateChanged = false, displayLifebars = true;
     public static double lastUpdate, lastUpdateFPS;
     public static double deltaTime;
     public static MenuWindow menu;
@@ -178,7 +178,7 @@ public class RvB{
         ref = unite/60f;
         
         init();
-        
+
         while(!Display.isCloseRequested() && !exit){
             lastUpdate = System.currentTimeMillis();
 
@@ -449,7 +449,9 @@ public class RvB{
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+40)*ref), formatter.format(game.enemySelected.getMoveSpeed()), fonts.get("normalS"), "topRight");
                 debugTool.drawText((int)(10*ref), (int)((s+60)*ref), "Bonus Life/MS :", fonts.get("normalS"), "topLeft");
                 debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+60)*ref), formatter.format(game.enemySelected.bonusLife)+"/"+formatter.format(game.enemySelected.bonusMS), fonts.get("normalS"), "topRight");
-                s += 100;
+                debugTool.drawText((int)(10*ref), (int)((s+80)*ref), "Aim :", fonts.get("normalS"), "topLeft");
+                debugTool.drawText(debugTool.getW()-(int)(10*ref), (int)((s+80)*ref), game.enemySelected.enemyAimed == null ? "None" : game.enemySelected.enemyAimed.getName().getText(), fonts.get("normalS"), "topRight");
+                s += 120;
             }
             // Selected tower
             if(game.towerSelected != null){
@@ -576,19 +578,9 @@ public class RvB{
             }
             
             // COMMANDES
-            if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
-                // Prompt command
-                if(Keyboard.isKeyDown(Keyboard.KEY_P)){
-                    PopupManager.Instance.popup("How many PP to add ?", Text.CANCEL);
-                    PopupManager.Instance.setCallback(__ -> {
-                        listeningKeyboard = false;
-                    });
-                    listeningKeyboard = true;
-                    commandPrompt = "";
-                }
-                    
+            if(Keyboard.isKeyDown(Keyboard.KEY_F1)){  
                 // Debug tool
-                else if(Keyboard.isKeyDown(Keyboard.KEY_D))
+                if(Keyboard.isKeyDown(Keyboard.KEY_D))
                     debugTool.display(!debugTool.isDisplayed());
                 // Clear console
                 else if(Keyboard.isKeyDown(Keyboard.KEY_C)){
@@ -613,8 +605,17 @@ public class RvB{
     
     private static void checkCheatsInput(){
         if(Keyboard.isKeyDown(Keyboard.KEY_F1)){
+            // Prompt command
+            if(Keyboard.isKeyDown(Keyboard.KEY_P)){
+                PopupManager.Instance.popup("How many PP to add ?", Text.CANCEL);
+                PopupManager.Instance.setCallback(__ -> {
+                    listeningKeyboard = false;
+                });
+                listeningKeyboard = true;
+                commandPrompt = "";
+            }
             // Money
-            if(Keyboard.isKeyDown(Keyboard.KEY_M)){
+            else if(Keyboard.isKeyDown(Keyboard.KEY_M)){
                 if(game != null)
                     game.money += 10000;
             }
@@ -874,7 +875,19 @@ public class RvB{
         
         glPopMatrix(); // Reset the current matrix to the one that was saved.
     }
-     
+    
+    public static void drawFilledRectangle(float x, float y, int width, int height, Texture texture, double angle, float a, int anchorX, int anchorY){
+        glPushMatrix(); //Save the current matrix.
+        
+        glTranslated(x+anchorX, y+anchorY, 0);
+        if(angle != 0)
+            glRotated(angle, 0, 0, 1);
+
+        drawFilledRectangle(-width/2-anchorX, -height/2-anchorY, width, height, null, a, texture);
+        
+        glPopMatrix(); // Reset the current matrix to the one that was saved.
+    }
+    
     public static void drawFilledRectangle(float x, float y, int width, int height, Texture texture, double angle, float a){
         glPushMatrix(); //Save the current matrix.
         
@@ -1018,18 +1031,26 @@ public class RvB{
             textures.put("basicTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower.png"))));
             textures.put("basicTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base.png"))));
             textures.put("basicTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_turret.png"))));
+            textures.put("basicTowerBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_base_bright.png"))));
+            textures.put("basicTowerTurretBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/basic_tower_turret_bright.png"))));
             
             textures.put("circleTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower.png"))));
             textures.put("circleTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower_base.png"))));
             textures.put("circleTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower_turret.png"))));
+            textures.put("circleTowerBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower_base_bright.png"))));
+            textures.put("circleTowerTurretBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/circle_tower_turret_bright.png"))));
             
             textures.put("bigTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/big_tower.png"))));
             textures.put("bigTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/big_tower_base.png"))));
             textures.put("bigTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/big_tower_turret.png"))));
+            textures.put("bigTowerBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/big_tower_base_bright.png"))));
+            textures.put("bigTowerTurretBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/big_tower_turret_bright.png"))));
             
             textures.put("flameTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower.png"))));
             textures.put("flameTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_base.png"))));
             textures.put("flameTowerTurret", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_turret.png"))));
+            textures.put("flameTowerBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_base_bright.png"))));
+            textures.put("flameTowerTurretBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame_tower_turret_bright.png"))));
             
             textures.put("powerTower", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower.png"))));
             textures.put("powerTowerBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/power_tower_base.png"))));
@@ -1059,6 +1080,7 @@ public class RvB{
             textures.put("gun_bullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/gun_bullet.png"))));
             textures.put("shell", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/shell.png"))));
             textures.put("flame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/towers/flame.png"))));
+            textures.put("roundBullet", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/enemy_bullet.png"))));
             // Enemies
             textures.put("basicEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy.png"))));
             textures.put("basicEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/basic_enemy_bright.png"))));
@@ -1067,7 +1089,10 @@ public class RvB{
             textures.put("fastEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/fast_enemy_bright.png"))));
             
             textures.put("strongEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy.png"))));
-            textures.put("strongEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_bright.png"))));
+            textures.put("strongEnemyBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_base.png"))));
+            textures.put("strongEnemyCannon", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_cannon.png"))));
+            textures.put("strongEnemyBaseBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_base_bright.png"))));
+            textures.put("strongEnemyCannonBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/strong_enemy_cannon_bright.png"))));
             
             textures.put("trickyEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy.png"))));
             textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy_bright.png"))));

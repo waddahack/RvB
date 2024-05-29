@@ -33,7 +33,7 @@ public class Raztech extends Tower{
     public Raztech() {
         super(RAZTECH);
         textures.add(RvB.textures.get("raztech"));
-        rotateIndex = 0;
+        rotateIndexShoot = 0;
         textureStatic = RvB.textures.get("raztech");
         price = priceP;
         life = 0f;
@@ -168,15 +168,15 @@ public class Raztech extends Tower{
     @Override
     public void shoot(){
         lastShoot = RvB.game.timeInGamePassed;
-        float x = (float)(this.x+size/2*Math.cos(Math.toRadians(angle)));
-        float y = (float)(this.y+size/2*Math.sin(Math.toRadians(angle)));
+        float x = (float)(this.x+size/2*Math.cos(Math.toRadians(angleShoot)));
+        float y = (float)(this.y+size/2*Math.sin(Math.toRadians(angleShoot)));
         if(right){ 
-            x -= size/4*Math.sin(Math.toRadians(angle)); 
-            y += +size/4*Math.cos(Math.toRadians(angle));
+            x -= size/4*Math.sin(Math.toRadians(angleShoot)); 
+            y += +size/4*Math.cos(Math.toRadians(angleShoot));
         }
         else{
-            x += size/4*Math.sin(Math.toRadians(angle)); 
-            y -= +size/4*Math.cos(Math.toRadians(angle));
+            x += size/4*Math.sin(Math.toRadians(angleShoot)); 
+            y -= +size/4*Math.cos(Math.toRadians(angleShoot));
         }
         right = !right;
         x = Math.abs(x) < 2 ? 0 : x;

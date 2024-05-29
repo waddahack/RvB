@@ -20,7 +20,6 @@ public class Bazoo extends Enemy{
         rotateIndex = 0;
         textureStatic = RvB.textures.get("bazoo");
         // Ce qu'il faut rajouter si on veut qu'un ennemie attaque
-        // + problème d'angle de enemy + faire une autre variable commitPower
         /*canShoot = true;
         bulletSprite = RvB.textures.get("bullet");
         clip = SoundManager.Instance.getClip("cannon");
@@ -33,7 +32,7 @@ public class Bazoo extends Enemy{
         shootRate = 1f;
         moveSpeed = 2f;
         range = 3*RvB.unite;
-        life = 700f;
+        life = 500f;
         size = 3*RvB.unite;
         hitboxWidth = (int) (size*0.51);
         volumeWalk = SoundManager.Volume.SEMI_HIGH;
@@ -42,13 +41,13 @@ public class Bazoo extends Enemy{
         eBalance = balance;
         
         if(level > 0){
-            Evolution evo1 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo1"), RvB.textures.get("bazooEvo1Bright"), RvB.colors.get("life1"), null);
-            Evolution evo2 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo2"), RvB.textures.get("bazooEvo2Bright"), RvB.colors.get("life2"), evo1);
-            Evolution evo3 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo3"), RvB.textures.get("bazooEvo3Bright"), RvB.colors.get("life3"), evo2);
-            Evolution evo4 = new Evolution(this, 25*game.waveNumber, RvB.textures.get("bazooEvo4"), RvB.textures.get("bazooEvo4Bright"), RvB.colors.get("life4"), evo3);
-            Evolution evo5 = new Evolution(this, 30*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
-            Evolution evo6 = new Evolution(this, 30*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
-            Evolution evo7 = new Evolution(this, 50*game.waveNumber, RvB.textures.get("bazooEvo7"), RvB.textures.get("bazooEvo7Bright"), RvB.colors.get("life7"), evo6);
+            Evolution evo1 = new Evolution(this, 35*game.waveNumber, RvB.textures.get("bazooEvo1"), RvB.textures.get("bazooEvo1Bright"), RvB.colors.get("life1"), null);
+            Evolution evo2 = new Evolution(this, 35*game.waveNumber, RvB.textures.get("bazooEvo2"), RvB.textures.get("bazooEvo2Bright"), RvB.colors.get("life2"), evo1);
+            Evolution evo3 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo3"), RvB.textures.get("bazooEvo3Bright"), RvB.colors.get("life3"), evo2);
+            Evolution evo4 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo4"), RvB.textures.get("bazooEvo4Bright"), RvB.colors.get("life4"), evo3);
+            Evolution evo5 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo5"), RvB.textures.get("bazooEvo5Bright"), RvB.colors.get("life5"), evo4);
+            Evolution evo6 = new Evolution(this, 20*game.waveNumber, RvB.textures.get("bazooEvo6"), RvB.textures.get("bazooEvo6Bright"), RvB.colors.get("life6"), evo5);
+            Evolution evo7 = new Evolution(this, 35*game.waveNumber, RvB.textures.get("bazooEvo7"), RvB.textures.get("bazooEvo7Bright"), RvB.colors.get("life7"), evo6);
             
             evolutions.add(evo1);
             if(level >= 2)
@@ -67,32 +66,6 @@ public class Bazoo extends Enemy{
         }
         
         initBack();
-    }
-    
-    @Override
-    public float takeDamage(float power){
-        if(!started)
-            return 0;
-
-        float damageDone = power;
-        if(!evolutions.isEmpty()){
-            evolutions.peek().attacked(power);
-            if(evolutions.peek().life <= 0){
-                damageDone += evolutions.peek().life;
-                evolutions.pop();
-                SoundManager.Instance.playOnce(armorBreak);
-            }
-        }
-        else
-            life -= power;
-        
-        startTimeWaitFor = game.timeInGamePassed;
-        if(life <= 0){
-            damageDone += life;
-            die();
-        }    
-        
-        return damageDone;
     }
     
     @Override
@@ -136,5 +109,15 @@ public class Bazoo extends Enemy{
         // Name & life max
         o.drawText(o.getW()/2, (int) (12*ref), name.getText(), RvB.fonts.get("normalL"));
         o.drawText(o.getW()/2+RvB.fonts.get("normalL").getWidth(name.getText())/2+RvB.fonts.get("life").getWidth(""+maxLife)/2+5, (int) (12*ref), ""+Math.round(maxLife), RvB.fonts.get("life"));
+    }
+    
+    @Override
+    public void renderLifeBar(){
+        int width = (int) (100*ref), height = (int) (10*ref);
+        int currentLife = (int) (((double)life/(double)maxLife)*width);
+        float[] bgColor = RvB.colors.get("lightRed");
+        RvB.drawFilledRectangle(x-width/2, y-size/2, width, height, bgColor, 1, null);
+        RvB.drawFilledRectangle(x-width/2, y-size/2, currentLife, height, RvB.colors.get("life"), 1, null);
+        RvB.drawRectangle((int)(x-width/2), (int)(y-size/2), width, height, RvB.colors.get("green_dark"), 1, 3);
     }
 }

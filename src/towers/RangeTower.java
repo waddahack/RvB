@@ -19,10 +19,10 @@ public class RangeTower extends Tower{
         super(RANGE);
         textures.add(RvB.textures.get("rangeTowerBase"));
         textures.add(RvB.textures.get("rangeTowerBalls"));
-        rotateIndex = 1;
+        rotateIndexShoot = 1;
         textureStatic = RvB.textures.get("rangeTower");
         canShoot = false;
-        life = 100f;
+        life = 0f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         totalMoneySpent = price;

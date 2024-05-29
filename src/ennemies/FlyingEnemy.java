@@ -6,6 +6,7 @@ import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
 import static rvb.RvB.game;
+import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 
 public class FlyingEnemy extends Enemy{
@@ -26,11 +27,11 @@ public class FlyingEnemy extends Enemy{
         
         name = Text.ENEMY_FLYING;
         reward = 5;
-        commitPower = 12f;
+        commitPower = 6f;
         shootRate = 1f;
         moveSpeed = 1.6f;
         range = 3*unite;
-        life = 115f;
+        life = 80f;
         size = (int) (1.25*unite);
         hitboxWidth = size;
         eBalance = balance;
@@ -88,5 +89,14 @@ public class FlyingEnemy extends Enemy{
                 RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? angle : turningSpriteAngle, 1);
         }
         turningSpriteAngle += 2*game.gameSpeed;
+        // Select circle
+        if(isSelected()){
+            RvB.drawCircle(x, y, hitboxWidth/2, RvB.colors.get("green_dark"), (int)(2*ref));
+            if(enemyAimed != null)
+                RvB.drawCircle(enemyAimed.getX(), enemyAimed.getY(), RvB.unite/2, RvB.colors.get("life"), (int)(2*ref));
+        }
+        if(RvB.displayLifebars && life < maxLife){
+            renderLifeBar();
+        }
     }
 }

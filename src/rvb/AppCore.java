@@ -41,9 +41,10 @@ public abstract class AppCore {
         // Balance ends with a 0 or 5 only
         BASIC(0, BasicEnemy.balance, 1, 8),
         FAST(1, FastEnemy.balance, 4, 10),
-        TRICKY(2, TrickyEnemy.balance, 6, 10),
-        FLYING(3, FlyingEnemy.balance, 13, 5),
-        STRONG(4, StrongEnemy.balance, 9, 15);
+        TRICKY(2, TrickyEnemy.balance, 7, 10),
+        SNIPER(3, SniperEnemy.balance, 10, 6),
+        FLYING(4, FlyingEnemy.balance, 13, 6),
+        STRONG(5, StrongEnemy.balance, 17, 10);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -77,9 +78,12 @@ public abstract class AppCore {
                         e = new TrickyEnemy();
                         break;
                     case 3:
-                        e = new FlyingEnemy();
+                        e = new SniperEnemy();
                         break;
                     case 4:
+                        e = new FlyingEnemy();
+                        break;
+                    case 5:
                         e = new StrongEnemy();
                         break;
                 }
@@ -637,8 +641,12 @@ public abstract class AppCore {
                     unpause();
             } 
             // CHANGE SPEED
-            else if(Keyboard.isKeyDown(Keyboard.KEY_V) && gameSpeed > 0){
+            else if(Keyboard.isKeyDown(Keyboard.KEY_V)){
                 OvMain.getButtons().get(OvMain.getButtons().size()-3).click();
+            }
+            // DISPLAY LIFEBARS
+            else if(Keyboard.isKeyDown(Keyboard.KEY_L)){
+                RvB.displayLifebars = !RvB.displayLifebars;
             } 
             // POPUP HELP
             else if(Keyboard.isKeyDown(Keyboard.KEY_H)){
@@ -782,17 +790,29 @@ public abstract class AppCore {
         b.setText(Text.X1, RvB.fonts.get("normalB"));
         Button gameSpeedBut = b;
         b.setFunction(__ -> {
-            switch(gameSpeed){
+            int speed = gameSpeed;
+            if(gameSpeed == 0)
+                speed = oldGameSpeed;
+            switch(speed){
                 case 1:
-                    gameSpeed = 2;
+                    if(gameSpeed == 0)
+                        oldGameSpeed = 2;
+                    else
+                        gameSpeed = 2;
                     gameSpeedBut.setText(Text.X2);
                     break;
                 case 2:
-                    gameSpeed = 4;
+                    if(gameSpeed == 0)
+                        oldGameSpeed = 4;
+                    else
+                        gameSpeed = 4;
                     gameSpeedBut.setText(Text.X4);
                     break;
                 case 4:
-                    gameSpeed = 1;
+                    if(gameSpeed == 0)
+                        oldGameSpeed = 1;
+                    else
+                        gameSpeed = 1;
                     gameSpeedBut.setText(Text.X1);
                     break;
             }
@@ -904,8 +924,7 @@ public abstract class AppCore {
         waveBalance = (int) (bossRound() ? waveBalance*0.7 : waveBalance);
         wave = new Wave();
         int min, max;
-        waveBalance = uEnemies[0].addToWave(1, waveBalance);
-        /*while(waveBalance >= uEnemies[0].balance){
+        while(waveBalance >= uEnemies[0].balance){
             // Du plus fort au moins fort. Ils commencent à apparaitre à la vague n de max = waveNumber+min-n, et commencent à ne plus apparaitre à la vague n de decrease = (waveNumber+min-n+waveNumber-n) (si = 0, ne disparait jamais)
             for(int i = uEnemies.length-1 ; i >= 0 ; i--){
                 min = 1+waveNumber-uEnemies[i].enterAt;
@@ -914,7 +933,7 @@ public abstract class AppCore {
                 if(max > uEnemies[i].nbMax) max = uEnemies[i].nbMax;
                 waveBalance = uEnemies[i].addToWave((int) Math.floor(min+random.nextFloat()*(max-min)), waveBalance);
             }
-        }*/
+        }
         wave.shuffleEnemies();
         if(bossRound()){
             bazoo = new Bazoo((waveNumber/bossEvery)-1);
@@ -996,13 +1015,24 @@ public abstract class AppCore {
     
     public void raisePrice(Tower t){
         if(t.type == Tower.Type.BASIC)
-            basicTowerPrice *= 1.2;
+            basicTowerPrice *= 1.1;
         else if(t.type == Tower.Type.CIRCLE)
             circleTowerPrice *= 1.08;
         else if(t.type == Tower.Type.BIG)
             bigTowerPrice *= 1.1;
         else if(t.type == Tower.Type.FLAME)
             flameTowerPrice *= 1.1;
+    }
+    
+    public void decreasePrice(Tower t){
+        if(t.type == Tower.Type.BASIC)
+            basicTowerPrice /= 1.1;
+        else if(t.type == Tower.Type.CIRCLE)
+            circleTowerPrice /= 1.08;
+        else if(t.type == Tower.Type.BIG)
+            bigTowerPrice /= 1.1;
+        else if(t.type == Tower.Type.FLAME)
+            flameTowerPrice /= 1.1;
     }
     
     public int getMouseIndexX(){

@@ -12,7 +12,10 @@ import static rvb.RvB.unite;
 import towers.Bullet;
 import Utils.MyMath;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ennemies.Evolution;
+import java.util.Stack;
 import org.lwjgl.input.Mouse;
+import static rvb.RvB.ref;
 
 public abstract class Shootable {
     
@@ -23,13 +26,15 @@ public abstract class Shootable {
     protected SoundManager.Volume volume = SoundManager.Volume.SEMI_LOW;
     protected Texture textureStatic, bulletSprite;
     protected Random random = new Random();
-    protected int reward = 0, rotateIndex = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth;
+    protected int reward = 0, rotateIndex = -1, rotateIndexShoot = -1, lastShoot = 0, bulletSizeBonus = 0, hitboxWidth;
     @JsonProperty("focusIndex")
     protected int focusIndex;
-    protected float newAngle = 0;
+    protected float newAngle = 0, newAngleShoot = 0;
     protected Shootable enemyAimed;
+    protected Stack<Evolution> evolutions;
+    protected static Clip armorBreak = SoundManager.Instance.getClip("armor_break");
     // CARACHTERISTIQUES PUBLIQUES
-    public float x, y, angle = 180;
+    public float x, y, angle = 180, angleShoot = 180;
     public int waitFor = 175, startTimeWaitFor = 0;
     public Text name;
     public int range = 0, bulletSpeed = 0, size = unite, explodeRadius;
@@ -46,10 +51,16 @@ public abstract class Shootable {
         texturesAdditive = new ArrayList<>();
         bullets = new ArrayList<>();
         bulletsToRemove = new ArrayList<>();
+        evolutions = new Stack<Evolution>();
+        SoundManager.Instance.setClipVolume(armorBreak, SoundManager.Volume.SEMI_HIGH);
     }
 
     protected void initBack(){
         life = (int)Math.round(life + (life*bonusLife/100));
+        for(Evolution evo : evolutions){
+            evo.life = (int)Math.round(evo.life + (evo.life*bonusLife/100));
+            evo.maxLife = evo.life;
+        }
         maxLife = life;
         SoundManager.Instance.setClipVolume(clip, volume);
     }
@@ -78,17 +89,57 @@ public abstract class Shootable {
     }
     
     public void render(){
+        int a;
         if(startTimeWaitFor != 0 && game.timeInGamePassed - startTimeWaitFor < waitFor){
-            for(int i = 0 ; i < texturesBright.size() ; i++)
-                RvB.drawFilledRectangle(x, y, size, size, texturesBright.get(i), i == rotateIndex ? (int)angle : 0, 1);
+            for(int i = 0 ; i < texturesBright.size() ; i++){
+                if(canShoot){
+                    if(enemyAimed != null)
+                        a = i == rotateIndexShoot ? (int)angleShoot : (i == rotateIndex ? (int)angle : 0);
+                    else if(!isTower)
+                        a = i == rotateIndex || i == rotateIndexShoot ? (int)angle : 0;
+                    else
+                        a = i == rotateIndexShoot ? (int)angleShoot : 0;
+                }
+                else
+                    a = i == rotateIndex || i == rotateIndexShoot ? (int)angle : 0;
+                drawSprite(texturesBright.get(i), a);
+            }
         }
         else{
             startTimeWaitFor = 0;
-            for(int i = 0 ; i < textures.size() ; i++)
-                RvB.drawFilledRectangle(x, y, size, size, textures.get(i), i == rotateIndex ? (int)angle : 0, 1);
+            for(int i = 0 ; i < textures.size() ; i++){
+                if(canShoot){
+                    if(enemyAimed != null)
+                        a = i == rotateIndexShoot ? (int)angleShoot : (i == rotateIndex ? (int)angle : 0);
+                    else if(!isTower)
+                        a = i == rotateIndex || i == rotateIndexShoot ? (int)angle : 0;
+                    else // pour que la tourelle garde son angle quand plus d'enemy aimed
+                        a = i == rotateIndexShoot ? (int)angleShoot : 0;
+                }
+                else
+                    a = i == rotateIndex || i == rotateIndexShoot ? (int)angle : 0;
+                drawSprite(textures.get(i), a);
+            }
         }
         for(int i = 0 ; i < texturesAdditive.size() ; i++)
             RvB.drawFilledRectangle(x-3*unite/10, y-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
+        
+        if(isTower && life < maxLife)
+            renderLifeBar();
+        else if(RvB.displayLifebars && life < maxLife)
+            renderLifeBar();
+    }
+    
+    public void drawSprite(Texture sprite, int angle){
+        RvB.drawFilledRectangle(x, y, size, size, sprite, angle, 1);
+    }
+    
+    public void renderLifeBar(){
+        int width = (int) (30*ref), height = (int) (4*ref);
+        int currentLife = (int) (((double)life/(double)maxLife)*width);
+        float[] bgColor = RvB.colors.get("lightRed");
+        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, width, height, bgColor, 1, null);
+        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, currentLife, height, RvB.colors.get("life"), 1, null);
     }
     
     public ArrayList<Bullet> getBullets(){
@@ -103,6 +154,8 @@ public abstract class Shootable {
         if(!shootable.hasStarted())
             return;
         float d = shootable.takeDamage(getPower());
+        if(shootable.isDead())
+            enemyAimed = null;
         damagesDone += d;
         damagesDoneThisWave += d;
         if(shootable.isDead()){
@@ -116,14 +169,24 @@ public abstract class Shootable {
             return 0;
 
         float damageDone = power;
-        life -= power;
+        if(!evolutions.isEmpty()){
+            evolutions.peek().attacked(power);
+            if(evolutions.peek().life <= 0){
+                damageDone += evolutions.peek().life;
+                evolutions.pop();
+                if(this == game.bazoo)
+                    SoundManager.Instance.playOnce(armorBreak);
+            }
+        }
+        else
+            life -= power;
+        
+        startTimeWaitFor = game.timeInGamePassed;
         
         if(life <= 0){
             damageDone += life;
             die();
-        }   
-        
-        startTimeWaitFor = game.timeInGamePassed;
+        }    
         
         return damageDone;
     }
@@ -175,6 +238,8 @@ public abstract class Shootable {
                     first = e;
             }
         }
+        if(first != null && first.life <= 0)
+            first = null;
         return first;
     }
     
@@ -187,41 +252,55 @@ public abstract class Shootable {
                 if(last == null || e.getIndiceTuile() < last.getIndiceTuile() || (e.getIndiceTuile() == last.getIndiceTuile() && e.getMoveSpeed() < last.getMoveSpeed()))
                     last = e;
             }
-        }   
+        }
+        if(last != null && last.life <= 0)
+            last = null;   
         return last;
     }
     
     protected Shootable searchForStrongest(ArrayList<Shootable> enemies){
         Shootable strongest = null;
-        for(int i = 0 ; i < enemies.size() ; i++)
+        for(int i = 0 ; i < enemies.size() ; i++){
             if(enemies.get(i).hasStarted() && enemies.get(i).isInRangeOf(this)){
-                if(strongest == null || enemies.get(i).getLife() > strongest.getLife())
+                if(strongest == null || enemies.get(i).getMaxLife() > strongest.getMaxLife())
                     strongest = enemies.get(i);
             }
+        }
+        if(strongest != null && strongest.life <= 0)
+            strongest = null; 
         return strongest;
     }
     
     protected Shootable searchForWeakest(ArrayList<Shootable> enemies){
         Shootable weakest = null;
-        for(int i = 0 ; i < enemies.size() ; i++)
+        for(int i = 0 ; i < enemies.size() ; i++){
             if(enemies.get(i).hasStarted() && enemies.get(i).isInRangeOf(this)){
-                if(weakest == null || enemies.get(i).getLife() < weakest.getLife())
+                if(weakest == null || enemies.get(i).getMaxLife() < weakest.getMaxLife())
                     weakest = enemies.get(i);
             }
+        }
+        if(weakest != null && weakest.life <= 0)
+            weakest = null; 
         return weakest;
     }
     
     protected Shootable searchForClosest(ArrayList<Shootable> enemies){
         Shootable closest = null;
         float minDist = 10000000;
-        for(int i = 0 ; i < enemies.size() ; i++)
+        for(int i = 0 ; i < enemies.size() ; i++){
             if(enemies.get(i).hasStarted() && enemies.get(i).isInRangeOf(this)){
-                if(closest == null || MyMath.distanceBetween(this, enemies.get(i)) <= minDist){
+                if(closest == null || MyMath.distanceBetween(this, enemies.get(i)) < minDist){
                     closest = enemies.get(i);
                     minDist = (float)MyMath.distanceBetween(this, enemies.get(i));
                 }
-                    
             }
+        }
+        if(closest != null && closest.life <= 0)
+            closest = null;
+        if(closest != null && enemyAimed != null){
+            if(MyMath.distanceBetween(this, closest) <= MyMath.distanceBetween(this, enemyAimed)+1 && MyMath.distanceBetween(this, closest) >= MyMath.distanceBetween(this, enemyAimed)-1)
+                return enemyAimed;
+        }
         return closest;
     }
     
@@ -234,36 +313,34 @@ public abstract class Shootable {
     }
     
     public void aim(Shootable s){
-        if(s != null && s.life == 0)
-            s = null;
         if(s == null && enemyAimed != null)
             enemyAimed.setIsAimed(false);
         enemyAimed = s;
         if(s == null)
             return;
         s.setIsAimed(true);
-        if(rotateIndex >= 0){
+        if(rotateIndexShoot >= 0){
             float t = 0.3f;
-            newAngle = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
+            newAngleShoot = (int) MyMath.angleDegreesBetween((Shootable)this, enemyAimed);
             if(!isTower)
-                newAngle += 90;
+                newAngleShoot += 90;
 
-            if(newAngle-angle > 180)
-                newAngle -= 360;
-            else if(angle-newAngle > 180)
-                newAngle += 360;
-            if(Math.abs(angle-newAngle) <= 5)
+            if(newAngleShoot-angleShoot > 180)
+                newAngleShoot -= 360;
+            else if(angleShoot-newAngleShoot > 180)
+                newAngleShoot += 360;
+            if(Math.abs(angleShoot-newAngleShoot) <= 5)
                 t = 1;
 
-            angle = (int) ((1-t)*angle + t*newAngle);
+            angleShoot = (int) ((1-t)*angleShoot + t*newAngleShoot);
 
-            if(angle >= 360)
-                angle -= 360;
-            else if(angle <= -360)
-                angle += 360;
+            if(angleShoot >= 360)
+                angleShoot -= 360;
+            else if(angleShoot <= -360)
+                angleShoot += 360;
 
-            angle = (int)Math.round(angle);
-            newAngle = (int)Math.round(newAngle);
+            angleShoot = (int)Math.round(angleShoot);
+            newAngleShoot = (int)Math.round(newAngleShoot);
         } 
     }
     
@@ -286,11 +363,11 @@ public abstract class Shootable {
         angle = MyMath.angleBetween(this, (Shootable) s);
         cosinus = Math.floor(Math.cos(angle)*1000)/1000;
         sinus = Math.floor(Math.sin(angle)*1000)/1000;
-        return (x <= s.getX()+((s.getRange())*Math.abs(cosinus)) && x >= s.getX()-((s.getRange())*Math.abs(cosinus)) && y <= s.getY()+((s.getRange())*Math.abs(sinus)) && y >= s.getY()-((s.getRange())*Math.abs(sinus)));
+        return (x <= s.getX()+((s.getRange())*Math.abs(cosinus))+1 && x >= s.getX()-((s.getRange())*Math.abs(cosinus))-1 && y <= s.getY()+((s.getRange())*Math.abs(sinus))+1 && y >= s.getY()-((s.getRange())*Math.abs(sinus))-1);
     }
     
-    public String getName(){
-        return name.getText();
+    public Text getName(){
+        return name;
     }
     
     public float getX(){
@@ -448,13 +525,13 @@ public abstract class Shootable {
     }
     
     public boolean canShoot(){
-        return canShoot && (game.timeInGamePassed-lastShoot >= 1000/getShootRate() && (angle >= newAngle-6 && angle <= newAngle+6));
+        return canShoot && (game.timeInGamePassed-lastShoot >= 1000/getShootRate() && (angleShoot >= newAngleShoot-6 && angleShoot <= newAngleShoot+6));
     }
     
     public void shoot(){
         lastShoot = game.timeInGamePassed;
-        float x = (float)(this.x+size*Math.cos(Math.toRadians(angle))/2);
-        float y = (float)(this.y+size*Math.sin(Math.toRadians(angle))/2);
+        float x = (float)(this.x+size*Math.cos(Math.toRadians(angleShoot))/2);
+        float y = (float)(this.y+size*Math.sin(Math.toRadians(angleShoot))/2);
         x = Math.abs(x) < 2 ? 0 : x;
         y = Math.abs(y) < 2 ? 0 : y;
         Bullet bullet = new Bullet(this, isTower ? x : this.x, isTower ? y : this.y, enemyAimed, size/4 + bulletSizeBonus, bulletSprite, false);

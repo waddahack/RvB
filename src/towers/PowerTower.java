@@ -19,10 +19,10 @@ public class PowerTower extends Tower{
         super(POWER);
         textures.add(RvB.textures.get("powerTowerBase"));
         textures.add(RvB.textures.get("powerTowerElec"));
-        rotateIndex = 1;
+        rotateIndexShoot = 1;
         textureStatic = RvB.textures.get("powerTower");
         canShoot = false;
-        life = 100f;
+        life = 0f;
         size = 9*RvB.unite/10;
         hitboxWidth = size;
         totalMoneySpent = price;

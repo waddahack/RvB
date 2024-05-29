@@ -61,7 +61,7 @@ public class Bullet{
         double speed = (this.speed*game.gameSpeed * RvB.deltaTime / 50) * RvB.ref;
         double xDiffConst = xDest-xStart, yDiffConst = yDest-yStart, xDiff = xDiffConst, yDiff = yDiffConst;
         double hyp = MyMath.distanceBetween(xStart, yStart, xDest, yDest), prop = speed/hyp, angle = MyMath.angleBetween(xStart, yStart, xDest, yDest);
-        Shootable enemyTouched = hasTouched(angle);
+        Shootable enemyTouched = hasTouched();
         boolean inRange = isInRange();
         if((enemyTouched == null || goThrough) && inRange){
             if(follow){
@@ -139,8 +139,8 @@ public class Bullet{
         return (Math.abs(x-xStart) <= shooter.getRange()*cosinus*coef+RvB.unite/2 && Math.abs(y-yStart) <= shooter.getRange()*sinus*coef+RvB.unite/2);
     }
     
-    private Shootable hasTouched(double angle){
-        double cosinus = Math.abs(Math.cos(angle)), sinus = Math.abs(Math.sin(angle));
+    private Shootable hasTouched(){
+        double angle, cosinus, sinus;
         if(!follow){
             for(Shootable e : enemies){
                 if(!e.hasStarted() || enemiesTouched.contains(e))
@@ -153,13 +153,18 @@ public class Bullet{
             }       
             return null;
         }
-        else if(aimTouched(aim, cosinus, sinus))
-            return aim;
+        else{
+            angle = MyMath.angleDegreesBetween(x, y, aim.getX(), aim.getY());
+            cosinus = Math.abs(Math.cos(angle));
+            sinus = Math.abs(Math.sin(angle));
+            if(aimTouched(aim, cosinus, sinus))
+                return aim;
+        }
         return null;
     }
     
     private boolean aimTouched(Shootable aim, double cosinus, double sinus){
-        int xHitBoxPoint = (int) ((aim.getHitboxWidth()/2)*cosinus + (radius/2)*cosinus), yHitBoxPoint = (int) ((aim.getHitboxWidth()/2)*sinus + (radius/2)*sinus);
+        int xHitBoxPoint = (int) ((aim.getHitboxWidth()/2)*cosinus + ((radius+speed)/2)*cosinus), yHitBoxPoint = (int) (((aim.getHitboxWidth()/2)*sinus + ((radius+speed)/2)*sinus));
         if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)
             return true;
         if(x <= aim.getX()+xHitBoxPoint+1 && x >= aim.getX()-xHitBoxPoint-1 && y <= aim.getY()+yHitBoxPoint+1 && y >= aim.getY()-yHitBoxPoint-1)

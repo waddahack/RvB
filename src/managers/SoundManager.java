@@ -171,8 +171,8 @@ public final class SoundManager
             Enemy e = (Enemy) enemy;
             if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClipWalk() != null)
                 e.getClipWalk().loop(Clip.LOOP_CONTINUOUSLY);
-            if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
-                e.getClip().loop(Clip.LOOP_CONTINUOUSLY);
+            /*if(e.getStepEveryMilli() <= 1 && e.hasStarted() && e.getClip() != null)
+                e.getClip().loop(Clip.LOOP_CONTINUOUSLY);*/
         }  
         for(Shootable t : game.towers)
             if(t.isSoundContinuous() && t.getClip() != null && t.getEnemyAimed() != null)
