@@ -124,9 +124,9 @@ public abstract class Shootable {
         for(int i = 0 ; i < texturesAdditive.size() ; i++)
             RvB.drawFilledRectangle(x-3*unite/10, y-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
         
-        if(isTower && life < maxLife)
+        if(isTower && life < maxLife && life > 0)
             renderLifeBar();
-        else if(RvB.displayLifebars && life < maxLife)
+        else if(life < maxLife && life > 0 && RvB.displayLifebars)
             renderLifeBar();
     }
     
@@ -135,6 +135,8 @@ public abstract class Shootable {
     }
     
     public void renderLifeBar(){
+        if(life <= 0)
+            return;
         int width = (int) (30*ref), height = (int) (4*ref);
         int currentLife = (int) (((double)life/(double)maxLife)*width);
         float[] bgColor = RvB.colors.get("lightRed");

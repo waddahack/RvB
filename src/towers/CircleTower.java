@@ -40,7 +40,7 @@ public class CircleTower extends Tower{
         bulletSpeed = 25;
         upgrades.add(new Upgrade(this, "Range", range, 1.2f, "*", 140f, 1.4f, 2));
         upgrades.add(new Upgrade(this, "Power", power, 2f, "+", 200f, 1.6f, 2));
-        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.4f, "*", 300f, 1.9f, 2));
+        upgrades.add(new Upgrade(this, "Attack speed", shootRate, 1.3f, "*", 300f, 1.9f, 2));
         int n = 0;
         for(int i = 0 ; i < upgrades.size() ; i++)
             n += upgrades.get(i).maxClick;

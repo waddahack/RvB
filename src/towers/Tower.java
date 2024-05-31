@@ -63,8 +63,8 @@ public abstract class Tower extends Shootable implements Serializable{
     }
     
     public Type type;
-    public int price;
-    protected int hitboxWidth, totalMoneySpent;
+    public int price, totalMoneySpent;
+    protected int hitboxWidth;
     public float growth = 0;
     protected boolean isPlaced = false, forBuff = false, canFocus = true;
     public boolean underPowerTower = false, underRangeTower = false, underShootRateTower = false;
@@ -177,7 +177,7 @@ public abstract class Tower extends Shootable implements Serializable{
         b.setFunction(__ -> {
             if(!isPlaced)
                 return;
-            game.money += (int)(totalMoneySpent/2);
+            game.money += (int)((totalMoneySpent/2) * (life/maxLife));
             Tile grass = new Tile(RvB.textures.get("grass"), "grass");
             grass.setRotateIndex(0);
             grass.setX(x);
@@ -248,7 +248,7 @@ public abstract class Tower extends Shootable implements Serializable{
             // button sell
             b = overlay.getButtons().get(0);
             if(b.isHovered()){
-                price = "+ "+(int)(totalMoneySpent/2);
+                price = "+ "+(int)((totalMoneySpent/2) * (life/maxLife));
                 b.drawText(price, RvB.fonts.get("canBuy"));
             }
             else
@@ -339,7 +339,8 @@ public abstract class Tower extends Shootable implements Serializable{
     @Override
     public void die(){
         super.die();
-        game.map.get((int) getIndexY()).set((int) getIndexX(), new Tile("grass"));
+        Tile hole = new Tile(RvB.textures.get("grassHole"), "hole", getIndexX()*RvB.unite, getIndexY()*RvB.unite);
+        game.map.get((int) getIndexY()).set((int) getIndexX(), hole);
         game.towersDestroyed.add(this);
         if(game.towerSelected == this)
             game.towerSelected = null;
@@ -353,7 +354,7 @@ public abstract class Tower extends Shootable implements Serializable{
         Tile tile = game.map.get(Math.floorDiv((int)y, unite)).get(Math.floorDiv((int) x, unite));
         if(tile == null)
             return false;
-        if(tile.getType() == "grass")
+        if(tile.getType() == "grass" || tile.getType() == "hole")
             return true;
         return false;
     }

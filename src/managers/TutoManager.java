@@ -11,8 +11,10 @@ import static rvb.RvB.ref;
 import static rvb.RvB.unite;
 import static rvb.RvB.windHeight;
 import static rvb.RvB.windWidth;
+import rvb.Shootable;
 import towers.Tower;
 import towers.Upgrade;
+import ui.Button;
 
 public final class TutoManager {
     
@@ -73,7 +75,10 @@ public final class TutoManager {
         SCND_WV3(windWidth-popupW/2-(int)(200*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV2, "bottomRight", null, true), // Changer le focus
         SCND_WV4(popupW/2+(int)(230*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV3, "bottomLeft", __ -> {
             game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).unlock();
-        }, false), // Vendre
+        }, true), // Vendre
+        SCND_WV5(popupW/2+(int)(380*ref), windHeight-popupH/2-(int)(70*ref), popupW, popupH, Text.SCND_WV4, "bottomLeft", __ -> {
+            game.OvShop.getButtons().get(game.OvShop.getButtons().size()-1).unlock();
+        }, false), // Réparer
         THRD_WV(windWidth/2, windHeight/2, popupW, popupH, Text.THRD_WV, null, null, false), // Select un ennemi
         FRTH_WV(windWidth/2, windHeight/2, popupW, popupH, Text.FRTH_WV, null, null, true), // Pause
         FRTH_WV2(windWidth/2, windHeight/2, popupW, popupH, Text.FRTH_WV2, null, __ -> {
@@ -185,6 +190,22 @@ public final class TutoManager {
     
     public void addStepDone(TutoStep stepDone){
         stepsDone.add(stepDone);
+    }
+    
+    public void completeAllTuto(){
+        clearStepsDone();
+        for(TutoStep ts : TutoStep.values()){
+            addStepDone(ts);
+        }
+        if(game != null){
+            for(Button b : game.OvMain.getButtons())
+                b.unlock();
+            for(Shootable tower : game.towers){
+                Tower t = (Tower) tower;
+                for(Upgrade up : t.getUpgrades())
+                    up.button.unlock();
+            }   
+        }
     }
     
     public void clearStepsDone(){

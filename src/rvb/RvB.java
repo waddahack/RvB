@@ -254,7 +254,7 @@ public class RvB{
         lastUpdateFPS = System.currentTimeMillis();
     }
 
-    public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String tutoSteps, String pathString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
+    public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String tutoSteps, String pathString, String holesString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
         cheatsActivated = cheatsOn;
         switch(language){
             case "FR":
@@ -322,7 +322,19 @@ public class RvB{
                         for(int i = 0 ; i < game.raztech.lvl-1 ; i++)
                             game.raztech.levelUp(true);
                     }
-                }  
+                }
+                // Holes
+                if(!holesString.isEmpty()){
+                    String[] arrayHoles = holesString.split(";");
+                    for(String pos : arrayHoles){
+                        Tile hole = new Tile(RvB.textures.get("grassHole"), "hole");
+                        String[] indexes = pos.split("/");
+                        hole.setRotateIndex(0);
+                        hole.setX(Integer.parseInt(indexes[0])*unite);
+                        hole.setY(Integer.parseInt(indexes[1])*unite);
+                        game.map.get(hole.getIndexY()).set(hole.getIndexX(), hole);
+                    }
+                }
                 // Buffs
                 Buff[] buffs = mapper.readValue(arrayBuffs, Buff[].class);
                 game.buffs.clear();
@@ -638,12 +650,20 @@ public class RvB{
                     }
                 }
             }
-            // Reset tuto (therefore resets game in progress)
+            
             else if(Keyboard.isKeyDown(Keyboard.KEY_T)){
-                switchStateTo(State.MENU);
-                PopupManager.Instance.closeCurrentPopup();
-                TutoManager.Instance.clearStepsDone();
-                game = null;
+                // Complete Tuto [C+T]
+                if(Keyboard.isKeyDown(Keyboard.KEY_C)){
+                    switchStateTo(State.MENU);
+                    TutoManager.Instance.completeAllTuto();
+                }
+                // Reset tuto (therefore resets game in progress)
+                else{
+                    switchStateTo(State.MENU);
+                    PopupManager.Instance.closeCurrentPopup();
+                    TutoManager.Instance.clearStepsDone();
+                    game = null;
+                }
             }
             // Game speed
             else if(Keyboard.isKeyDown(Keyboard.KEY_NUMPAD0)){
@@ -958,7 +978,7 @@ public class RvB{
         try {
             boolean inGame = game != null && !game.ended && !game.gameOver && !game.gameWin;
             if(inGame)
-                RVBDB.Instance.saveGame(game.waveNumber, game.money, game.life, game.getPathString(), game.difficulty.name, game.getArrayTowers(), game.getArrayBuffs(), game.buffsUsed);
+                RVBDB.Instance.saveGame(game.waveNumber, game.money, game.life, game.getPathString(), game.getHolesString(), game.difficulty.name, game.getArrayTowers(), game.getArrayBuffs(), game.buffsUsed);
             RVBDB.Instance.updateStats(StatsManager.Instance.getJSON());
             RVBDB.Instance.updateTutoSteps(TutoManager.Instance.getStepsJSON());
             RVBDB.Instance.updateInGame(inGame);
@@ -996,8 +1016,10 @@ public class RvB{
             textures.put("steps3Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps3_turn.png"))));
             textures.put("steps4Turn", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/steps4_turn.png"))));
             textures.put("grass", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass.png"))));
-            textures.put("rock1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock1.png"))));
-            textures.put("rock2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock2.png"))));
+            textures.put("grassHole", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/grass_hole.png"))));
+            textures.put("gameHit", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/game_hit.png"))));
+            /*textures.put("rock1", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock1.png"))));
+            textures.put("rock2", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/rock2.png"))));*/
             textures.put("frame", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/tile_frame.png"))));
             // Icons
             textures.put("FR", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/images/drapeau_francais.png"))));
@@ -1096,6 +1118,13 @@ public class RvB{
             
             textures.put("trickyEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy.png"))));
             textures.put("trickyEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/tricky_enemy_bright.png"))));
+            
+            textures.put("sniperEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy.png"))));
+            textures.put("sniperEnemyBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy_bright.png"))));
+            textures.put("sniperEnemyVehicle", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy_vehicle.png"))));
+            textures.put("sniperEnemyVehicleBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy_vehicle_bright.png"))));
+            textures.put("sniperEnemySniping", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy_sniping.png"))));
+            textures.put("sniperEnemySnipingBright", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/sniper_enemy_sniping_bright.png"))));
             
             textures.put("flyingEnemy", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy.png"))));
             textures.put("flyingEnemyBase", TextureLoader.getTexture("PNG", new FileInputStream(new File("assets/enemies/flying_enemy_base.png"))));

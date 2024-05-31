@@ -68,6 +68,8 @@ public class Tile {
             RvB.drawFilledRectangle(renderX, renderY, size, size, RvB.textures.get("frame"), 0, 1);
         if(stepTexture != null)
             RvB.drawFilledRectangle(renderX, renderY, size, size, stepTexture, angle, 1);
+        if(type.equals("hole"))
+            RvB.drawFilledRectangle(renderX, renderY, size, size, texture, angle, 1);
     }
     
     public void setPreviousRoad(Tile road){

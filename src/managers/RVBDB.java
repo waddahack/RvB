@@ -66,12 +66,12 @@ public class RVBDB {
                 Statement stmt2 = connection.createStatement();
                 ResultSet gameSet = stmt2.executeQuery("SELECT * FROM game FETCH FIRST 1 ROWS ONLY");
                 gameSet.next();
-                RvB.initPropertiesAndGame(true, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), prop.getString("tutosteps"), gameSet.getString("path"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
+                RvB.initPropertiesAndGame(true, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), prop.getString("tutosteps"), gameSet.getString("path"), gameSet.getString("holes"), gameSet.getString("difficulty"), gameSet.getInt("life"), gameSet.getInt("money"), gameSet.getInt("wavenumber"), gameSet.getString("towers"), gameSet.getString("buffs"), gameSet.getString("buffsused"));
                 gameSet.close();
                 stmt2.close();
             }
             else
-                RvB.initPropertiesAndGame(false, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), prop.getString("tutosteps"), "", "", 0, 0, 0, null, null, null);
+                RvB.initPropertiesAndGame(false, prop.getBoolean("cheatson"), prop.getString("language"), prop.getString("stats"), prop.getString("tutosteps"), "", "","", 0, 0, 0, null, null, null);
             
             prop.close();
             stmt.close();
@@ -100,6 +100,7 @@ public class RVBDB {
             "    money INTEGER DEFAULT 0,\n" +
             "    life INTEGER DEFAULT 0,\n" +
             "    path VARCHAR(4600) DEFAULT '',\n" +
+            "    holes VARCHAR(5000) DEFAULT '',\n" +
             "    difficulty VARCHAR(20) DEFAULT '',\n" +
             "    towers VARCHAR(10000) DEFAULT null,\n" +
             "    buffs VARCHAR(5000) DEFAULT '',\n" +
@@ -128,6 +129,7 @@ public class RVBDB {
     }
     
     private static void updateTables() throws SQLException{
+        // SI BESOIN DE CHANGER LA STRUCT DE LA DB, IL FAUT : 1) prendre les infos de la DB 2) delete la DB 3) créer une DB vierge 4) remplir les datas dispo
         Statement stmt = connection.createStatement();
 
         Statement propStmt = connection.createStatement();
@@ -138,14 +140,14 @@ public class RVBDB {
         propStmt2.close();
     }
     
-    public static boolean saveGame(int waveNumber, int money, int life, String pathString, String difficulty, String towers, String buffs, String buffsUsed) throws SQLException{
+    public static boolean saveGame(int waveNumber, int money, int life, String pathString, String holesString, String difficulty, String towers, String buffs, String buffsUsed) throws SQLException{
         Statement stmt1 = connection.createStatement();
         ResultSet gameSet = stmt1.executeQuery("SELECT * FROM game FETCH FIRST 1 ROWS ONLY");
         String sql;
         if(!gameSet.next())
-            sql = "INSERT INTO game (wavenumber, money, life, path, difficulty, towers, buffs, buffsused) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            sql = "INSERT INTO game (wavenumber, money, life, path, holes, difficulty, towers, buffs, buffsused) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         else
-            sql = "UPDATE game SET wavenumber = ?, money = ?, life = ?, path = ?, difficulty = ?, towers = ?, buffs = ?, buffsused = ?";
+            sql = "UPDATE game SET wavenumber = ?, money = ?, life = ?, path = ?, holes = ?, difficulty = ?, towers = ?, buffs = ?, buffsused = ?";
         gameSet.close();
         stmt1.close();
         PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -153,10 +155,11 @@ public class RVBDB {
         pstmt.setInt(2, money);
         pstmt.setInt(3, life);
         pstmt.setString(4, pathString);
-        pstmt.setString(5, difficulty);
-        pstmt.setString(6, towers);
-        pstmt.setString(7, buffs);
-        pstmt.setString(8, buffsUsed);
+        pstmt.setString(5, holesString);
+        pstmt.setString(6, difficulty);
+        pstmt.setString(7, towers);
+        pstmt.setString(8, buffs);
+        pstmt.setString(9, buffsUsed);
         int rows = pstmt.executeUpdate();
         pstmt.close();
         if(rows > 0)

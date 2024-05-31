@@ -102,7 +102,7 @@ public class StatsWindow extends Window{
         if(pb != null && !pb.isEmpty()){
             nbWave = pb.split(";")[0];
             lifePercent = pb.split(";")[1];
-            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.EASY.nbWaveMax ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
+            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.EASY.nbWaveMax+1 ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
         }
         else
             ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, "-", fonts.get("normalL"), "midLeft");
@@ -127,7 +127,7 @@ public class StatsWindow extends Window{
         if(pb != null && !pb.isEmpty()){
             nbWave = pb.split(";")[0];
             lifePercent = pb.split(";")[1];
-            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.MEDIUM.nbWaveMax ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
+            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.MEDIUM.nbWaveMax+1 ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
         }
         else
             ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, "-", fonts.get("normalL"), "midLeft");
@@ -152,7 +152,7 @@ public class StatsWindow extends Window{
         if(pb != null && !pb.isEmpty()){
             nbWave = pb.split(";")[0];
             lifePercent = pb.split(";")[1];
-            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.HARD.nbWaveMax ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
+            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.HARD.nbWaveMax+1 ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
         }
         else
             ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, "-", fonts.get("normalL"), "midLeft");
@@ -177,7 +177,7 @@ public class StatsWindow extends Window{
         if(pb != null && !pb.isEmpty()){
             nbWave = pb.split(";")[0];
             lifePercent = pb.split(";")[1];
-            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.HARDCORE.nbWaveMax ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
+            ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, Integer.parseInt(nbWave) < Difficulty.HARDCORE.nbWaveMax+1 ? nbWave : Text.WON.getText()+"/"+lifePercent+"%", fonts.get("normalL"), "midLeft");
         }
         else
             ms.drawText(posX+fonts.get("titleS").getWidth(Text.PB.getText()+" : ")/2, 2*ms.getH()/8, "-", fonts.get("normalL"), "midLeft");

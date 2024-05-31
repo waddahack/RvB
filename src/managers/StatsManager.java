@@ -2,6 +2,7 @@ package managers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import ennemies.Enemy;
+import rvb.RvB;
 import static rvb.RvB.game;
 import towers.Tower;
 
@@ -79,8 +80,9 @@ public class StatsManager {
         }
         int nbWave = Integer.parseInt(bestScore.split(";")[0]);
         int lifePercent = Integer.parseInt(bestScore.split(";")[1]);
-        if(nbWave == game.difficulty.nbWaveMax){ // ICI faire +1 et voir si ça marche
-            if(newNbWave == game.difficulty.nbWaveMax && newLifePercent > lifePercent){
+        if(nbWave == game.difficulty.nbWaveMax+1){
+            RvB.debug("yo");
+            if(newNbWave == game.difficulty.nbWaveMax+1 && newLifePercent > lifePercent){
                 changeBestScore(newScore);
                 return;
             }

@@ -39,12 +39,12 @@ public abstract class AppCore {
 
     public enum UEnemy{
         // Balance ends with a 0 or 5 only
-        BASIC(0, BasicEnemy.balance, 1, 8),
-        FAST(1, FastEnemy.balance, 4, 10),
+        BASIC(0, BasicEnemy.balance, 1, 6),
+        FAST(1, FastEnemy.balance, 4, 6),
         TRICKY(2, TrickyEnemy.balance, 7, 10),
-        SNIPER(3, SniperEnemy.balance, 10, 6),
+        SNIPER(3, SniperEnemy.balance, 10, 8),
         FLYING(4, FlyingEnemy.balance, 13, 6),
-        STRONG(5, StrongEnemy.balance, 17, 10);
+        STRONG(5, StrongEnemy.balance, 17, 8);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -113,13 +113,14 @@ public abstract class AppCore {
     public Bazoo bazoo = null;
     protected Wave wave;
     public Overlay OvShop, OvMain, OvEnemyInfo;
-    public boolean bossDead = false, bossDefeated = false, gameLoaded = false, endGamePropertiesUpdated = false;
+    public boolean bossDead = false, bossDefeated = false, gameLoaded = false, endGamePropertiesUpdated = false, attacked = false;
     public static int bossEvery = 6;
     private boolean keyDown = false;
     protected static Random random;
     public Difficulty difficulty;
     protected int textureID = -10;
-    private float waveBalanceMult;
+    protected float waveBalanceMult;
+    protected double attackedTimer;
     public int timeInGamePassed;
     public int basicTowerPrice, circleTowerPrice, flameTowerPrice, bigTowerPrice;
     
@@ -425,6 +426,19 @@ public abstract class AppCore {
         return pathString;
     }
     
+    public String getHolesString(){
+        String holesString = "";
+        for(ArrayList<Tile> row : game.map){
+            for(Tile tile : row){
+                if(tile != null && tile.type.equals("hole"))
+                    holesString += tile.getIndexX()+"/"+tile.getIndexY()+";";
+            }
+        }
+        if(!holesString.isEmpty())
+            holesString.substring(holesString.length()-1);
+        return holesString;
+    }
+    
     public String getArrayTowers(){
         String arrayTowers = "[";
         for(Shootable t : towers){
@@ -564,7 +578,7 @@ public abstract class AppCore {
                 if(!gameOver && !gameWin){
                     waveNumber++;
                     try {
-                        RVBDB.Instance.saveGame(waveNumber, money, life, getPathString(), difficulty.name, getArrayTowers(), getArrayBuffs(), buffsUsed);
+                        RVBDB.Instance.saveGame(waveNumber, money, life, getPathString(), getHolesString(), difficulty.name, getArrayTowers(), getArrayBuffs(), buffsUsed);
                     } catch (SQLException ex) {
                         Logger.getLogger(AppCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -582,8 +596,12 @@ public abstract class AppCore {
         
         renderOverlays();
         
-        if(gameOver || gameWin)
+        if(gameOver || gameWin){
+            if(gameWin)
+                game.waveNumber++;
             gameEnded();
+        }
+        
         if(gameLoaded)
             gameLoaded = false;
     }
@@ -700,6 +718,11 @@ public abstract class AppCore {
         }
         /*for(Rock rock : rocks)
             rock.render();*/
+        if(attacked){
+            RvB.drawFilledRectangle(base.x+RvB.unite/2, base.y+RvB.unite/2, RvB.unite, RvB.unite-(int)(5*ref), RvB.textures.get("gameHit"), base.x < RvB.unite ? 180 : 0, 1);
+            if(System.currentTimeMillis()-attackedTimer >= 400)
+                attacked = false;
+        }
     }
     
     protected void initOverlays(){
@@ -1054,7 +1077,9 @@ public abstract class AppCore {
         if(life <= 0){
             gameOver = true;
             life = 0;
-        } 
+        }
+        attacked = true;
+        attackedTimer = System.currentTimeMillis();
     }
 
    

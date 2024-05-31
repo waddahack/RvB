@@ -20,8 +20,8 @@ public class BasicEnemy extends Enemy{
         reward = 1;
         commitPower = 2f;
         
-        moveSpeed = 3.5f;
-        life = 30f;
+        moveSpeed = 3f;
+        life = 40f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         volumeWalk = SoundManager.Volume.VERY_LOW;

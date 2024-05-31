@@ -9,7 +9,6 @@ import static rvb.RvB.nbTileX;
 import static rvb.RvB.nbTileY;
 import static rvb.RvB.ref;
 import ui.Button;
-import ui.Overlay;
 
 public class Game extends AppCore{
     

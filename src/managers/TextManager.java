@@ -386,11 +386,14 @@ public final class TextManager {
             new String[]{"Toute tourelle qui vise peut changer", "sa cible."},
             new String[]{"Every tower that aims can change", "their focus"}),
         SCND_WV3(
-            new String[]{"Toutes les tourelles (sauf --raztech--) peuvent", "être vendues pour 50% des --coins-- ", "qui ont été investi dedans."},
-            new String[]{"Every tower (except --raztech--) can", "be sold for 50% of --coins-- ", "invested in it."}),
+            new String[]{"Toutes les tourelles (sauf --raztech--) peuvent", "être vendues pour 50% des --coins-- ", "qui ont été investi dedans fois son --heart--%."},
+            new String[]{"Every tower (except --raztech--) can", "be sold for 50% of --coins-- invested", "in it times its --heart--%."}),
+        SCND_WV4(
+            new String[]{"Certains ennemies peuvent attaquer", "les tourelles. Ce bouton remet", "leur --heart-- à leur maximum."},
+            new String[]{"Some enemies can attack towers.", "This button gives back all", "the tower's missing --heart--."}),
         THRD_WV(
-            new String[]{"Il est possible de sélectionner des", "ennemis pour voir leurs --heart--."},
-            new String[]{"It's possible to select", "enemies to see their --heart--."}),
+            new String[]{"Les --heart-- des ennemies sont affichés", "lorsqu'ils sont blessés.", "L pour activer/désactiver.", "Il est possible de les sélectionner", "pour voir plus de détails."},
+            new String[]{"Enemies' --heart-- are displayed when", "they are wounded. L to enable/disable.", "You can select them to see", "more details."}),
         FRTH_WV(
             new String[]{"Vous pouvez mettre pause avec ESPACE", "pendant une vague pour prendre", "votre temps."},
             new String[]{"You can pause the game with SPACE", "in order to take your time."}),
