@@ -2,6 +2,7 @@ package ennemies;
 
 import static ennemies.Enemy.Type.SNIPER;
 import java.util.ArrayList;
+import java.util.Random;
 import managers.SoundManager;
 import managers.TextManager.Text;
 import rvb.RvB;
@@ -16,6 +17,8 @@ public class SniperEnemy extends Enemy{
     public static int balance = 50;
     private Evolution shield;
     private boolean sniping;
+    private Random rand = new Random();
+    private int snipingTile;
     
     public SniperEnemy(){
         super(SNIPER);
@@ -57,6 +60,12 @@ public class SniperEnemy extends Enemy{
     }
     
     @Override
+    public void setStarted(boolean v){
+        super.setStarted(v);
+        snipingTile = rand.nextInt(4, game.path.size()-6);
+    }
+    
+    @Override
     public void move(){
         if(enemyAimed == null && sniping)
             stopSnipe();
@@ -85,8 +94,30 @@ public class SniperEnemy extends Enemy{
         }
         if(aim != null && aim.life <= 0)
             aim = null; 
-        
-        if(aim != null){
+        if(aim != null && getIndiceTuile() >= snipingTile){
+            // Check si un autre Znooper est à côté. Ne pas s'arrêter le cas échéant
+            boolean safe = true;
+            if(safe && !sniping){
+                int sep = (int)(20*ref);
+                for(Shootable enemy : game.enemies){
+                    if(enemy.getName() != Text.ENEMY_SNIPER)
+                        continue;
+                    SniperEnemy se = (SniperEnemy) enemy;
+                    if(!se.sniping)
+                        continue;
+                    if(x < enemy.getX()+sep && x > enemy.getX()-sep && y < enemy.getY()+sep && y > enemy.getY()-sep){
+                        safe = false;
+                        break;
+                    }
+                }
+                if(safe)
+                    snipe();
+            }
+        }
+        if(!sniping)
+            aim = null;
+        // Pour snipe que quand il est safe (trop dure, activer en version hardcore ?)
+        /*if(aim != null){
             boolean safe = true;
             if(moveSpeed > 0){
                 for(Shootable tower : game.towers){
@@ -118,7 +149,7 @@ public class SniperEnemy extends Enemy{
             }
             if(!sniping)
                 aim = null;
-        }
+        }*/
 
         return aim;
     }

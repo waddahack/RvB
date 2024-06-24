@@ -113,11 +113,25 @@ public class Bazoo extends Enemy{
     
     @Override
     public void renderLifeBar(){
+        float life = this.life;
+        float maxLife = this.maxLife;
+        float[] lifeColor = RvB.colors.get("life");
+        float[] bgLifeColor = RvB.colors.get("lightRed");
+        if(!evolutions.isEmpty()){
+            if(evolutions.size() > 1)
+                bgLifeColor = evolutions.get(evolutions.size()-2).lifeColor;
+            else
+                bgLifeColor = lifeColor;
+            life = evolutions.peek().life;
+            maxLife = evolutions.peek().maxLife;
+            lifeColor = evolutions.peek().lifeColor;
+        }
+        
         int width = (int) (100*ref), height = (int) (10*ref);
         int currentLife = (int) (((double)life/(double)maxLife)*width);
-        float[] bgColor = RvB.colors.get("lightRed");
-        RvB.drawFilledRectangle(x-width/2, y-size/2, width, height, bgColor, 1, null);
-        RvB.drawFilledRectangle(x-width/2, y-size/2, currentLife, height, RvB.colors.get("life"), 1, null);
+        
+        RvB.drawFilledRectangle(x-width/2, y-size/2, width, height, bgLifeColor, 1, null);
+        RvB.drawFilledRectangle(x-width/2, y-size/2, currentLife, height, lifeColor, 1, null);
         RvB.drawRectangle((int)(x-width/2), (int)(y-size/2), width, height, RvB.colors.get("green_dark"), 1, 3);
     }
 }

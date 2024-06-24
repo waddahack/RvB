@@ -126,6 +126,8 @@ public abstract class Tower extends Shootable implements Serializable{
     
     @Override
     public void renderLifeBar(){
+        if(life >= maxLife)
+            return;
         int width = (int) (40*ref), height = (int) (6*ref);
         int currentLife = (int) (((double)life/(double)maxLife)*width);
         float[] bgColor = RvB.colors.get("lightRed");

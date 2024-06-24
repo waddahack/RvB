@@ -124,9 +124,9 @@ public abstract class Shootable {
         for(int i = 0 ; i < texturesAdditive.size() ; i++)
             RvB.drawFilledRectangle(x-3*unite/10, y-unite/2, 3*unite/5, 3*unite/5, null, 1, texturesAdditive.get(i));
         
-        if(isTower && life < maxLife && life > 0)
+        if(isTower)
             renderLifeBar();
-        else if(life < maxLife && life > 0 && RvB.displayLifebars)
+        else if(RvB.displayLifebars)
             renderLifeBar();
     }
     
@@ -135,13 +135,23 @@ public abstract class Shootable {
     }
     
     public void renderLifeBar(){
-        if(life <= 0)
+        float life = this.life;
+        float maxLife = this.maxLife;
+        float[] lifeColor = RvB.colors.get("life");
+        if(!evolutions.isEmpty()){
+            life = evolutions.peek().life;
+            maxLife = evolutions.peek().maxLife;
+            lifeColor = evolutions.peek().lifeColor;
+        }
+        
+        if(life <= 0 || life >= maxLife)
             return;
+
         int width = (int) (30*ref), height = (int) (4*ref);
         int currentLife = (int) (((double)life/(double)maxLife)*width);
         float[] bgColor = RvB.colors.get("lightRed");
         RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, width, height, bgColor, 1, null);
-        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, currentLife, height, RvB.colors.get("life"), 1, null);
+        RvB.drawFilledRectangle(x-width/2, y-size/2-height/2, currentLife, height, lifeColor, 1, null);
     }
     
     public ArrayList<Bullet> getBullets(){

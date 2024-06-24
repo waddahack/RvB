@@ -110,12 +110,10 @@ public abstract class Enemy extends Shootable implements Comparable<Enemy>{
 
         angle = (int) Math.round((1-t)*angle + t*newAngle);
 
-        if(!evolutions.isEmpty()){
-            RvB.drawFilledRectangle(x, y, size, size, textures.get(0), angle, 1);
+        super.render();
+        
+        if(!evolutions.isEmpty())
             evolutions.peek().render(); 
-        } 
-        else
-            super.render();
         
         // Select circle
         if(isSelected()){

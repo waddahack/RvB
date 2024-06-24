@@ -445,14 +445,14 @@ public final class TextManager {
             new String[]{"Échap pour annuler"},
             new String[]{"Escape to cancel"}),
         EASY(
-            new String[]{"Facile"},
-            new String[]{"Easy"}),
+            new String[]{"Normal"},
+            new String[]{"Normal"}),
         MEDIUM(
-            new String[]{"Moyen"},
-            new String[]{"Medium"}),
-        HARD(
             new String[]{"Difficile"},
             new String[]{"Hard"}),
+        HARD(
+            new String[]{"Très difficile"},
+            new String[]{"Very hard"}),
         HARDCORE(
             new String[]{"Hardcore"},
             new String[]{"Hardcore"}),
