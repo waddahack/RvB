@@ -16,9 +16,8 @@ public class SniperEnemy extends Enemy{
     
     public static int balance = 50;
     private Evolution shield;
-    private boolean sniping;
-    private Random rand = new Random();
-    private int snipingTile;
+    private int snipingIndex;
+    private float waitBeforeAttack, startTimeWaitBeforeAttack;
     
     public SniperEnemy(){
         super(SNIPER);
@@ -32,20 +31,22 @@ public class SniperEnemy extends Enemy{
         commitPower = 2f;
         
         canShoot = true;
-        sniping = false;
         follow = true;
-        power = 4f;
+        power = 3f;
         bulletSprite = RvB.textures.get("roundBullet");
         bulletSizeBonus = (int) (-7*ref);
         clip = SoundManager.Instance.getClip("sniper");
         SoundManager.Instance.setClipVolume(clip, volume);
+        snipingIndex = -1;
+        waitBeforeAttack = 5000f;
+        startTimeWaitBeforeAttack = 0f;
         bulletSpeed = 30;
         shootRate = 0.5f;
         range = 10*RvB.unite;
         focusIndex = 2;
 
         moveSpeed = 4.5f;
-        life = 40f;
+        life = 30f;
         size = 4*RvB.unite/5;
         hitboxWidth = size;
         volumeWalk = SoundManager.Volume.VERY_LOW;
@@ -53,21 +54,15 @@ public class SniperEnemy extends Enemy{
         stepEveryMilli = 0;
         eBalance = balance;
         
-        shield = new Evolution(this, 160, RvB.textures.get("sniperEnemyVehicle"), RvB.textures.get("sniperEnemyVehicleBright"), RvB.colors.get("life1"), null);
+        shield = new Evolution(this, 200, RvB.textures.get("sniperEnemyVehicle"), RvB.textures.get("sniperEnemyVehicleBright"), RvB.colors.get("life1"), null);
         evolutions.add(shield);
         
         initBack();
     }
     
     @Override
-    public void setStarted(boolean v){
-        super.setStarted(v);
-        snipingTile = rand.nextInt(4, game.path.size()-6);
-    }
-    
-    @Override
     public void move(){
-        if(enemyAimed == null && sniping)
+        if((enemyAimed == null && snipingIndex > 0) || snipingIndex == 3)
             stopSnipe();
         if(shield != null && shield.life <= 0){
             moveSpeed *= 0.6f;
@@ -94,70 +89,56 @@ public class SniperEnemy extends Enemy{
         }
         if(aim != null && aim.life <= 0)
             aim = null; 
-        if(aim != null && getIndiceTuile() >= snipingTile){
-            // Check si un autre Znooper est à côté. Ne pas s'arrêter le cas échéant
-            boolean safe = true;
-            if(safe && !sniping){
-                int sep = (int)(20*ref);
-                for(Shootable enemy : game.enemies){
-                    if(enemy.getName() != Text.ENEMY_SNIPER)
-                        continue;
-                    SniperEnemy se = (SniperEnemy) enemy;
-                    if(!se.sniping)
-                        continue;
-                    if(x < enemy.getX()+sep && x > enemy.getX()-sep && y < enemy.getY()+sep && y > enemy.getY()-sep){
-                        safe = false;
-                        break;
-                    }
-                }
-                if(safe)
-                    snipe();
-            }
-        }
-        if(!sniping)
-            aim = null;
-        // Pour snipe que quand il est safe (trop dure, activer en version hardcore ?)
-        /*if(aim != null){
+        
+        if(aim != null){
             boolean safe = true;
             if(moveSpeed > 0){
                 for(Shootable tower : game.towers){
                     Tower t = (Tower) tower;
                     if(!t.isPlaced())
                         continue;
-                    if(this.isInRangeOf(tower)){
+                    if(tower.canShoot && this.isInRangeOf(tower)){
                         safe = false;
                         break;
                     }
                 }
             }
-            if(safe && !sniping){
+            if(safe && snipingIndex < 0){
                 // Check si un autre Znooper est à côté. Ne pas s'arrêter le cas échéant
                 int sep = (int)(20*ref);
                 for(Shootable enemy : game.enemies){
                     if(enemy.getName() != Text.ENEMY_SNIPER)
                         continue;
                     SniperEnemy se = (SniperEnemy) enemy;
-                    if(!se.sniping)
+                    if(se.snipingIndex < 0)
                         continue;
                     if(x < enemy.getX()+sep && x > enemy.getX()-sep && y < enemy.getY()+sep && y > enemy.getY()-sep){
                         safe = false;
                         break;
                     }
                 }
-                if(safe)
+                if(safe && game.timeInGamePassed - startTimeWaitBeforeAttack >= waitBeforeAttack)
                     snipe();
             }
-            if(!sniping)
+            if(snipingIndex < 0)
                 aim = null;
-        }*/
+        }
 
         return aim;
+    }
+    
+    @Override
+    public void attack(Shootable shootable){
+        if(!shootable.hasStarted())
+            return;
+        snipingIndex++;
+        super.attack(shootable);
     }
     
     private void snipe(){
         oldMoveSpeed = moveSpeed;
         moveSpeed = 0;
-        sniping = true;
+        snipingIndex = 0;
         clipWalk.close();
         
         if(!evolutions.isEmpty())
@@ -175,7 +156,8 @@ public class SniperEnemy extends Enemy{
     
     private void stopSnipe(){
         moveSpeed = oldMoveSpeed;
-        sniping = false;
+        snipingIndex = -1;
+        startTimeWaitBeforeAttack = game.timeInGamePassed;
         if(shield != null){
             clipWalk.close();
             clipWalk = SoundManager.Instance.getClip("quad_elec");

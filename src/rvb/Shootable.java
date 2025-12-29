@@ -19,7 +19,7 @@ import static rvb.RvB.ref;
 
 public abstract class Shootable {
     
-    protected boolean canShoot = true, started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false, dead = false, selected = false;
+    protected boolean started = false, follow = false, isMultipleShot = false, continuousSound = false, soundPlayed = false, mouseEntered = false, isAimed = false, dead = false, selected = false;
     protected ArrayList<Bullet> bullets, bulletsToRemove;
     protected ArrayList<Texture> textures, texturesBright, texturesAdditive;
     protected Clip clip;
@@ -40,7 +40,7 @@ public abstract class Shootable {
     public int range = 0, bulletSpeed = 0, size = unite, explodeRadius;
     public float shootRate = 0, power = 0, slow = 0, life, maxLife;
     public float bonusPower = 0, bonusShootRate = 0, bonusBulletSpeed = 0, bonusRange = 0, bonusExplodeRadius = 0, bonusLife = 0;
-    public boolean isTower;
+    public boolean isTower, canShoot = true;
     // STATS
     public int enemiesKilled = 0, enemiesKilledThisWave = 0;
     public float damagesDone = 0, damagesDoneThisWave = 0;

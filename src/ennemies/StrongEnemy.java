@@ -23,9 +23,6 @@ public class StrongEnemy extends Enemy{
         reward = 4;
         commitPower = 10f;
         
-        shootRate = 1f;
-        range = 3*RvB.unite;
-        
         canShoot = true;
         follow = true;
         power = 5f;
