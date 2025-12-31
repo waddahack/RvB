@@ -37,6 +37,9 @@ public final class TextManager {
         MENU(
             new String[]{"Retourner au menu"},
             new String[]{"Return to menu"}),
+        MIDDLE(
+            new String[]{"Moyen"},
+            new String[]{"Medium"}),
         ALL_ENEMIES(
             new String[]{"Tous les ennemis"},
             new String[]{"All enemies"}),
@@ -46,6 +49,9 @@ public final class TextManager {
         REPAIR(
             new String[]{"Réparer"},
             new String[]{"Repair"}),
+        REPAIR_ALL(
+            new String[]{"Tout réparer"},
+            new String[]{"Repair all"}),
         NO_OPTIONS(
             new String[]{"Bazoo a hacké le système !", "Les options sont indisponibles..."},
             new String[]{"Bazoo had the system hacked !", "Options are unavailable..."}),
@@ -463,14 +469,14 @@ public final class TextManager {
             new String[]{"«Je reviendrai plus fort !»", "«Tu ne devrais pas plaisanter avec moi vermine !»", "«Ce n'est qu'une question de temps...»", "«Je vais libérer ma vraie puissance !»", "«Plus je souffre, plus je deviens puissant !»"},
             new String[]{"\"I will be back much stronger !\"", "\"You should not mess with me filthy bug !\"", "\"It is just a matter of time...\"", "\"I will unleash my true power !\"", "\"The more I suffer, the more powerful I get !\""}),
         BOSS_NOT_DEFEATED(
-            new String[]{"«Tu es faible.»", "«Je suis la fin, et j'arrive vite !»", "«MEUUUURS !»", "«Ça a toujours été une question de temps.»", "«Je n'ai pas fait attention, m'as-tu touché ?»"},
-            new String[]{"\"You are weak.\"", "\"I am the end, and I am coming fast !\"", "\"You shall DIE !\"", "\"It has always been a matter of time.\"", "\"I have not noticed, did you even hit me ?\""}),
+            new String[]{"«Tu es faible.»", "«AHAHAHAH ! Que croyais-tu ?!»", "«MEUUUURS !»", "«Ça a toujours été qu'une question de temps.»", "«Je n'ai pas fait attention, m'as-tu touché ?»"},
+            new String[]{"\"You are weak.\"", "\"AHAHAHAH ! What did you think ?!\"", "\"You shall DIE !\"", "\"It has always been a matter of time.\"", "\"I have not noticed, did you even hit me ?\""}),
         BOSS_DEFEATED_ANSWER(
-            new String[]{"«Toujours debout !»", "«Où es-tu ?»", "«J'attends...»", "«Même pas peur !»", "«Looser !»"},
-            new String[]{"\"Still standing !\"", "\"Where're you ?\"", "\"I'm waiting...\"", "\"Not afraid !\"", "\"Looser !\""}),
+            new String[]{"«Si tu l'dis !»", "«Où es-tu ?»", "«J'attends...»", "«Même pas peur !»", "«Loser !»"},
+            new String[]{"\"If you say so !\"", "\"Where're you ?\"", "\"I'm waiting...\"", "\"Not afraid !\"", "\"Loser !\""}),
         BOSS_NOT_DEFEATED_ANSWER(
-            new String[]{"«Noooon !", "«Toujours vivant !", "«Ouch !", "«Attention à toi»", "«Grrrrr...»"},
-            new String[]{"\"Noooo !\"", "\"Still alive !\"", "\"Ouch !\"", "\"Watch yourself\"", "\"Grrrrr...\""}),
+            new String[]{"«Noooon !", "«Coup de chance...", "«Ouch !»", "«Je reviendrai...»", "«Grrrrr...»"},
+            new String[]{"\"Noooo !\"", "\"You got lucky...\"", "\"Ouch !\"", "\"I'll be back...\"", "\"Grrrrr...\""}),
         HOW_TO_PLAY(
             new String[]{"Comment jouer"},
             new String[]{"How to play"}),

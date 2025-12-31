@@ -81,7 +81,6 @@ public class StatsManager {
         int nbWave = Integer.parseInt(bestScore.split(";")[0]);
         int lifePercent = Integer.parseInt(bestScore.split(";")[1]);
         if(nbWave == game.difficulty.nbWaveMax+1){
-            RvB.debug("yo");
             if(newNbWave == game.difficulty.nbWaveMax+1 && newLifePercent > lifePercent){
                 changeBestScore(newScore);
                 return;

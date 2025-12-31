@@ -101,7 +101,7 @@ public class RvB{
     public static float ref;
     public static boolean mouseDown = false, stateChanged = false, displayLifebars = true;
     public static double lastUpdate, lastUpdateFPS;
-    public static double deltaTime;
+    public static double deltaTime, lastDeltaTime;
     public static MenuWindow menu;
     public static StatsWindow menuStats;
     public static OptionsWindow options;
@@ -191,6 +191,9 @@ public class RvB{
             
             deltaTime = System.currentTimeMillis() - lastUpdate;
             calculateFPS();
+            if(deltaTime > 200)
+                deltaTime = lastDeltaTime;
+            lastDeltaTime = deltaTime;
         }
         releaseTextures();
         saveAndExit();
@@ -252,6 +255,7 @@ public class RvB{
         
         lastUpdate = System.currentTimeMillis();
         lastUpdateFPS = System.currentTimeMillis();
+        lastDeltaTime = System.currentTimeMillis();
     }
 
     public static void initPropertiesAndGame(boolean inGame, boolean cheatsOn, String language, String stats, String tutoSteps, String pathString, String holesString, String difficulty, int life, int money, int waveNumber, String arrayTowers, String arrayBuffs, String buffsUsed) throws IOException{
@@ -604,7 +608,7 @@ public class RvB{
                     debug("Hi !");
                 }
             }
-            
+            cheatsActivated = true;
             if(cheatsActivated)
                 checkCheatsInput();
             

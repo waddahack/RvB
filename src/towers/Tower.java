@@ -74,7 +74,7 @@ public abstract class Tower extends Shootable implements Serializable{
     public int[] nbUpgradesUsed;
     public int indexXSaved, indexYSaved;
     private Clip destroyedClip;
-    private int repairPrice = 1; // for each life point
+    private int repairPrice = 1; // for each life point, changer dans appcore -> priceToRepairAll
     
     public Tower(Type type){
         super();
@@ -179,7 +179,7 @@ public abstract class Tower extends Shootable implements Serializable{
         b.setFunction(__ -> {
             if(!isPlaced)
                 return;
-            game.money += (int)((totalMoneySpent/2) * (life/maxLife));
+            game.money += (int)((totalMoneySpent/2));
             Tile grass = new Tile(RvB.textures.get("grass"), "grass");
             grass.setRotateIndex(0);
             grass.setX(x);
@@ -250,7 +250,7 @@ public abstract class Tower extends Shootable implements Serializable{
             // button sell
             b = overlay.getButtons().get(0);
             if(b.isHovered()){
-                price = "+ "+(int)((totalMoneySpent/2) * (life/maxLife));
+                price = "+ "+(int)((totalMoneySpent/2));
                 b.drawText(price, RvB.fonts.get("canBuy"));
             }
             else

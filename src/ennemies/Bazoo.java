@@ -27,7 +27,7 @@ public class Bazoo extends Enemy{
         bulletSpeed = 20;*/
         level = lvl;
         name = Text.ENEMY_BOSS;
-        reward = lvl*25;
+        reward = (lvl+1)*150;
         commitPower = 1000f;
         shootRate = 1f;
         moveSpeed = 2f;

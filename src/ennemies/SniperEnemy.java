@@ -54,7 +54,7 @@ public class SniperEnemy extends Enemy{
         stepEveryMilli = 0;
         eBalance = balance;
         
-        shield = new Evolution(this, 200, RvB.textures.get("sniperEnemyVehicle"), RvB.textures.get("sniperEnemyVehicleBright"), RvB.colors.get("life1"), null);
+        shield = new Evolution(this, 150, RvB.textures.get("sniperEnemyVehicle"), RvB.textures.get("sniperEnemyVehicleBright"), RvB.colors.get("life1"), null);
         evolutions.add(shield);
         
         initBack();

@@ -42,9 +42,9 @@ public abstract class AppCore {
         BASIC(0, BasicEnemy.balance, 1, 6),
         FAST(1, FastEnemy.balance, 4, 6),
         TRICKY(2, TrickyEnemy.balance, 7, 10),
-        SNIPER(3, SniperEnemy.balance, 10, 8),
-        FLYING(4, FlyingEnemy.balance, 13, 6),
-        STRONG(5, StrongEnemy.balance, 17, 8);
+        SNIPER(3, SniperEnemy.balance, 10, 6),
+        FLYING(4, FlyingEnemy.balance, 13, 4),
+        STRONG(5, StrongEnemy.balance, 17, 6);
         
         public final int balance, id, enterAt, nbMax;
         
@@ -153,6 +153,7 @@ public abstract class AppCore {
         money = difficulty.money;
         waveReward = difficulty.waveReward;
         waveBalanceMult = difficulty.waveBalanceMult;
+        PopupManager.Instance.shuffleDialogOrder();
     }
     
     protected void initMap(String filePath){
@@ -568,7 +569,7 @@ public abstract class AppCore {
                         enemiesBonusLife += 25; // À changer aussi dans RvB.initPropertiesAndGame
                         enemiesBonusMS += 8;
                         PopupManager.Instance.enemiesUpgraded(new String[]{
-                            "+25% "+Text.HP.getText(),
+                            "+25% --heart-- ",
                             "+8% "+Text.MS.getText()
                         });
                         bossDead = false;
@@ -764,6 +765,20 @@ public abstract class AppCore {
             });
             OvShop.addButton(b);
         }
+        // Button repair all
+        b = new Button(OvShop.getW()- size - sep, (int)(30*ref), (int)(128*ref), (int)(32*ref));
+        b.setFunction(__ -> {
+            int price = priceToRepairAll();
+            if(price > game.money || price == 0)
+                return;
+            
+            for(int i = 0 ; i < game.towers.size() ; i++)
+                game.towers.get(i).life = game.towers.get(i).maxLife;
+            game.money -= price;
+            SoundManager.Instance.playOnce(SoundManager.Instance.getClip("repair"));
+        });
+        OvShop.addButton(b);
+        // Raztech button
         b = new Button(size + sep, (int)(30*ref), size, size, RvB.textures.get("raztech"));
         b.setItemFramed(true);
         b.setFunction(__ -> {
@@ -892,6 +907,23 @@ public abstract class AppCore {
                 RvB.drawFilledRectangle(x, y, xpWidth, height, RvB.colors.get("lightBlue"), 1f, null);
                 RvB.drawRectangle(x, y, width, height, RvB.colors.get("green_dark"), 1f, (int)(4*ref));
             }
+            
+            b = o.getButtons().get(4);
+            if(b.isHovered()){
+                int totalRP = priceToRepairAll();
+                if(totalRP <= game.money){
+                    b.drawText(totalRP+"   ", RvB.fonts.get("canBuy"));
+                    RvB.drawFilledRectangle(b.getX()+(int)(22*ref), b.getY(), (int)(28*ref), (int)(28*ref), RvB.textures.get("coins"), 0, 1);
+                }
+                else{
+                    b.drawText(totalRP+"   ", RvB.fonts.get("cantBuy"));
+                    RvB.drawFilledRectangle(b.getX()+(int)(22*ref), b.getY(), (int)(28*ref), (int)(28*ref), RvB.textures.get("coinsCantBuy"), 0, 1);
+                }    
+            }
+            else{
+                b.drawText(Text.REPAIR_ALL.getText(), RvB.fonts.get("normal"));
+            }
+                
         }
         //
         //// Overlay principal
@@ -905,6 +937,9 @@ public abstract class AppCore {
         t = life+"";
         o.drawText((int)(320*ref), o.getH()/2, t, RvB.fonts.get("life"));
         o.drawImage((int)((330+8.8*t.length())*ref), o.getH()/2, (int)(32*ref), (int)(32*ref), RvB.textures.get("heart"));
+        
+        t = Text.WAVE.getText()+" "+waveNumber;
+        o.drawText((int)(460*ref), o.getH()/2, t, RvB.fonts.get("normalLB"));
         //
         if(enemySelected != null && !enemySelected.isDead())
             enemySelected.renderInfo();
@@ -1036,6 +1071,18 @@ public abstract class AppCore {
         }
     }
     
+    public int getBazooReward(){
+        int reward;
+        if(bazoo == null){
+            bazoo = new Bazoo((waveNumber/bossEvery)-1);
+            reward = bazoo.reward;
+            bazoo = null;
+        }
+        else
+            reward = bazoo.reward;
+        return reward;
+    }
+    
     public void raisePrice(Tower t){
         if(t.type == Tower.Type.BASIC)
             basicTowerPrice *= 1.1;
@@ -1161,6 +1208,13 @@ public abstract class AppCore {
         }
     }
 
+    public int priceToRepairAll(){
+        int price = 0;
+        for(int i = 0 ; i < game.towers.size() ; i++)
+            price += (game.towers.get(i).maxLife-game.towers.get(i).life)*1; // 1 = repairPrice in class Tower
+        return price;
+    }
+    
     public void setEnemySelected(Enemy e) {
         if(e == null){
             OvEnemyInfo.display(false);

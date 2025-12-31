@@ -32,6 +32,8 @@ public final class PopupManager {
     private Buff buff1, buff2, buff3;
     private Consumer<Object> callback = null;
     private boolean addBackground = true;
+    private ArrayList<Integer> dialogOrder1, dialogOrder2;
+    private int dialogIndex;
 
     private PopupManager(){
         random = new Random();
@@ -39,6 +41,13 @@ public final class PopupManager {
         lines = new ArrayList<>();
         fonts = new ArrayList<>();
         anchors = new ArrayList<>();
+        dialogOrder1 = new ArrayList<>();
+        dialogOrder2 = new ArrayList<>();
+        for(int i = 0 ; i < 5 ; i++){
+            dialogOrder1.add(i);
+            dialogOrder2.add(i);
+        }
+        shuffleDialogOrder();
         initOverlays();
     }
 
@@ -170,7 +179,7 @@ public final class PopupManager {
         gameOver.setBG(RvB.textures.get("board"), 0.8f);
         gameOver.setBorder(RvB.colors.get("green_dark"), 4, 1);
         b = new Button(gameOver.getW()/2, 3*gameOver.getH()/4, (int) (250*ref), (int)(50*ref));
-        b.setText(Text.MENU, RvB.fonts.get("normalLB"));
+        b.setText(Text.BOSS_NOT_DEFEATED_ANSWER, RvB.fonts.get("normalLB"));
         b.setFunction(__ -> {
             stateChanged = true;
             game.ended = true;
@@ -203,7 +212,7 @@ public final class PopupManager {
         enemiesUpgraded.display(false);
         enemiesUpgraded.setBG(RvB.textures.get("board"), 0.8f);
         enemiesUpgraded.setBorder(RvB.colors.get("green_dark"), 4, 1);
-        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (butWith*1.2), butHeight);
+        b = new Button(enemiesUpgraded.getW()/2, 3*enemiesUpgraded.getH()/4, (int) (butWith*1.25), butHeight);
         b.setFunction(__ -> {
             stateChanged = true;
             closeCurrentPopup();
@@ -420,9 +429,10 @@ public final class PopupManager {
             game.unpause();
         } 
         top = height/4;
-        addText(Text.GAME_OVER.getLines(), RvB.fonts.get("normalXL"));
+        addText(Text.BOSS_NOT_DEFEATED.getLines()[random.nextInt(5)], RvB.fonts.get("normalXL"));
         addText("\n", RvB.fonts.get("normalL"));
         addText(Text.WAVE.getText()+" "+game.waveNumber, RvB.fonts.get("normalXLB"));
+        gameOver.getButtons().get(0).indexSwitch = random.nextInt(5);
     }
     
     public void gameWin(){
@@ -448,18 +458,28 @@ public final class PopupManager {
     public void enemiesUpgraded(String[] infoLines){
         initPopup(enemiesUpgraded);
         top = height/4;
-
-        int r = random.nextInt(5);      
-        addText(game.bossDefeated ? Text.BOSS_DEFEATED.getLines()[r] : Text.BOSS_NOT_DEFEATED.getLines()[r], RvB.fonts.get("normalXL"));
-        addText("\n", RvB.fonts.get("normalXL"));
-        addText(Text.ALL_ENEMIES.getText(), RvB.fonts.get("normalL"));
-        for(int i = 0 ; i < infoLines.length ; i++)
-            addText(infoLines[i], RvB.fonts.get("normalXLB"));
         
-        r = random.nextInt(5); 
+        addText(Text.BOSS_DEFEATED.getLines()[dialogOrder1.get(dialogIndex)], RvB.fonts.get("normalXL"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText("--coinsAdd-- "+game.getBazooReward(), RvB.fonts.get("money"));
+        addText("\n", RvB.fonts.get("normalS"));
+        addText(Text.ALL_ENEMIES.getText(), RvB.fonts.get("normal"));
+        for(int i = 0 ; i < infoLines.length ; i++)
+            addText(infoLines[i], RvB.fonts.get("normalLB"));
+        
         Button b = enemiesUpgraded.getButtons().get(0);
-        b.setText(game.bossDefeated ? Text.BOSS_DEFEATED_ANSWER : Text.BOSS_NOT_DEFEATED_ANSWER, RvB.fonts.get("normalLB"));
-        b.indexSwitch = r;
+        b.setText(Text.BOSS_DEFEATED_ANSWER, RvB.fonts.get("normalLB"));
+        b.indexSwitch = dialogOrder2.get(dialogIndex);
+        
+        dialogIndex++;
+        if(dialogIndex >= 5)
+            shuffleDialogOrder();
+    }
+    
+    public void shuffleDialogOrder(){
+        Collections.shuffle(dialogOrder1);
+        Collections.shuffle(dialogOrder2);
+        dialogIndex = 0;
     }
     
     public void rewardSelection(){
@@ -659,7 +679,7 @@ public final class PopupManager {
                 t = Text.LONG;
                 break;
             case "MEDIUM" :
-                t = Text.MEDIUM;
+                t = Text.MIDDLE;
                 break;
             case "HARD" :
                 t = Text.SHORT;

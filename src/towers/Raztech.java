@@ -255,6 +255,7 @@ public class Raztech extends Tower{
         if(!enemy.hasStarted())
             return;
         Enemy e = (Enemy) enemy;
+        boolean isEnemyBazoo = (e == game.bazoo);
         float d;
         if(Math.random() <= chanceToKill)
             d = e.takeDamage(getPower()*18);
@@ -266,7 +267,7 @@ public class Raztech extends Tower{
         if(e.isDead()){
             enemiesKilled += 1;
             enemiesKilledThisWave += 1;
-            if(e != game.bazoo)
+            if(!isEnemyBazoo)
                 gainXP(e.getReward()*2);
             
             StatsManager.Instance.updateEnemyKilled(e.type);
